@@ -39,7 +39,7 @@ public abstract class _Node implements ValueObject {
      * @param ctx
      * @return
      */
-    public _Node execute(String cmd, _Node currentNode, FlowContext ctx) throws RouterException {
+    public _Node execute(String cmd, FlowContext ctx) throws RouterException {
         Assert.notNull(cmds.get(cmd), "流程节点" + ctx.getFlow().name + "." + name + "不支持指令" + cmd);
         Command command    = getCmd(ctx.cmd);
         _Node   targetNode = null;

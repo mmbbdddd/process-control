@@ -79,7 +79,7 @@ public class Flow implements ValueObject {
     }
 
     public void execute(String cmd, _Node currentNode, FlowContext ctx) throws RouterException {
-        _Node targetNode = currentNode.execute(cmd, currentNode, ctx);
+        _Node targetNode = currentNode.execute(cmd, ctx);
         contextService.snapshot(ctx);
         if (null != targetNode && !(targetNode instanceof End) && !ctx.isRetry()) {
             execute(cmd, targetNode, ctx);
