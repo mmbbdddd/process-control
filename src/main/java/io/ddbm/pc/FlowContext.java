@@ -18,7 +18,6 @@ public class FlowContext {
     _Node               lastNode;
     //    当前变迁
     Command             command;
-    Command             lastCommand;
     //    变迁异常
     Exception           actionException;
     Object              actionResult;
@@ -85,14 +84,13 @@ public class FlowContext {
 
 
     public void refresh(_Node currentNode, Command command) {
-        this.lastNode    = node;
-        this.node        = currentNode;
-        this.lastCommand = this.command;
-        this.command     = command;
+        this.lastNode = node;
+        this.node     = currentNode;
+        this.command  = command;
     }
 
     public boolean isRetry() {
-        return node.equals(lastNode) && command.equals(lastCommand);
+        return node.equals(lastNode);
     }
 
     void clearActionContext() {

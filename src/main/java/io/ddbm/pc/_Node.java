@@ -45,7 +45,6 @@ public abstract class _Node implements ValueObject {
         ctx.refresh(currentNode, command);
         return command.execute(ctx);
     }
-
     private Command getCmd(String cmd) {
         return cmds.get(cmd);
     }
