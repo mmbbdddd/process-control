@@ -8,6 +8,11 @@ public class RouterException extends Exception {
     String       node;
     String       cmd;
 
+    public RouterException(String message) {
+        super(message);
+
+    }
+
     public RouterException(String message, FlowContext ctx, Exception e) {
         super(message + " for :" + ctx.id + "," + ctx.flow.name + "," + ctx.node.name + "," + ctx.cmd, e);
         this.id   = ctx.id;

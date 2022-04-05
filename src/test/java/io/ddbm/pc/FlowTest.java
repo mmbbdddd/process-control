@@ -18,11 +18,11 @@ public class FlowTest {
         ctx.register(BeanConfig.class);
         ctx.refresh();
         LinkedHashMap<String, String> payRouter = new LinkedHashMap<>();
-        payRouter.put("su", "#result.code =='0000'");
-        payRouter.put("fail", "#result.code !='0000'");
+        payRouter.put("su", "#result[code] =='0000'");
+        payRouter.put("fail", "#result[code]  !='0000'");
         LinkedHashMap<String, String> queryRouter = new LinkedHashMap<>();
-        payRouter.put("su", "#result.code =='0000'");
-        payRouter.put("fail", "#result.code !='0000'");
+        payRouter.put("su", "#result[code]  =='0000'");
+        payRouter.put("fail", "#result[code]  !='0000'");
         flow = new FlowBuilder("simple", new MockContextService(), new MockFlowRecordRepository())
                 .addStartNode("init", "initAction", "prepay")
                 .addEndNode(new End("su"))
