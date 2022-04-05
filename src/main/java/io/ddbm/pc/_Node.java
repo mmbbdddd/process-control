@@ -110,7 +110,6 @@ class Command implements ValueObject {
             return targetNode;
         } catch (Exception e) {
 //            e.printStackTrace();
-            logger.info("工作流{}记录{}出错, {}=>{}", ctx.flow.name, ctx.getId(), ctx.getNode().name, targetNode.name);
             ctx.setActionException(e);
             targetNode = ctx.getNode().onFail(ctx, e);
             return targetNode;

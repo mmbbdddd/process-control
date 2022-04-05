@@ -53,7 +53,7 @@ public class Flow implements ValueObject {
 
 
     public void execute(String cmd, Serializable id, Map<String, Object> args) throws RouterException {
-        logger.info("工作流{}记录{}收到请求{},{}", name,id,cmd, args);
+        logger.info("工作流{}记录{}收到请求{},{}", name, id, cmd, args);
         if (StringUtils.isEmpty(cmd)) {
             cmd = DEFAULT_COMMAND;
         }
@@ -64,12 +64,12 @@ public class Flow implements ValueObject {
 //            开始节点流程
             record = repository.newRecord(args);
             id     = record.getId();
-            logger.info("工作流{}创建记录{},{},{}",name, id, cmd, args);
+            logger.info("工作流{}创建记录{},{},{}", name, id, cmd, args);
             currentNode = startNode;
         } else {
 //            非开始节点流程
             record = repository.get(id);
-            logger.info("工作流{}记录{}查询数据{},{} ", name,id, cmd, record);
+            logger.info("工作流{}记录{}查询数据{},{} ", name, id, cmd, record);
             String nodeName = record.translateStatusToNode();
             currentNode = getNode(nodeName);
         }
@@ -79,24 +79,13 @@ public class Flow implements ValueObject {
     }
 
     public void execute(String cmd, _Node currentNode, FlowContext ctx) throws RouterException {
-
-        _Node targetNode = on(currentNode, cmd, ctx);
+        _Node targetNode = currentNode.execute(cmd, currentNode, ctx);
         contextService.snapshot(ctx);
-        if (null != targetNode && !(targetNode instanceof End) &&!ctx.isRetry()) {
+        if (null != targetNode && !(targetNode instanceof End) && !ctx.isRetry()) {
             execute(cmd, targetNode, ctx);
         }
     }
 
-    public _Node on(_Node currentNode, String cmd, FlowContext ctx) throws RouterException {
-        if (null == currentNode) {
-            return startNode();
-        }
-        return currentNode.execute(cmd, currentNode, ctx);
-    }
-
-    private _Node startNode() {
-        return startNode;
-    }
 
     public _Node getNode(String node) {
         return nodes.get(node);

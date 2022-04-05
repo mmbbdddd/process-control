@@ -1,9 +1,17 @@
 package io.ddbm.pc.utils;
 
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+
 import java.util.Map;
 
 public class SpelUtils {
+    static ExpressionParser parser = new SpelExpressionParser();
+
     public static Boolean eval(String expression, Map<String, Object> asMap) {
-        return true;
+        StandardEvaluationContext ctx = new StandardEvaluationContext(asMap);
+
+        return parser.parseExpression(expression).getValue(ctx, Boolean.class);
     }
 }

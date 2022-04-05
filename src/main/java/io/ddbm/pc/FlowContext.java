@@ -85,9 +85,10 @@ public class FlowContext {
 
 
     public void refresh(_Node currentNode, Command command) {
-        this.lastNode = node;
-        this.node     = currentNode;
-        this.command  = command;
+        this.lastNode    = node;
+        this.node        = currentNode;
+        this.lastCommand = this.command;
+        this.command     = command;
     }
 
     public boolean isRetry() {
