@@ -55,7 +55,8 @@ class ExpressionRouter extends Router {
             String  expression = entry.getValue();
             Boolean result     = null;
             try {
-                result = SpelUtils.eval(expression, asMap(ctx));
+                result = (Boolean) SpelUtils.eval(expression, asMap(ctx));
+                logger.debug("工作流{}记录{}路由{}/{}结果：{}",ctx.flow.name,ctx.id,routerName,expression,result);
                 if (result) {
                     _Node targetNode = ctx.flow.getNode(node);
                     if (null != targetNode) {
@@ -63,6 +64,7 @@ class ExpressionRouter extends Router {
                     }
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new RouterException("路由表达式执行错误", ctx, e);
             }
         }
