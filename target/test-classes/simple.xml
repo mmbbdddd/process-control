@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flow name="pay">
+    <start name="init">
+        <cmd name="push" action="initAction" to="prepay"></cmd>
+    </start>
+    <end name="su"></end>
+    <end name="fail"></end>
+    <end name="cancel"></end>
+    <node name="prepay">
+        <cmd name="push" action="payAction" failNode="unknow" router="payRouter"></cmd>
+    </node>
+    <node name="unknow" pause="true" retry="3">
+        <cmd name="push" action="queryAction" failNode="unknow" router="payRouter"></cmd>
+    </node>
+</flow>
