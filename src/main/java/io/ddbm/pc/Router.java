@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -42,7 +43,7 @@ class ExpressionRouter extends Router {
     String              routerName;
     Map<String, String> expressions;
 
-    public ExpressionRouter(String routerName, Map<String, String> expressions) {
+    public ExpressionRouter(String routerName, LinkedHashMap<String, String> expressions) {
         this.routerName  = routerName;
         this.expressions = expressions;
     }
@@ -75,6 +76,8 @@ class ExpressionRouter extends Router {
         el.put("id", ctx.id);
         el.put("flow", ctx.getFlow());
         el.put("node", ctx.getNode());
+        el.put("result", ctx.getActionResult());
+        el.put("error", ctx.getActionException());
         //设置action的结果  TODO
         return el;
     }

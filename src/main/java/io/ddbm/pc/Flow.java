@@ -82,7 +82,7 @@ public class Flow implements ValueObject {
 
         _Node targetNode = on(currentNode, cmd, ctx);
         contextService.snapshot(ctx);
-        if (null != targetNode && !(targetNode instanceof End) && ctx.isRetry()) {
+        if (null != targetNode && !(targetNode instanceof End) &&!ctx.isRetry()) {
             execute(cmd, targetNode, ctx);
         }
     }

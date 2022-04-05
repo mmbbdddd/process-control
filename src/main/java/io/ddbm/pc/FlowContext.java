@@ -20,7 +20,8 @@ public class FlowContext {
     Command             command;
     Command             lastCommand;
     //    变迁异常
-    Exception           exception;
+    Exception           actionException;
+    Object              actionResult;
 
     public static FlowContext of(Serializable id, FLowRecord record, String cmd, Map<String, Object> args, Flow flow, _Node node) {
         Assert.notNull(id, "上下文ID为空");
@@ -74,12 +75,12 @@ public class FlowContext {
         this.command = command;
     }
 
-    public Exception getException() {
-        return exception;
+    public Exception getActionException() {
+        return actionException;
     }
 
-    public void setException(Exception exception) {
-        this.exception = exception;
+    public void setActionException(Exception actionException) {
+        this.actionException = actionException;
     }
 
 
@@ -91,5 +92,18 @@ public class FlowContext {
 
     public boolean isRetry() {
         return node.equals(lastNode) && command.equals(lastCommand);
+    }
+
+    void clearActionContext() {
+        this.actionResult    = null;
+        this.actionException = null;
+    }
+
+    public Object getActionResult() {
+        return actionResult;
+    }
+
+    public void setActionResult(Object actionResult) {
+        this.actionResult = actionResult;
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class FlowBuilder {
@@ -37,7 +38,7 @@ public class FlowBuilder {
         return this;
     }
 
-    public FlowBuilder addRouter(String routerName, Map<String, String> expression) {
+    public FlowBuilder addRouter(String routerName, LinkedHashMap<String, String> expression) {
         ExpressionRouter router = new ExpressionRouter(routerName, expression);
         flow.addRouter(router);
         return this;

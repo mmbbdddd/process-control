@@ -101,20 +101,22 @@ class Command implements ValueObject {
 
     public _Node execute(FlowContext ctx) throws RouterException {
         _Node targetNode = null;
+        ctx.clearActionContext();
         try {
             ctx.setCommand(this);
             action.execute(ctx);
-            ctx.setException(null);
+            ctx.setActionException(null);
             targetNode = router.routeTo(ctx);
             return targetNode;
         } catch (Exception e) {
 //            e.printStackTrace();
-            ctx.setException(e);
+            logger.info("工作流{}记录{}出错, {}=>{}", ctx.flow.name, ctx.getId(), ctx.getNode().name, targetNode.name);
+            ctx.setActionException(e);
             targetNode = ctx.getNode().onFail(ctx, e);
             return targetNode;
         } finally {
             if (null != targetNode) {
-                logger.info("工作流{}记录{}状态变迁 {}=>{}", ctx.flow.name,ctx.getId(), ctx.getNode().name, targetNode.name);
+                logger.info("工作流{}记录{}状态变迁 {}=>{}", ctx.flow.name, ctx.getId(), ctx.getNode().name, targetNode.name);
             }
         }
     }

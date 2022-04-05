@@ -5,7 +5,9 @@ import org.junit.Before;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class FlowTest {
     Flow                               flow;
@@ -15,10 +17,10 @@ public class FlowTest {
     public void setup() throws Exception {
         ctx.register(BeanConfig.class);
         ctx.refresh();
-        Map<String, String> payRouter = new HashMap<>();
+        LinkedHashMap<String, String> payRouter = new LinkedHashMap<>();
         payRouter.put("su", "#result.code =='0000'");
         payRouter.put("fail", "#result.code !='0000'");
-        Map<String, String> queryRouter = new HashMap<>();
+        LinkedHashMap<String, String> queryRouter = new LinkedHashMap<>();
         payRouter.put("su", "#result.code =='0000'");
         payRouter.put("fail", "#result.code !='0000'");
         flow = new FlowBuilder("simple", new MockContextService(), new MockFlowRecordRepository())
