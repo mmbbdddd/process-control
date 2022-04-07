@@ -10,6 +10,20 @@
         <cmd name="push" action="payAction" failNode="unknow" router="payRouter"></cmd>
     </node>
     <node name="unknow" pause="true" retry="3">
-        <cmd name="push" action="queryAction" failNode="unknow" router="payRouter"></cmd>
+        <cmd name="push" action="queryAction" failNode="unknow" router="queryRouter"></cmd>
     </node>
+
+    <routers>
+        <router name="payRouter">
+            <expression test="" to=""></expression>
+            <expression test="" to=""></expression>
+            <expression test="" to=""></expression>
+        </router>
+        <router name="queryRouter">
+            <expression test="" to=""></expression>
+            <expression test="" to=""></expression>
+            <expression test="" to=""></expression>
+        </router>
+
+    </routers>
 </flow>

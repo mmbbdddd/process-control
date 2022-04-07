@@ -1,7 +1,10 @@
 package io.ddbm.pc.factory;
 
 import io.ddbm.pc.Flow;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
@@ -9,7 +12,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Map;
 
-public class FlowFactory implements InitializingBean {
+public class FlowFactory implements InitializingBean   {
     ClassPathResource path;
     Map<String, Flow> flows;
 
