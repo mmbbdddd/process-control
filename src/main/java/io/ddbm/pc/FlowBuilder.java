@@ -91,8 +91,8 @@ public class FlowBuilder {
             }
         }
 
-        public ActionNode build(ApplicationContext ctx, Flow flow) throws Exception {
-            ActionNode node = new ActionNode(nodeName);
+        public Node build(ApplicationContext ctx, Flow flow) throws Exception {
+            Node node = new Node(nodeName);
             node.setFlow(flow);
             for (Map.Entry<String, CommandBuilder> entry : cmdBuilders.entrySet()) {
                 String         cmd = entry.getKey();

@@ -1,10 +1,13 @@
 package io.ddbm.pc.factory;
 
+import io.ddbm.pc.End;
 import io.ddbm.pc.Flow;
 import io.ddbm.pc.FlowBuilder;
+import io.ddbm.pc.Router;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -12,6 +15,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class XmlFlowReader implements ApplicationContextAware {
@@ -33,11 +37,11 @@ public class XmlFlowReader implements ApplicationContextAware {
     private Flow parseFlow(Element flow) throws Exception {
         String name = flow.getAttribute("name");
         fb = new FlowBuilder(name);
-        parseNode(flow.getChildNodes());
+        parseFlowChilds(flow.getChildNodes());
         return fb.build(ctx);
     }
 
-    private void parseNode(NodeList list) {
+    private void parseFlowChilds(NodeList list) {
         for (int i = 0; i < list.getLength(); i++) {
             Node   node     = list.item(i);
             String nodeName = node.getNodeName();
@@ -49,7 +53,7 @@ public class XmlFlowReader implements ApplicationContextAware {
                     parseEnd((Element) node);
                     break;
                 case "node":
-                    parseActionNode((Element) node);
+                    parseNode((Element) node);
                     break;
                 case "router":
                     parseRouters((Element) node);
@@ -67,15 +71,31 @@ public class XmlFlowReader implements ApplicationContextAware {
     }
 
     private void parseEnd(Element node) {
+        String name = node.getAttribute("name");
+        fb.addEndNode(new End(name));
     }
 
-    private void parseActionNode(Element node) {
+    private void parseNode(Element node) {
+        String    name  = node.getAttribute("name");
+        String    retry = node.getAttribute("retry");
+        List<CMD> cmds  = parseCmd(node.getChildNodes());
+        for (CMD cmd : cmds) {
+            fb.onCmd(name, cmd.name, cmd.action, cmd.getRouterType(), cmd.router, cmd.failNode);
+        }
     }
 
     private List<CMD> parseCmd(NodeList list) {
-        String actionName = "";
-        String to         = "";
-        return null;
+        List<CMD> cmds = new ArrayList<>();
+        for (int i = 0; i < list.getLength(); i++) {
+            Element node     = (Element) list.item(i);
+            String  name     = node.getAttribute("name");
+            String  action   = node.getAttribute("action");
+            String  to       = node.getAttribute("to");
+            String  failNode = node.getAttribute("failNode");
+            String  router   = node.getAttribute("router");
+            cmds.add(new CMD(name, action, to, failNode, router));
+        }
+        return cmds;
     }
 
     private void parseRouters(Element node) {
@@ -88,8 +108,28 @@ public class XmlFlowReader implements ApplicationContextAware {
     }
 
     class CMD {
+        String name;
         String action;
         String to;
+        String failNode;
+        String router;
+
+        public CMD(String name, String action, String to, String failNode, String router) {
+            this.name     = name;
+            this.action   = action;
+            this.to       = to;
+            this.failNode = failNode;
+            this.router   = router;
+        }
+
+        public Router.Type getRouterType() {
+            if (!StringUtils.isEmpty(to)) {
+                this.router = to;
+                return Router.Type.NAME;
+            } else {
+                return Router.Type.EXPRESSION;
+            }
+        }
     }
 
 
