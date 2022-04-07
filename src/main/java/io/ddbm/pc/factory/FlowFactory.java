@@ -12,9 +12,10 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Map;
 
-public class FlowFactory implements InitializingBean   {
-    ClassPathResource path;
-    Map<String, Flow> flows;
+public class FlowFactory implements InitializingBean, ApplicationContextAware {
+    ClassPathResource  path;
+    Map<String, Flow>  flows;
+    ApplicationContext ctx;
 
 
     public void setPath(String path) {
@@ -29,7 +30,7 @@ public class FlowFactory implements InitializingBean   {
     private void registerFlows() throws Exception {
         File[] files = listFlows();
         for (File file : files) {
-            doRegisterFlow(new XmlFlowReader(file));
+            doRegisterFlow(new XmlFlowReader(ctx, file));
         }
     }
 
@@ -46,5 +47,10 @@ public class FlowFactory implements InitializingBean   {
                 return pathname.getName().endsWith(".xml");
             }
         });
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.ctx = applicationContext;
     }
 }

@@ -4,9 +4,7 @@ import io.ddbm.pc.End;
 import io.ddbm.pc.Flow;
 import io.ddbm.pc.FlowBuilder;
 import io.ddbm.pc.Router;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,15 +16,16 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XmlFlowReader implements ApplicationContextAware {
+public class XmlFlowReader {
     Document           doc;
     FlowBuilder        fb;
     ApplicationContext ctx;
 
 
-    public XmlFlowReader(File file) throws Exception {
+    public XmlFlowReader(ApplicationContext ctx, File file) throws Exception {
         doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
         doc.getDocumentElement().normalize();
+        this.ctx = ctx;
     }
 
     public Flow read() throws Exception {
@@ -87,13 +86,14 @@ public class XmlFlowReader implements ApplicationContextAware {
     private List<CMD> parseCmd(NodeList list) {
         List<CMD> cmds = new ArrayList<>();
         for (int i = 0; i < list.getLength(); i++) {
-            Element node     = (Element) list.item(i);
-            String  name     = node.getAttribute("name");
-            String  action   = node.getAttribute("action");
-            String  to       = node.getAttribute("to");
-            String  failNode = node.getAttribute("failNode");
-            String  router   = node.getAttribute("router");
-            cmds.add(new CMD(name, action, to, failNode, router));
+            if (list.item(i) instanceof Element node) {
+                String name     = node.getAttribute("name");
+                String action   = node.getAttribute("action");
+                String to       = node.getAttribute("to");
+                String failNode = node.getAttribute("failNode");
+                String router   = node.getAttribute("router");
+                cmds.add(new CMD(name, action, to, failNode, router));
+            }
         }
         return cmds;
     }
@@ -133,8 +133,4 @@ public class XmlFlowReader implements ApplicationContextAware {
     }
 
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.ctx = applicationContext;
-    }
 }
