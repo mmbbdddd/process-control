@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<flow >
+<flow name="simple">
     <start name="init">
         <cmd name="push" action="initAction" to="prepay"></cmd>
     </start>

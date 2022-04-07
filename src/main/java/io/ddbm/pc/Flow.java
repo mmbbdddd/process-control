@@ -29,16 +29,16 @@ public class Flow implements ValueObject {
     ContextService                contextService;
     FlowRecordRepository          repository;
 
-    public Flow(String name, ContextService contextService, FlowRecordRepository repository) {
+    public Flow(String name) {
         Assert.notNull(name, "工作流名称为空");
         this.name    = name;
         this.nodes   = new HashMap<>();
         this.routers = new HashMap<>();
-        //外部给缺省实现
-        this.contextService = contextService;
-        this.repository     = repository;
     }
 
+    public String getName() {
+        return name;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {

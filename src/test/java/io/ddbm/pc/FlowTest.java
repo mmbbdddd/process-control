@@ -22,7 +22,7 @@ public class FlowTest {
         LinkedHashMap<String, String> queryRouter = new LinkedHashMap<>();
         payRouter.put("su", "#result[code]  =='0000'");
         payRouter.put("fail", "#result[code]  !='0000'");
-        flow = new FlowBuilder("simple", new MockContextService(), new MockFlowRecordRepository())
+        flow = new FlowBuilder("simple")
                 .addStartNode("init", "initAction", "prepay")
                 .addEndNode(new End("su"))
                 .addEndNode(new End("fail"))
@@ -32,6 +32,7 @@ public class FlowTest {
                 .addRouter("payRouter", payRouter)
                 .addRouter("queryRouter", queryRouter)
                 .build(ctx);
+//        , new MockContextService(), new MockFlowRecordRepository()
     }
 
     @org.junit.Test

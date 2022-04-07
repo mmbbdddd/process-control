@@ -15,8 +15,8 @@ public class FlowBuilder {
     Map<String, NodeBuilder>         nodeBuilders;
     Map<String, Map<String, String>> routerExpressions;
 
-    public FlowBuilder(String name, ContextService ctxService, FlowRecordRepository repository) {
-        flow                   = new Flow(name, ctxService, repository);
+    public FlowBuilder(String name) {
+        flow                   = new Flow(name);
         nodeBuilders           = new HashMap<>();
         this.routerExpressions = new HashMap<>();
     }
