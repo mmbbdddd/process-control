@@ -7,7 +7,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class FlowTest {
     Flow                               flow;
@@ -36,10 +35,15 @@ public class FlowTest {
     }
 
     @org.junit.Test
-    public void start() throws RouterException {
+    public void test() throws RouterException {
         Map<String, Object> args = new HashMap<>();
         args.put("name", "wanglin");
         flow.execute((String) null, null, args);
+    }
+
+    @org.junit.Test
+    public void start() {
+
     }
 
     @org.junit.Test
@@ -48,7 +52,7 @@ public class FlowTest {
     }
 
     @org.junit.Test
-    public void on() {
+    public void horae() {
     }
 
     @org.junit.Test
