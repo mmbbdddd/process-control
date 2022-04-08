@@ -17,4 +17,12 @@ public class BeanConfig {
     Action queryAction(){
         return new MockAction();
     }
+    @Bean
+    MockContextService mockContextService(){
+        return new MockContextService();
+    }
+    @Bean
+    MockFlowRecordRepository mockFlowRecordRepository(){
+        return new MockFlowRecordRepository();
+    }
 }

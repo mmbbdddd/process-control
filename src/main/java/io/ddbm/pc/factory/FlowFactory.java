@@ -10,6 +10,7 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class FlowFactory implements InitializingBean, ApplicationContextAware {
@@ -24,6 +25,7 @@ public class FlowFactory implements InitializingBean, ApplicationContextAware {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        this.flows = new HashMap<>();
         registerFlows();
     }
 

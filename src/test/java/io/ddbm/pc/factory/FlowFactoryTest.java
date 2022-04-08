@@ -23,7 +23,7 @@ public class FlowFactoryTest {
     public void setup() throws Exception {
         ctx.load(new ClassPathResource("s.xml"));
         ctx.refresh();
-        FlowFactory ff = new FlowFactory();
+        FlowFactory ff = ctx.getBean(FlowFactory.class);
         flow = ff.flows.get("simple");
     }
 

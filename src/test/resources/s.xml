@@ -3,7 +3,14 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-   <bean class="io.ddbm.pc.factory.FlowFactory">
-       <property name="path" value="flow"/>
-   </bean>
+    <bean class="io.ddbm.pc.factory.FlowFactory">
+        <property name="path" value="flow"/>
+    </bean>
+
+    <bean id="initAction" class="io.ddbm.pc.MockAction"/>
+    <bean id="payAction" class="io.ddbm.pc.MockAction"/>
+    <bean id="queryAction" class="io.ddbm.pc.MockAction"/>
+
+    <bean id="mockContextService" class="io.ddbm.pc.MockContextService"/>
+    <bean id="mockFlowRecordRepository" class="io.ddbm.pc.MockFlowRecordRepository"/>
 </beans>

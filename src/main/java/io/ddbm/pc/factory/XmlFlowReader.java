@@ -14,6 +14,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class XmlFlowReader {
@@ -34,8 +35,9 @@ public class XmlFlowReader {
     }
 
     private Flow parseFlow(Element flow) throws Exception {
-        String name = flow.getAttribute("name");
-        fb = new FlowBuilder(name);
+        String name           = flow.getAttribute("name");
+        String contextService = flow.getAttribute("context");
+        fb = new FlowBuilder(name, contextService);
         parseFlowChilds(flow.getChildNodes());
         return fb.build(ctx);
     }
@@ -54,7 +56,7 @@ public class XmlFlowReader {
                 case "node":
                     parseNode((Element) node);
                     break;
-                case "router":
+                case "routers":
                     parseRouters((Element) node);
                     break;
             }
@@ -99,13 +101,29 @@ public class XmlFlowReader {
     }
 
     private void parseRouters(Element node) {
+        parseRouter(node.getChildNodes());
     }
 
-    private void parseRouter(Element node) {
+    private void parseRouter(NodeList list) {
+        for (int i = 0; i < list.getLength(); i++) {
+            if (list.item(i).getNodeName().equals("router")) {
+                Element                       node       = (Element) list.item(i);
+                String                        routerName = node.getAttribute("name");
+                NodeList                      items      = node.getChildNodes();
+                LinkedHashMap<String, String> expression = new LinkedHashMap<>();
+                for (int j = 0; j < items.getLength(); j++) {
+                    if (items.item(i).getNodeName().equals("expression")) {
+                        Element expre = (Element) items.item(i);
+                        String  test  = expre.getAttribute("test");
+                        String  to    = expre.getAttribute("to");
+                        expression.put(to, test);
+                    }
+                }
+                fb.addRouter(routerName, expression);
+            }
+        }
     }
 
-    private void parseExpression(Element node) {
-    }
 
     class CMD {
         String name;

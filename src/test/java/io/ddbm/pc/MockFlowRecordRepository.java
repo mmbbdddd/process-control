@@ -25,6 +25,11 @@ public class MockFlowRecordRepository implements FlowRecordRepository {
         return records.get(id);
     }
 
+    @Override
+    public String flowName() {
+        return "simple";
+    }
+
     class MockFlowRecord implements FLowRecord {
         Serializable id;
         String       status = "init";

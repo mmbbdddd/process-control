@@ -22,7 +22,7 @@ public class FlowTest {
         LinkedHashMap<String, String> queryRouter = new LinkedHashMap<>();
         payRouter.put("su", "#result[code]  =='0000'");
         payRouter.put("fail", "#result[code]  !='0000'");
-        flow = new FlowBuilder("simple")
+        flow = new FlowBuilder("simple", "mockContextService")
                 .addStartNode("init", "initAction", "prepay")
                 .addEndNode(new End("su"))
                 .addEndNode(new End("fail"))

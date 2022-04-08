@@ -8,17 +8,18 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class FlowBuilder {
-    Flow                             flow;
-    String                           startNodeName;
-    String                           startNodeAction;
-    String                           startNodeTo;
-    Map<String, NodeBuilder>         nodeBuilders;
-    Map<String, Map<String, String>> routerExpressions;
+    Flow                     flow;
+    String                   contextService;
+    String                   startNodeName;
+    String                   startNodeAction;
+    String                   startNodeTo;
+    Map<String, NodeBuilder> nodeBuilders;
 
-    public FlowBuilder(String name) {
-        flow                   = new Flow(name);
-        nodeBuilders           = new HashMap<>();
-        this.routerExpressions = new HashMap<>();
+    public FlowBuilder(String name, String contextService) {
+        flow                = new Flow(name);
+        this.contextService = contextService;
+        nodeBuilders        = new HashMap<>();
+
     }
 
     public FlowBuilder addStartNode(String nodeName, String actionName, String to) {
@@ -57,9 +58,26 @@ public class FlowBuilder {
             NodeBuilder nb       = entry.getValue();
             flow.addNode(nb.build(ctx, flow));
         }
+        flow.contextService = getContextServiceOfFlow(ctx, contextService);
+        flow.repository     = getFlowRecordRepositoryOfFlow(ctx, flow);
         flow.afterPropertiesSet();
         start.afterPropertiesSet();
         return flow;
+    }
+
+    private FlowRecordRepository getFlowRecordRepositoryOfFlow(ApplicationContext ctx, Flow flow) {
+        for (Map.Entry<String, FlowRecordRepository> entry : ctx.getBeansOfType(FlowRecordRepository.class).entrySet()) {
+            String               key  = entry.getKey();
+            FlowRecordRepository repo = entry.getValue();
+            if (repo.flowName().equals(flow.name)) {
+                return repo;
+            }
+        }
+        throw new RuntimeException("找不到适合流程的FlowRecordRepository");
+    }
+
+    private ContextService getContextServiceOfFlow(ApplicationContext ctx, String flow) {
+        return ctx.getBean(contextService, ContextService.class);
     }
 
 

@@ -9,4 +9,6 @@ public interface FlowRecordRepository {
     FLowRecord get(Serializable id);
 
     FLowRecord newRecord( Map<String, Object> args);
+
+    String flowName();
 }

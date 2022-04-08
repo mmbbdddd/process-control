@@ -31,9 +31,9 @@ public class Flow implements ValueObject {
 
     public Flow(String name) {
         Assert.notNull(name, "工作流名称为空");
-        this.name    = name;
-        this.nodes   = new HashMap<>();
-        this.routers = new HashMap<>();
+        this.name           = name;
+        this.nodes          = new HashMap<>();
+        this.routers        = new HashMap<>();
     }
 
     public String getName() {
