@@ -8,9 +8,11 @@
     </bean>
 
     <bean id="initAction" class="io.ddbm.pc.MockAction"/>
-    <bean id="payAction" class="io.ddbm.pc.MockAction"/>
-    <bean id="queryAction" class="io.ddbm.pc.MockAction"/>
+    <bean id="cancelAction" class="io.ddbm.pc.MockAction"/>
+    <bean id="submitShenPiAction" class="io.ddbm.pc.MockAction"/>
+    <bean id="shenPiQueryAction" class="io.ddbm.pc.MockAction"/>
+    <bean id="passAction" class="io.ddbm.pc.MockAction"/>
+    <bean id="rejectAction" class="io.ddbm.pc.MockAction"/>
 
-    <bean id="mockContextService" class="io.ddbm.pc.MockContextService"/>
-    <bean id="mockFlowRecordRepository" class="io.ddbm.pc.RecordRepo"/>
+    <bean id="applyContextService" class="io.ddbm.pc.MockContextService"/>
 </beans>

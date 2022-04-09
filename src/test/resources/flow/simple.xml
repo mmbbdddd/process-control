@@ -1,28 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<flow name="simple" context="mockContextService">
+<flow name="simple" context="applyContextService">
+    <!--    网申进件落地-->
     <start name="init">
-        <cmd name="push" action="initAction" to="prepay"></cmd>
+        <cmd name="push" action="initAction" to="data-process"></cmd>
     </start>
+    <!--    申请成功-->
     <end name="su"></end>
+    <!--    业务拒绝-->
+    <end name="reject"></end>
+    <!--    非业务拒绝的失败，例如客户取消等-->
     <end name="fail"></end>
-    <end name="cancel"></end>
-    <node name="prepay">
-        <cmd name="push" action="payAction" failNode="unknow" router="payRouter"></cmd>
+    <!--    网申进件处理-->
+    <node name="data-process">
+        <cmd name="push" action="dataProcessAction" router="processRouter"></cmd>
+        <cmd name="cancel" action="cancelAction" to="cancel"></cmd>
     </node>
-    <node name="unknow" pause="true" retry="3">
-        <cmd name="push" action="queryAction" failNode="unknow" router="queryRouter"></cmd>
+    <!--    报送风险-->
+    <node name="shenpi">
+        <cmd name="push" action="submitShenPiAction" failNode="shenpi_query" router="shenpiRouter"></cmd>
+        <cmd name="cancel" action="cancelAction" router="shenpiRouter"></cmd>
+    </node>
+    <!--    报送审批异常&补偿-->
+    <node name="shenpi_query">
+        <cmd name="push" action="shenPiQueryAction" router="shenPiQueryRouter"></cmd>
+    </node>
+    <!--    人工处理-->
+    <node name="rengong">
+        <cmd name="pass" action="passAction" to="su"></cmd>
+        <cmd name="reject" action="rejectAction" to="reject"></cmd>
+        <cmd name="cancel" action="cancelAction" to="fail"></cmd>
     </node>
 
     <routers>
-        <router name="payRouter">
-            <expression test="" to=""></expression>
-            <expression test="" to=""></expression>
-            <expression test="" to=""></expression>
+        <router name="processRouter">
+            <!--            需要补件-->
+            <expression test="#result[status]=='needMore'" to="bujian"></expression>
+            <!--            数据校验完毕，报送审批-->
+            <expression test="#result[status]=='fine'" to="shenpi"></expression>
         </router>
-        <router name="queryRouter">
-            <expression test="" to=""></expression>
-            <expression test="" to=""></expression>
-            <expression test="" to=""></expression>
+        <router name="shenpiRouter">
+            <!--            秒批-->
+            <expression test="#result[status]=='0000'" to="su"></expression>
+            <!--            秒拒-->
+            <expression test="#result[status]=='0010'" to="reject"></expression>
+            <!--            数据处理中-->
+            <expression test="#result[status]=='0001'" to="shenPiQueryRouter"></expression>
+        </router>
+        <router name="shenPiQueryRouter">
+            <!--            通过-->
+            <expression test="#result[status]=='0000'" to="su"></expression>
+            <!--            拒绝-->
+            <expression test="#result[status]=='0010'" to="reject"></expression>
+            <!--            不能确定，走人工-->
+            <expression test="#result[status]=='0009'" to="rengong"></expression>
         </router>
 
     </routers>
