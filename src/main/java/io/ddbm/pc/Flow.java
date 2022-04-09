@@ -57,7 +57,7 @@ public class Flow implements ValueObject {
         _Node       targetNode  = currentNode.execute(this, currentNode, ctx, cmd);
         ctx.postExecute(targetNode);
         contextService.snapshot(ctx);
-        if (!ctx.isRetry()) {
+        if (ctx.isRetry()) {
             return ctx;
         }
         if (null != targetNode && !(targetNode instanceof End)) {
@@ -67,10 +67,10 @@ public class Flow implements ValueObject {
     }
 
     public _Node getNodeOfRequest(FlowRequest request) {
-        if (StringUtils.isEmpty(request.getNodeName())) {
+        if (StringUtils.isEmpty(request.getNode())) {
             return startNode;
         } else {
-            return nodes.get(request.getNodeName());
+            return nodes.get(request.getNode());
         }
     }
 

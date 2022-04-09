@@ -17,8 +17,13 @@ public class RecordRepo {
         }
 
         @Override
-        public String getNodeName() {
+        public String getNode() {
             return status;
+        }
+
+        @Override
+        public void setNode(String name) {
+            this.status = name;
         }
 
         @Override

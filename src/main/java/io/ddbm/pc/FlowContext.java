@@ -60,6 +60,7 @@ public class FlowContext {
         this.lastNode = this.node;
         this.node     = node;
         this.command  = null;
+        this.request.setNode(node.name);
     }
 
     public boolean isRetry() {

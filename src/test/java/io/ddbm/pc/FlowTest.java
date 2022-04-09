@@ -41,6 +41,7 @@ public class FlowTest {
         args.put("name", "wanglin");
         FlowContext ctx = flow.execute(new RecordRepo.MockRecord("1"), "push");
         System.out.println(ctx.node.name);
+        System.out.println(ctx.request.getNode());
     }
 
     @org.junit.Test

@@ -75,7 +75,7 @@ class ExpressionRouter extends Router {
     private Map<String, Object> asMap(FlowContext ctx) {
         Map<String, Object> el = new HashMap<>();
         el.put("data", ctx.getRequest());
-        el.put("id", ctx.getRequest().getNodeName());
+        el.put("id", ctx.getRequest().getNode());
         el.put("flow", ctx.getFlow());
         el.put("node", ctx.getNode());
         el.put("result", ctx.getActionResult());

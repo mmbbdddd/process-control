@@ -4,5 +4,8 @@ import java.io.Serializable;
 
 public interface FlowRequest {
     Serializable getId();
-    String getNodeName();
+
+    String getNode();
+
+    void setNode(String name);
 }
