@@ -52,14 +52,20 @@ public class Flow implements ValueObject {
     public FlowContext execute(FlowRequest request, String cmd) throws RouterException {
         Assert.notNull(request, "FlowRequest is null");
         Assert.notNull(cmd, "CMD is null");
+//        获取当前数据节点
         _Node       currentNode = getNodeOfRequest(request);
+//        构建上下文
         FlowContext ctx         = FlowContext.of(request);
         _Node       targetNode  = currentNode.execute(this, currentNode, ctx, cmd);
+//        获取下一个节点
         ctx.postExecute(targetNode);
+//        更新上下文
         contextService.snapshot(ctx);
+//        判断是否重复执行
         if (ctx.isRetry()) {
             return ctx;
         }
+//        继续执行下一个节点
         if (null != targetNode && !(targetNode instanceof End)) {
             execute(request, cmd);
         }
