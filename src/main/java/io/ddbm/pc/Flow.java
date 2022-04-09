@@ -49,16 +49,21 @@ public class Flow implements ValueObject {
         Assert.notNull(startNode, "开始节点为空");
     }
 
-    public void execute(FlowRequest request, String cmd) throws RouterException {
+    public FlowContext execute(FlowRequest request, String cmd) throws RouterException {
         Assert.notNull(request, "FlowRequest is null");
         Assert.notNull(cmd, "CMD is null");
         _Node       currentNode = getNodeOfRequest(request);
         FlowContext ctx         = FlowContext.of(request);
         _Node       targetNode  = currentNode.execute(this, currentNode, ctx, cmd);
+        ctx.postExecute(targetNode);
         contextService.snapshot(ctx);
-        if (null != targetNode && !(targetNode instanceof End) && !ctx.isRetry()) {
+        if (!ctx.isRetry()) {
+            return ctx;
+        }
+        if (null != targetNode && !(targetNode instanceof End)) {
             execute(request, cmd);
         }
+        return ctx;
     }
 
     public _Node getNodeOfRequest(FlowRequest request) {

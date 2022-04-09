@@ -39,7 +39,8 @@ public class FlowTest {
     public void test() throws RouterException {
         Map<String, Object> args = new HashMap<>();
         args.put("name", "wanglin");
-        flow.execute(new RecordRepo.MockRecord("1"), "push");
+        FlowContext ctx = flow.execute(new RecordRepo.MockRecord("1"), "push");
+        System.out.println(ctx.node.name);
     }
 
     @org.junit.Test

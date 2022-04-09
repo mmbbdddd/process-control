@@ -43,7 +43,6 @@ public abstract class _Node implements ValueObject {
         Command command = getCmd(cmd);
         ctx.preExecute(flow, node, command);
         _Node targetNode = command.execute(ctx);
-        ctx.postExecute(node);
         return targetNode;
 
     }
