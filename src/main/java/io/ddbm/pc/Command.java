@@ -42,7 +42,7 @@ public  class Command implements ValueObject {
             return targetNode;
         } finally {
             if (null != targetNode) {
-                logger.info("工作流{}记录{}状态变迁 {}=>{}", ctx.flow.name, ctx.getId(), ctx.getNode().name, targetNode.name);
+                logger.info("工作流{}记录{}状态变迁 {}=>{}", ctx.flow.name, ctx.getRequest().getId(), ctx.getNode().name, targetNode.name);
             }
         }
     }

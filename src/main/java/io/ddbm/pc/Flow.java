@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -27,13 +26,12 @@ public class Flow implements ValueObject {
     _Node                         startNode;
     //    流程数据的持久化接口，需要用户实现
     ContextService                contextService;
-    FlowRecordRepository          repository;
 
     public Flow(String name) {
         Assert.notNull(name, "工作流名称为空");
-        this.name           = name;
-        this.nodes          = new HashMap<>();
-        this.routers        = new HashMap<>();
+        this.name    = name;
+        this.nodes   = new HashMap<>();
+        this.routers = new HashMap<>();
     }
 
     public String getName() {
@@ -51,45 +49,30 @@ public class Flow implements ValueObject {
         Assert.notNull(startNode, "开始节点为空");
     }
 
-
-    public void execute(String cmd, Serializable id, Map<String, Object> args) throws RouterException {
-        logger.info("工作流{}记录{}收到请求{},{}", name, id, cmd, args);
-        if (StringUtils.isEmpty(cmd)) {
-            cmd = DEFAULT_COMMAND;
-        }
-        FLowRecord  record      = null;
-        FlowContext ctx         = null;
-        _Node       currentNode = null;
-        if (null == id) {
-//            开始节点流程
-            record = repository.newRecord(args);
-            id     = record.getId();
-            logger.info("工作流{}创建记录{},{},{}", name, id, cmd, args);
-            currentNode = startNode;
-        } else {
-//            非开始节点流程
-            record = repository.get(id);
-            logger.info("工作流{}记录{}查询数据{},{} ", name, id, cmd, record);
-            String nodeName = record.translateStatusToNode();
-            currentNode = getNode(nodeName);
-        }
-        ctx = FlowContext.of(id, record, cmd, args, this, currentNode);
-        execute(cmd, currentNode, ctx);
-
-    }
-
-    public void execute(String cmd, _Node currentNode, FlowContext ctx) throws RouterException {
-        _Node targetNode = currentNode.execute(cmd, ctx);
+    public void execute(FlowRequest request, String cmd) throws RouterException {
+        Assert.notNull(request, "FlowRequest is null");
+        Assert.notNull(cmd, "CMD is null");
+        _Node       currentNode = getNodeOfRequest(request);
+        FlowContext ctx         = FlowContext.of(request);
+        _Node       targetNode  = currentNode.execute(this, currentNode, ctx, cmd);
         contextService.snapshot(ctx);
         if (null != targetNode && !(targetNode instanceof End) && !ctx.isRetry()) {
-            execute(cmd, targetNode, ctx);
+            execute(request, cmd);
         }
     }
 
-
-    public _Node getNode(String node) {
-        return nodes.get(node);
+    public _Node getNodeOfRequest(FlowRequest request) {
+        if (StringUtils.isEmpty(request.getNodeName())) {
+            return startNode;
+        } else {
+            return nodes.get(request.getNodeName());
+        }
     }
+
+    public _Node getNode(String nodeName) {
+        return nodes.get(nodeName);
+    }
+
 
     public void addNode(_Node node) {
         node.setFlow(this);

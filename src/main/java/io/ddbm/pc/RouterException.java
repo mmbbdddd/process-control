@@ -14,18 +14,18 @@ public class RouterException extends Exception {
     }
 
     public RouterException(String message, FlowContext ctx, Exception e) {
-        super(message + " for :" + ctx.id + "," + ctx.flow.name + "," + ctx.node.name + "," + ctx.cmd, e);
-        this.id   = ctx.id;
+        super(message + " for :" + ctx.getRequest().getId() + "," + ctx.flow.name + "," + ctx.node.name + "," + ctx.command.cmd, e);
+        this.id   = ctx.getRequest().getId();
         this.flow = ctx.flow.name;
         this.node = ctx.node.name;
-        this.cmd  = ctx.cmd;
+        this.cmd  = ctx.command.cmd;
     }
 
     public RouterException(String message, FlowContext ctx) {
-        super(message + " for :" + ctx.id + "," + ctx.flow.name + "," + ctx.node.name + "," + ctx.cmd);
-        this.id   = ctx.id;
+        super(message + " for :" + ctx.getRequest().getId() + "," + ctx.flow.name + "," + ctx.node.name + "," + ctx.command.cmd);
+        this.id   = ctx.getRequest().getId();
         this.flow = ctx.flow.name;
         this.node = ctx.node.name;
-        this.cmd  = ctx.cmd;
+        this.cmd  = ctx.command.cmd;
     }
 }

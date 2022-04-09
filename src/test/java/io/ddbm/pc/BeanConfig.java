@@ -22,7 +22,7 @@ public class BeanConfig {
         return new MockContextService();
     }
     @Bean
-    MockFlowRecordRepository mockFlowRecordRepository(){
-        return new MockFlowRecordRepository();
+    RecordRepo mockFlowRecordRepository(){
+        return new RecordRepo();
     }
 }

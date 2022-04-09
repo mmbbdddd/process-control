@@ -3,7 +3,6 @@ package io.ddbm.pc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,16 +38,14 @@ public abstract class _Node implements ValueObject {
      * @param ctx
      * @return
      */
-    public _Node execute(String cmd, FlowContext ctx) throws RouterException {
-        Assert.notNull(cmds.get(cmd), "流程节点" + ctx.getFlow().name + "." + name + "不支持指令" + cmd);
-        Command command    = getCmd(ctx.cmd);
-        _Node   targetNode = null;
-        try {
-            targetNode = command.execute(ctx);
-            return targetNode;
-        } finally {
-            ctx.refresh(targetNode, command);
-        }
+    public _Node execute(Flow flow, _Node node, FlowContext ctx, String cmd) throws RouterException {
+        Assert.notNull(cmds.get(cmd), "流程节点" + flow.name + "." + name + "不支持指令" + cmd);
+        Command command = getCmd(cmd);
+        ctx.preExecute(flow, node, command);
+        _Node targetNode = command.execute(ctx);
+        ctx.postExecute(node);
+        return targetNode;
+
     }
 
     private Command getCmd(String cmd) {

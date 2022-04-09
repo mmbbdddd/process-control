@@ -55,4 +55,8 @@ public class FlowFactory implements InitializingBean, ApplicationContextAware {
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.ctx = applicationContext;
     }
+
+    public Flow get(String name) {
+        return flows.get(name);
+    }
 }

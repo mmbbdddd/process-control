@@ -12,5 +12,5 @@
     <bean id="queryAction" class="io.ddbm.pc.MockAction"/>
 
     <bean id="mockContextService" class="io.ddbm.pc.MockContextService"/>
-    <bean id="mockFlowRecordRepository" class="io.ddbm.pc.MockFlowRecordRepository"/>
+    <bean id="mockFlowRecordRepository" class="io.ddbm.pc.RecordRepo"/>
 </beans>

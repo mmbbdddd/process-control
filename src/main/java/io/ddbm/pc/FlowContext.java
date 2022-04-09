@@ -1,63 +1,30 @@
 package io.ddbm.pc;
 
-import org.springframework.util.Assert;
-
-import java.io.Serializable;
-import java.util.Map;
-
 public class FlowContext {
     //    当前工作流数据
-    Serializable        id;
-    FLowRecord          record;
-    //    指令
-    String              cmd;
-    //    入参
-    Map<String, Object> args;
-    Flow                flow;
-    _Node               node;
-    _Node               lastNode;
+    FlowRequest request;
+    Flow        flow;
+    _Node       node;
+    _Node       lastNode;
     //    当前变迁
-    Command             command;
+    Command     command;
     //    变迁异常
-    Exception           actionException;
-    Object              actionResult;
+    Exception   actionException;
+    Object      actionResult;
 
-    public static FlowContext of(Serializable id, FLowRecord record, String cmd, Map<String, Object> args, Flow flow, _Node node) {
-        Assert.notNull(id, "上下文ID为空");
-        Assert.notNull(record, "上下文Record为空");
-        Assert.notNull(cmd, "上下文Comand为空");
-        Assert.notNull(node, "上下文Node为空");
+    public static FlowContext of(FlowRequest request) {
         FlowContext ctx = new FlowContext();
-        ctx.id     = id;
-        ctx.record = record;
-        ctx.cmd    = cmd;
-        ctx.args   = args;
-        ctx.flow   = flow;
-        ctx.node   = node;
+        ctx.request = request;
         return ctx;
     }
+
 
     public _Node getNode() {
         return node;
     }
 
-    public FLowRecord getRecord() {
-        return record;
-    }
-
-
-    public String getCmd() {
-        return cmd;
-    }
-
-
-    public Map<String, Object> getArgs() {
-        return args;
-    }
-
-
-    public Serializable getId() {
-        return id;
+    public FlowRequest getRequest() {
+        return request;
     }
 
 
@@ -83,10 +50,17 @@ public class FlowContext {
     }
 
 
-    public void refresh(_Node currentNode, Command command) {
+    public void preExecute(Flow flow, _Node currentNode, Command command) {
+        this.flow     = flow;
         this.lastNode = node;
         this.node     = currentNode;
         this.command  = command;
+    }
+
+    public void postExecute(_Node node) {
+        this.lastNode = node;
+        this.node     = node;
+        this.command  = null;
     }
 
     public boolean isRetry() {
@@ -105,4 +79,6 @@ public class FlowContext {
     public void setActionResult(Object actionResult) {
         this.actionResult = actionResult;
     }
+
+
 }
