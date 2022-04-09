@@ -41,7 +41,7 @@ public abstract class _Node implements ValueObject {
     public _Node execute(Flow flow, _Node node, FlowContext ctx, String cmd) throws RouterException {
         Assert.notNull(cmds.get(cmd), "流程节点" + flow.name + "." + name + "不支持指令" + cmd);
         Command command = getCmd(cmd);
-        ctx.preExecute(flow, node, command);
+        ctx.actionPre(flow, node, command);
         _Node targetNode = command.execute(ctx);
         return targetNode;
 

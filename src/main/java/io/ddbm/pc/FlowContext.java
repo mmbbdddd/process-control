@@ -50,13 +50,13 @@ public class FlowContext {
     }
 
 
-    public void preExecute(Flow flow, _Node node, Command command) {
-        this.flow     = flow;
-        this.node     = node;
-        this.command  = command;
+    public void actionPre(Flow flow, _Node node, Command command) {
+        this.flow    = flow;
+        this.node    = node;
+        this.command = command;
     }
 
-    public void postExecute(_Node node) {
+    public void actionPost(_Node node) {
         this.lastNode = this.node;
         this.node     = node;
         this.command  = null;

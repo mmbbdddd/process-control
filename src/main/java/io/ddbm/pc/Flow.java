@@ -58,7 +58,7 @@ public class Flow implements ValueObject {
         FlowContext ctx         = FlowContext.of(request);
         _Node       targetNode  = currentNode.execute(this, currentNode, ctx, cmd);
 //        获取下一个节点
-        ctx.postExecute(targetNode);
+        ctx.actionPost(targetNode);
 //        更新上下文
         contextService.snapshot(ctx);
 //        判断是否重复执行

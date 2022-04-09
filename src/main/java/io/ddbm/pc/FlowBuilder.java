@@ -90,9 +90,9 @@ public class FlowBuilder {
 //            getOrNewCommandBuilder(cmd,actionName,type,router,failNode);
             if (!cmdBuilders.containsKey(cmd)) {
                 if (type == Router.Type.NAME) {
-                    cmdBuilders.put(nodeName, CommandBuilder.direcTo(cmd, actionName, router, failNode));
+                    cmdBuilders.put(cmd, CommandBuilder.direcTo(cmd, actionName, router, failNode));
                 } else {
-                    cmdBuilders.put(nodeName, CommandBuilder.expression(cmd, actionName, router, failNode));
+                    cmdBuilders.put(cmd, CommandBuilder.expression(cmd, actionName, router, failNode));
                 }
             }
         }

@@ -13,6 +13,7 @@
     <bean id="shenPiQueryAction" class="io.ddbm.pc.MockAction"/>
     <bean id="passAction" class="io.ddbm.pc.MockAction"/>
     <bean id="rejectAction" class="io.ddbm.pc.MockAction"/>
+    <bean id="dataProcessAction" class="io.ddbm.pc.MockAction"/>
 
     <bean id="applyContextService" class="io.ddbm.pc.MockContextService"/>
 </beans>
