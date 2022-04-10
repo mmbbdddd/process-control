@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
-public  class Command implements ValueObject {
+public class Command implements ValueObject {
     Logger logger = LoggerFactory.getLogger(getClass());
     String cmd;
     Action action;
@@ -26,23 +26,21 @@ public  class Command implements ValueObject {
     }
 
 
-    public _Node execute(FlowContext ctx) throws RouterException {
-        _Node targetNode = null;
+    public void execute(FlowContext ctx) throws RouterException {
         ctx.clearActionContext();
         try {
             ctx.setCommand(this);
             action.execute(ctx);
-            ctx.setActionException(null);
-            targetNode = router.routeTo(ctx);
-            return targetNode;
+            ctx.setTargetNode(router.routeTo(ctx));
+        } catch (RouterException e) {
+            ctx.onException(e);
+            ctx.setTargetNode(onFail(ctx,e));
         } catch (Exception e) {
-//            e.printStackTrace();
-            ctx.setActionException(e);
-            targetNode = ctx.getNode().onFail(ctx, e);
-            return targetNode;
+            ctx.onException(new ActionException(action, e));
+            ctx.setTargetNode(onFail(ctx, e));
         } finally {
-            if (null != targetNode) {
-                logger.info("工作流{}记录{}状态变迁 {}=>{}", ctx.flow.name, ctx.getRequest().getId(), ctx.getNode().name, targetNode.name);
+            if (null != ctx.targetNode) {
+                logger.info("工作流{}记录{}状态变迁 {}=>{}", ctx.flow.name, ctx.getRequest().getId(), ctx.getNode().name, ctx.targetNode.name);
             }
         }
     }
@@ -50,7 +48,6 @@ public  class Command implements ValueObject {
     public _Node onFail(FlowContext ctx, Exception e) {
         //如果failNode定义，丢到failNode
 //        如果failNode未定义，当前节点
-
         return ctx.flow.getNode(failNode);
     }
 

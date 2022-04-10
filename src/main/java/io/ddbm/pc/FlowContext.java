@@ -4,8 +4,9 @@ public class FlowContext {
     //    当前工作流数据
     FlowRequest request;
     Flow        flow;
-    _Node       node;
     _Node       lastNode;
+    _Node       node;
+    _Node       targetNode;
     //    当前变迁
     Command     command;
     //    变迁异常
@@ -45,7 +46,7 @@ public class FlowContext {
         return actionException;
     }
 
-    public void setActionException(Exception actionException) {
+    public void onException(Exception actionException) {
         this.actionException = actionException;
     }
 
@@ -56,10 +57,11 @@ public class FlowContext {
         this.command = command;
     }
 
-    public void actionPost(_Node node) {
-        this.lastNode = this.node;
-        this.node     = node;
-        this.command  = null;
+    public void actionPost() {
+        this.lastNode   = this.node;
+        this.node       = this.targetNode;
+        this.targetNode = null;
+        this.command    = null;
         this.request.setNode(node.name);
     }
 
@@ -81,4 +83,11 @@ public class FlowContext {
     }
 
 
+    public FlowResponse asResponse() {
+        return new FlowResponse(request.getId(),request,node.name);
+    }
+
+    public void setTargetNode(_Node targetNode) {
+        this.targetNode = targetNode;
+    }
 }

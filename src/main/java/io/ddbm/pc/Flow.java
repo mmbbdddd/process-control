@@ -49,33 +49,36 @@ public class Flow implements ValueObject {
         Assert.notNull(startNode, "开始节点为空");
     }
 
-    public FlowContext execute(FlowRequest request, String cmd) throws RouterException {
+    public FlowResponse execute(FlowRequest request, String cmd) throws RouterException {
         Assert.notNull(request, "FlowRequest is null");
         Assert.notNull(cmd, "CMD is null");
+        FlowContext ctx = FlowContext.of(request);
+        try {
 //        获取当前数据节点
-        _Node       currentNode = getNodeOfRequest(request);
+            _Node node = nodeOfRequest(request);
 //        构建上下文
-        FlowContext ctx         = FlowContext.of(request);
-        _Node       targetNode  = currentNode.execute(this, currentNode, ctx, cmd);
-//        获取下一个节点
-        ctx.actionPost(targetNode);
+            node.execute(ctx, cmd);
 //        更新上下文
-        contextService.snapshot(ctx);
+            contextService.snapshot(ctx);
 //        判断是否重复执行
-        if (ctx.isRetry()) {
-            return ctx;
-        }
+            if (ctx.isRetry()) {
+                return FlowResponse.error();
+            }
 //        继续执行下一个节点
-        if (null != targetNode && !(targetNode instanceof End)) {
-            execute(request, cmd);
+            if (null != ctx.targetNode && !(ctx.targetNode instanceof End)) {
+                execute(request, cmd);
+            }
+            return ctx.asResponse();
+        } catch (RouterException e) {
+            throw e;
         }
-        return ctx;
     }
 
-    public _Node getNodeOfRequest(FlowRequest request) {
+    public _Node nodeOfRequest(FlowRequest request) {
         if (StringUtils.isEmpty(request.getNode())) {
             return startNode;
         } else {
+            Assert.isTrue(nodes.containsKey(request.getNode()), "状态无定义" + request.getNode());
             return nodes.get(request.getNode());
         }
     }

@@ -7,12 +7,6 @@ public class End extends _Node {
         super(name);
     }
 
-    @Override
-    public _Node onFail(FlowContext ctx, Exception e) throws RouterException {
-        //TODO log
-        return this;
-    }
-
 
     @Override
     public void afterPropertiesSet() {

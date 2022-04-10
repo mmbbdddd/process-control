@@ -12,12 +12,6 @@ public class Start extends _Node {
 
 
     @Override
-    public _Node onFail(FlowContext ctx, Exception e) throws RouterException {
-        throw new RuntimeException(e);
-    }
-
-
-    @Override
     public void afterPropertiesSet() {
         Assert.notNull(name);
     }

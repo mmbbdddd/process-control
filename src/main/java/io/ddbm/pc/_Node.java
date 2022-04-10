@@ -38,30 +38,18 @@ public abstract class _Node implements ValueObject {
      * @param ctx
      * @return
      */
-    public _Node execute(Flow flow, _Node node, FlowContext ctx, String cmd) throws RouterException {
+    public void execute(FlowContext ctx, String cmd) throws RouterException {
         Assert.notNull(cmds.get(cmd), "流程节点" + flow.name + "." + name + "不支持指令" + cmd);
         Command command = getCmd(cmd);
-        ctx.actionPre(flow, node, command);
-        _Node targetNode = command.execute(ctx);
-        return targetNode;
-
+        ctx.actionPre(flow, this, command);
+        command.execute(ctx);
+        ctx.actionPost();
     }
 
     private Command getCmd(String cmd) {
         return cmds.get(cmd);
     }
 
-
-    /**
-     * //    节点容错策略
-     * //    开始节点(action)直接返回错误
-     * //    结束节点（没有action)，不会出错，如果出错，就打印
-     * //    任务节点
-     *
-     * @param ctx
-     * @param e
-     */
-    public abstract _Node onFail(FlowContext ctx, Exception e) throws RouterException;
 
     public void setFlow(Flow flow) {
         this.flow = flow;
