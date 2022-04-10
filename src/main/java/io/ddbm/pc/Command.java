@@ -16,21 +16,23 @@ public class Command implements ValueObject {
     _Node  node;
 
 
-    public Command(String cmd, Router router) {
+    public Command(String cmd, Router router, String failNode) {
         Assert.notNull(cmd);
         Assert.notNull(router);
-        this.cmd    = cmd;
-        this.action = Action.empty();
-        this.router = router;
+        this.cmd      = cmd;
+        this.action   = Action.empty();
+        this.router   = router;
+        this.failNode = failNode;
     }
 
-    public Command(String cmd, Action action, ExpressionRouter router) {
+    public Command(String cmd, Action action, ExpressionRouter router, String failNode) {
         Assert.notNull(cmd);
         Assert.notNull(action);
         Assert.notNull(router);
-        this.cmd    = cmd;
-        this.action = action;
-        this.router = router;
+        this.cmd      = cmd;
+        this.action   = action;
+        this.router   = router;
+        this.failNode = failNode;
     }
 
 
@@ -71,7 +73,7 @@ public class Command implements ValueObject {
     public void setNode(_Node node) {
         this.node = node;
         if (StringUtils.isEmpty(failNode)) {
-            this.failNode = node.name;
+            this.failNode = this.node.name;
         }
     }
 

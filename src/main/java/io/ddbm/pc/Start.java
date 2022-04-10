@@ -5,7 +5,7 @@ import org.springframework.util.Assert;
 public class Start extends _Node {
     public Start(String name, NameRouter router) {
         super(name);
-        Command cmd = new Command(Flow.DEFAULT_COMMAND, router);
+        Command cmd = new Command(Flow.DEFAULT_COMMAND, router, name);
         cmd.setNode(this);
         this.cmds.put(Flow.DEFAULT_COMMAND, cmd);
     }

@@ -139,12 +139,12 @@ public class FlowBuilder {
 
         public Command build(ApplicationContext ctx, _Node node) throws Exception {
             if (type.equals(Router.Type.NAME)) {
-                Command command = new Command(cmd, new NameRouter(router));
+                Command command = new Command(cmd, new NameRouter(router),failNode);
                 command.setNode(node);
                 command.afterPropertiesSet();
                 return command;
             } else {
-                Command command = new Command(cmd, ctx.getBean(actionName, Action.class), node.flow.getRouter(router));
+                Command command = new Command(cmd, ctx.getBean(actionName, Action.class), node.flow.getRouter(router),failNode);
                 command.setNode(node);
                 command.afterPropertiesSet();
                 return command;
