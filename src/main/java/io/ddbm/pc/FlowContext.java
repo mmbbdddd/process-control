@@ -10,7 +10,7 @@ public class FlowContext {
     //    当前变迁
     Command     command;
     //    变迁异常
-    Exception   actionException;
+    Exception   exception;
     Object      actionResult;
 
     public static FlowContext of(FlowRequest request) {
@@ -19,37 +19,9 @@ public class FlowContext {
         return ctx;
     }
 
-
-    public _Node getNode() {
-        return node;
-    }
-
-    public FlowRequest getRequest() {
-        return request;
-    }
-
-
-    public Flow getFlow() {
-        return flow;
-    }
-
-
-    public Command getCommand() {
-        return command;
-    }
-
-    public void setCommand(Command command) {
-        this.command = command;
-    }
-
-    public Exception getActionException() {
-        return actionException;
-    }
-
     public void onException(Exception actionException) {
-        this.actionException = actionException;
+        this.exception = actionException;
     }
-
 
     public void actionPre(Flow flow, _Node node, Command command) {
         this.flow    = flow;
@@ -70,24 +42,47 @@ public class FlowContext {
     }
 
     void clearActionContext() {
-        this.actionResult    = null;
-        this.actionException = null;
+        this.actionResult = null;
+        this.exception    = null;
+    }
+
+    public FlowResponse asResponse() {
+        return new FlowResponse(request.getId(), request, node.name);
+    }
+
+    public void setCommand(Command command) {
+        this.command = command;
+    }
+
+    public void setTargetNode(_Node node) {
+        this.targetNode = node;
+    }
+
+    public FlowRequest getRequest() {
+        return request;
+    }
+
+    public _Node getNode() {
+        return node;
+    }
+
+    public _Node getTargetNode() {
+        return targetNode;
+    }
+
+    public Flow getFlow() {
+        return flow;
+    }
+
+    public Exception getException() {
+        return exception;
+    }
+
+    public void setActionResult(Object result) {
+        this.actionResult = result;
     }
 
     public Object getActionResult() {
-        return actionResult;
-    }
-
-    public void setActionResult(Object actionResult) {
-        this.actionResult = actionResult;
-    }
-
-
-    public FlowResponse asResponse() {
-        return new FlowResponse(request.getId(),request,node.name);
-    }
-
-    public void setTargetNode(_Node targetNode) {
-        this.targetNode = targetNode;
+        return actionResult == null ? true : actionResult;
     }
 }

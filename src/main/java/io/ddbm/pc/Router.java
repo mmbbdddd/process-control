@@ -78,8 +78,8 @@ class ExpressionRouter extends Router {
         el.put("id", ctx.getRequest().getNode());
         el.put("flow", ctx.getFlow());
         el.put("node", ctx.getNode());
+        el.put("error", ctx.getException());
         el.put("result", ctx.getActionResult());
-        el.put("error", ctx.getActionException());
         //设置action的结果  TODO
         return el;
     }

@@ -26,7 +26,7 @@ public class Command implements ValueObject {
     }
 
 
-    public void execute(FlowContext ctx) throws RouterException {
+    public void execute(FlowContext ctx) {
         ctx.clearActionContext();
         try {
             ctx.setCommand(this);
@@ -34,7 +34,7 @@ public class Command implements ValueObject {
             ctx.setTargetNode(router.routeTo(ctx));
         } catch (RouterException e) {
             ctx.onException(e);
-            ctx.setTargetNode(onFail(ctx,e));
+            ctx.setTargetNode(onFail(ctx, e));
         } catch (Exception e) {
             ctx.onException(new ActionException(action, e));
             ctx.setTargetNode(onFail(ctx, e));
