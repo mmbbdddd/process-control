@@ -43,7 +43,7 @@ public abstract class _Node implements ValueObject {
         Command command = getCmd(cmd);
         ctx.actionPre(flow, this, command);
         command.execute(ctx);
-        ctx.actionPost();
+
     }
 
     private Command getCmd(String cmd) {

@@ -30,12 +30,15 @@ public class Command implements ValueObject {
         ctx.clearActionContext();
         try {
             ctx.setCommand(this);
-            action.execute(ctx);
+            Object actionResult = action.execute(ctx);
+            ctx.setActionResult(actionResult);
             ctx.setTargetNode(router.routeTo(ctx));
         } catch (RouterException e) {
+            logger.info("router异常", e);
             ctx.onException(e);
             ctx.setTargetNode(onFail(ctx, e));
         } catch (Exception e) {
+            logger.info("action异常", e);
             ctx.onException(new ActionException(action, e));
             ctx.setTargetNode(onFail(ctx, e));
         } finally {

@@ -112,8 +112,8 @@ public class XmlFlowReader {
                 NodeList                      items      = node.getChildNodes();
                 LinkedHashMap<String, String> expression = new LinkedHashMap<>();
                 for (int j = 0; j < items.getLength(); j++) {
-                    if (items.item(i).getNodeName().equals("expression")) {
-                        Element expre = (Element) items.item(i);
+                    if (items.item(j).getNodeName().equals("expression")) {
+                        Element expre = (Element) items.item(j);
                         String  test  = expre.getAttribute("test");
                         String  to    = expre.getAttribute("to");
                         expression.put(to, test);

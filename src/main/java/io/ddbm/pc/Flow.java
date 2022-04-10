@@ -60,6 +60,7 @@ public class Flow implements ValueObject {
             node.execute(ctx, cmd);
 //        更新上下文
             contextService.snapshot(ctx);
+            ctx.resetRequestStatus();
 //        判断是否重复执行
             if (ctx.isRetry()) {
                 return FlowResponse.error();

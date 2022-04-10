@@ -16,9 +16,18 @@ public class SpelUtilsTest {
         String             expression = "#result[code]=='0000'";
         Map<String,Object> args       = new HashMap<>();
         Map<String,Object> result       = new HashMap<>();
-        result.put("code","0001");
+        result.put("code","0000");
         args.put("result",result);
-        Assert.isTrue(!(Boolean) SpelUtils.eval(expression,args),"");
+        Assert.isTrue((Boolean) SpelUtils.eval(expression,args),"");
+    }
+    @Test
+    public void evale() throws RouterException {
+        String             expression = "#result[stat]=='0000'";
+        Map<String,Object> args       = new HashMap<>();
+        Map<String,Object> result       = new HashMap<>();
+        result.put("code","0000");
+        args.put("result",result);
+        Assert.isTrue((Boolean) SpelUtils.eval(expression,args),"");
     }
 
 }

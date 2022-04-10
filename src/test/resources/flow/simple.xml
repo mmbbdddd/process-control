@@ -34,25 +34,25 @@
     <routers>
         <router name="processRouter">
             <!--            需要补件-->
-            <expression test="#result[status]=='needMore'" to="bujian"></expression>
+            <expression test="#result[code]=='needMore'" to="bujian"></expression>
             <!--            数据校验完毕，报送审批-->
-            <expression test="#result[status]=='fine'" to="shenpi"></expression>
+            <expression test="#result[code]=='0000'" to="shenpi"></expression>
         </router>
         <router name="shenpiRouter">
             <!--            秒批-->
-            <expression test="#result[status]=='0000'" to="su"></expression>
+            <expression test="#result[code]=='0000'" to="su"></expression>
             <!--            秒拒-->
-            <expression test="#result[status]=='0010'" to="reject"></expression>
+            <expression test="#result[code]=='0010'" to="reject"></expression>
             <!--            数据处理中-->
-            <expression test="#result[status]=='0001'" to="shenPiQueryRouter"></expression>
+            <expression test="#result[code]=='0001'" to="shenPiQueryRouter"></expression>
         </router>
         <router name="shenPiQueryRouter">
             <!--            通过-->
-            <expression test="#result[status]=='0000'" to="su"></expression>
+            <expression test="#result[code]=='0000'" to="su"></expression>
             <!--            拒绝-->
-            <expression test="#result[status]=='0010'" to="reject"></expression>
+            <expression test="#result[code]=='0010'" to="reject"></expression>
             <!--            不能确定，走人工-->
-            <expression test="#result[status]=='0009'" to="rengong"></expression>
+            <expression test="#result[code]=='0009'" to="rengong"></expression>
         </router>
 
     </routers>

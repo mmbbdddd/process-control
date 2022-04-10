@@ -64,7 +64,6 @@ class ExpressionRouter extends Router {
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
                 throw new RouterException("路由表达式执行错误", ctx, e);
             }
         }

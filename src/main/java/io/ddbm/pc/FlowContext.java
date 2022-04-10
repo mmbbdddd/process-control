@@ -4,7 +4,6 @@ public class FlowContext {
     //    当前工作流数据
     FlowRequest request;
     Flow        flow;
-    _Node       lastNode;
     _Node       node;
     _Node       targetNode;
     //    当前变迁
@@ -29,16 +28,8 @@ public class FlowContext {
         this.command = command;
     }
 
-    public void actionPost() {
-        this.lastNode   = this.node;
-        this.node       = this.targetNode;
-        this.targetNode = null;
-        this.command    = null;
-        this.request.setNode(node.name);
-    }
-
     public boolean isRetry() {
-        return node.equals(lastNode);
+        return node.equals(targetNode);
     }
 
     void clearActionContext() {
@@ -48,11 +39,11 @@ public class FlowContext {
 
     public FlowResponse asResponse() throws Exception {
         if (exception != null) {
-            if(exception instanceof ActionException  ae){
+            if (exception instanceof ActionException ae) {
                 throw ae.getTarget();
-            }else if(exception instanceof RouterException  re){
+            } else if (exception instanceof RouterException re) {
                 throw re;
-            }else{
+            } else {
                 throw exception;
             }
         } else {
@@ -94,5 +85,9 @@ public class FlowContext {
 
     public Object getActionResult() {
         return actionResult == null ? true : actionResult;
+    }
+
+    public void resetRequestStatus() {
+        this.request.setNode(targetNode.name);
     }
 }

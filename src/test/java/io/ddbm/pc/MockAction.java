@@ -5,10 +5,10 @@ import java.util.Map;
 
 public class MockAction implements Action {
     @Override
-    public void execute(FlowContext ctx) throws Exception {
+    public Object execute(FlowContext ctx) throws Exception {
         Map<String, Object> result = new HashMap<>();
         result.put("code", "0000");
-        ctx.setActionResult(result);
+        return result;
     }
 
 }
