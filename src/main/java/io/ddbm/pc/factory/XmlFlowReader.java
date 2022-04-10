@@ -78,7 +78,6 @@ public class XmlFlowReader {
 
     private void parseNode(Element node) {
         String    name  = node.getAttribute("name");
-        String    retry = node.getAttribute("retry");
         List<CMD> cmds  = parseCmd(node.getChildNodes());
         for (CMD cmd : cmds) {
             fb.onCmd(name, cmd.name, cmd.action, cmd.getRouterType(), cmd.router, cmd.failNode);

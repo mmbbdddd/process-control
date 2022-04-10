@@ -16,7 +16,15 @@ public class Command implements ValueObject {
     _Node  node;
 
 
-    public Command(String cmd, Action action, Router router) {
+    public Command(String cmd, Router router) {
+        Assert.notNull(cmd);
+        Assert.notNull(router);
+        this.cmd    = cmd;
+        this.action = Action.empty();
+        this.router = router;
+    }
+
+    public Command(String cmd, Action action, ExpressionRouter router) {
         Assert.notNull(cmd);
         Assert.notNull(action);
         Assert.notNull(router);

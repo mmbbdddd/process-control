@@ -2,6 +2,7 @@ package io.ddbm.pc;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -50,7 +51,7 @@ public class FlowBuilder {
         Assert.notNull(startNodeName, "startNode name is null");
         Assert.notNull(startNodeAction, "startNode action is null");
         Assert.notNull(startNodeTo, "startNode to is null");
-        Start start = new Start(startNodeName, ctx.getBean(startNodeAction, Action.class), new NameRouter(startNodeTo));
+        Start start = new Start(startNodeName, new NameRouter(startNodeTo));
         start.setFlow(flow);
         flow.addNode(start);
         for (Map.Entry<String, NodeBuilder> entry : this.nodeBuilders.entrySet()) {
@@ -90,7 +91,7 @@ public class FlowBuilder {
 //            getOrNewCommandBuilder(cmd,actionName,type,router,failNode);
             if (!cmdBuilders.containsKey(cmd)) {
                 if (type == Router.Type.NAME) {
-                    cmdBuilders.put(cmd, CommandBuilder.direcTo(cmd, actionName, router, failNode));
+                    cmdBuilders.put(cmd, CommandBuilder.direcTo(cmd, router, failNode));
                 } else {
                     cmdBuilders.put(cmd, CommandBuilder.expression(cmd, actionName, router, failNode));
                 }
@@ -117,13 +118,12 @@ public class FlowBuilder {
         String      router;
         String      failNode;
 
-        public static CommandBuilder direcTo(String cmd, String actionName, String targetNode, String failNode) {
+        public static CommandBuilder direcTo(String cmd, String targetNode, String failNode) {
             CommandBuilder b = new CommandBuilder();
-            b.cmd        = cmd;
-            b.actionName = actionName;
-            b.type       = Router.Type.NAME;
-            b.router     = targetNode;
-            b.failNode   = failNode;
+            b.cmd      = cmd;
+            b.type     = Router.Type.NAME;
+            b.router   = targetNode;
+            b.failNode = failNode;
             return b;
         }
 
@@ -139,7 +139,7 @@ public class FlowBuilder {
 
         public Command build(ApplicationContext ctx, _Node node) throws Exception {
             if (type.equals(Router.Type.NAME)) {
-                Command command = new Command(cmd, ctx.getBean(actionName, Action.class), new NameRouter(router));
+                Command command = new Command(cmd, new NameRouter(router));
                 command.setNode(node);
                 command.afterPropertiesSet();
                 return command;

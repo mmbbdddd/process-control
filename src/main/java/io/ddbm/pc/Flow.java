@@ -112,7 +112,7 @@ public class Flow implements ValueObject {
         return Objects.hash(name);
     }
 
-    public Router getRouter(String routerName) {
+    public ExpressionRouter getRouter(String routerName) {
         return routers.get(routerName);
     }
 }

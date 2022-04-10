@@ -13,12 +13,12 @@
     <!--    网申进件处理-->
     <node name="data-process">
         <cmd name="push" action="dataProcessAction" router="processRouter"></cmd>
-        <cmd name="cancel" action="cancelAction" to="cancel"></cmd>
+        <cmd name="cancel" to="cancel"></cmd>
     </node>
     <!--    报送风险-->
     <node name="shenpi">
         <cmd name="push" action="submitShenPiAction" failNode="shenpi_query" router="shenpiRouter"></cmd>
-        <cmd name="cancel" action="cancelAction" router="shenpiRouter"></cmd>
+        <cmd name="cancel" to="cancel"></cmd>
     </node>
     <!--    报送审批异常&补偿-->
     <node name="shenpi_query">
@@ -27,8 +27,8 @@
     <!--    人工处理-->
     <node name="rengong">
         <cmd name="pass" action="passAction" to="su"></cmd>
-        <cmd name="reject" action="rejectAction" to="reject"></cmd>
-        <cmd name="cancel" action="cancelAction" to="fail"></cmd>
+        <cmd name="reject" to="reject"></cmd>
+        <cmd name="cancel" to="fail"></cmd>
     </node>
 
     <routers>

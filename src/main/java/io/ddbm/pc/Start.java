@@ -3,9 +3,9 @@ package io.ddbm.pc;
 import org.springframework.util.Assert;
 
 public class Start extends _Node {
-    public Start(String name, Action action, Router router) {
+    public Start(String name, NameRouter router) {
         super(name);
-        Command cmd = new Command(Flow.DEFAULT_COMMAND, action, router);
+        Command cmd = new Command(Flow.DEFAULT_COMMAND, router);
         cmd.setNode(this);
         this.cmds.put(Flow.DEFAULT_COMMAND, cmd);
     }

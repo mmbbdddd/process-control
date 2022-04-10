@@ -84,7 +84,7 @@ public class FlowContext {
     }
 
     public Object getActionResult() {
-        return actionResult == null ? true : actionResult;
+        return actionResult == null ? Action.defaultActionResult : actionResult;
     }
 
     public void resetRequestStatus() {
