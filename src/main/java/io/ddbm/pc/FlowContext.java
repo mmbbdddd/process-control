@@ -46,8 +46,18 @@ public class FlowContext {
         this.exception    = null;
     }
 
-    public FlowResponse asResponse() {
-        return new FlowResponse(request.getId(), request, node.name);
+    public FlowResponse asResponse() throws Exception {
+        if (exception != null) {
+            if(exception instanceof ActionException  ae){
+                throw ae.getTarget();
+            }else if(exception instanceof RouterException  re){
+                throw re;
+            }else{
+                throw exception;
+            }
+        } else {
+            return new FlowResponse(request.getId(), request, node.name);
+        }
     }
 
     public void setCommand(Command command) {

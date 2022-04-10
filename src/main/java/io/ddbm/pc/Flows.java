@@ -8,7 +8,7 @@ public class Flows {
     @Autowired
     FlowFactory flowFactory;
 
-    public FlowResponse execute(String flowName, FlowRequest request, String cmd) throws RouterException {
+    public FlowResponse execute(String flowName, FlowRequest request, String cmd) throws Exception {
         Flow flow = flowFactory.get(flowName);
         return flow.execute(request, cmd);
     }

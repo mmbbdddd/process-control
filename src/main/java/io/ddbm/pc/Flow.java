@@ -49,7 +49,7 @@ public class Flow implements ValueObject {
         Assert.notNull(startNode, "开始节点为空");
     }
 
-    public FlowResponse execute(FlowRequest request, String cmd) throws RouterException {
+    public FlowResponse execute(FlowRequest request, String cmd) throws Exception {
         Assert.notNull(request, "FlowRequest is null");
         Assert.notNull(cmd, "CMD is null");
         FlowContext ctx = FlowContext.of(request);
@@ -69,7 +69,7 @@ public class Flow implements ValueObject {
                 execute(request, cmd);
             }
             return ctx.asResponse();
-        } catch (RouterException e) {
+        } catch (Exception e) {
             throw e;
         }
     }
