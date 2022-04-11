@@ -34,7 +34,7 @@ public class XmlFlowReader {
         return parseFlow(ele);
     }
 
-    private Flow parseFlow(Element flow) throws Exception {
+    public Flow parseFlow(Element flow) throws Exception {
         String name           = flow.getAttribute("name");
         String contextService = flow.getAttribute("context");
         fb = new FlowBuilder(name, contextService);
@@ -42,7 +42,7 @@ public class XmlFlowReader {
         return fb.build(ctx);
     }
 
-    private void parseFlowChilds(NodeList list) {
+    public void parseFlowChilds(NodeList list) {
         for (int i = 0; i < list.getLength(); i++) {
             Node   node     = list.item(i);
             String nodeName = node.getNodeName();
@@ -63,7 +63,7 @@ public class XmlFlowReader {
         }
     }
 
-    private void parseStart(Element node) {
+    public void parseStart(Element node) {
         String    name   = node.getAttribute("name");
         List<CMD> cmds   = parseCmd(node.getChildNodes());
         String    action = cmds.get(0).action;
@@ -71,12 +71,12 @@ public class XmlFlowReader {
         fb.addStartNode(name, action, to);
     }
 
-    private void parseEnd(Element node) {
+    public void parseEnd(Element node) {
         String name = node.getAttribute("name");
         fb.addEndNode(new End(name));
     }
 
-    private void parseNode(Element node) {
+    public void parseNode(Element node) {
         String    name  = node.getAttribute("name");
         List<CMD> cmds  = parseCmd(node.getChildNodes());
         for (CMD cmd : cmds) {
@@ -84,7 +84,7 @@ public class XmlFlowReader {
         }
     }
 
-    private List<CMD> parseCmd(NodeList list) {
+    public List<CMD> parseCmd(NodeList list) {
         List<CMD> cmds = new ArrayList<>();
         for (int i = 0; i < list.getLength(); i++) {
             if (list.item(i) instanceof Element node) {
@@ -99,11 +99,11 @@ public class XmlFlowReader {
         return cmds;
     }
 
-    private void parseRouters(Element node) {
+    public void parseRouters(Element node) {
         parseRouter(node.getChildNodes());
     }
 
-    private void parseRouter(NodeList list) {
+    public void parseRouter(NodeList list) {
         for (int i = 0; i < list.getLength(); i++) {
             if (list.item(i).getNodeName().equals("router")) {
                 Element                       node       = (Element) list.item(i);

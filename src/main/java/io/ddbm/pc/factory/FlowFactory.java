@@ -29,7 +29,7 @@ public class FlowFactory implements InitializingBean, ApplicationContextAware {
         registerFlows();
     }
 
-    private void registerFlows() throws Exception {
+    public void registerFlows() throws Exception {
         File[] files = listFlows();
         for (File file : files) {
             doRegisterFlow(new XmlFlowReader(ctx, file));
