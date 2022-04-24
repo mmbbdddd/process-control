@@ -15,7 +15,6 @@ public class Node extends _Node {
     }
 
 
-
     public void addCommand(Command command) {
         this.cmds.put(command.cmd, command);
         command.setNode(this);

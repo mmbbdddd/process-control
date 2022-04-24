@@ -1,7 +1,6 @@
 package io.ddbm.pc.factory;
 
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;

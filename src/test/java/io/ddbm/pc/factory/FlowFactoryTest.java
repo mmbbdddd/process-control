@@ -18,7 +18,7 @@ public class FlowFactoryTest {
     public void setup() throws Exception {
         ctx.load(new ClassPathResource("s.xml"));
         ctx.refresh();
-        ff   = ctx.getBean(FlowFactory.class);
+        ff = ctx.getBean(FlowFactory.class);
 
     }
 
@@ -27,9 +27,8 @@ public class FlowFactoryTest {
         flow = ff.get("simple");
         Map<String, Object> args = new HashMap<>();
         args.put("name", "wanglin");
-        flow.execute(new RecordRepo.MockRecord("1"),"push");
+        flow.execute(new RecordRepo.MockRecord("1"), "push");
     }
-
 
 
 }

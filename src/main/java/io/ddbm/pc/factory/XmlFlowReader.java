@@ -18,8 +18,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class XmlFlowReader {
-    Document doc;
-    FlowBuilder fb;
+    Document           doc;
+    FlowBuilder        fb;
     ApplicationContext ctx;
 
 
@@ -35,7 +35,7 @@ public class XmlFlowReader {
     }
 
     public Flow parseFlow(Element flow) throws Exception {
-        String name = flow.getAttribute("name");
+        String name           = flow.getAttribute("name");
         String contextService = flow.getAttribute("context");
         fb = new FlowBuilder(name, contextService);
         parseFlowChilds(flow.getChildNodes());
@@ -44,7 +44,7 @@ public class XmlFlowReader {
 
     public void parseFlowChilds(NodeList list) {
         for (int i = 0; i < list.getLength(); i++) {
-            Node node = list.item(i);
+            Node   node     = list.item(i);
             String nodeName = node.getNodeName();
             switch (nodeName) {
                 case "start":
@@ -64,10 +64,10 @@ public class XmlFlowReader {
     }
 
     public void parseStart(Element node) {
-        String name = node.getAttribute("name");
-        List<CMD> cmds = parseCmd(node.getChildNodes());
-        String action = cmds.get(0).action;
-        String to = cmds.get(0).to;
+        String    name   = node.getAttribute("name");
+        List<CMD> cmds   = parseCmd(node.getChildNodes());
+        String    action = cmds.get(0).action;
+        String    to     = cmds.get(0).to;
         fb.addStartNode(name, action, to);
     }
 
@@ -77,7 +77,7 @@ public class XmlFlowReader {
     }
 
     public void parseNode(Element node) {
-        String name = node.getAttribute("name");
+        String    name = node.getAttribute("name");
         List<CMD> cmds = parseCmd(node.getChildNodes());
         for (CMD cmd : cmds) {
             fb.onCmd(name, cmd.name, cmd.action, cmd.getRouterType(), cmd.router, cmd.failNode);
@@ -88,12 +88,12 @@ public class XmlFlowReader {
         List<CMD> cmds = new ArrayList<>();
         for (int i = 0; i < list.getLength(); i++) {
             if (list.item(i) instanceof Element) {
-                Element node = (Element) list.item(i);
-                String name = node.getAttribute("name");
-                String action = node.getAttribute("action");
-                String to = node.getAttribute("to");
-                String failNode = node.getAttribute("failNode");
-                String router = node.getAttribute("router");
+                Element node     = (Element) list.item(i);
+                String  name     = node.getAttribute("name");
+                String  action   = node.getAttribute("action");
+                String  to       = node.getAttribute("to");
+                String  failNode = node.getAttribute("failNode");
+                String  router   = node.getAttribute("router");
                 cmds.add(new CMD(name, action, to, failNode, router));
             }
         }
@@ -107,15 +107,15 @@ public class XmlFlowReader {
     public void parseRouter(NodeList list) {
         for (int i = 0; i < list.getLength(); i++) {
             if (list.item(i).getNodeName().equals("router")) {
-                Element node = (Element) list.item(i);
-                String routerName = node.getAttribute("name");
-                NodeList items = node.getChildNodes();
+                Element                       node       = (Element) list.item(i);
+                String                        routerName = node.getAttribute("name");
+                NodeList                      items      = node.getChildNodes();
                 LinkedHashMap<String, String> expression = new LinkedHashMap<>();
                 for (int j = 0; j < items.getLength(); j++) {
                     if (items.item(j).getNodeName().equals("expression")) {
                         Element expre = (Element) items.item(j);
-                        String test = expre.getAttribute("test");
-                        String to = expre.getAttribute("to");
+                        String  test  = expre.getAttribute("test");
+                        String  to    = expre.getAttribute("to");
                         expression.put(to, test);
                     }
                 }
@@ -133,11 +133,11 @@ public class XmlFlowReader {
         String router;
 
         public CMD(String name, String action, String to, String failNode, String router) {
-            this.name = name;
-            this.action = action;
-            this.to = to;
+            this.name     = name;
+            this.action   = action;
+            this.to       = to;
             this.failNode = failNode;
-            this.router = router;
+            this.router   = router;
         }
 
         public Router.Type getRouterType() {

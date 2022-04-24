@@ -6,23 +6,27 @@ import org.springframework.context.annotation.Bean;
 @Configurable
 public class BeanConfig {
     @Bean
-    Action initAction(){
+    Action initAction() {
         return new MockAction();
     }
+
     @Bean
-    Action payAction(){
+    Action payAction() {
         return new MockAction();
     }
+
     @Bean
-    Action queryAction(){
+    Action queryAction() {
         return new MockAction();
     }
+
     @Bean
-    MockContextService mockContextService(){
+    MockContextService mockContextService() {
         return new MockContextService();
     }
+
     @Bean
-    RecordRepo mockFlowRecordRepository(){
+    RecordRepo mockFlowRecordRepository() {
         return new RecordRepo();
     }
 }

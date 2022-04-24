@@ -53,26 +53,22 @@ public class Flow implements ValueObject {
         Assert.notNull(request, "FlowRequest is null");
         Assert.notNull(cmd, "CMD is null");
         FlowContext ctx = FlowContext.of(request);
-        try {
 //        获取当前数据节点
-            _Node node = nodeOfRequest(request);
+        _Node node = nodeOfRequest(request);
 //        构建上下文
-            node.execute(ctx, cmd);
+        node.execute(ctx, cmd);
 //        更新上下文
-            contextService.snapshot(ctx);
-            ctx.resetRequestStatus();
+        contextService.snapshot(ctx);
+        ctx.resetRequestStatus();
 //        判断是否重复执行
-            if (ctx.isRetry()) {
-                return FlowResponse.error();
-            }
-//        继续执行下一个节点
-            if (null != ctx.targetNode && !(ctx.targetNode instanceof End)) {
-                execute(request, cmd);
-            }
-            return ctx.asResponse();
-        } catch (Exception e) {
-            throw e;
+        if (ctx.isRetry()) {
+            return FlowResponse.error();
         }
+//        继续执行下一个节点
+        if (null != ctx.targetNode && !(ctx.targetNode instanceof End)) {
+            execute(request, cmd);
+        }
+        return ctx.asResponse();
     }
 
     public _Node nodeOfRequest(FlowRequest request) {

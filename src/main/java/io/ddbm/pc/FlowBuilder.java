@@ -2,7 +2,6 @@ package io.ddbm.pc;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -139,12 +138,12 @@ public class FlowBuilder {
 
         public Command build(ApplicationContext ctx, _Node node) throws Exception {
             if (type.equals(Router.Type.NAME)) {
-                Command command = new Command(cmd, new NameRouter(router),failNode);
+                Command command = new Command(cmd, new NameRouter(router), failNode);
                 command.setNode(node);
                 command.afterPropertiesSet();
                 return command;
             } else {
-                Command command = new Command(cmd, ctx.getBean(actionName, Action.class), node.flow.getRouter(router),failNode);
+                Command command = new Command(cmd, ctx.getBean(actionName, Action.class), node.flow.getRouter(router), failNode);
                 command.setNode(node);
                 command.afterPropertiesSet();
                 return command;
