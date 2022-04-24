@@ -3,14 +3,14 @@ package io.ddbm.pc;
 public class FlowContext {
     //    当前工作流数据
     FlowRequest request;
-    Flow        flow;
-    _Node       node;
-    _Node       targetNode;
+    Flow flow;
+    _Node node;
+    _Node targetNode;
     //    当前变迁
-    Command     command;
+    Command command;
     //    变迁异常
-    Exception   exception;
-    Object      actionResult;
+    Exception exception;
+    Object actionResult;
 
     public static FlowContext of(FlowRequest request) {
         FlowContext ctx = new FlowContext();
@@ -23,8 +23,8 @@ public class FlowContext {
     }
 
     public void actionPre(Flow flow, _Node node, Command command) {
-        this.flow    = flow;
-        this.node    = node;
+        this.flow = flow;
+        this.node = node;
         this.command = command;
     }
 
@@ -34,14 +34,16 @@ public class FlowContext {
 
     void clearActionContext() {
         this.actionResult = null;
-        this.exception    = null;
+        this.exception = null;
     }
 
     public FlowResponse asResponse() throws Exception {
         if (exception != null) {
-            if (exception instanceof ActionException ae) {
+            if (exception instanceof ActionException) {
+                ActionException ae = (ActionException) exception;
                 throw ae.getTarget();
-            } else if (exception instanceof RouterException re) {
+            } else if (exception instanceof RouterException) {
+                RouterException re = (RouterException) exception;
                 throw re;
             } else {
                 throw exception;
