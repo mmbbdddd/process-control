@@ -143,7 +143,7 @@ public class FlowBuilder {
                 command.afterPropertiesSet();
                 return command;
             } else {
-                Command command = new Command(cmd, ctx.getBean(actionName, Action.class), node.flow.getRouter(router), failNode);
+                Command command = new Command(cmd, new ActionWrapper(ctx, actionName), node.flow.getRouter(router), failNode);
                 command.setNode(node);
                 command.afterPropertiesSet();
                 return command;

@@ -8,12 +8,12 @@ import org.springframework.util.StringUtils;
 import java.util.Objects;
 
 public class Command implements ValueObject {
-    Logger logger = LoggerFactory.getLogger(getClass());
-    String cmd;
-    Action action;
-    Router router;
-    String failNode;
-    _Node  node;
+    Logger        logger = LoggerFactory.getLogger(getClass());
+    String        cmd;
+    ActionWrapper action;
+    Router        router;
+    String        failNode;
+    _Node         node;
 
 
     public Command(String cmd, Router router, String failNode) {
@@ -25,7 +25,7 @@ public class Command implements ValueObject {
         this.failNode = failNode;
     }
 
-    public Command(String cmd, Action action, ExpressionRouter router, String failNode) {
+    public Command(String cmd, ActionWrapper action, ExpressionRouter router, String failNode) {
         Assert.notNull(cmd);
         Assert.notNull(action);
         Assert.notNull(router);

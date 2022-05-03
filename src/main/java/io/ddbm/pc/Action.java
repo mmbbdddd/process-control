@@ -5,13 +5,8 @@ import java.util.HashMap;
 public interface Action {
     Object defaultActionResult = new HashMap<>();
 
-    static Action empty() {
-        return new Action() {
-            @Override
-            public Object execute(FlowContext ctx) throws Exception {
-                return Action.defaultActionResult;
-            }
-        };
+    static ActionWrapper empty() {
+        return new ActionWrapper();
     }
 
     Object execute(FlowContext ctx) throws Exception;
