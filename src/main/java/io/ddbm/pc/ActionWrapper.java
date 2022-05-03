@@ -31,12 +31,13 @@ public class ActionWrapper implements Action {
 
     @Override
     public Object execute(FlowContext ctx) throws Exception {
+        Object result = null;
         if (actions != null) {
             for (Action action : actions) {
-                action.execute(ctx);
+                result = action.execute(ctx);
             }
         }
-        return null;
+        return result;
     }
 
 }
