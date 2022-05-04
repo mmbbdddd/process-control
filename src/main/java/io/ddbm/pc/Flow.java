@@ -32,9 +32,10 @@ public class Flow implements InitializingBean {
 
     public Flow(String name) {
         Assert.notNull(name, "工作流名称为空");
-        this.name    = name;
-        this.nodes   = new HashMap<>();
-        this.routers = new HashMap<>();
+        this.name         = name;
+        this.nodes        = new HashMap<>();
+        this.routers      = new HashMap<>();
+        this.interceptors = new LinkedList<>();
     }
 
     public String getName() {
@@ -97,6 +98,9 @@ public class Flow implements InitializingBean {
         this.routers.put(router.routerName, router);
     }
 
+    public LinkedList<Interceptor> getInterceptors() {
+        return interceptors;
+    }
 
     @Override
     public boolean equals(Object o) {

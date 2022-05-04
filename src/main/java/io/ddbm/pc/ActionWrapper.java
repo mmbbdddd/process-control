@@ -43,6 +43,7 @@ public class ActionWrapper implements Action {
     }
 
     private void postAction(FlowContext ctx, ActionWrapper actionWrapper) {
+
         ctx.getFlow().interceptors.forEach(interceptor -> {
             try {
                 interceptor.postAction(ctx);
