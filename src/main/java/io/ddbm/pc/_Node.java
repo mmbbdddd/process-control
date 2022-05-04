@@ -2,6 +2,7 @@ package io.ddbm.pc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
 import java.util.HashMap;
@@ -15,7 +16,7 @@ import java.util.Objects;
  * 3，任务节点
  * 每个节点可以响应指令，路由到目标节点
  */
-public abstract class _Node implements ValueObject {
+public abstract class _Node implements InitializingBean {
     Logger               logger = LoggerFactory.getLogger(getClass());
     String               name;
     //cmd:transation

@@ -32,12 +32,35 @@ public class ActionWrapper implements Action {
     @Override
     public Object execute(FlowContext ctx) throws Exception {
         Object result = null;
+        preAction(ctx, this);
         if (actions != null) {
             for (Action action : actions) {
                 result = action.execute(ctx);
             }
         }
+        postAction(ctx, this);
         return result;
     }
+
+    private void postAction(FlowContext ctx, ActionWrapper actionWrapper) {
+        ctx.getFlow().interceptors.forEach(interceptor -> {
+            try {
+                interceptor.postAction(ctx);
+            } catch (Exception e) {
+                //todo
+            }
+        });
+    }
+
+    private void preAction(FlowContext ctx, ActionWrapper actionWrapper) {
+        ctx.getFlow().interceptors.forEach(interceptor -> {
+            try {
+                interceptor.preAction(ctx);
+            } catch (Exception e) {
+                //todo
+            }
+        });
+    }
+
 
 }

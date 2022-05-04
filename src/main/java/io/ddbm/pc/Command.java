@@ -2,12 +2,13 @@ package io.ddbm.pc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
-public class Command implements ValueObject {
+public class Command implements InitializingBean {
     Logger        logger = LoggerFactory.getLogger(getClass());
     String        cmd;
     ActionWrapper action;

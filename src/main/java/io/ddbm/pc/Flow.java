@@ -2,10 +2,12 @@ package io.ddbm.pc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 
@@ -13,7 +15,7 @@ import java.util.Objects;
 /**
  * 流程定义
  */
-public class Flow implements ValueObject {
+public class Flow implements InitializingBean {
     Logger logger = LoggerFactory.getLogger(getClass());
     //    缺省指令
     static final String DEFAULT_COMMAND = "push";
@@ -26,6 +28,7 @@ public class Flow implements ValueObject {
     _Node                         startNode;
     //    流程数据的持久化接口，需要用户实现
     ContextService                contextService;
+    LinkedList<Interceptor>       interceptors;
 
     public Flow(String name) {
         Assert.notNull(name, "工作流名称为空");
