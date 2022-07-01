@@ -1,13 +1,12 @@
 package io.ddbm.pc;
 
-import java.util.HashMap;
+import io.ddbm.pc.exception.InterruptedException;
+import io.ddbm.pc.exception.PauseException;
 
 public interface Action {
-    Object defaultActionResult = new HashMap<>();
-
-    static ActionWrapper empty() {
-        return new ActionWrapper();
+    static Action dsl(String actionDSL) {
+        return null;
     }
 
-    Object execute(FlowContext ctx) throws Exception;
+    void execute(FlowContext ctx) throws PauseException, InterruptedException;
 }

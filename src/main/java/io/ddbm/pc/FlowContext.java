@@ -1,95 +1,34 @@
 package io.ddbm.pc;
 
+import io.ddbm.pc.exception.InterruptedException;
+import io.ddbm.pc.session.RedisSession;
+import io.ddbm.pc.utils.SpringUtils;
+import lombok.Getter;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+
+@Getter
 public class FlowContext {
     //    当前工作流数据
-    FlowRequest request;
-    Flow        flow;
-    _Node       node;
-    _Node       targetNode;
-    //    当前变迁
-    Command     command;
-    //    变迁异常
-    Exception   exception;
-    Object      actionResult;
+    private final FlowRequest request;
+    private final Flow        flow;
+    private       TaskNode    node;
+    private       Event       event;
+    private       Session     session;
 
-    public static FlowContext of(FlowRequest request) {
-        FlowContext ctx = new FlowContext();
-        ctx.request = request;
-        return ctx;
-    }
-
-    public void onException(Exception actionException) {
-        this.exception = actionException;
-    }
-
-    public void actionPre(Flow flow, _Node node, Command command) {
+    public FlowContext(Flow flow, FlowRequest request, String event) throws InterruptedException {
+        event = StringUtils.isEmpty(event) ? Coast.DEFAULT_EVENT : event;
+        Assert.notNull(flow, "flow is null");
+        Assert.notNull(request, "request is null");
         this.flow    = flow;
-        this.node    = node;
-        this.command = command;
-    }
-
-    public boolean isRetry() {
-        return node.equals(targetNode);
-    }
-
-    void clearActionContext() {
-        this.actionResult = null;
-        this.exception    = null;
-    }
-
-    public FlowResponse asResponse() throws Exception {
-        if (exception != null) {
-            if (exception instanceof ActionException) {
-                ActionException ae = (ActionException) exception;
-                throw ae.getTarget();
-            } else if (exception instanceof RouterException) {
-                RouterException re = (RouterException) exception;
-                throw re;
-            } else {
-                throw exception;
-            }
+        this.request = request;
+        this.node    = flow.nodeOf(request.getStatus());
+        this.event   = this.node.getEvent(event);
+        if (request.getSession() == null) {
+            this.session = SpringUtils.getBean(RedisSession.class);
         } else {
-            return new FlowResponse(request.getId(), request, node.name);
+            this.session = request.getSession();
         }
     }
 
-    public void setCommand(Command command) {
-        this.command = command;
-    }
-
-    public void setTargetNode(_Node node) {
-        this.targetNode = node;
-    }
-
-    public FlowRequest getRequest() {
-        return request;
-    }
-
-    public _Node getNode() {
-        return node;
-    }
-
-    public _Node getTargetNode() {
-        return targetNode;
-    }
-
-    public Flow getFlow() {
-        return flow;
-    }
-
-    public Exception getException() {
-        return exception;
-    }
-
-    public void setActionResult(Object result) {
-        this.actionResult = result;
-    }
-
-    public Object getActionResult() {
-        return actionResult == null ? Action.defaultActionResult : actionResult;
-    }
-
-    public void resetRequestStatus() {
-        this.request.setNode(targetNode.name);
-    }
 }

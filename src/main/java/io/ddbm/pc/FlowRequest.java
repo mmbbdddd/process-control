@@ -5,7 +5,10 @@ import java.io.Serializable;
 public interface FlowRequest {
     Serializable getId();
 
-    String getNode();
+    String getStatus();
 
-    void setNode(String name);
+    void setStatus(String node);
+
+    Session getSession();
+
 }

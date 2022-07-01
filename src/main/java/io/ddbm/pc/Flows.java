@@ -1,15 +1,20 @@
 package io.ddbm.pc;
 
-import io.ddbm.pc.factory.FlowFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class Flows {
+    static ConcurrentMap<String, Flow> flows = new ConcurrentHashMap<>();
 
-    @Autowired
-    FlowFactory flowFactory;
-
-    public FlowResponse execute(String flowName, FlowRequest request, String cmd) throws Exception {
-        Flow flow = flowFactory.get(flowName);
-        return flow.execute(request, cmd);
+    public static void set(Flow flow) {
+        if (flows.containsKey(flow.name)) {
+            flows.remove(flow.name);
+        }
+        flows.put(flow.name, flow);
     }
+
+    public static Flow get(String flowName) {
+        return flows.get(flowName);
+    }
+
 }
