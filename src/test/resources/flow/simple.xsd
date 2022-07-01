@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://www.pab.com.cn/pc.xsd">
+    <xs:element name="flow" type="flowType"/>
+    <xs:complexType name="startType">
+        <xs:sequence>
+            <xs:element type="onType" name="on"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="name"/>
+    </xs:complexType>
+    <xs:complexType name="endType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="name" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="onType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="event" use="optional"/>
+                <xs:attribute type="xs:string" name="action" use="optional"/>
+                <xs:attribute type="xs:string" name="maybe" use="optional"/>
+                <xs:attribute type="xs:string" name="retry" use="optional"/>
+                <xs:attribute type="xs:string" name="desc" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="nodeType">
+        <xs:sequence>
+            <xs:element type="onType" name="on" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="name" use="optional"/>
+        <xs:attribute type="xs:string" name="fluent" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="expressionType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="test" use="optional"/>
+                <xs:attribute type="xs:string" name="to" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="pluginType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="name" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+    <xs:complexType name="pluginsType">
+        <xs:sequence>
+            <xs:element type="pluginType" name="plugin" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="flowType">
+        <xs:sequence>
+            <xs:element type="startType" name="start">
+            </xs:element>
+            <xs:element type="endType" name="end" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element type="nodeType" name="node" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element type="pluginsType" name="plugins"/>
+        </xs:sequence>
+        <xs:attribute type="xs:string" name="name"/>
+    </xs:complexType>
+</xs:schema>
