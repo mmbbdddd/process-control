@@ -1,6 +1,6 @@
 package io.ddbm.pc;
 
-import io.ddbm.pc.exception.InterruptedException;
+import io.ddbm.pc.exception.InterruptException;
 import lombok.Data;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -25,14 +25,14 @@ public class TaskNode {
         Assert.notNull(name);
         this.type   = type;
         this.name   = name;
-        this.fluent = !StringUtils.isEmpty(fluent) && fluent.endsWith("true");
+        this.fluent = StringUtils.isEmpty(fluent) ||  fluent.endsWith("true");
         this.events = new HashMap<>();
     }
 
 
-    public Event getEvent(String event) throws InterruptedException {
+    public Event getEvent(String event) throws InterruptException {
         if (!events.containsKey(event)) {
-            throw InterruptedException.noSuchEvent(event, name);
+            throw InterruptException.noSuchEvent(event, name);
         }
         return events.get(event);
     }

@@ -1,8 +1,10 @@
 package io.ddbm.pc;
 
-import io.ddbm.pc.exception.InterruptedException;
+import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.exception.PauseException;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -17,6 +19,7 @@ import java.util.Objects;
  */
 @Getter
 public class Flow {
+    Logger                digest = LoggerFactory.getLogger("digest");
     String                name;
     Map<String, TaskNode> nodes;
     LinkedList<Plugin>    plugins;
@@ -36,18 +39,26 @@ public class Flow {
     /**
      * 单步执行
      */
-    public void execute(FlowRequest request, String event) throws InterruptedException, PauseException {
-        FlowContext ctx = new FlowContext(this, request, event);
-//        获取当前数据节点
-        ctx.getEvent().execute(ctx);
+    public void execute(FlowRequest request, String event) throws PauseException, InterruptException {
+        try {
+            FlowContext ctx = new FlowContext(this, request, event);
+            ctx.getEvent().execute(ctx);
+        } catch (PauseException e) {
+            FlowContext ctx = e.getCtx();
+            digest.info("flow:{},id:{},from:{},to:{}", name, request.getId(), ctx.getNode().getName(), ctx.getRequest().getStatus());
+            throw e;
+        } catch (InterruptException e) {
+            digest.error("flow:{},id:{},from:{},error:", name, request.getId(), e.getNode(), e);
+            throw e;
+        }
     }
 
-    public TaskNode nodeOf(String node) throws InterruptedException {
+    public TaskNode nodeOf(String node) throws InterruptException {
         if (StringUtils.isEmpty(node)) {
             return startNode();
         } else {
             if (!nodes.containsKey(node)) {
-                throw InterruptedException.noSuchNode(node);
+                throw InterruptException.noSuchNode(node);
             }
             return nodes.get(node);
         }

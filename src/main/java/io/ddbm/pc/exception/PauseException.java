@@ -1,12 +1,32 @@
 package io.ddbm.pc.exception;
 
-public class PauseException extends Exception {
-    private String    action;
-    private Exception cause;
+import io.ddbm.pc.FlowContext;
+import lombok.Getter;
 
-    public PauseException(Exception e) {
+@Getter
+public class PauseException extends Exception {
+
+    private FlowContext ctx;
+    private Exception   cause;
+
+    public PauseException(FlowContext ctx, Exception e) {
         super(e);
         this.cause = e;
     }
 
+    @Override
+    public synchronized Throwable getCause() {
+        return cause;
+    }
+
+
+    @Override
+    public StackTraceElement[] getStackTrace() {
+        return null;
+    }
+
+    @Override
+    public void setStackTrace(StackTraceElement[] stackTrace) {
+        super.setStackTrace(null);
+    }
 }

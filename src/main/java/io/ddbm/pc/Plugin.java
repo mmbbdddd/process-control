@@ -3,11 +3,11 @@ package io.ddbm.pc;
 import io.ddbm.pc.support.ActionPlugins;
 
 public interface Plugin {
-    void preAction(FlowContext ctx, Action action);
+    void preAction(FlowContext ctx);
 
-    void postAction(FlowContext ctx, Action action);
+    void postAction(FlowContext ctx);
 
-    void actionFinally(FlowContext ctx, ActionPlugins action);
+    void actionFinally(FlowContext ctx);
 
-    void onActionError(FlowContext ctx, ActionPlugins action, Exception e);
+    void onActionError(FlowContext ctx, Exception e);
 }

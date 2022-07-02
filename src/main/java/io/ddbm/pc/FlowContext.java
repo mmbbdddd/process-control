@@ -1,6 +1,6 @@
 package io.ddbm.pc;
 
-import io.ddbm.pc.exception.InterruptedException;
+import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.session.RedisSession;
 import io.ddbm.pc.utils.SpringUtils;
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class FlowContext {
     private       Event       event;
     private       Session     session;
 
-    public FlowContext(Flow flow, FlowRequest request, String event) throws InterruptedException {
+    public FlowContext(Flow flow, FlowRequest request, String event) throws InterruptException {
         event = StringUtils.isEmpty(event) ? Coast.DEFAULT_EVENT : event;
         Assert.notNull(flow, "flow is null");
         Assert.notNull(request, "request is null");

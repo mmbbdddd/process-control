@@ -1,6 +1,6 @@
 package io.ddbm.pc;
 
-import io.ddbm.pc.exception.InterruptedException;
+import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.exception.PauseException;
 import io.ddbm.pc.support.ActionPlugins;
 import lombok.Getter;
@@ -38,10 +38,13 @@ public class Event {
     }
 
 
-    public void execute(FlowContext ctx) throws PauseException, InterruptedException {
+    public void execute(FlowContext ctx) throws PauseException, InterruptException {
         this.action.execute(ctx);
     }
 
+    public String getActionName() {
+        return action.getActionName();
+    }
 
     @Override
     public boolean equals(Object o) {

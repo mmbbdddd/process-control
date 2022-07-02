@@ -2,34 +2,40 @@ package io.ddbm.pc.support;
 
 import io.ddbm.pc.Action;
 import io.ddbm.pc.FlowContext;
-import io.ddbm.pc.exception.InterruptedException;
+import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.exception.PauseException;
 import lombok.Getter;
 
+import java.util.List;
+
 public class ActionPlugins {
     @Getter
-    private String actionName;
+    private String       actionName;
     @Getter
-    private Action action;
+    private List<Action> actions;
 
 
-    public ActionPlugins(String actionDsl, Action action) {
+    public ActionPlugins(String actionDsl, List<Action> actions) {
         this.actionName = actionDsl;
-        this.action     = action;
+        this.actions    = actions;
     }
 
 
-    public void execute(FlowContext ctx) throws PauseException, InterruptedException {
+    public void execute(FlowContext ctx) throws PauseException, InterruptException {
         preAction(ctx, this);
         try {
-            action.execute(ctx);
+            if (null != actions) {
+                for (Action action : actions) {
+                    action.execute(ctx);
+                }
+            }
             postAction(ctx, this);
-        } catch (PauseException | InterruptedException e) {
+        } catch (PauseException | InterruptException e) {
             onActionError(ctx, this, e);
             throw e;
         } catch (Exception e) {
             onActionError(ctx, this, e);
-            throw new PauseException(e);
+            throw new PauseException(ctx, e);
         } finally {
             actionFinally(ctx, this);
         }
@@ -39,7 +45,7 @@ public class ActionPlugins {
 
         ctx.getFlow().getPlugins().forEach(plugin -> {
             try {
-                plugin.postAction(ctx, action);
+                plugin.postAction(ctx);
             } catch (Exception e) {
                 //todo
             }
@@ -49,7 +55,7 @@ public class ActionPlugins {
     private void preAction(FlowContext ctx, ActionPlugins actionWrapper) {
         ctx.getFlow().getPlugins().forEach(plugin -> {
             try {
-                plugin.preAction(ctx, action);
+                plugin.preAction(ctx);
             } catch (Exception e) {
                 //todo
             }
@@ -59,7 +65,7 @@ public class ActionPlugins {
     private void onActionError(FlowContext ctx, ActionPlugins action, Exception e) {
         ctx.getFlow().getPlugins().forEach(plugin -> {
             try {
-                plugin.onActionError(ctx, action, e);
+                plugin.onActionError(ctx, e);
             } catch (Exception e1) {
                 //todo
             }
@@ -69,7 +75,7 @@ public class ActionPlugins {
     private void actionFinally(FlowContext ctx, ActionPlugins action) {
         ctx.getFlow().getPlugins().forEach(plugin -> {
             try {
-                plugin.actionFinally(ctx, action);
+                plugin.actionFinally(ctx);
             } catch (Exception e) {
                 //todo
             }
