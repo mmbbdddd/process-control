@@ -4,17 +4,19 @@ import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.exception.PauseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.util.Assert;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class Pc {
-    Logger          logger = LoggerFactory.getLogger(getClass());
-    //todo 待优化
-    ExecutorService es     = Executors.newFixedThreadPool(3);
+public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowEvent> {
+    Logger logger = LoggerFactory.getLogger(getClass());
+    private ApplicationContext app;
 
     public FlowContext execute(String flowName, FlowRequest request, String event) throws PauseException, InterruptException {
         Assert.notNull(flowName, "flowName is null");
@@ -30,16 +32,20 @@ public class Pc {
         } finally {
             final FlowContext _ctx = ctx;
             if (null != _ctx && !_ctx.isPause(logger)) {
-                es.submit(() -> {
-                    try {
-                        fluent(flowName, request, Coast.DEFAULT_EVENT);
-                    } catch (PauseException | InterruptException e) {
-                        _ctx.setInterrupt(true, e);
-                    }
-                });
+                app.publishEvent(new FlowEvent(flowName, request, ctx));
             }
         }
         return ctx;
+    }
+
+
+    @Override
+    public void onApplicationEvent(FlowEvent fe) {
+        try {
+            fluent(fe.flowName, fe.request, Coast.DEFAULT_EVENT);
+        } catch (PauseException | InterruptException e) {
+            fe.ctx.setInterrupt(true, e);
+        }
     }
 
 
@@ -95,4 +101,22 @@ public class Pc {
         return ctx;
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.app = applicationContext;
+    }
+
+
+    protected class FlowEvent extends ApplicationEvent {
+        private final String      flowName;
+        private final FlowRequest request;
+        private final FlowContext ctx;
+
+        public FlowEvent(String flowName, FlowRequest request, FlowContext ctx) {
+            super(request);
+            this.flowName = flowName;
+            this.request  = request;
+            this.ctx      = ctx;
+        }
+    }
 }
