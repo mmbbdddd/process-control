@@ -11,4 +11,10 @@ public class SimpleTest extends BaseTest {
 
         flow.execute(new SimpleOrder(), "a")
     }
+    @Test
+    public void tt(){
+        for(;;){
+            new SimpleOrder()
+        }
+    }
 }
