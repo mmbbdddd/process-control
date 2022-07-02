@@ -92,4 +92,7 @@ public class ActionPlugins {
     }
 
 
+    public void injectChaosAction(List<Action> action) {
+        this.actions = action;
+    }
 }

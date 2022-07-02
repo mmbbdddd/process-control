@@ -12,6 +12,12 @@ public class PauseException extends Exception {
     public PauseException(FlowContext ctx, Exception e) {
         super(e);
         this.cause = e;
+        this.ctx   = ctx;
+    }
+
+    public PauseException(FlowContext ctx, String msg) {
+        super(msg);
+        this.ctx = ctx;
     }
 
     @Override

@@ -2,34 +2,34 @@
 <flow name="simple" xmlns="http://ddbm.io/pc.xsd">
     <!--    网申进件落地-->
     <start name="init">
-        <on event="next" action="initAction" maybe=""></on>
+        <on event="next" action="initAction" maybe="data_process"></on>
     </start>
     <end name="su"/>
     <end name="reject"/>
     <end name="fail"/>
     <node name="data_process" fluent="false">
-        <on event="next" action="dataProcessAction" maybe=""></on>
+        <on event="next" action="dataProcessAction" maybe="data_process,shenpi"></on>
         <on event="cancel" maybe="cancel"></on>
     </node>
     <!--    审批-->
     <node name="shenpi">
-        <on event="next" action="submitShenPiAction" retry="1" maybe=""></on>
+        <on event="next" action="submitShenPiAction" retry="1" maybe="su,fail,shenpi_query"></on>
         <on event="cancel" maybe="cancel"></on>
     </node>
     <!--    审批错误，调度器容错-->
     <node name="shenpi_query">
-        <on event="next" action="shenPiQueryAction" maybe=""></on>
+        <on event="next" action="shenPiQueryAction" maybe="shenpi,su,fail,rengong"></on>
     </node>
     <!--    人工处理-->
     <node name="rengong">
-        <on event="pass" action="passAction" maybe=""></on>
-        <on event="reject" maybe="reject"></on>
+        <on event="pass" action="passAction" maybe="su"></on>
+        <on event="fail" maybe="fail"></on>
         <on event="cancel" maybe="fail"></on>
     </node>
     <!--    节点路由规则-->
 
     <plugins>
-<!--        <plugin name="catPlugin"/>-->
-<!--        <plugin name="sentinelPlugin"/>-->
+        <!--        <plugin name="catPlugin"/>-->
+        <!--        <plugin name="sentinelPlugin"/>-->
     </plugins>
 </flow>

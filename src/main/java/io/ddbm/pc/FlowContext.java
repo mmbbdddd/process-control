@@ -20,6 +20,7 @@ public class FlowContext {
     private       Event       event;
     private       Session     session;
     private       Boolean     interrupt = false;
+    private       String      interruptMessage;
 
     public FlowContext(Flow flow, FlowRequest request, String event) throws InterruptException {
         event = StringUtils.isEmpty(event) ? Coast.DEFAULT_EVENT : event;
@@ -40,19 +41,21 @@ public class FlowContext {
 
     public String chaosNode() {
         //获取当前节点的所有event和maybe
-        String       status   = request.getStatus();
         TaskNode     node     = flow.getNode(request.getStatus());
         List<String> allMaybe = new ArrayList<>();
         for (Event e : node.events.values()) {
             allMaybe.addAll(e.getMaybe());
         }
         //从中随机选一个。
-        Double r = Math.random() * allMaybe.size();
-        return allMaybe.get(r.intValue());
+        Double r      = Math.random() * allMaybe.size();
+        String result = allMaybe.get(r.intValue());
+//        System.out.println("chaos:"+result);
+        return result;
     }
 
-    public void setInterrupt(Boolean interrupt) {
-        this.interrupt = interrupt;
+    public void setInterrupt(Boolean interrupt, Exception e) {
+        this.interrupt        = interrupt;
+        this.interruptMessage = e.getMessage();
     }
 
     public boolean isPause(Logger logger) {
@@ -66,14 +69,23 @@ public class FlowContext {
                     || event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0);
             return result;
         } finally {
-            logger.debug("\t\t  isPause:{}", result);
-            logger.debug("\t\t\t\t\t interrupt:{}", interrupt);
-            logger.debug("\t\t\t\t\t node.type == TaskNode.Type.END:{}", node.type == TaskNode.Type.END);
-            logger.debug("\t\t\t\t\t !node.fluent:{}", !node.fluent);
-            logger.debug("\t\t\t\t\t 10 <  (Integer) session.get(Coast.TOTAL_ERROR, 0):{}", 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0));
-            logger.debug("\t\t\t\t\t 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0):{}", 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0));
-            logger.debug("\t\t\t\t\t event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0):{}", event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0));
+            if (null != logger) {
+                logger.debug("\t\t  isPause:{},{}", result, interruptMessage);
+                logger.debug("\t\t\t\t\t interrupt:{}", interrupt);
+                logger.debug("\t\t\t\t\t node.type == TaskNode.Type.END:{}", node.type == TaskNode.Type.END);
+                logger.debug("\t\t\t\t\t !node.fluent:{}", !node.fluent);
+                logger.debug("\t\t\t\t\t 10 <  (Integer) session.get(Coast.TOTAL_ERROR, 0):{}", 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0));
+                logger.debug("\t\t\t\t\t 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0):{}", 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0));
+                logger.debug("\t\t\t\t\t event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0):{}", event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0));
+            }
         }
+    }
+
+    public boolean isPause() {
+        return interrupt
+                || node.type == TaskNode.Type.END
+                || 100 < (Integer) session.get(Coast.EVENT_COUNT(event), 0);
+
     }
 
 }

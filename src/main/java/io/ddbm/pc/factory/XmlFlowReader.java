@@ -75,7 +75,7 @@ public class XmlFlowReader {
                 String  event  = node.getAttribute("event");
                 String  action = node.getAttribute("action");
                 String  retry  = node.getAttribute("retry");
-                String  maybe  = node.getAttribute("meybe");
+                String  maybe  = node.getAttribute("maybe");
                 String  desc   = node.getAttribute("desc");
                 task.on(event, action, maybe, desc, retry);
             }

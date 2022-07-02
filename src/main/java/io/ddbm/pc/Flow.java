@@ -52,7 +52,7 @@ public class Flow {
             digest.warn("flow:{},id:{},from:{},event:{},action:{},pause:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), e.getMessage());
             throw e;
         } catch (InterruptException e) {
-            digest.error("flow:{},id:{},from:{},event:{},error:", name, request.getId(), e.getNode(), event, e);
+            digest.error("flow:{},id:{},from:{},event:{},error:{}", name, request.getId(), e.getNode(), event, e.getMessage());
             throw e;
         }
     }

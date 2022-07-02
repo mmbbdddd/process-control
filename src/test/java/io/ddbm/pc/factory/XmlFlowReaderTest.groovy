@@ -1,11 +1,15 @@
 package io.ddbm.pc.factory
 
+import io.ddbm.pc.Action
 import io.ddbm.pc.Flow
 import io.ddbm.pc.config.PcConfiguration
 import ognl.Ognl
 import org.junit.Before
 import org.junit.Test
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.FilterType
 import org.springframework.core.io.ClassPathResource
 
 public class XmlFlowReaderTest {
@@ -15,6 +19,7 @@ public class XmlFlowReaderTest {
     @Before
     public void setup() throws Exception {
         ctx.register(PcConfiguration.class);
+        ctx.register(PcConfig.class);
         ctx.refresh();
 
         XmlFlowReader reader = new XmlFlowReader(new ClassPathResource("/flow/simple.xml").getFile());
@@ -27,6 +32,7 @@ public class XmlFlowReaderTest {
                 "nodes.init.name"                          : "init",
                 "nodes.init.fluent"                        : Boolean.TRUE,
                 "nodes.data_process.fluent"                : Boolean.FALSE,
+                "nodes.shenpi.fluent"                      : Boolean.TRUE,
                 "nodes.su.name"                            : "su",
                 "nodes.data_process.name"                  : "data_process",
                 "nodes.data_process.events.next.retry"     : "10",
@@ -42,6 +48,13 @@ public class XmlFlowReaderTest {
             String value = entry.getValue();
             println(String.format("%s:%s", Ognl.getValue(key, flow), value))
         }
+    }
+
+    @Configuration
+    @ComponentScan(basePackages = "io.ddbm.pc.simple", includeFilters = [
+            @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = Action.class)
+    ])
+    static class PcConfig {
     }
 
 

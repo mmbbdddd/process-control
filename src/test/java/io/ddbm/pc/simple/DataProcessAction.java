@@ -8,6 +8,5 @@ import io.ddbm.pc.exception.PauseException;
 public class DataProcessAction implements Action {
     @Override
     public void execute(FlowContext ctx) throws PauseException, InterruptException {
-        ctx.getRequest().setStatus("shenpi");
     }
 }

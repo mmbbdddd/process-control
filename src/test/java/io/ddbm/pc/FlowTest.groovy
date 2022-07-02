@@ -3,7 +3,6 @@ package io.ddbm.pc
 import io.ddbm.pc.exception.InterruptException
 import io.ddbm.pc.simple.SimpleOrder
 import org.junit.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.testng.Assert
 
 class FlowTest extends BaseTest {
@@ -14,6 +13,7 @@ class FlowTest extends BaseTest {
         Flow flow = Flows.get("simple");
 
         SimpleOrder s = new SimpleOrder(Math.random());
+        s.setStatus("shenpi")
         flow.execute(s, "next")
         flow.execute(s, "next")
         flow.execute(s, "next")
@@ -21,8 +21,16 @@ class FlowTest extends BaseTest {
 
     @Test
     public void pc() {
-        SimpleOrder s = new SimpleOrder(Math.random());
-        pc.chaos("simple", s, null)
+
+        1.times {
+            try {
+                SimpleOrder s = new SimpleOrder(Math.random());
+//                s.setStatus("shenpi")
+                pc.chaos("simple", s, null)
+            } catch (Exception e) {
+
+            }
+        }
     }
 
     @Test

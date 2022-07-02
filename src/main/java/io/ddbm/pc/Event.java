@@ -8,8 +8,9 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -18,7 +19,7 @@ public class Event {
     String        event;
     ActionPlugins action;
     Integer       retry;
-    List<String>  maybe;
+    Set<String>   maybe;
     String        desc;
 
 
@@ -29,9 +30,15 @@ public class Event {
         this.event  = event;
         this.action = new ActionPlugins(actionDSL, Action.dsl(actionDSL));
         if (StringUtils.isEmpty(maybe)) {
-            this.maybe = Arrays.asList(on.getName());
+            HashSet<String> s = new HashSet<>();
+            s.add(on.getName());
+            this.maybe = s;
+        } else if (!maybe.contains(",")) {
+            HashSet<String> s = new HashSet<>();
+            s.add(maybe);
+            this.maybe = s;
         } else {
-            this.maybe = Arrays.stream(maybe.split(",")).collect(Collectors.toList());
+            this.maybe = Arrays.stream(maybe.split(",")).collect(Collectors.toSet());
         }
         this.desc  = desc;
         this.retry = StringUtils.isEmpty(retry) ? Coast.DEFAULT_RETRY : Integer.valueOf(retry);
