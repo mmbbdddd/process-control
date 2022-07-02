@@ -6,10 +6,13 @@ import io.ddbm.pc.FlowContext;
 import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.exception.PauseException;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ActionPlugins {
+    Logger logger = LoggerFactory.getLogger(getClass());
     @Getter
     private String       actionName;
     @Getter
@@ -23,7 +26,7 @@ public class ActionPlugins {
 
 
     public void execute(FlowContext ctx) throws PauseException, InterruptException {
-        preAction(ctx, this);
+        preAction(ctx);
         try {
             if (null != actions) {
                 for (Action action : actions) {
@@ -36,17 +39,17 @@ public class ActionPlugins {
         } catch (PauseException | InterruptException e) {
             Integer c = (Integer) ctx.getSession().get(Coast.TOTAL_ERROR, 0);
             ctx.getSession().set(Coast.TOTAL_ERROR, c + 1);
-            onActionError(ctx, this, e);
+            onActionError(ctx, e);
             throw e;
         } catch (Exception e) {
             Integer c = (Integer) ctx.getSession().get(Coast.TOTAL_ERROR, 0);
             ctx.getSession().set(Coast.TOTAL_ERROR, c + 1);
-            onActionError(ctx, this, e);
+            onActionError(ctx, e);
             throw new PauseException(ctx, e);
         } finally {
             Integer c = (Integer) ctx.getSession().get(Coast.TOTAL_COUNT, 0);
             ctx.getSession().set(Coast.TOTAL_COUNT, c + 1);
-            actionFinally(ctx, this);
+            actionFinally(ctx);
         }
     }
 
@@ -56,37 +59,37 @@ public class ActionPlugins {
             try {
                 plugin.postAction(ctx);
             } catch (Exception e) {
-                //todo
+                logger.warn("", e);
             }
         });
     }
 
-    private void preAction(FlowContext ctx, ActionPlugins actionWrapper) {
+    private void preAction(FlowContext ctx) {
         ctx.getFlow().getPlugins().forEach(plugin -> {
             try {
                 plugin.preAction(ctx);
             } catch (Exception e) {
-                //todo
+                logger.warn("", e);
             }
         });
     }
 
-    private void onActionError(FlowContext ctx, ActionPlugins action, Exception e) {
+    private void onActionError(FlowContext ctx, Exception e) {
         ctx.getFlow().getPlugins().forEach(plugin -> {
             try {
                 plugin.onActionError(ctx, e);
             } catch (Exception e1) {
-                //todo
+                logger.warn("", e);
             }
         });
     }
 
-    private void actionFinally(FlowContext ctx, ActionPlugins action) {
+    private void actionFinally(FlowContext ctx) {
         ctx.getFlow().getPlugins().forEach(plugin -> {
             try {
                 plugin.actionFinally(ctx);
             } catch (Exception e) {
-                //todo
+                logger.warn("", e);
             }
         });
     }

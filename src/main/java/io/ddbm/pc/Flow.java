@@ -19,6 +19,7 @@ import java.util.Objects;
  */
 @Getter
 public class Flow {
+    Logger                logger = LoggerFactory.getLogger(getClass());
     Logger                digest = LoggerFactory.getLogger("digest");
     String                name;
     Map<String, TaskNode> nodes;
@@ -50,9 +51,11 @@ public class Flow {
         } catch (PauseException e) {
             FlowContext ctx = e.getCtx();
             digest.warn("flow:{},id:{},from:{},event:{},action:{},pause:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), e.getMessage());
+            logger.warn("", e);
             throw e;
         } catch (InterruptException e) {
             digest.error("flow:{},id:{},from:{},event:{},error:{}", name, request.getId(), e.getNode(), event, e.getMessage());
+            logger.warn("", e);
             throw e;
         }
     }
