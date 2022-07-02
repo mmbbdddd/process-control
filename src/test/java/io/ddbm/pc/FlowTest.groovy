@@ -3,9 +3,11 @@ package io.ddbm.pc
 import io.ddbm.pc.exception.InterruptException
 import io.ddbm.pc.simple.SimpleOrder
 import org.junit.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.testng.Assert
 
 class FlowTest extends BaseTest {
+
 
     @Test
     public void dumpHead() {
@@ -15,6 +17,12 @@ class FlowTest extends BaseTest {
         flow.execute(s, "next")
         flow.execute(s, "next")
         flow.execute(s, "next")
+    }
+
+    @Test
+    public void pc() {
+        SimpleOrder s = new SimpleOrder(Math.random());
+        pc.chaos("simple", s, null)
     }
 
     @Test

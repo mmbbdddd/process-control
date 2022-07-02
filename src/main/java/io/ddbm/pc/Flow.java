@@ -39,13 +39,14 @@ public class Flow {
     /**
      * 单步执行
      */
-    public void execute(FlowRequest request, String event) throws PauseException, InterruptException {
+    public FlowContext execute(FlowRequest request, String event) throws PauseException, InterruptException {
         Assert.notNull(request, "request is null");
-        Assert.notNull(event, "event is null");
+        event = StringUtils.isEmpty(event) ? Coast.DEFAULT_EVENT : event;
         try {
             FlowContext ctx = new FlowContext(this, request, event);
             ctx.getEvent().execute(ctx);
             digest.info("flow:{},id:{},from:{},event:{},action:{},to:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), ctx.getRequest().getStatus());
+            return ctx;
         } catch (PauseException e) {
             FlowContext ctx = e.getCtx();
             digest.warn("flow:{},id:{},from:{},event:{},action:{},pause:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), e.getMessage());

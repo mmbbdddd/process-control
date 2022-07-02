@@ -9,6 +9,7 @@ import org.springframework.context.annotation.FilterType
 
 class BaseTest {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+    public  Pc pc;
 
     @Before
     public void setup() {
@@ -16,6 +17,7 @@ class BaseTest {
         ctx.register(PcConfig)
         ctx.refresh()
 
+        pc = ctx.getBean(Pc.class)
     }
 
     @Configuration
