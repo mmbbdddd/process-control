@@ -37,8 +37,6 @@ public class Pc {
                         _ctx.setInterrupt(true, e);
                     }
                 });
-            } else if (null != ctx) {
-                logger.info("flow:{},id:{},node:{},stop reason:{}", flowName, request.getId(), request.getStatus(), ctx.getInterruptMessage());
             }
         }
         return ctx;
