@@ -8,14 +8,18 @@ import org.testng.Assert
 class FlowTest extends BaseTest {
 
     @Test
-    public void test1() {
+    public void dumpHead() {
         Flow flow = Flows.get("simple");
 
-        flow.execute(new SimpleOrder(), null)
-        flow.execute(new SimpleOrder(), "next")
-        SimpleOrder s = new SimpleOrder();
-        s.setStatus(null)
+        SimpleOrder s = new SimpleOrder(Math.random());
         flow.execute(s, "next")
+        flow.execute(s, "next")
+        flow.execute(s, "next")
+    }
+
+    @Test
+    public void in_outTest() {
+        Flow flow = Flows.get("simple");
 
         Assert.assertThrows(IllegalArgumentException.class, new Assert.ThrowingRunnable() {
             @Override
@@ -26,7 +30,7 @@ class FlowTest extends BaseTest {
         Assert.assertThrows(InterruptException.class, new Assert.ThrowingRunnable() {
             @Override
             void run() throws Throwable {
-                flow.execute(new SimpleOrder(), "a")
+                flow.execute(new SimpleOrder(Math.random()), "a")
             }
         })
     }

@@ -23,7 +23,8 @@ public class FlowContext {
         this.flow    = flow;
         this.request = request;
         this.node    = flow.nodeOf(request.getStatus());
-        this.event   = this.node.getEvent(event);
+        this.request.setStatus(node.getName());
+        this.event = this.node.getEvent(event);
         if (request.getSession() == null) {
             this.session = SpringUtils.getBean(RedisSession.class);
         } else {

@@ -40,15 +40,18 @@ public class Flow {
      * 单步执行
      */
     public void execute(FlowRequest request, String event) throws PauseException, InterruptException {
+        Assert.notNull(request, "request is null");
+        Assert.notNull(event, "event is null");
         try {
             FlowContext ctx = new FlowContext(this, request, event);
             ctx.getEvent().execute(ctx);
+            digest.info("flow:{},id:{},from:{},event:{},action:{},to:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), ctx.getRequest().getStatus());
         } catch (PauseException e) {
             FlowContext ctx = e.getCtx();
-            digest.info("flow:{},id:{},from:{},to:{}", name, request.getId(), ctx.getNode().getName(), ctx.getRequest().getStatus());
+            digest.warn("flow:{},id:{},from:{},event:{},action:{},pause:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), e.getMessage());
             throw e;
         } catch (InterruptException e) {
-            digest.error("flow:{},id:{},from:{},error:", name, request.getId(), e.getNode(), e);
+            digest.error("flow:{},id:{},from:{},event:{},error:", name, request.getId(), e.getNode(), event, e);
             throw e;
         }
     }
