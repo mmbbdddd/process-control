@@ -29,6 +29,9 @@ public class FlowContext {
         this.flow    = flow;
         this.request = request;
         this.node    = flow.nodeOf(request.getStatus());
+        if (this.node.type == TaskNode.Type.END) {
+            throw InterruptException.nodeIsEnd(this.node.name);
+        }
         this.request.setStatus(node.getName());
         this.event = this.node.getEvent(event);
         if (request.getSession() == null) {

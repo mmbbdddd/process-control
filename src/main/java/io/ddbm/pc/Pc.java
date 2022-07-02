@@ -63,7 +63,7 @@ public class Pc {
                         if (d < 0.1) {
                             throw new PauseException(ctx, "随机出个暂停异常");
                         } else if (d < 0.2) {
-                            throw new InterruptException("随机出个中断异常", ctx.getRequest().getStatus());
+//                            throw new InterruptException("随机出个中断异常", ctx.getRequest().getStatus());
                         } else if (d < 0.3) {
                             throw new RuntimeException("随机出个异常");
                         }

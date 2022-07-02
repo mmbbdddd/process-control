@@ -5,7 +5,7 @@
         <on event="next" action="initAction" maybe="data_process"></on>
     </start>
     <end name="su"/>
-    <end name="reject"/>
+    <end name="cancel"/>
     <end name="fail"/>
     <node name="data_process" fluent="false">
         <on event="next" action="dataProcessAction" maybe="data_process,shenpi"></on>
@@ -22,7 +22,7 @@
     </node>
     <!--    人工处理-->
     <node name="rengong">
-        <on event="pass" action="passAction" maybe="su"></on>
+        <on event="next" action="passAction" maybe="su"></on>
         <on event="fail" maybe="fail"></on>
         <on event="cancel" maybe="fail"></on>
     </node>

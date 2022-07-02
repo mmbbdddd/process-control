@@ -23,4 +23,8 @@ public class InterruptException extends Exception {
     public static InterruptException noSuchNode(String node) {
         return new InterruptException("no such node:" + node, node);
     }
+
+    public static InterruptException nodeIsEnd(String node) {
+        return new InterruptException(node+" is end "  , node);
+    }
 }
