@@ -102,9 +102,8 @@ public class FlowContext {
         }
     }
 
-    public boolean chaosIsStop() {
-        return (Boolean) session.get(Coast.INTERRUPT, false)
-                || node.type == Task.Type.END
+    public Boolean chaosIsStop() {
+        return   node.type == Task.Type.END
                 || 100 < (Integer) session.get(Coast.EVENT_COUNT(event), 0);
 
     }

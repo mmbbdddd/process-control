@@ -103,7 +103,7 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
     }
 
 
-    public FlowContext test(String flowName, FlowRequest request, String event) throws InterruptException {
+    public FlowContext test(String flowName, FlowRequest request, String event) {
         Assert.notNull(flowName, "flowName is null");
         Flow flow = Flows.get(flowName);
         Assert.notNull(flow, "flow[" + flowName + "] not exist");
