@@ -1,6 +1,7 @@
 package io.ddbm.pc;
 
 import io.ddbm.pc.exception.InterruptException;
+import io.ddbm.pc.notify.AsyncResultNotify;
 import io.ddbm.pc.simple.SimpleOrder;
 import io.ddbm.pc.utils.TimeoutWatch;
 import org.junit.Test;
@@ -23,9 +24,13 @@ public class PcTest extends BaseTest {
     public void async() {
         SimpleOrder s = new SimpleOrder(Math.random());
         try {
+            AsyncResultNotify notify = new AsyncResultNotify();
             pc.async("simple", s, null);
             Thread.sleep(1000l);
+            System.out.println(s.getStatus());
         } catch (InterruptException | InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

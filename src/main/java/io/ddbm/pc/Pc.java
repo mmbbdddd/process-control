@@ -3,6 +3,7 @@ package io.ddbm.pc;
 import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.exception.PauseException;
 import io.ddbm.pc.exception.TimeoutException;
+import io.ddbm.pc.notify.SyncResultNotify;
 import io.ddbm.pc.utils.TimeoutWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,26 +16,23 @@ import org.springframework.util.Assert;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowEvent> {
     Logger logger = LoggerFactory.getLogger(getClass());
     private ApplicationContext app;
 
-    public void execute(String flowName, FlowRequest request, String event, FlowResultListener listener) {
+    public void execute(String flowName, FlowRequest request, String event, ResultNotify resultNotify) {
         Assert.notNull(flowName, "flowName is null");
         Flow flow = Flows.get(flowName);
         Assert.notNull(flow, "flow[" + flowName + "] not exist");
-        flow.execute(request, event, listener);
+        flow.execute(request, event, resultNotify);
     }
 
     /**
      * 一次请求，跑到结束或者异常 ，并发挥异常
      */
     public FlowContext sync(String flowName, FlowRequest request, String event, TimeoutWatch timeout) throws InterruptException, TimeoutException {
-        AtomicReference<FlowContext> holder = new AtomicReference<>(null);
-
-        execute(flowName, request, event, new FlowResultListener() {
+        SyncResultNotify syncNotify = new SyncResultNotify(timeout) {
             @Override
             public void onResult(FlowContext ctx) {
                 if (!ctx.syncIsStop(logger) && !timeout.isTimeout()) {
@@ -42,9 +40,10 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
                 } else if (timeout.isTimeout()) {
                     TimeoutException e = new TimeoutException();
                     ctx.setInterrupt(true, e);
-                    throw e;
+                    this.e = e;
                 } else {
-                    holder.set(ctx);
+                    this.result = ctx;
+                    this.e      = null;
                 }
             }
 
@@ -55,29 +54,27 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
                 } else if (timeout.isTimeout()) {
                     TimeoutException e2 = new TimeoutException();
                     e.getCtx().setInterrupt(true, e2);
-                    throw e2;
+                    this.e = e2;
                 } else {
-                    holder.set(e.getCtx());
+                    this.result = e.getCtx();
+                    this.e      = null;
                 }
             }
-        });
-
-        return holder.get();
+        };
+        execute(flowName, request, event, syncNotify);
+        return syncNotify.getResult();
     }
 
     /**
      * 一次请求，跑到结束或者异常，首节点返回。其他节点异步。
      */
-    public FlowContext async(String flowName, FlowRequest request, String event) {
-        AtomicReference<FlowContext> holder = new AtomicReference<>(null);
+    public void async(String flowName, FlowRequest request, String event) {
 
-        execute(flowName, request, event, new FlowResultListener() {
+        execute(flowName, request, event, new ResultNotify() {
             @Override
             public void onResult(FlowContext ctx) {
                 if (!ctx.asyncIsStop(logger)) {
                     app.publishEvent(new FlowEvent(flowName, request, ctx));
-                } else {
-                    holder.set(ctx);
                 }
             }
 
@@ -85,12 +82,14 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
             public void onPauseException(PauseException e) {
                 if (!e.getCtx().asyncIsStop(logger)) {
                     app.publishEvent(new FlowEvent(flowName, request, e.getCtx()));
-                } else {
-                    holder.set(e.getCtx());
                 }
             }
+
+            @Override
+            public void onInterruptException(InterruptException e) {
+                throw e;
+            }
         });
-        return holder.get();
     }
 
 
@@ -109,20 +108,21 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
         Flow flow = Flows.get(flowName);
         Assert.notNull(flow, "flow[" + flowName + "] not exist");
         injectMockAction(flow);
-        AtomicReference<FlowContext> holder = new AtomicReference<>(null);
-
-        execute(flowName, request, event, new FlowResultListener() {
+        SyncResultNotify syncNotify = new SyncResultNotify(null) {
             @Override
             public void onResult(FlowContext ctx) {
-                holder.set(ctx);
+                this.result = ctx;
             }
 
             @Override
             public void onPauseException(PauseException e) {
-                holder.set(e.getCtx());
+                this.result = e.getCtx();
             }
-        });
-        return holder.get();
+        };
+
+
+        execute(flowName, request, event, syncNotify);
+        return syncNotify.getResult();
     }
 
     private void injectMockAction(Flow flow) {
@@ -180,9 +180,4 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
         }
     }
 
-    interface FlowResultListener {
-        void onResult(FlowContext ctx);
-
-        void onPauseException(PauseException e);
-    }
 }
