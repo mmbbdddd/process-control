@@ -40,7 +40,7 @@ public class Flow {
     /**
      * 单步执行
      */
-    public void execute(FlowRequest request, String event, Pc.FlowResultListener listener) throws Exception {
+    public void execute(FlowRequest request, String event, Pc.FlowResultListener listener)   {
         Assert.notNull(request, "request is null");
         event = StringUtils.isEmpty(event) ? Coast.DEFAULT_EVENT : event;
         try {
@@ -56,7 +56,7 @@ public class Flow {
         } catch (InterruptException e) {
             digest.error("flow:{},id:{},from:{},event:{},error:{}", name, request.getId(), e.getNode(), event, e.getMessage());
 //            logger.warn("", e);
-            listener.onInterruptException(e);
+            throw e;
         }
     }
 

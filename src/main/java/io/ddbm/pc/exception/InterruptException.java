@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * 流程停止异常。
  */
-public class InterruptException extends Exception {
+public class InterruptException extends RuntimeException {
     @Getter
     String node;
 

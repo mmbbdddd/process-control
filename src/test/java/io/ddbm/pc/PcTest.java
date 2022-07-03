@@ -6,7 +6,6 @@ import io.ddbm.pc.utils.TimeoutWatch;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class PcTest extends BaseTest {
 
@@ -15,12 +14,11 @@ public class PcTest extends BaseTest {
         SimpleOrder s = new SimpleOrder(Math.random());
         try {
             pc.sync("simple", s, null, new TimeoutWatch(2, TimeUnit.MILLISECONDS));
-        } catch (InterruptException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
+
     @Test
     public void async() {
         SimpleOrder s = new SimpleOrder(Math.random());
@@ -31,12 +29,13 @@ public class PcTest extends BaseTest {
             e.printStackTrace();
         }
     }
+
     @Test
     public void chaos() {
         SimpleOrder s = new SimpleOrder(Math.random());
         try {
             pc.chaos("simple", s, null);
-        } catch (InterruptException     e) {
+        } catch (InterruptException e) {
             e.printStackTrace();
         }
     }
