@@ -8,7 +8,7 @@ public class Coast {
     public static final String INTERRUPT      = "interrupt";
     public static final String INTERRUPT_MESSAGE = "interrupt_message";
 
-    public static String EVENT_COUNT(Event event) {
-        return String.format("%s_%s_%s", event.getOn().name, event.getEvent(), "count");
+    public static String EVENT_COUNT(String node,String event) {
+        return String.format("%s_%s_%s", node, event, "count");
     }
 }

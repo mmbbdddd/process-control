@@ -59,6 +59,13 @@ public class Flow {
         }
     }
 
+    public Boolean chaosIsStop(String node, Session session, String event) {
+        return !nodes.containsKey(node)
+                || nodeOf(node).type == Task.Type.END
+                || 100 < (Integer) session.get(Coast.EVENT_COUNT(node, event), 0);
+
+    }
+
     public Task nodeOf(String node) throws InterruptException {
         if (StringUtils.isEmpty(node)) {
             return startNode();

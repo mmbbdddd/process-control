@@ -65,7 +65,7 @@ public class FlowContext {
                     || node.type == Task.Type.END
                     || 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0)
                     || 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0)
-                    || event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0);
+                    || event.retry < (Integer) session.get(Coast.EVENT_COUNT(request.getStatus(), event.getEvent()), 0);
             return result;
         } finally {
             if (null != logger) {
@@ -74,7 +74,7 @@ public class FlowContext {
                 logger.debug("\t\t\t\t\t node.type == TaskNode.Type.END:{}", node.type == Task.Type.END);
                 logger.debug("\t\t\t\t\t 10 <  (Integer) session.get(Coast.TOTAL_ERROR, 0):{}", 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0));
                 logger.debug("\t\t\t\t\t 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0):{}", 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0));
-                logger.debug("\t\t\t\t\t event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0):{}", event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0));
+                logger.debug("\t\t\t\t\t event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0):{}", event.retry < (Integer) session.get(Coast.EVENT_COUNT(request.getStatus(), event.getEvent()), 0));
             }
         }
     }
@@ -87,7 +87,7 @@ public class FlowContext {
                     || !node.fluent
                     || 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0)
                     || 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0)
-                    || event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0);
+                    || event.retry < (Integer) session.get(Coast.EVENT_COUNT(request.getStatus(), event.getEvent()), 0);
             return result;
         } finally {
             if (null != logger) {
@@ -97,15 +97,10 @@ public class FlowContext {
                 logger.debug("\t\t\t\t\t !node.fluent:{}", !node.fluent);
                 logger.debug("\t\t\t\t\t 10 <  (Integer) session.get(Coast.TOTAL_ERROR, 0):{}", 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0));
                 logger.debug("\t\t\t\t\t 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0):{}", 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0));
-                logger.debug("\t\t\t\t\t event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0):{}", event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0));
+                logger.debug("\t\t\t\t\t event.retry < (Integer) session.get(Coast.EVENT_COUNT(event), 0):{}", event.retry < (Integer) session.get(Coast.EVENT_COUNT(request.getStatus(),event.getEvent()), 0));
             }
         }
     }
 
-    public Boolean chaosIsStop() {
-        return   node.type == Task.Type.END
-                || 100 < (Integer) session.get(Coast.EVENT_COUNT(event), 0);
-
-    }
 
 }

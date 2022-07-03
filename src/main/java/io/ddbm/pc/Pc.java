@@ -119,8 +119,6 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
                 this.result = e.getCtx();
             }
         };
-
-
         execute(flowName, request, event, syncNotify);
         return syncNotify.getResult();
     }
@@ -154,8 +152,9 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
     }
 
     public FlowContext chaos(String flowName, FlowRequest request, String event) {
-        FlowContext ctx = test(flowName, request, event);
-        if (!ctx.chaosIsStop()) {
+        Flow        flow = Flows.get(flowName);
+        FlowContext ctx  = test(flowName, request, event);
+        if (!flow.chaosIsStop(request.getStatus(), request.getSession(), event)) {
             chaos(flowName, request, Coast.DEFAULT_EVENT);
         }
         return ctx;
