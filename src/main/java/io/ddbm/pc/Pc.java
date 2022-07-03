@@ -37,7 +37,7 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
             execute(flowName, request, event, new FlowResultListener() {
                 @Override
                 public void onResult(FlowContext ctx) throws Exception {
-                    if (!ctx.isStop(logger) && !timeout.isTimeout()) {
+                    if (!ctx.syncIsStop(logger) && !timeout.isTimeout()) {
                         sync(flowName, request, event, timeout);
                     } else if (timeout.isTimeout()) {
                         throw new TimeoutException();
@@ -48,7 +48,7 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
 
                 @Override
                 public void onPauseException(PauseException e) throws Exception {
-                    if (!e.getCtx().isStop(logger) && !timeout.isTimeout()) {
+                    if (!e.getCtx().syncIsStop(logger) && !timeout.isTimeout()) {
                         sync(flowName, request, event, timeout);
                     } else if (timeout.isTimeout()) {
                         throw new TimeoutException();
@@ -81,7 +81,7 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
             execute(flowName, request, event, new FlowResultListener() {
                 @Override
                 public void onResult(FlowContext ctx) throws Exception {
-                    if (!ctx.isStop(logger)) {
+                    if (!ctx.asyncIsStop(logger)) {
                         app.publishEvent(new FlowEvent(flowName, request, ctx));
                     } else {
                         holder.set(ctx);
@@ -90,7 +90,7 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
 
                 @Override
                 public void onPauseException(PauseException e) throws Exception {
-                    if (!e.getCtx().isStop(logger)) {
+                    if (!e.getCtx().asyncIsStop(logger)) {
                         app.publishEvent(new FlowEvent(flowName, request, e.getCtx()));
                     } else {
                         holder.set(e.getCtx());
@@ -178,7 +178,7 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
 
     public FlowContext chaos(String flowName, FlowRequest request, String event) throws InterruptException {
         FlowContext ctx = test(flowName, request, event);
-        if (!ctx.isStop()) {
+        if (!ctx.chaosIsStop()) {
             try {
                 chaos(flowName, request, Coast.DEFAULT_EVENT);
             } catch (InterruptException e) {
