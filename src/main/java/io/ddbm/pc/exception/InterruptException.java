@@ -2,6 +2,9 @@ package io.ddbm.pc.exception;
 
 import lombok.Getter;
 
+/**
+ * 流程停止异常。
+ */
 public class InterruptException extends Exception {
     @Getter
     String node;

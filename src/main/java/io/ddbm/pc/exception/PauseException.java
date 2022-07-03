@@ -3,6 +3,9 @@ package io.ddbm.pc.exception;
 import io.ddbm.pc.FlowContext;
 import lombok.Getter;
 
+/**
+ * 流程暂停异常。
+ */
 @Getter
 public class PauseException extends Exception {
 

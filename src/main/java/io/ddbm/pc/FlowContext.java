@@ -61,7 +61,7 @@ public class FlowContext {
         this.interruptMessage = e.getMessage();
     }
 
-    public boolean isPause(Logger logger) {
+    public boolean isStop(Logger logger) {
         Boolean result = null;
         try {
             result = interrupt
@@ -84,7 +84,7 @@ public class FlowContext {
         }
     }
 
-    public boolean isPause() {
+    public boolean isStop() {
         return interrupt
                 || node.type == Task.Type.END
                 || 100 < (Integer) session.get(Coast.EVENT_COUNT(event), 0);

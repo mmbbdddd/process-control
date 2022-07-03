@@ -25,13 +25,36 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
         return flow.execute(request, event);
     }
 
-    public FlowContext fluent(String flowName, FlowRequest request, String event) throws PauseException, InterruptException {
+    /**
+     * 一次请求，跑到结束或者异常 ，并发挥异常
+     */
+    public FlowContext sync(String flowName, FlowRequest request, String event) throws InterruptException {
         FlowContext ctx = null;
         try {
             ctx = execute(flowName, request, event);
+        } catch (PauseException e) {
+            ctx = e.getCtx();
         } finally {
             final FlowContext _ctx = ctx;
-            if (null != _ctx && !_ctx.isPause(logger)) {
+            if (null != _ctx && !_ctx.isStop(logger)) {
+                sync(flowName, request, event);
+            }
+        }
+        return ctx;
+    }
+
+    /**
+     * 一次请求，跑到结束或者异常，首节点返回。其他节点异步。
+     */
+    public FlowContext async(String flowName, FlowRequest request, String event) throws InterruptException {
+        FlowContext ctx = null;
+        try {
+            ctx = execute(flowName, request, event);
+        } catch (PauseException e) {
+            ctx = e.getCtx();
+        } finally {
+            final FlowContext _ctx = ctx;
+            if (null != _ctx && !_ctx.isStop(logger)) {
                 app.publishEvent(new FlowEvent(flowName, request, ctx));
             }
         }
@@ -42,8 +65,8 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
     @Override
     public void onApplicationEvent(FlowEvent fe) {
         try {
-            fluent(fe.flowName, fe.request, Coast.DEFAULT_EVENT);
-        } catch (PauseException | InterruptException e) {
+            async(fe.flowName, fe.request, Coast.DEFAULT_EVENT);
+        } catch (InterruptException e) {
             fe.ctx.setInterrupt(true, e);
         }
     }
@@ -94,7 +117,7 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
                 ctx = e.getCtx();
             }
         } finally {
-            if (null != ctx && !ctx.isPause()) {
+            if (null != ctx && !ctx.isStop()) {
                 try {
                     chaos(flowName, request, Coast.DEFAULT_EVENT);
                 } catch (InterruptException e) {
