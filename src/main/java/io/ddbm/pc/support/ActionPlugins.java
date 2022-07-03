@@ -95,7 +95,7 @@ public class ActionPlugins {
     }
 
 
-    public void injectChaosAction(List<Action> action) {
+    public void setAction(List<Action> action) {
         this.actions = action;
     }
 }

@@ -61,6 +61,7 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
         flow.getNodes().forEach((nn, node) -> {
             node.events.forEach((en, event) -> {
                 List<Action> action = Arrays.asList(new Action() {
+                    //                    构建混沌action
                     @Override
                     public void execute(FlowContext ctx) throws PauseException, InterruptException {
                         Double d = Math.random();
@@ -70,12 +71,16 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
 //                            throw new InterruptException("随机出个中断异常", ctx.getRequest().getStatus());
                         } else if (d < 0.3) {
                             throw new RuntimeException("随机出个异常");
+                        } else if (d < 0.4) {
+                            ctx.getRequest().setStatus("_randomNode");
+                        } else {
+//                        随机出个目标节点
+                            String chaoNode = ctx.chaosNode();
+                            ctx.getRequest().setStatus(chaoNode);
                         }
-                        String chaoNode = ctx.chaosNode();
-                        ctx.getRequest().setStatus(chaoNode);
                     }
                 });
-                event.action.injectChaosAction(action);
+                event.action.setAction(action);
             });
         });
     }

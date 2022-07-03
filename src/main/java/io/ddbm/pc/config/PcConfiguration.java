@@ -26,13 +26,6 @@ public class PcConfiguration {
         return new SpringUtils();
     }
 
-//    @Bean
-//    PcProperties pcProperties() {
-//        PcProperties props = new PcProperties();
-//        props.flowPath = "/flow";
-//        return props;
-//    }
-
     @Bean
     XmlFlowFactory xmlFlowFactory() {
         return new XmlFlowFactory();
