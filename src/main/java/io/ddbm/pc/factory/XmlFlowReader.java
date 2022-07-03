@@ -11,11 +11,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 
 public class XmlFlowReader {
-    Document           doc;
-    FlowBuilder        fb;
+    Document    doc;
+    FlowBuilder fb;
 
 
-    public XmlFlowReader( File file) throws Exception {
+    public XmlFlowReader(File file) throws Exception {
         doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
         doc.getDocumentElement().normalize();
     }
@@ -29,7 +29,7 @@ public class XmlFlowReader {
         String name = flow.getAttribute("name");
         fb = new FlowBuilder(name);
         parseFlowChilds(flow.getChildNodes());
-        return fb.build( );
+        return fb.build();
     }
 
     public void parseFlowChilds(NodeList list) {
@@ -53,7 +53,7 @@ public class XmlFlowReader {
                     fb.addNode(task);
                     break;
                 case "plugins":
-                    fb.addNode(parsePlugins((Element) node));
+                    parsePlugins((Element) node);
                     break;
             }
         }
@@ -82,16 +82,13 @@ public class XmlFlowReader {
         }
     }
 
-    public TaskNode parsePlugins(Element node) {
-        String   name   = node.getAttribute("name");
-        String   fluent = node.getAttribute("fluent");
-        TaskNode task   = new TaskNode(TaskNode.Type.TASK, name, fluent);
-        paserPlugin(node.getChildNodes(), task);
-        return task;
+    public void parsePlugins(Element node) {
+        String name = node.getAttribute("name");
+        paserPlugin(node.getChildNodes());
     }
 
 
-    public void paserPlugin(NodeList list, TaskNode task) {
+    public void paserPlugin(NodeList list) {
         for (int i = 0; i < list.getLength(); i++) {
             if (list.item(i) instanceof Element) {
                 Element node = (Element) list.item(i);

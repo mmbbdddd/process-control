@@ -16,6 +16,10 @@ public class InterruptException extends Exception {
         this.node = node;
     }
 
+
+
+
+
     public static InterruptException noSuchEvent(String event, String node) {
         return new InterruptException(node + " not support event:" + event, node);
     }
