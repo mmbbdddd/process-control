@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class PauseException extends Exception {
 
-    private FlowContext ctx;
+    private final FlowContext ctx;
     private Exception   cause;
 
     public PauseException(FlowContext ctx, Exception e) {

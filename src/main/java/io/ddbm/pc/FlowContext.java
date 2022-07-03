@@ -15,9 +15,9 @@ import java.util.List;
 public class FlowContext {
     //    当前工作流数据
     private final FlowRequest request;
-    private final Flow  flow;
-    private       Task  node;
-    private       Event event;
+    private final Flow        flow;
+    private       Task        node;
+    private       Event       event;
     private       Session     session;
     private       Boolean     interrupt = false;
     private       String      interruptMessage;

@@ -19,8 +19,8 @@ import java.util.Objects;
  */
 @Getter
 public class Flow {
-    Logger                logger = LoggerFactory.getLogger(getClass());
-    Logger                digest = LoggerFactory.getLogger("digest");
+    Logger             logger = LoggerFactory.getLogger(getClass());
+    Logger             digest = LoggerFactory.getLogger("digest");
     String             name;
     Map<String, Task>  nodes;
     LinkedList<Plugin> plugins;
@@ -40,23 +40,23 @@ public class Flow {
     /**
      * 单步执行
      */
-    public FlowContext execute(FlowRequest request, String event) throws PauseException, InterruptException {
+    public void execute(FlowRequest request, String event, Pc.FlowResultListener listener) throws Exception {
         Assert.notNull(request, "request is null");
         event = StringUtils.isEmpty(event) ? Coast.DEFAULT_EVENT : event;
         try {
             FlowContext ctx = new FlowContext(this, request, event);
             ctx.getEvent().execute(ctx);
             digest.info("flow:{},id:{},from:{},event:{},action:{},to:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), ctx.getRequest().getStatus());
-            return ctx;
+            listener.onResult(ctx);
         } catch (PauseException e) {
             FlowContext ctx = e.getCtx();
             digest.warn("flow:{},id:{},from:{},event:{},action:{},pause:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), e.getMessage());
             logger.warn("", e);
-            throw e;
+            listener.onPauseException(e);
         } catch (InterruptException e) {
             digest.error("flow:{},id:{},from:{},event:{},error:{}", name, request.getId(), e.getNode(), event, e.getMessage());
-            logger.warn("", e);
-            throw e;
+//            logger.warn("", e);
+            listener.onInterruptException(e);
         }
     }
 
