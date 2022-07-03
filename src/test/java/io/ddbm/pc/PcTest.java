@@ -1,26 +1,44 @@
 package io.ddbm.pc;
 
+import io.ddbm.pc.exception.InterruptException;
+import io.ddbm.pc.simple.SimpleOrder;
+import io.ddbm.pc.utils.TimeoutWatch;
 import org.junit.Test;
-import org.springframework.util.Assert;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.TimeoutException;
 
-public class PcTest {
+public class PcTest extends BaseTest {
 
     @Test
     public void sync() {
-
-        ReentrantLock lock = new ReentrantLock();
-        Condition     c    = lock.newCondition();
+        SimpleOrder s = new SimpleOrder(Math.random());
         try {
-            Thread.sleep(2000);
-            c.await(1000, TimeUnit.MICROSECONDS);
-        } catch (InterruptedException e) {
-            Assert.isTrue(true);
+            pc.sync("simple", s, null, new TimeoutWatch(2, TimeUnit.MILLISECONDS));
+        } catch (InterruptException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
         }
-
+    }
+    @Test
+    public void async() {
+        SimpleOrder s = new SimpleOrder(Math.random());
+        try {
+            pc.async("simple", s, null);
+            Thread.sleep(1000l);
+        } catch (InterruptException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void chaos() {
+        SimpleOrder s = new SimpleOrder(Math.random());
+        try {
+            pc.chaos("simple", s, null);
+        } catch (InterruptException     e) {
+            e.printStackTrace();
+        }
     }
 
 }
