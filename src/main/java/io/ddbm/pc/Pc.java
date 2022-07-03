@@ -40,7 +40,9 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
                 if (!ctx.syncIsStop(logger) && !timeout.isTimeout()) {
                     sync(flowName, request, event, timeout);
                 } else if (timeout.isTimeout()) {
-                    throw new TimeoutException();
+                    TimeoutException e = new TimeoutException();
+                    ctx.setInterrupt(true, e);
+                    throw e;
                 } else {
                     holder.set(ctx);
                 }
@@ -51,7 +53,9 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
                 if (!e.getCtx().syncIsStop(logger) && !timeout.isTimeout()) {
                     sync(flowName, request, event, timeout);
                 } else if (timeout.isTimeout()) {
-                    throw new TimeoutException();
+                    TimeoutException e2 = new TimeoutException();
+                    e.getCtx().setInterrupt(true, e2);
+                    throw e2;
                 } else {
                     holder.set(e.getCtx());
                 }
