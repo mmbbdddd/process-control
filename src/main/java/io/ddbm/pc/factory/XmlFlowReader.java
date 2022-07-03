@@ -1,10 +1,9 @@
 package io.ddbm.pc.factory;
 
 import io.ddbm.pc.Flow;
-import io.ddbm.pc.TaskNode;
+import io.ddbm.pc.Task;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,22 +33,22 @@ public class XmlFlowReader {
 
     public void parseFlowChilds(NodeList list) {
         for (int i = 0; i < list.getLength(); i++) {
-            Node   node     = list.item(i);
-            String nodeName = node.getNodeName();
+            org.w3c.dom.Node node     = list.item(i);
+            String           nodeName = node.getNodeName();
             switch (nodeName) {
                 case "start":
-                    TaskNode start = parseNode((Element) node);
-                    start.setType(TaskNode.Type.START);
+                    Task start = parseNode((Element) node);
+                    start.setType(Task.Type.START);
                     fb.addNode(start);
                     break;
                 case "end":
-                    TaskNode end = parseNode((Element) node);
-                    end.setType(TaskNode.Type.END);
+                    Task end = parseNode((Element) node);
+                    end.setType(Task.Type.END);
                     fb.addNode(end);
                     break;
                 case "node":
-                    TaskNode task = parseNode((Element) node);
-                    task.setType(TaskNode.Type.TASK);
+                    Task task = parseNode((Element) node);
+                    task.setType(Task.Type.TASK);
                     fb.addNode(task);
                     break;
                 case "plugins":
@@ -60,15 +59,15 @@ public class XmlFlowReader {
     }
 
 
-    public TaskNode parseNode(Element node) {
-        String   name   = node.getAttribute("name");
-        String   fluent = node.getAttribute("fluent");
-        TaskNode task   = new TaskNode(TaskNode.Type.TASK, name, fluent);
+    public Task parseNode(Element node) {
+        String name   = node.getAttribute("name");
+        String fluent = node.getAttribute("fluent");
+        Task   task   = new Task(Task.Type.TASK, name, fluent);
         paserEvent(node.getChildNodes(), task);
         return task;
     }
 
-    public void paserEvent(NodeList list, TaskNode task) {
+    public void paserEvent(NodeList list, Task task) {
         for (int i = 0; i < list.getLength(); i++) {
             if (list.item(i) instanceof Element) {
                 Element node   = (Element) list.item(i);

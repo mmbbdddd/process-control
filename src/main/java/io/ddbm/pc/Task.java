@@ -14,18 +14,18 @@ import java.util.Objects;
  * 每个节点可以响应指令，路由到目标节点
  */
 @Data
-public class TaskNode {
+public class Task {
     Type               type;
     String             name;
     Boolean            fluent;
     Map<String, Event> events;
 
-    public TaskNode(Type type, String name, String fluent) {
+    public Task(Type type, String name, String fluent) {
         Assert.notNull(type);
         Assert.notNull(name);
         this.type   = type;
         this.name   = name;
-        this.fluent = StringUtils.isEmpty(fluent) ||  fluent.endsWith("true");
+        this.fluent = StringUtils.isEmpty(fluent) || fluent.endsWith("true");
         this.events = new HashMap<>();
     }
 
@@ -49,7 +49,7 @@ public class TaskNode {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TaskNode node = (TaskNode) o;
+        Task node = (Task) o;
         return type == node.type && Objects.equals(name, node.name);
     }
 

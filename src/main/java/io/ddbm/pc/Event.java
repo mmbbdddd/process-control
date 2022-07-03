@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 
 @Getter
 public class Event {
-    TaskNode      on;
-    String        event;
+    Task   on;
+    String event;
     ActionPlugins action;
     Integer       retry;
     Set<String>   maybe;
     String        desc;
 
 
-    public Event(TaskNode on, String event, String actionDSL, String maybe, String desc, String retry) {
+    public Event(Task on, String event, String actionDSL, String maybe, String desc, String retry) {
         Assert.notNull(event);
         Assert.notNull(on);
         this.on     = on;

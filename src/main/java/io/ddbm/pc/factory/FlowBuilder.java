@@ -1,8 +1,8 @@
 package io.ddbm.pc.factory;
 
 import io.ddbm.pc.Flow;
+import io.ddbm.pc.Task;
 import io.ddbm.pc.Plugin;
-import io.ddbm.pc.TaskNode;
 import io.ddbm.pc.utils.SpringUtils;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class FlowBuilder {
         return flow;
     }
 
-    public void addNode(TaskNode node) {
+    public void addNode(Task node) {
         this.flow.addNode(node);
     }
 

@@ -15,9 +15,9 @@ import java.util.List;
 public class FlowContext {
     //    当前工作流数据
     private final FlowRequest request;
-    private final Flow        flow;
-    private       TaskNode    node;
-    private       Event       event;
+    private final Flow  flow;
+    private       Task  node;
+    private       Event event;
     private       Session     session;
     private       Boolean     interrupt = false;
     private       String      interruptMessage;
@@ -29,7 +29,7 @@ public class FlowContext {
         this.flow    = flow;
         this.request = request;
         this.node    = flow.nodeOf(request.getStatus());
-        if (this.node.type == TaskNode.Type.END) {
+        if (this.node.type == Task.Type.END) {
             throw InterruptException.nodeIsEnd(this.node.name);
         }
         this.request.setStatus(node.getName());
@@ -44,7 +44,7 @@ public class FlowContext {
 
     public String chaosNode() {
         //获取当前节点的所有event和maybe
-        TaskNode     node     = flow.getNode(request.getStatus());
+        Task         node     = flow.getNode(request.getStatus());
         List<String> allMaybe = new ArrayList<>();
         for (Event e : node.events.values()) {
             allMaybe.addAll(e.getMaybe());
@@ -65,7 +65,7 @@ public class FlowContext {
         Boolean result = null;
         try {
             result = interrupt
-                    || node.type == TaskNode.Type.END
+                    || node.type == Task.Type.END
                     || !node.fluent
                     || 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0)
                     || 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0)
@@ -75,7 +75,7 @@ public class FlowContext {
             if (null != logger) {
                 logger.debug("\t\t  isPause:{},{}", result, interruptMessage);
                 logger.debug("\t\t\t\t\t interrupt:{}", interrupt);
-                logger.debug("\t\t\t\t\t node.type == TaskNode.Type.END:{}", node.type == TaskNode.Type.END);
+                logger.debug("\t\t\t\t\t node.type == TaskNode.Type.END:{}", node.type == Task.Type.END);
                 logger.debug("\t\t\t\t\t !node.fluent:{}", !node.fluent);
                 logger.debug("\t\t\t\t\t 10 <  (Integer) session.get(Coast.TOTAL_ERROR, 0):{}", 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0));
                 logger.debug("\t\t\t\t\t 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0):{}", 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0));
@@ -86,7 +86,7 @@ public class FlowContext {
 
     public boolean isPause() {
         return interrupt
-                || node.type == TaskNode.Type.END
+                || node.type == Task.Type.END
                 || 100 < (Integer) session.get(Coast.EVENT_COUNT(event), 0);
 
     }

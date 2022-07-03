@@ -21,9 +21,9 @@ import java.util.Objects;
 public class Flow {
     Logger                logger = LoggerFactory.getLogger(getClass());
     Logger                digest = LoggerFactory.getLogger("digest");
-    String                name;
-    Map<String, TaskNode> nodes;
-    LinkedList<Plugin>    plugins;
+    String             name;
+    Map<String, Task>  nodes;
+    LinkedList<Plugin> plugins;
 
     public Flow(String name) {
         Assert.notNull(name, "工作流名称为空");
@@ -60,7 +60,7 @@ public class Flow {
         }
     }
 
-    public TaskNode nodeOf(String node) throws InterruptException {
+    public Task nodeOf(String node) throws InterruptException {
         if (StringUtils.isEmpty(node)) {
             return startNode();
         } else {
@@ -71,15 +71,15 @@ public class Flow {
         }
     }
 
-    public void addNode(TaskNode node) {
+    public void addNode(Task node) {
         this.nodes.put(node.name, node);
     }
 
-    private TaskNode startNode() {
-        return nodes.values().stream().filter(t -> t.getType().equals(TaskNode.Type.START)).findFirst().get();
+    private Task startNode() {
+        return nodes.values().stream().filter(t -> t.getType().equals(Task.Type.START)).findFirst().get();
     }
 
-    public TaskNode getNode(String node) {
+    public Task getNode(String node) {
         return nodes.get(node);
     }
 
