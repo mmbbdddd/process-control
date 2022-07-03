@@ -25,7 +25,7 @@ public class PcTest extends BaseTest {
         SimpleOrder s = new SimpleOrder(Math.random());
         try {
             AsyncResultNotify notify = new AsyncResultNotify();
-            pc.async("simple", s, null);
+            pc.chaos("simple", s, null);
             Thread.sleep(1000l);
             System.out.println(s.getStatus());
         } catch (InterruptException | InterruptedException e) {
