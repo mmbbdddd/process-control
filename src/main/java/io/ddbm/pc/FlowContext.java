@@ -19,8 +19,6 @@ public class FlowContext {
     private       Task        node;
     private       Event       event;
     private       Session     session;
-    private       Boolean     interrupt = false;
-    private       String      interruptMessage;
 
     public FlowContext(Flow flow, FlowRequest request, String event) throws InterruptException {
         event = StringUtils.isEmpty(event) ? Coast.DEFAULT_EVENT : event;
@@ -39,7 +37,6 @@ public class FlowContext {
         } else {
             this.session = request.getSession();
         }
-        this.interrupt = Boolean.FALSE;
     }
 
     public String chaosNode() {
@@ -57,14 +54,14 @@ public class FlowContext {
     }
 
     public void setInterrupt(Boolean interrupt, Exception e) {
-        this.interrupt        = interrupt;
-        this.interruptMessage = e.getMessage();
+        session.set(Coast.INTERRUPT, interrupt);
+        session.set(Coast.INTERRUPT_MESSAGE, e.getMessage());
     }
 
     public boolean syncIsStop(Logger logger) {
         Boolean result = null;
         try {
-            result = interrupt
+            result = (Boolean) session.get(Coast.INTERRUPT, false)
                     || node.type == Task.Type.END
                     || 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0)
                     || 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0)
@@ -72,8 +69,8 @@ public class FlowContext {
             return result;
         } finally {
             if (null != logger) {
-                logger.debug("\t\t  isPause:{},{}", result, interruptMessage);
-                logger.debug("\t\t\t\t\t interrupt:{}", interrupt);
+                logger.debug("\t\t  isPause:{},{}", result, session.get(Coast.INTERRUPT_MESSAGE, ""));
+                logger.debug("\t\t\t\t\t interrupt:{}", (Boolean) session.get(Coast.INTERRUPT, false));
                 logger.debug("\t\t\t\t\t node.type == TaskNode.Type.END:{}", node.type == Task.Type.END);
                 logger.debug("\t\t\t\t\t 10 <  (Integer) session.get(Coast.TOTAL_ERROR, 0):{}", 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0));
                 logger.debug("\t\t\t\t\t 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0):{}", 200 < (Integer) session.get(Coast.TOTAL_COUNT, 0));
@@ -81,10 +78,11 @@ public class FlowContext {
             }
         }
     }
+
     public boolean asyncIsStop(Logger logger) {
         Boolean result = null;
         try {
-            result = interrupt
+            result = (Boolean) session.get(Coast.INTERRUPT, false)
                     || node.type == Task.Type.END
                     || !node.fluent
                     || 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0)
@@ -93,8 +91,8 @@ public class FlowContext {
             return result;
         } finally {
             if (null != logger) {
-                logger.debug("\t\t  isPause:{},{}", result, interruptMessage);
-                logger.debug("\t\t\t\t\t interrupt:{}", interrupt);
+                logger.debug("\t\t  isPause:{},{}", result, session.get(Coast.INTERRUPT_MESSAGE, ""));
+                logger.debug("\t\t\t\t\t interrupt:{}", (Boolean) session.get(Coast.INTERRUPT, false));
                 logger.debug("\t\t\t\t\t node.type == TaskNode.Type.END:{}", node.type == Task.Type.END);
                 logger.debug("\t\t\t\t\t !node.fluent:{}", !node.fluent);
                 logger.debug("\t\t\t\t\t 10 <  (Integer) session.get(Coast.TOTAL_ERROR, 0):{}", 10 < (Integer) session.get(Coast.TOTAL_ERROR, 0));
@@ -105,7 +103,7 @@ public class FlowContext {
     }
 
     public boolean chaosIsStop() {
-        return interrupt
+        return (Boolean) session.get(Coast.INTERRUPT, false)
                 || node.type == Task.Type.END
                 || 100 < (Integer) session.get(Coast.EVENT_COUNT(event), 0);
 
