@@ -13,7 +13,7 @@ public interface Action {
             return new LinkedList<>();
         } else if (actionDSL.contains(",")) {
             LinkedList<Action> actions = new LinkedList<>();
-            String[]           splits  = StringUtils.split(actionDSL, ",");
+            String[]           splits  = actionDSL.split(",");
             for (String an : splits) {
                 if (!StringUtils.isEmpty(an)) {
                     actions.add(SpringUtils.getBean(an, Action.class));

@@ -40,22 +40,27 @@ public class Flow {
     /**
      * 单步执行
      */
-    public void execute(FlowRequest request, String event, ResultNotify listener) {
+    public FlowContext execute(FlowRequest request, String event) throws PauseException {
         Assert.notNull(request, "request is null");
         event = StringUtils.isEmpty(event) ? Coast.DEFAULT_EVENT : event;
         try {
+            String status = request.getStatus();
+            if (StringUtils.isEmpty(status)) {
+                status = startNode().name;
+            }
             FlowContext ctx = new FlowContext(this, request, event);
             ctx.getEvent().execute(ctx);
             digest.info("flow:{},id:{},from:{},event:{},action:{},to:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), ctx.getRequest().getStatus());
-            listener.onResult(ctx);
+            return ctx;
         } catch (PauseException e) {
             FlowContext ctx = e.getCtx();
             digest.warn("flow:{},id:{},from:{},event:{},action:{},pause:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), e.getMessage());
             logger.warn("", e);
-            listener.onPauseException(e);
+            throw e;
         } catch (InterruptException e) {
             digest.error("flow:{},id:{},from:{},event:{},error:{}", name, request.getId(), e.getNode(), event, e.getMessage());
-            listener.onInterruptException(e);
+            logger.warn("", e);
+            throw e;
         }
     }
 

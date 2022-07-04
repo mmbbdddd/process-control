@@ -3,7 +3,6 @@ package io.ddbm.pc;
 import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.exception.PauseException;
 import io.ddbm.pc.exception.TimeoutException;
-import io.ddbm.pc.notify.SyncResultNotify;
 import io.ddbm.pc.utils.TimeoutWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,75 +20,47 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
     Logger logger = LoggerFactory.getLogger(getClass());
     private ApplicationContext app;
 
-    public void execute(String flowName, FlowRequest request, String event, ResultNotify resultNotify) {
+    public FlowContext execute(String flowName, FlowRequest request, String event) throws PauseException {
         Assert.notNull(flowName, "flowName is null");
         Flow flow = Flows.get(flowName);
         Assert.notNull(flow, "flow[" + flowName + "] not exist");
-        flow.execute(request, event, resultNotify);
+        return flow.execute(request, event);
     }
 
     /**
      * 一次请求，跑到结束或者异常 ，并发挥异常
      */
-    public FlowContext sync(String flowName, FlowRequest request, String event, TimeoutWatch timeout) throws InterruptException, TimeoutException {
-        SyncResultNotify syncNotify = new SyncResultNotify(timeout) {
-            @Override
-            public void onResult(FlowContext ctx) {
-                if (!ctx.syncIsStop(logger) && !timeout.isTimeout()) {
-                    sync(flowName, request, event, timeout);
-                } else if (timeout.isTimeout()) {
-                    TimeoutException e = new TimeoutException();
-                    ctx.setInterrupt(true, e);
-                    this.e = e;
-                } else {
-                    this.result = ctx;
-                    this.e      = null;
-                }
+    public void sync(String flowName, FlowRequest request, String event, TimeoutWatch timeout) throws InterruptException, TimeoutException {
+        try {
+            FlowContext ctx = execute(flowName, request, event);
+            if (!ctx.syncIsStop(logger) && !timeout.isTimeout()) {
+                sync(flowName, request, event, timeout);
+            } else if (timeout.isTimeout()) {
+                throw new TimeoutException();
             }
-
-            @Override
-            public void onPauseException(PauseException e) {
-                if (!e.getCtx().syncIsStop(logger) && !timeout.isTimeout()) {
-                    sync(flowName, request, event, timeout);
-                } else if (timeout.isTimeout()) {
-                    TimeoutException e2 = new TimeoutException();
-                    e.getCtx().setInterrupt(true, e2);
-                    this.e = e2;
-                } else {
-                    this.result = e.getCtx();
-                    this.e      = null;
-                }
+        } catch (PauseException e) {
+            if (!e.getCtx().syncIsStop(logger) && !timeout.isTimeout()) {
+                sync(flowName, request, event, timeout);
+            } else if (timeout.isTimeout()) {
+                throw new TimeoutException();
             }
-        };
-        execute(flowName, request, event, syncNotify);
-        return syncNotify.getResult();
+        }
     }
 
     /**
      * 一次请求，跑到结束或者异常，首节点返回。其他节点异步。
      */
     public void async(String flowName, FlowRequest request, String event) {
-
-        execute(flowName, request, event, new ResultNotify() {
-            @Override
-            public void onResult(FlowContext ctx) {
-                if (!ctx.asyncIsStop(logger)) {
-                    app.publishEvent(new FlowEvent(flowName, request, ctx));
-                }
+        try {
+            FlowContext ctx = execute(flowName, request, event);
+            if (!ctx.asyncIsStop(logger)) {
+                app.publishEvent(new FlowEvent(flowName, request, ctx));
             }
-
-            @Override
-            public void onPauseException(PauseException e) {
-                if (!e.getCtx().asyncIsStop(logger)) {
-                    app.publishEvent(new FlowEvent(flowName, request, e.getCtx()));
-                }
+        } catch (PauseException e) {
+            if (!e.getCtx().asyncIsStop(logger)) {
+                app.publishEvent(new FlowEvent(flowName, request, e.getCtx()));
             }
-
-            @Override
-            public void onInterruptException(InterruptException e) {
-                throw e;
-            }
-        });
+        }
     }
 
 
@@ -103,24 +74,21 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
     }
 
 
-    public FlowContext test(String flowName, FlowRequest request, String event) {
+    public void chaos(String flowName, FlowRequest request, String event) {
         Assert.notNull(flowName, "flowName is null");
         Flow flow = Flows.get(flowName);
         Assert.notNull(flow, "flow[" + flowName + "] not exist");
         injectMockAction(flow);
-        SyncResultNotify syncNotify = new SyncResultNotify(null) {
-            @Override
-            public void onResult(FlowContext ctx) {
-                this.result = ctx;
+        try {
+            execute(flowName, request, event);
+            if (!flow.chaosIsStop(request.getStatus(), request.getSession(), event)) {
+                chaos(flowName, request, Coast.DEFAULT_EVENT);
             }
-
-            @Override
-            public void onPauseException(PauseException e) {
-                this.result = e.getCtx();
+        } catch (PauseException e) {
+            if (!flow.chaosIsStop(request.getStatus(), request.getSession(), event)) {
+                chaos(flowName, request, Coast.DEFAULT_EVENT);
             }
-        };
-        execute(flowName, request, event, syncNotify);
-        return syncNotify.getResult();
+        }
     }
 
     private void injectMockAction(Flow flow) {
@@ -149,15 +117,6 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
                 event.action.setAction(action);
             });
         });
-    }
-
-    public FlowContext chaos(String flowName, FlowRequest request, String event) {
-        Flow        flow = Flows.get(flowName);
-        FlowContext ctx  = test(flowName, request, event);
-        if (!flow.chaosIsStop(request.getStatus(), request.getSession(), event)) {
-            chaos(flowName, request, Coast.DEFAULT_EVENT);
-        }
-        return ctx;
     }
 
     @Override
