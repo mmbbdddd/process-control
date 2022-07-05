@@ -1,30 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <flow name="simple" xmlns="http://ddbm.io/pc.xsd">
-    <!--    网申进件落地-->
+    <!--    支付交易-->
     <start name="init">
-        <on event="next" action="initAction" maybe="data_process"></on>
+        <on event="next" action="validateAction,initAction" maybe="pay"></on>
     </start>
     <end name="su"/>
     <end name="cancel"/>
     <end name="fail"/>
-    <node name="data_process" fluent="false">
-        <on event="next" action="dataProcessAction" maybe="data_process,shenpi"></on>
-        <on event="cancel" maybe="cancel"></on>
+    <node name="pay" fluent="false">
+        <on event="next" action="payAction" maybe="su,fail,payQuery"></on>
     </node>
-    <!--    审批-->
-    <node name="shenpi">
-        <on event="next" action="submitShenPiAction" retry="1" maybe="su,fail,shenpi_query"></on>
-        <on event="cancel" maybe="cancel"></on>
-    </node>
-    <!--    审批错误，调度器容错-->
-    <node name="shenpi_query">
-        <on event="next" action="shenPiQueryAction" maybe="shenpi,su,fail,rengong"></on>
+    <!--    支付查询-->
+    <node name="payQuery">
+        <on event="next" action="payQueryAction" retry="10" maybe="su,fail,rengong"></on>
     </node>
     <!--    人工处理-->
     <node name="rengong">
         <on event="next" action="passAction" maybe="su"></on>
-        <on event="fail" maybe="fail"></on>
-        <on event="cancel" maybe="fail"></on>
+        <on event="fail" action="failAction" maybe="fail"></on>
     </node>
     <!--    节点路由规则-->
 

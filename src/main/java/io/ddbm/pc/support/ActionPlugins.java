@@ -45,7 +45,7 @@ public class ActionPlugins {
             Integer c = (Integer) ctx.getSession().get(Coast.TOTAL_ERROR, 0);
             ctx.getSession().set(Coast.TOTAL_ERROR, c + 1);
             onActionError(ctx, e);
-            throw new PauseException(ctx, e);
+            throw new InterruptException(ctx.getEvent().getEvent(), e);
         } finally {
             Integer c = (Integer) ctx.getSession().get(Coast.TOTAL_COUNT, 0);
             ctx.getSession().set(Coast.TOTAL_COUNT, c + 1);
