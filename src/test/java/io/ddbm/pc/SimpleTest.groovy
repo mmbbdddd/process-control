@@ -7,9 +7,7 @@ public class SimpleTest extends BaseTest {
 
     @Test
     public void test1() {
-        Flow flow = Flows.get("simple");
-
-        flow.execute(new SimpleOrder(), "a")
+        pc.chaos("simple",new SimpleOrder(), null)
     }
     @Test
     public void tt(){

@@ -34,13 +34,13 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
         try {
             FlowContext ctx = execute(flowName, request, event);
             if (!ctx.syncIsStop(logger) && !timeout.isTimeout()) {
-                sync(flowName, request, event, timeout);
+                sync(flowName, request, Coast.DEFAULT_EVENT, timeout);
             } else if (timeout.isTimeout()) {
                 throw new TimeoutException();
             }
         } catch (PauseException e) {
             if (!e.getCtx().syncIsStop(logger) && !timeout.isTimeout()) {
-                sync(flowName, request, event, timeout);
+                sync(flowName, request, Coast.DEFAULT_EVENT, timeout);
             } else if (timeout.isTimeout()) {
                 throw new TimeoutException();
             }
