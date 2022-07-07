@@ -13,6 +13,7 @@ class BaseTest {
 
     @Before
     public void setup() {
+        Coast.CHAOS_MODE = Boolean.TRUE;
         ctx.register(PcConfiguration)
         ctx.register(PcConfig)
         ctx.refresh()

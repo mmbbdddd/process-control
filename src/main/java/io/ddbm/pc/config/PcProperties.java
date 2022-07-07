@@ -9,6 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
         prefix = "pc"
 )
 public class PcProperties {
+    Boolean chaosMode        = true;
     String  flowPath         = "/flow";
     Integer corePoolSize     = 3;
     Integer maxPoolSize      = 20;

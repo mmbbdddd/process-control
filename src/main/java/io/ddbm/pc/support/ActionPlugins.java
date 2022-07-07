@@ -32,8 +32,8 @@ public class ActionPlugins {
                 for (Action action : actions) {
                     action.execute(ctx);
                 }
-                Integer c = (Integer) ctx.getSession().get(Coast.EVENT_COUNT(ctx.getRequest().getStatus(), ctx.getEvent().getEvent()), 0);
-                ctx.getSession().set(Coast.EVENT_COUNT(ctx.getRequest().getStatus(), ctx.getEvent().getEvent()), c + 1);
+                Integer c = (Integer) ctx.getSession().get(Coast.EVENT_COUNT, 0);
+                ctx.getSession().set(Coast.EVENT_COUNT, c + 1);
             }
             postAction(ctx, this);
         } catch (PauseException | InterruptException e) {

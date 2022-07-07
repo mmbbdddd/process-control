@@ -2,6 +2,7 @@ package io.ddbm.pc;
 
 import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.exception.PauseException;
+import io.ddbm.pc.support.ChaosAction;
 import io.ddbm.pc.utils.SpringUtils;
 import org.springframework.util.StringUtils;
 
@@ -9,6 +10,11 @@ import java.util.LinkedList;
 
 public interface Action {
     static LinkedList<Action> dsl(String actionDSL) {
+        if (Coast.CHAOS_MODE) {
+            LinkedList<Action> actions = new LinkedList<>();
+            actions.add(new ChaosAction());
+            return actions;
+        }
         if (StringUtils.isEmpty(actionDSL)) {
             return new LinkedList<>();
         } else if (actionDSL.contains(",")) {

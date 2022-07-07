@@ -1,7 +1,6 @@
 package io.ddbm.pc;
 
 import io.ddbm.pc.exception.InterruptException;
-import io.ddbm.pc.notify.AsyncResultNotify;
 import io.ddbm.pc.simple.SimpleOrder;
 import io.ddbm.pc.utils.TimeoutWatch;
 import org.junit.Test;
@@ -14,9 +13,9 @@ public class PcTest extends BaseTest {
     public void sync() {
         SimpleOrder s = new SimpleOrder(Math.random());
         try {
-            pc.sync("simple", s, null, new TimeoutWatch(2, TimeUnit.MILLISECONDS));
+            pc.sync("simple", s, null, new TimeoutWatch(1000, TimeUnit.MILLISECONDS));
         } catch (Throwable e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -24,14 +23,9 @@ public class PcTest extends BaseTest {
     public void async() {
         SimpleOrder s = new SimpleOrder(Math.random());
         try {
-            AsyncResultNotify notify = new AsyncResultNotify();
-            pc.chaos("simple", s, null);
-            Thread.sleep(1000l);
-            System.out.println(s.getStatus());
-        } catch (InterruptException | InterruptedException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
+            pc.async("simple", s, null);
+        } catch (InterruptException  e) {
+
         }
     }
 
@@ -41,7 +35,7 @@ public class PcTest extends BaseTest {
         try {
             pc.chaos("simple", s, null);
         } catch (InterruptException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 

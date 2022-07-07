@@ -3,6 +3,7 @@ package io.ddbm.pc;
 import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.exception.PauseException;
 import io.ddbm.pc.exception.TimeoutException;
+import io.ddbm.pc.support.ChaosAction;
 import io.ddbm.pc.utils.TimeoutWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,10 +76,10 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
 
 
     public void chaos(String flowName, FlowRequest request, String event) {
+//        Coast.setChaosMode(true);
         Assert.notNull(flowName, "flowName is null");
         Flow flow = Flows.get(flowName);
         Assert.notNull(flow, "flow[" + flowName + "] not exist");
-        injectMockAction(flow);
         try {
             execute(flowName, request, event);
             if (!flow.chaosIsStop(request.getStatus(), request.getSession(), event)) {
@@ -91,33 +92,7 @@ public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowE
         }
     }
 
-    private void injectMockAction(Flow flow) {
-        flow.getNodes().forEach((nn, node) -> {
-            node.events.forEach((en, event) -> {
-                List<Action> action = Arrays.asList(new Action() {
-                    //                    构建混沌action
-                    @Override
-                    public void execute(FlowContext ctx) throws PauseException, InterruptException {
-                        Double d = Math.random();
-                        if (d < 0.1) {
-                            throw new PauseException(ctx, "随机出个暂停异常");
-                        } else if (d < 0.2) {
-                            throw new InterruptException("随机出个中断异常", ctx.getRequest().getStatus());
-                        } else if (d < 0.3) {
-                            throw new RuntimeException("随机出个异常");
-                        } else if (d < 0.4) {
-                            ctx.getRequest().setStatus("_randomNode");
-                        } else {
-//                        随机出个目标节点
-                            String chaoNode = ctx.chaosNode();
-                            ctx.getRequest().setStatus(chaoNode);
-                        }
-                    }
-                });
-                event.action.setAction(action);
-            });
-        });
-    }
+
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
