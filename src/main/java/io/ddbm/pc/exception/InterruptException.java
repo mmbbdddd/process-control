@@ -20,9 +20,6 @@ public class InterruptException extends RuntimeException {
     }
 
 
-
-
-
     public static InterruptException noSuchEvent(String event, String node) {
         return new InterruptException(node + " not support event:" + event, node);
     }
@@ -32,6 +29,6 @@ public class InterruptException extends RuntimeException {
     }
 
     public static InterruptException nodeIsEnd(String node) {
-        return new InterruptException(node+" is end "  , node);
+        return new InterruptException(node + " is end ", node);
     }
 }

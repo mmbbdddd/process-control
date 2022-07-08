@@ -24,7 +24,7 @@ public class PcTest extends BaseTest {
         SimpleOrder s = new SimpleOrder(Math.random());
         try {
             pc.async("simple", s, null);
-        } catch (InterruptException  e) {
+        } catch (InterruptException e) {
 
         }
     }

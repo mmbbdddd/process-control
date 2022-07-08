@@ -10,8 +10,9 @@ public class SimpleOrder implements FlowRequest {
     RequestSession session = new RequestSession();
     String         id      = "1";
     String         status;
-    public SimpleOrder(Double d){
-        this.id = ""+d;
+
+    public SimpleOrder(Double d) {
+        this.id = "" + d;
     }
 
     @Override

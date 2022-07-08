@@ -10,7 +10,7 @@ import lombok.Getter;
 public class PauseException extends Exception {
 
     private final FlowContext ctx;
-    private Exception   cause;
+    private       Exception   cause;
 
     public PauseException(FlowContext ctx, Exception e) {
         super(e);

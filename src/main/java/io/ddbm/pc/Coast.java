@@ -8,7 +8,7 @@ public class Coast {
     public static final String  EVENT_COUNT       = "event_count";
     public static final String  INTERRUPT         = "interrupt";
     public static final String  INTERRUPT_MESSAGE = "interrupt_message";
-    public static      Boolean CHAOS_MODE        = Boolean.FALSE;
+    public static       Boolean CHAOS_MODE        = Boolean.FALSE;
 
 
 }

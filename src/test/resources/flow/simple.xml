@@ -7,7 +7,7 @@
     <end name="su"/>
     <end name="cancel"/>
     <end name="fail"/>
-    <node name="pay"  >
+    <node name="pay">
         <on event="next" action="payAction" maybe="su,fail,payQuery"></on>
     </node>
     <!--    支付查询-->

@@ -4,7 +4,6 @@ import io.ddbm.pc.Pc;
 import io.ddbm.pc.factory.XmlFlowFactory;
 import io.ddbm.pc.utils.SpringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.jms.JmsProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

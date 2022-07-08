@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 
 @Getter
 public class Event {
-    Task   on;
-    String event;
+    Task          on;
+    String        event;
     ActionPlugins action;
     Integer       retry;
     Set<String>   maybe;

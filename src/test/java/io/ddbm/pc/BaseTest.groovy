@@ -9,7 +9,7 @@ import org.springframework.context.annotation.FilterType
 
 class BaseTest {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-    public  Pc pc;
+    public Pc pc;
 
     @Before
     public void setup() {

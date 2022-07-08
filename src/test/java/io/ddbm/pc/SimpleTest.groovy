@@ -7,11 +7,12 @@ public class SimpleTest extends BaseTest {
 
     @Test
     public void test1() {
-        pc.chaos("simple",new SimpleOrder(), null)
+        pc.chaos("simple", new SimpleOrder(), null)
     }
+
     @Test
-    public void tt(){
-        for(;;){
+    public void tt() {
+        for (; ;) {
             new SimpleOrder()
         }
     }

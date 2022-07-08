@@ -1,7 +1,7 @@
 package io.ddbm.pc.ex;
 
 public class A {
-      String name = "A";
+    String name = "A";
 
     public void say() {
         System.out.println("A@" + name);
