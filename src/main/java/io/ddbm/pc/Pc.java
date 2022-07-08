@@ -3,7 +3,6 @@ package io.ddbm.pc;
 import io.ddbm.pc.exception.InterruptException;
 import io.ddbm.pc.exception.PauseException;
 import io.ddbm.pc.exception.TimeoutException;
-import io.ddbm.pc.support.ChaosAction;
 import io.ddbm.pc.utils.TimeoutWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +12,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.util.Assert;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class Pc implements ApplicationContextAware, ApplicationListener<Pc.FlowEvent> {
     Logger logger = LoggerFactory.getLogger(getClass());
