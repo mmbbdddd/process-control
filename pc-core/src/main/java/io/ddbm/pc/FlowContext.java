@@ -1,7 +1,6 @@
 package io.ddbm.pc;
 
 import io.ddbm.pc.exception.InterruptException;
-import io.ddbm.pc.session.RedisSession;
 import io.ddbm.pc.utils.SpringUtils;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -33,7 +32,7 @@ public class FlowContext {
         this.request.setStatus(node.getName());
         this.event = this.node.getEvent(event);
         if (request.getSession() == null) {
-            this.session = SpringUtils.getBean(RedisSession.class);
+            this.session = SpringUtils.getBean("redisSession",Session.class);
         } else {
             this.session = request.getSession();
         }
