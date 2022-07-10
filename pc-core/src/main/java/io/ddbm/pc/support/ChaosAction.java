@@ -9,13 +9,13 @@ public class ChaosAction implements Action {
     @Override
     public void execute(FlowContext ctx) throws PauseException, InterruptException {
         Double d = Math.random();
-        if (d < 0.1) {
+        if (d < 0.03) {
             throw new PauseException(ctx, "随机出个暂停异常");
-        } else if (d < 0.2) {
+        } else if (d < 0.06) {
             throw new InterruptException("随机出个中断异常", ctx.getRequest().getStatus());
-        } else if (d < 0.3) {
+        } else if (d < 0.09) {
             throw new RuntimeException("随机出个runtime异常");
-        } else if (d < 0.4) {
+        } else if (d < 0.12) {
             ctx.getRequest().setStatus("_randomNode");
         } else {
 //                        随机出个目标节点
