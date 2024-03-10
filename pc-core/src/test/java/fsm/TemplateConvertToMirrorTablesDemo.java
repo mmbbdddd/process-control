@@ -19,8 +19,8 @@ public class TemplateConvertToMirrorTablesDemo extends TemplateConvertToMirrorTa
     public Map<String, Object> cpontextOfTemplates(
         String productNo, Integer version, DomainEnum domainEnum, Object data) {
         Map<String,Object> map = new HashMap<>();
-        map.put("a",data.getA()+1);
-        map.put("b",data.getB()/100);
+//        map.put("a",data.getA()+1);
+//        map.put("b",data.getB()/100);
         map.put("product",productNo);
         map.put("version",version);
         
