@@ -1,41 +1,34 @@
 package io.ddbm.pc.exception;
 
-import io.ddbm.pc.FlowContext;
 import lombok.Getter;
+
 
 /**
  * 流程暂停异常。
+ * 1，连续模式被中断，通过调度中心可以再发起
  */
 @Getter
-public class PauseException extends Exception {
+public class PauseException extends FlowException {
 
-    private final FlowContext ctx;
-    private       Exception   cause;
+    private final String message;
 
-    public PauseException(FlowContext ctx, Exception e) {
-        super(e);
+    private String flow;
+
+    private String node;
+
+    private Throwable cause;
+
+    public PauseException(String flow, String node, String message, Throwable e) {
+        this.flow = flow;
+        this.node = node;
         this.cause = e;
-        this.ctx   = ctx;
+        this.message = message;
     }
 
-    public PauseException(FlowContext ctx, String msg) {
-        super(msg);
-        this.ctx = ctx;
+    public PauseException(String flow, String node, String message) {
+        this.flow = flow;
+        this.node = node;
+        this.message = message;
     }
 
-    @Override
-    public synchronized Throwable getCause() {
-        return cause;
-    }
-
-
-    @Override
-    public StackTraceElement[] getStackTrace() {
-        return null;
-    }
-
-    @Override
-    public void setStackTrace(StackTraceElement[] stackTrace) {
-        super.setStackTrace(null);
-    }
 }

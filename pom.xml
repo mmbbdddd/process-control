@@ -15,8 +15,7 @@
     </properties>
 
     <modules>
-        <module>pc-core</module>
-        <module>pc-components</module>
+        <module>pc-core</module> 
     </modules>
 
 

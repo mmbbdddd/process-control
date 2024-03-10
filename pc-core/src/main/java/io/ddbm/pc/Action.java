@@ -1,37 +1,34 @@
 package io.ddbm.pc;
 
+import com.google.common.base.Splitter;
+import io.ddbm.pc.actions.MultipleActioin;
 import io.ddbm.pc.exception.InterruptException;
+import io.ddbm.pc.exception.NoSuchEventException;
+import io.ddbm.pc.exception.NoSuchNodeException;
+import io.ddbm.pc.exception.ParameterException;
 import io.ddbm.pc.exception.PauseException;
-import io.ddbm.pc.support.ChaosAction;
+import io.ddbm.pc.support.FlowContext;
 import io.ddbm.pc.utils.SpringUtils;
-import org.springframework.util.StringUtils;
 
-import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 public interface Action {
-    static LinkedList<Action> dsl(String actionDSL) {
-        if (Coast.CHAOS_MODE) {
-            LinkedList<Action> actions = new LinkedList<>();
-            actions.add(new ChaosAction());
-            return actions;
-        }
-        if (StringUtils.isEmpty(actionDSL)) {
-            return new LinkedList<>();
-        } else if (actionDSL.contains(",")) {
-            LinkedList<Action> actions = new LinkedList<>();
-            String[]           splits  = actionDSL.split(",");
-            for (String an : splits) {
-                if (!StringUtils.isEmpty(an)) {
-                    actions.add(SpringUtils.getBean(an, Action.class));
-                }
-            }
-            return actions;
+
+    String name();
+
+    void run(FlowContext ctx) throws InterruptException, PauseException, ParameterException, NoSuchEventException,
+                                     NoSuchNodeException;
+
+    static Action dsl(String actionDSL) {
+        if (actionDSL.contains(",")) {
+            List<Action> actions = Splitter.on(",").splitToList(actionDSL).stream().map(
+                n -> SpringUtils.getBean(n, Action.class)).collect(Collectors.toList());
+            return new MultipleActioin(actionDSL, actions);
         } else {
-            LinkedList<Action> actions = new LinkedList<>();
-            actions.add(SpringUtils.getBean(actionDSL, Action.class));
-            return actions;
+            return SpringUtils.getBean(actionDSL, Action.class);
         }
     }
-
-    void execute(FlowContext ctx) throws PauseException, InterruptException;
+ 
 }

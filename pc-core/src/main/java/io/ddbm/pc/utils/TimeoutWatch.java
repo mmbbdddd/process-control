@@ -2,15 +2,18 @@ package io.ddbm.pc.utils;
 
 import java.util.concurrent.TimeUnit;
 
+
 public class TimeoutWatch {
-    private final Integer  timeout;
+    private final Integer timeout;
+
     private final TimeUnit unit;
-    private final long     start;
+
+    private final long start;
 
     public TimeoutWatch(Integer timeout, TimeUnit unit) {
-        this.start   = System.currentTimeMillis();
+        this.start = System.currentTimeMillis();
         this.timeout = timeout;
-        this.unit    = unit;
+        this.unit = unit;
     }
 
     public Boolean isTimeout() {

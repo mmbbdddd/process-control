@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<flow name="test" xmlns="http://ddbm.io/pc.xsd">
+
+    <start>
+        <on event="submit" action="orderAction,outValidateAction" to="confirm"></on>
+    </start>
+    <node name="confirm">
+        <on event="submit" action="confirmAction" to="pay"></on>
+    </node>
+    <node name="pay">
+        <on event="submit" action="payAction" router="pay_result_router"></on>
+    </node>
+    <node name="pay_query">
+        <on event="submit" action="payQueryAction" retryCount="10" router="pay_result_router"></on>
+    </node>
+
+
+    <end name="su"/>
+    <end name="fail"/>
+    <end name="cancel"/>
+
+    <routers>
+        <router name="pay_result_router">
+            <!--            你好-->
+            <case test="true" to="su"></case>
+            <case test="${result == su}" to="su"></case>
+            <case test="${result == fail}" to="fail"></case>
+            <case test="${result == exception}" to="pay_query"></case>
+            <case test="${result == none}" to="pay"></case>
+        </router>
+    </routers>
+
+    <plugins>
+        <!--        <plugin name="catPlugin"/>-->
+        <!--        <plugin name="sentinelPlugin"/>-->
+    </plugins>
+</flow>

@@ -1,109 +1,112 @@
 package io.ddbm.pc;
 
+import io.ddbm.pc.exception.ContextCreateException;
 import io.ddbm.pc.exception.InterruptException;
+import io.ddbm.pc.exception.MockException;
+import io.ddbm.pc.exception.NoSuchEventException;
+import io.ddbm.pc.exception.NoSuchNodeException;
+import io.ddbm.pc.exception.NonRunnableException;
+import io.ddbm.pc.exception.ParameterException;
 import io.ddbm.pc.exception.PauseException;
+import io.ddbm.pc.exception.SessionException;
+import io.ddbm.pc.status.StatusException;
+import io.ddbm.pc.support.FlowContext;
+import io.ddbm.pc.utils.Pair;
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 
 /**
- * 流程定义
+ * 工作流定义
  */
 @Getter
+@Slf4j
 public class Flow {
-    Logger             logger = LoggerFactory.getLogger(getClass());
-    Logger             digest = LoggerFactory.getLogger("digest");
-    String             name;
-    Map<String, Task>  nodes;
-    LinkedList<Plugin> plugins;
+
+    String name;
+
+    Map<String, Node> nodes;
+
+    List<Plugin> plugins;
+
+    Map<String, Router> routers;
 
     public Flow(String name) {
         Assert.notNull(name, "工作流名称为空");
-        this.name    = name;
-        this.nodes   = new HashMap<>();
-        this.plugins = new LinkedList<>();
+        this.name = name;
+        this.nodes = new HashMap<>();
+        this.plugins = new ArrayList<>();
+        this.routers = new HashMap<>();
     }
 
     public String getName() {
         return name;
     }
 
-
     /**
      * 单步执行
      */
-    public FlowContext execute(FlowRequest request, String event) throws PauseException {
-        Assert.notNull(request, "request is null");
-        event = StringUtils.isEmpty(event) ? Coast.DEFAULT_EVENT : event;
-        try {
-            String status = request.getStatus();
-            if (StringUtils.isEmpty(status)) {
-                status = startNode().name;
-            }
-            FlowContext ctx = new FlowContext(this, request, event);
-            ctx.getEvent().execute(ctx);
-            digest.info("flow:{},id:{},from:{},event:{},action:{},to:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), ctx.getRequest().getStatus());
-            return ctx;
-        } catch (PauseException e) {
-            FlowContext ctx = e.getCtx();
-            digest.warn("flow:{},id:{},from:{},event:{},action:{},pause:{}", name, request.getId(), ctx.getNode().getName(), event, ctx.getEvent().getActionName(), e.getMessage());
-//            logger.warn("", e);
-            throw e;
-        } catch (InterruptException e) {
-            digest.error("flow:{},id:{},from:{},event:{},error:{}", name, request.getId(), e.getNode(), event, e.getMessage());
-//            logger.warn("", e);
-            throw e;
+    public void execute(FlowContext ctx)
+        throws PauseException, InterruptException, ParameterException, NonRunnableException, NoSuchNodeException,
+               NoSuchEventException {
+        Assert.notNull(ctx, "ctx is null");
+        if (ctx.isRun()) {
+            Event event = ctx.getEvent();
+            //            执行事件 
+            try {
+                event.execute(ctx);
+            } catch (MockException e) {
+                //                e.printStackTrace();
+                //模拟异常 忽略，继续
+            } 
+        } else {
+            throw new NonRunnableException();
         }
     }
 
-    public Boolean chaosIsStop(String node, Session session, String event) {
-        return !nodes.containsKey(node)
-                || nodeOf(node).type == Task.Type.END
-                || 100 < (Integer) session.get(Coast.EVENT_COUNT, 0);
-
-    }
-
-    public Task nodeOf(String node) throws InterruptException {
+    public Node nodeOf(String node)
+        throws NoSuchNodeException {
         if (StringUtils.isEmpty(node)) {
             return startNode();
         } else {
-            if (!nodes.containsKey(node)) {
-                throw InterruptException.noSuchNode(node);
+            if (!getNodes().containsKey(node)) {
+                throw new NoSuchNodeException(node, this.name);
             }
-            return nodes.get(node);
+            return getNodes().get(node);
         }
     }
 
-    public void addNode(Task node) {
+    public void addNode(Node node) {
         this.nodes.put(node.name, node);
     }
 
-    private Task startNode() {
-        return nodes.values().stream().filter(t -> t.getType().equals(Task.Type.START)).findFirst().get();
+    public Node startNode() {
+        return nodes.values().stream().filter(t -> t.getType().equals(Node.Type.START)).findFirst().get();
     }
 
-    public Task getNode(String node) {
-        return nodes.get(node);
-    }
-
-
-    public LinkedList<Plugin> getPlugins() {
+    public List<Plugin> getPlugins() {
         return plugins;
+    }
+
+    public void setPlugins(List<Plugin> plugins) {
+        this.plugins = plugins;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Flow flow = (Flow) o;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Flow flow = (Flow)o;
         return Objects.equals(name, flow.name);
     }
 
@@ -112,4 +115,129 @@ public class Flow {
         return Objects.hash(name);
     }
 
+    public void onStateUpdate(FlowContext ctx) {
+        plugins.forEach(plugin -> {
+            try {
+                plugin.onStateUpdate(ctx);
+            } catch (Throwable e) {
+                plugin.onPluginFlowException(e, ctx);
+            }
+        });
+    }
+
+    public void preAction(ActionRouterAdapter action, FlowContext ctx) {
+        plugins.forEach(plugin -> {
+            try {
+                plugin.preAction(action, ctx);
+            } catch (Throwable e) {
+                plugin.onPluginFlowException(e, ctx);
+            }
+        });
+    }
+
+    public void postAction(ActionRouterAdapter action, FlowContext ctx) {
+        plugins.forEach(plugin -> {
+            try {
+                plugin.postAction(action, ctx);
+            } catch (Throwable e) {
+                plugin.onPluginFlowException(e, ctx);
+            }
+        });
+    }
+
+    public void statusTransition(
+        Action action,
+        Pair<FlowStatus, String> sourceStatus, Pair<FlowStatus, String> targetStatus, FlowContext ctx) {
+        plugins.forEach(plugin -> {
+            try {
+                plugin.onStatusTransition(action,sourceStatus, targetStatus, ctx);
+            } catch (Throwable e) {
+                plugin.onPluginFlowException(e, ctx);
+            }
+        });
+    }
+
+    public void onActionException(ActionRouterAdapter action, Throwable e, FlowContext ctx) {
+        plugins.forEach(plugin -> {
+            try {
+                if (e == null) {
+                    return;
+                } else if (e instanceof PauseException) {
+                    plugin.onPauseException(action, (PauseException)e, ctx);
+                } else if (e instanceof InterruptException) {
+                    plugin.onInterruptException(action, (InterruptException)e, ctx);
+                } else if (e instanceof ParameterException) {
+                    plugin.onArgumentException(action, (ParameterException)e, ctx);
+                } else if (e instanceof RuntimeException) {
+                    plugin.onRuntimeException(action, (RuntimeException)e, ctx);
+                } else if (e instanceof Throwable) {
+                    plugin.onThrowable(action, e, ctx);
+                }
+            } catch (Throwable t) {
+                plugin.onPluginFlowException(t, ctx);
+            }
+        });
+    }
+
+ 
+
+    public void onContextCreateException(ContextCreateException e, FlowRequest<?> request) {
+        plugins.forEach(plugin -> {
+            try {
+                plugin.onContextCreateException(e, request);
+            } catch (Throwable t) {
+                plugin.onPluginIoException(t, request);
+            }
+        });
+    }
+
+    public void onSessionException(SessionException e, FlowRequest<?> request) {
+        plugins.forEach(plugin -> {
+            try {
+                plugin.onSessionException(e, request);
+            } catch (Throwable t) {
+                plugin.onPluginIoException(t, request);
+            }
+        });
+    }
+
+    public void onStatusException(StatusException e, FlowRequest<?> request) {
+        plugins.forEach(plugin -> {
+            try {
+                plugin.onStatusException(e, request);
+            } catch (Throwable t) {
+                plugin.onPluginIoException(t, request);
+            }
+        });
+    }
+
+    public void onOtherIoException(Exception e, FlowRequest<?> request) {
+        plugins.forEach(plugin -> {
+            try {
+                plugin.onOtherIoException(e, request);
+            } catch (Throwable t) {
+                plugin.onPluginIoException(t, request);
+            }
+        });
+    }
+
+    public void onNoSuchEventException(NoSuchEventException e, FlowContext ctx) {
+        plugins.forEach(plugin -> {
+            try {
+                plugin.onNoSuchEventException(e, ctx);
+            } catch (Throwable t) {
+                plugin.onPluginFlowException(t, ctx);
+            }
+        });
+    }
+
+    public void onNoSuchNodeException(NoSuchNodeException e, FlowContext ctx) {
+        plugins.forEach(plugin -> {
+            try {
+                plugin.onNoSuchNodeException(e, ctx);
+            } catch (Throwable t) {
+                plugin.onPluginFlowException(t, ctx);
+            }
+        });
+    }
 }
