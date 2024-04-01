@@ -15,6 +15,9 @@ public class SpelUtils {
         asMap.forEach(ctx::setVariable);
         return parser.parseExpression(expression).getValue(ctx, Boolean.class);
     }
+    public static Object doEvel(String expression, Object obj) {
+        return null;
+    }
     //    public static Boolean eval(String expression, Map<String, Object> asMap) throws RouterException {
     //        try {
     //            return (Boolean) Ognl.getValue(expression, asMap, null, Boolean.class);

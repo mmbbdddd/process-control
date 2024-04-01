@@ -64,7 +64,19 @@
             <version>33.0.0-jre</version>
             <optional>true</optional>
         </dependency>
-     </dependencies>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.83</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.victools</groupId>
+            <artifactId>jsonschema-generator</artifactId>
+            <version>4.34.0</version>
+        </dependency>
+    
+    
+    </dependencies>
 
 
 </project>
