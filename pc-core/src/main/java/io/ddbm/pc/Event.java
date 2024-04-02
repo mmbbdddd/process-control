@@ -167,19 +167,5 @@ public class Event {
         return this.action.name();
     }
 
-//    static ActionRouterAdapter build(Event event, Action action, Router router) {
-//        ActionRouterAdapter actionRouter = null;
-//        //判断是否支持幂等
-//        if(action.support(IdempotentActionProxy.IdempotentAction.class )){
-//            action = new IdempotentActionProxy(action,router);
-//        }else {
-//            action = new RepeatableActionProxy(action,router);
-//        }
-//        //判断是否支持事务
-//        if(action.support(SagaAction.class)){
-//            action = new SagaActionAdapter();
-//        }
-//        return actionRouter;
-//    }
 
 }
