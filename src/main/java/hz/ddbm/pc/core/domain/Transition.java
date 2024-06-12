@@ -108,8 +108,10 @@ public class Transition {
         try {
             String newNode = getRouter().route(ctx);
             ctx.getFlow().statusService.updateNodeState(flow, id, newNode, ctx);
+            ctx.setNode(newNode);
             postRoutePlugin(flow, preNode, ctx);
         } catch (Exception e) {
+            log.error("", e);
             onRouterExceptionPlugin(flow, e, ctx);
             //服务失败，异常打印&暂停
             ctx.setNode(this.failToNode);
@@ -119,7 +121,7 @@ public class Transition {
                 log.error("", e);
             } catch (Exception e2) {
                 //服务失败，异常打印
-                log.error("", e);
+                log.error("", e2);
             }
         }
         ctx.increment(ctx.getNode());

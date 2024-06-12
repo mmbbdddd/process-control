@@ -46,19 +46,21 @@
      pcService.executeMore("testFlow",1, new Object(),Coast.EVENT_PUSH,null)
 
 
-     2024-06-12 10:40:58.527  INFO 21704 --- [           main] hz.ddbm.pc.core.PcService              : 初始化流程:testFlow
-     2024-06-12 10:40:59.045  INFO 21704 --- [           main] hz.ddbm.pc.core.PcServiceTest          : Started PcServiceTest in 1.174 seconds (JVM running for 1.826)
-     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,init,pay_unknow
-     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
-     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
-     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
-     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
-     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
-     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
-     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
-     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
-     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
-
+    2024-06-12 11:33:23.700  INFO 20140 --- [           main] hz.ddbm.pc.core.PcServiceTest            : Starting PcServiceTest using Java 1.8.0_381 on DESKTOP-RJKO1VK with PID 20140 (started by wanglin in D:\project\process-control)
+    2024-06-12 11:33:23.700  INFO 20140 --- [           main] hz.ddbm.pc.core.PcServiceTest            : No active profile set, falling back to 1 default profile: "default"
+    2024-06-12 11:33:24.096  INFO 20140 --- [           main] o.s.c.a.ConfigurationClassEnhancer       : @Bean method PcConfiguration.infraUtils is non-static and returns an object assignable to Spring's BeanFactoryPostProcessor interface. This will result in a failure to process annotations such as @Autowired, @Resource and @PostConstruct within the method's declaring @Configuration class. Add the 'static' modifier to this method to avoid these container lifecycle issues; see @Bean javadoc for complete details.
+    2024-06-12 11:33:24.175  INFO 20140 --- [           main] hz.ddbm.pc.core.PcService                : 初始化流程:testFlow
+    2024-06-12 11:33:24.698  INFO 20140 --- [           main] hz.ddbm.pc.core.PcServiceTest            : Started PcServiceTest in 1.204 seconds (JVM running for 1.852)
+    2024-06-12 11:33:24.824  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,pay_unknow
+    2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,init,pay_unknow
+    2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,pay_unknow
+    2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,pay_unknow
+    2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,pay_unknow
+    2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,pay_unknow
+    2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,pay_unknow
+    2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,pay_unknow
+    2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,fail
+   
 
 # 功能
  - [复杂、长业务流程积木化、组件化开发](/doc/组件化.md)
