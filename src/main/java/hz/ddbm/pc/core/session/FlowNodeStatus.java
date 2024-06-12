@@ -8,6 +8,9 @@ public class FlowNodeStatus {
     Flow.STAUS flow;
     String     node;
 
+    public FlowNodeStatus() {
+
+    }
     public FlowNodeStatus(Flow.STAUS flow, String node) {
         this.flow = flow;
         this.node = node;

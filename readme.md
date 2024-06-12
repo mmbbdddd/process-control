@@ -1,8 +1,10 @@
 # 流程编排
+
 # 快速开始
- **业务场景**
+
+**业务场景**
 ![img.png](img.png)
- **代码**
+**代码**
 
 参见hz.ddbm.jfsm.pay包
 
@@ -29,6 +31,7 @@
 
         }.build();
     }
+
     //定义路由
     private Router payRouter() {
         return new Router.Any("payRouter", new HashMap<String, String>() {{
@@ -40,8 +43,8 @@
 
 }
  ```
- 
- **测试**
+
+**测试**
 
      pcService.executeMore("testFlow",1, new Object(),Coast.EVENT_PUSH,null)
 
@@ -60,14 +63,41 @@
     2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,pay_unknow
     2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,pay_unknow
     2024-06-12 11:33:24.840  INFO 20140 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin         : testFlow,1,pay_unknow,fail
-   
 
 # 功能
- - [复杂、长业务流程积木化、组件化开发](/doc/组件化.md)
- - [高性能SAGA事务](/doc/SAGA事务.md)
- - 插件化可插拔功能，包括：日志、监控、告警、统计……等 
- - 动态发布
- - [数字化运营](/doc/数字化运营.md)
+
+- [复杂、长业务流程积木化、组件化开发](/doc/组件化.md)
+- [高性能SAGA事务](/doc/SAGA事务.md)
+- 插件化可插拔功能，包括：日志、监控、告警、统计……等
+- 动态发布
+- [数字化运营](/doc/数字化运营.md)
+
+# 使用说明
+
+## flow参数
+
+- flowName：流程名
+- statusService：状态存储服务bean：redis/jvm或自定义
+- sessionService：会话存储服务bean：redis/jvm
+- nodes：流程所属节点
+- routers：路由定义
+- plugins：插件
+
+## 节点
+
+ - Node.Type: 节点类型
+
+    - Node.Type.Start: 开始节点，只能有有一个
+    - Node.Type.Task: 业务节点
+    - Node.Type.End: 结束节点
+ - name: 节点名称/状态名称
+
+## 事件
+
+## 路由
+
+## 插件
+
 
 
  

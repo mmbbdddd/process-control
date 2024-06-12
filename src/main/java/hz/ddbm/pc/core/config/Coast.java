@@ -13,6 +13,6 @@ public class Coast {
 
 
     public static final Transition TRANSITION_PUSH_NOTHING = new Transition(new TransitionProperties(
-            EVENT_PUSH, ACTION_DO_NOTHING, ROUTER_DO_NOTHING, null, null
+            EVENT_PUSH, ACTION_DO_NOTHING, ROUTER_DO_NOTHING
     ));
 }

@@ -29,6 +29,7 @@ public class JvmSessionService implements SessionService, StatusService {
         return this.session.get(String.format(SESSION_KEY_FORMAT, flow.getName(), id, key));
     }
 
+
     @Override
     public void updateNodeState(Flow flow, Serializable id, String node, BizContext ctx) {
         Assert.notNull(node, "node is null");
@@ -52,12 +53,8 @@ public class JvmSessionService implements SessionService, StatusService {
     }
 
     @Override
-    public String getNodeStatus(Flow flow, Serializable id) {
+    public FlowNodeStatus getStatus(Flow flow, Serializable id) {
         return null;
     }
 
-    @Override
-    public Flow.STAUS getFlowStatus(Flow flow, Serializable id) {
-        return null;
-    }
 }

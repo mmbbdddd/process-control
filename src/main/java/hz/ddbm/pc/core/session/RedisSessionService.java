@@ -19,14 +19,10 @@ public class RedisSessionService implements SessionService,StatusService {
     }
 
     @Override
-    public String getNodeStatus(Flow flow, Serializable id) {
+    public FlowNodeStatus getStatus(Flow flow, Serializable id) {
         return null;
     }
 
-    @Override
-    public Flow.STAUS getFlowStatus(Flow flow, Serializable id) {
-        return null;
-    }
 
     @Override
     public void put(Flow flow, Serializable id,String key, Object value) {

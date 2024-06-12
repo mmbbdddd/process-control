@@ -6,6 +6,7 @@ import hz.ddbm.pc.core.domain.Action;
 import hz.ddbm.pc.core.domain.BizContext;
 import hz.ddbm.pc.core.domain.Flow;
 import hz.ddbm.pc.core.factory.fsm.Fsm;
+import hz.ddbm.pc.core.session.FlowNodeStatus;
 import hz.ddbm.pc.core.utils.InfraUtils;
 import hz.ddbm.pc.core.utils.PackageUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class PcService implements InitializingBean, ApplicationContextAware {
     @Autowired
-    PcProperties pcProperties;
+    PcProperties  pcProperties;
+    @Autowired
+    StatusService statusService;
     GenericApplicationContext       applicationContext;
     ConcurrentHashMap<String, Flow> flows = new ConcurrentHashMap<>();
+
 
     /**
      * 初始化工作流定义
@@ -115,7 +119,13 @@ public class PcService implements InitializingBean, ApplicationContextAware {
     /////////
     private <T> BizContext<T> getOrCreateContext(Flow flow, Serializable id, T data, String event, Map<String, Object> args) {
         //todo
-        return new BizContext<>(flow, id, data, event, args);
+        FlowNodeStatus status = statusService.getStatus(flow, id);
+        return new BizContext<T>(flow, id, data, event, args) {{
+            if (null != status) {
+                setNode(status.getNode());
+                setFlowStatus(status.getFlow());
+            }
+        }};
     }
 
     @Override

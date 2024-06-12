@@ -2,6 +2,7 @@ package hz.ddbm.pc.core.domain;
 
 import hz.ddbm.pc.core.*;
 import hz.ddbm.pc.core.config.FlowProperties;
+import hz.ddbm.pc.core.session.FlowNodeStatus;
 import hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Getter;
 import org.springframework.util.Assert;
@@ -10,6 +11,7 @@ import org.springframework.util.StringUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -62,13 +64,12 @@ public class Flow {
         Assert.notNull(ctx, "BizContext is null");
         Node node = null;
         if (ctx.getNode() == null) {
-            String nodeName = statusService.getNodeStatus(ctx.getFlow(), ctx.getId());
-            if (StringUtils.isEmpty(nodeName)) {
-                nodeName = startNode();
+            FlowNodeStatus status = statusService.getStatus(ctx.getFlow(), ctx.getId());
+            if (StringUtils.isEmpty(status)) {
+                ctx.setNode(startNode().name);
             }
-            node = ctx.getFlow().getNode(nodeName);
-            Assert.notNull(node, "no such node:" + nodeName);
-            ctx.setNode(node.name);
+            node = ctx.getFlow().getNode(ctx.getNode());
+            Assert.notNull(ctx.getNode(), "no such node:" + status);
         } else {
             node = ctx.getFlow().getNode(ctx.getNode());
         }
@@ -76,12 +77,16 @@ public class Flow {
 
     }
 
-    public String startNode() {
-        return nodes.values().stream().filter(t -> t.type.equals(Node.Type.START)).findFirst().get().getName();
+    public Node startNode() {
+        return nodes.values().stream().filter(t -> t.type.equals(Node.Type.START)).findFirst().get();
     }
 
     public Router getRouter(String routerName) {
         return routers.get(routerName);
+    }
+
+    public Set<String> nodeNames() {
+        return nodes.keySet();
     }
 
 

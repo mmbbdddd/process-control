@@ -2,6 +2,7 @@ package hz.ddbm.pc.core;
 
 import hz.ddbm.pc.core.domain.BizContext;
 import hz.ddbm.pc.core.domain.Flow;
+import hz.ddbm.pc.core.session.FlowNodeStatus;
 
 import java.io.Serializable;
 
@@ -16,7 +17,6 @@ public interface StatusService {
 
     void updateFlowStatus(Flow flow, Serializable id, Flow.STAUS flowStatus, BizContext ctx);
 
-    String getNodeStatus(Flow flow, Serializable id);
+    FlowNodeStatus getStatus(Flow flow, Serializable id);
 
-    Flow.STAUS getFlowStatus(Flow flow, Serializable id);
 }

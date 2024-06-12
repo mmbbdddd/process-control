@@ -6,13 +6,17 @@ import hz.ddbm.pc.core.config.TransitionProperties;
 import hz.ddbm.pc.core.domain.*;
 import hz.ddbm.pc.core.utils.InfraUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
 public abstract class Fsm {
     public abstract Flow flow();
+
+    public abstract Map<Serializable, String> statusMapping();
 
 
     public static class FlowBuilder {
@@ -67,7 +71,10 @@ public abstract class Fsm {
         }
 
         public NodeBuilder onEvent(String event, String action, String router, String failToNode, String saga) {
-            this.events.add(new Transition(new TransitionProperties(event, action, router, failToNode, saga)));
+            this.events.add(new Transition(new TransitionProperties(event, action, router) {{
+                setFailToNode(failToNode);
+                setSaga(saga);
+            }}));
             return this;
         }
 

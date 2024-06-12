@@ -4,10 +4,13 @@ import hz.ddbm.pc.core.config.Coast;
 import hz.ddbm.pc.core.domain.*;
 import hz.ddbm.pc.core.factory.fsm.Fsm;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class PayFsm extends Fsm {
-//    定义工作流
+    //    定义工作流
     @Override
     public Flow flow() {
         return new FlowBuilder("testFlow", null, null) {
@@ -28,7 +31,13 @@ public class PayFsm extends Fsm {
 
         }.build();
     }
-//定义路由
+
+    @Override
+    public Map<Serializable, String> statusMapping() {
+        return flow().nodeNames().stream().collect(Collectors.toMap(k -> k, k -> k));
+    }
+
+    //定义路由
     private Router payRouter() {
         return new Router.Any("payRouter", new HashMap<String, String>() {{
             put("su", "null != actionResult && actionResult.code == '0000'");
