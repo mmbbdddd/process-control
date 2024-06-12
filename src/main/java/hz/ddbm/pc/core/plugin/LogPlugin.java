@@ -20,8 +20,7 @@ public class LogPlugin implements Plugin {
     }
 
     @Override
-    public void onActionException(String name, String failToNode, Exception e, BizContext ctx) {
-        log.info("{},{},{},{}",ctx.getFlow().getName(),ctx.getId(),failToNode,ctx.getNode());
+    public void onActionException(String name, String preNode, Exception e, BizContext ctx) { 
     }
 
     @Override

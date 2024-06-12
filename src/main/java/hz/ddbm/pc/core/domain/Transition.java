@@ -96,7 +96,7 @@ public class Transition {
             try {
                 ctx.setNode(this.failToNode);
                 ctx.getFlow().statusService.updateNodeState(flow, id, this.failToNode, ctx);
-                onActionExceptionPlugin(flow, this.failToNode, e, ctx);
+                onActionExceptionPlugin(flow, preNode, e, ctx);
             } catch (Exception e2) {
                 //服务失败，异常打印
                 log.error("", e);
@@ -149,10 +149,10 @@ public class Transition {
         });
     }
 
-    private void onActionExceptionPlugin(Flow flow, String failToNode, Exception e, BizContext ctx) {
+    private void onActionExceptionPlugin(Flow flow, String preNode, Exception e, BizContext ctx) {
         flow.getPlugins().forEach((plugin) -> {
             try {
-                plugin.onActionException(action.beanName(), failToNode, e, ctx);
+                plugin.onActionException(action.beanName(), preNode, e, ctx);
             } catch (Exception e2) {
                 log.error("", e2);
             }

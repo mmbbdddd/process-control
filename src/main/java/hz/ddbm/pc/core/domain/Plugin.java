@@ -12,7 +12,7 @@ public interface Plugin {
 
     void postAction(String name, BizContext ctx);
 
-    void onActionException(String name, String failToNode, Exception e, BizContext ctx);
+    void onActionException(String name, String preNode, Exception e, BizContext ctx);
 
     void onActionFinally(String name, BizContext ctx);
 
