@@ -119,7 +119,7 @@ public class PcService implements InitializingBean, ApplicationContextAware {
     /////////
     private <T> BizContext<T> getOrCreateContext(Flow flow, Serializable id, T data, String event, Map<String, Object> args) {
         //todo
-        FlowNodeStatus status = statusService.getStatus(flow, id);
+        FlowNodeStatus status = flow.getStatusService().getStatus(flow, id);
         return new BizContext<T>(flow, id, data, event, args) {{
             if (null != status) {
                 setNode(status.getNode());
