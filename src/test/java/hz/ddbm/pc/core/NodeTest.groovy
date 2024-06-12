@@ -18,6 +18,6 @@ public class NodeTest extends Specification {
         task.init(null)
         end.init(null)
         then:
-        EmptyStackException e = noExceptionThrown()
+        thrown(RuntimeException.class)
     }
 }

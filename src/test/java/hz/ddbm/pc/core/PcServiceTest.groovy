@@ -2,7 +2,7 @@ package hz.ddbm.pc.core
 
 import hz.ddbm.pc.core.config.Coast
 import hz.ddbm.pc.core.utils.ElUtils
-import org.junit.jupiter.api.Test
+import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification
