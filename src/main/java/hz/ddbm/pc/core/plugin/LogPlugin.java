@@ -20,7 +20,7 @@ public class LogPlugin implements Plugin {
     }
 
     @Override
-    public void onActionException(String name, String preNode, Exception e, BizContext ctx) { 
+    public void onActionException(String name, String preNode, Exception e, BizContext ctx) {
     }
 
     @Override
