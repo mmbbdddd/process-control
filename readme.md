@@ -1,122 +1,76 @@
-# 简要介绍
-    
-        大多数软件公司的软件质量都是相当差的。业内管这个叫技术债。
-    
-        有没有办法解决呢？
-    
-        有。至少这一类系统有。
-        
-        这一类系统叫做业务流程系统，就是一条业务报文跑到底，流程很长，中间逻辑很复杂，业务变化很多。
-    
-        解决这一类系统的核心组件就是：流程编排。
-    
-        核心思想是
-        1，复杂流程可以拆分为N个积木组件（action）
-        2，拆分的粒度是状态，从a状态变迁到b状态，中间走actionAB。则ACTION试做一个积木组件。
-        3，所有组件的入参和出参都一样，通过流程编排文件组装出复杂流程，组件之间彼此无耦合。
-        4，流程编排文件可发布到配置中心，实现流程本身的配置化
-        5，aciton组件支持servless引擎，实现组件逻辑的配置化。
+# 流程编排
+# 快速开始
+ **业务场景**
+![img.png](img.png)
+ **代码**
 
-        好处是
-        1，一个流程文件，轻松掌握一条业务线
-        2，流程文件管理，轻松掌控一个系统N个业务线
-        3，业务变更有好
-        
+参见hz.ddbm.jfsm.pay包
 
+ ```java
+ public class PayFsm extends Fsm {
+    //    定义工作流
+    @Override
+    public Flow flow() {
+        return new FlowBuilder("testFlow", null, null) {
+            {
+                addNode(new NodeBuilder(Node.Type.START, "init") {{
+                    onEvent(Coast.EVENT_PUSH, "payAction", "any://payRouter", "pay_unknow", "true");
+                }});
+                addNode(new NodeBuilder(Node.Type.TASK, "pay_unknow") {{
+                    onEvent(Coast.EVENT_PUSH, "payQueryAction", "any://payRouter");
+                }});
+                addNode(new NodeBuilder(Node.Type.END, "su"));
+                addNode(new NodeBuilder(Node.Type.END, "fail"));
 
-# 如何评价流程编排组件
+                addRouter(payRouter());
+                addPlugin("logPlugin");
+            }
+//            回忆
 
+        }.build();
+    }
+    //定义路由
+    private Router payRouter() {
+        return new Router.Any("payRouter", new HashMap<String, String>() {{
+            put("su", "null != actionResult && actionResult.code == '0000'");
+            put("fail", "null != actionResult &&  actionResult.code == '0001'");
+            put("pay_unknow", "true");
+        }});
+    }
 
- 市面上，流程编排组件其实不算多，liteflow，smartflow等等，我觉得都不好。
-        
-    1，有没有完成流程变化可配置
-    2，有没有完成业务逻辑积木化解耦
-    3，有没有支持动态指令定义（控制从状态a到状态b还是c的指令）
-    4，有没有支持saga事物（对金融是刚需）
-    5，有没有支持状态管理（大部分都不支持，支持就会产生业务耦合和一致性问题，有一定的风险）
-    6，有没有实现不同人员角色关注点分离 
-    7，有没有实现非业务功能插件化，可插拔
-    8，上下文有没有集成状态感知和路由，支持数字化运营
-     
-这些功能最多只能覆盖几个
-
-等待这个组件完善把。
+}
+ ```
  
+ **测试**
 
-# 一则新闻
-微服务全做错了！谷歌提出新方法，成本直接降9倍！
-https://zhuanlan.zhihu.com/p/674870383
-
-文中提到AWS的servless发现Step Function的的伸缩性竟然成了最大的绊脚石。
+     pcService.executeMore("testFlow",1, new Object(),Coast.EVENT_PUSH,null)
 
 
-        AWS的servless架构本质上是一个流程编排组件。 
-        1，被编排的东西叫做servless，http协议————其实就是微服务
-        2，微服务和servless的区别是 
-            servless是一套标准组件接口
-            微服务是一个个差异化的服务
-            servless到微服务中间，需要一个data和上下文的adapter，这个一般上就是servless的流程编排文件的脚本引擎实现的适配
-        
-        3，这套架构，宏观上看起来很好，最大的问题在于性能
-            一般上http的性能低内存invker的1000w倍以下，大部分情况下，使用微服务后，部署集群规模和日常运维成本要高一个数量级。
-            微服务带来的优势是科伸缩性。虽然性能降低了1个数量级，但是水平扩展能力提升了10w倍以上。所以，对于不差钱，但是业务规模
-            很大的公司而言，微服务的缺点不算缺点。
-
-    
-        4，然而微服务并不是一无是处。微服务其实遵循的是IBM  OS 360 以来，所有成功项目遵循的架构经验：应该把复杂系统拆分成N个
-            互相独立，可独立开发和管理的模块。
-
-            只不过，这个粒度应该只存在于开发阶段
-            在部署阶段，他们应该合并起来。
-
-        5，微服务的下一步不是is die  而是micro模块
-
-        6，好消息是，pc就是这样一个，高性能的，纯jar的，轻量级的，更先进的流程编排微服务组件。
-    
-
+     2024-06-12 10:40:58.527  INFO 21704 --- [           main] hz.ddbm.pc.core.PcService              : 初始化流程:testFlow
+     2024-06-12 10:40:59.045  INFO 21704 --- [           main] hz.ddbm.pc.core.PcServiceTest          : Started PcServiceTest in 1.174 seconds (JVM running for 1.826)
+     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,init,pay_unknow
+     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
+     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
+     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
+     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
+     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
+     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
+     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
+     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
+     2024-06-12 10:40:59.171  INFO 21704 --- [           main] hz.ddbm.pc.core.plugin.LogPlugin       : testFlow,1,pay_unknow,pay_unknow
 
 
 # 功能
+ - [复杂、长业务流程积木化、组件化开发](doc/组件化.md)
+ - [高性能SAGA事务](doc/SAGA事务.md)
+ - 插件化可插拔功能，包括：日志、监控、告警、统计……等 
+ - 动态发布
 
-    1，图形化界面，流程设计和流程运行  
-            TODO 优先级不高
-    2，节点转化率配置和统计
-            参见混沌chaos代码。基本完成，待完善。
-    3，节点失败率配置和统计
-            参见混沌chaos代码。基本完成，待完善。
-    4，流程版本管理
-            参见8，利用他实现
-    5，接口路由
-              
-    6，精细化切流
+# 特性
 
-            已支持
-    7，混沌
+# demo
 
-            已支持，有助于业务，架构，开发，管理关注点分离。
 
-    8，流程配置化，动态变更
-            TODO，优先级不高，后续集成配置中心，动态发布。
-    9，状态管理   已完成100%
-        1.  流程状态
-                内存/redis/db
-        2.  节点状态  
-                内存/redis
-        3.  上下文 
-                内存/redis/db
-         
-    10，上下文服务化
-            TODO 还没想好
-    11，SAGA事务
-            已完成  100%
-    12，重试
-            已完成  100%
-    13，AbTest
 
-            已完成  100%
 
-    
-    14，数字化运行
-            已完成  100% （参见插件和业财一体场景）
-![img.png](img.png)
- 
+
