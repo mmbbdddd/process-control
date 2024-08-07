@@ -1,6 +1,6 @@
 package hz.ddbm.pc.core.config;
 
-import hz.ddbm.pc.core.domain.Transition;
+import hz.ddbm.pc.core.fsm.core.Transition;
 
 public class Coast {
     public static final String EVENT_PUSH            = "push";

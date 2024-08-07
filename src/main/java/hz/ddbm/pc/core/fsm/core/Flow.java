@@ -1,8 +1,9 @@
-package hz.ddbm.pc.core.domain;
+package hz.ddbm.pc.core.fsm.core;
 
-import hz.ddbm.pc.core.*;
 import hz.ddbm.pc.core.config.FlowProperties;
-import hz.ddbm.pc.core.session.FlowNodeStatus;
+import hz.ddbm.pc.core.service.SessionService;
+import hz.ddbm.pc.core.service.StatusService;
+import hz.ddbm.pc.core.service.session.FlowNodeStatus;
 import hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Getter;
 import org.springframework.util.Assert;
@@ -22,8 +23,8 @@ public class Flow {
     Map<String, Node>   nodes;
     List<Plugin>        plugins;
     Map<String, Router> routers;
-    StatusService       statusService;
-    SessionService      sessionService;
+    StatusService statusService;
+    SessionService sessionService;
 
     public Flow(FlowProperties attrs, List<Node> nodes, List<Plugin> plugins, List<Router> routers) {
         Assert.notNull(attrs.getName(), "flow.name is null");

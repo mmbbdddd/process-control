@@ -1,11 +1,11 @@
 package hz.ddbm.pc.core.utils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import hz.ddbm.pc.core.SessionService;
-import hz.ddbm.pc.core.StatusService;
+import hz.ddbm.pc.core.service.SessionService;
+import hz.ddbm.pc.core.service.StatusService;
 import hz.ddbm.pc.core.config.Coast;
-import hz.ddbm.pc.core.session.JvmSessionService;
-import hz.ddbm.pc.core.session.RedisSessionService;
+import hz.ddbm.pc.core.service.session.JvmSessionService;
+import hz.ddbm.pc.core.service.session.RedisSessionService;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;

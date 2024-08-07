@@ -4,8 +4,8 @@ package hz.ddbm.pc.core
 import hz.ddbm.pc.core.config.FlowProperties
 import hz.ddbm.pc.core.config.NodeProperties
 import hz.ddbm.pc.core.config.PcConfiguration
-import hz.ddbm.pc.core.domain.Flow
-import hz.ddbm.pc.core.domain.Node
+import hz.ddbm.pc.core.fsm.core.Flow
+import hz.ddbm.pc.core.fsm.core.Node
 import hz.ddbm.pc.core.utils.InfraUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

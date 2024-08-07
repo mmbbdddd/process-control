@@ -1,9 +1,9 @@
-package hz.ddbm.pc.core.session;
+package hz.ddbm.pc.core.service.session;
 
-import hz.ddbm.pc.core.domain.BizContext;
-import hz.ddbm.pc.core.domain.Flow;
-import hz.ddbm.pc.core.StatusService;
-import hz.ddbm.pc.core.SessionService;
+import hz.ddbm.pc.core.fsm.core.BizContext;
+import hz.ddbm.pc.core.fsm.core.Flow;
+import hz.ddbm.pc.core.service.StatusService;
+import hz.ddbm.pc.core.service.SessionService;
 
 import java.io.Serializable;
 

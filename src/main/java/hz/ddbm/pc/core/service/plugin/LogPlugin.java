@@ -1,7 +1,7 @@
-package hz.ddbm.pc.core.plugin;
+package hz.ddbm.pc.core.service.plugin;
 
-import hz.ddbm.pc.core.domain.BizContext;
-import hz.ddbm.pc.core.domain.Plugin;
+import hz.ddbm.pc.core.fsm.core.BizContext;
+import hz.ddbm.pc.core.fsm.core.Plugin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

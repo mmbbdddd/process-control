@@ -1,6 +1,7 @@
 package hz.ddbm.pc.core
 
 import hz.ddbm.pc.core.config.Coast
+import hz.ddbm.pc.core.service.PcService
 import hz.ddbm.pc.core.utils.ElUtils
 import org.junit.Test
 import org.springframework.beans.factory.annotation.Autowired

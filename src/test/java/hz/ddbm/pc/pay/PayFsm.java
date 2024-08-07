@@ -1,8 +1,10 @@
 package hz.ddbm.pc.pay;
 
 import hz.ddbm.pc.core.config.Coast;
-import hz.ddbm.pc.core.domain.*;
 import hz.ddbm.pc.core.factory.fsm.Fsm;
+import hz.ddbm.pc.core.fsm.core.Flow;
+import hz.ddbm.pc.core.fsm.core.Node;
+import hz.ddbm.pc.core.fsm.core.Router;
 
 import java.io.Serializable;
 import java.util.HashMap;

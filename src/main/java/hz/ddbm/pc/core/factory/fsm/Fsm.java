@@ -3,7 +3,7 @@ package hz.ddbm.pc.core.factory.fsm;
 import hz.ddbm.pc.core.config.FlowProperties;
 import hz.ddbm.pc.core.config.NodeProperties;
 import hz.ddbm.pc.core.config.TransitionProperties;
-import hz.ddbm.pc.core.domain.*;
+import hz.ddbm.pc.core.fsm.core.*;
 import hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.io.Serializable;

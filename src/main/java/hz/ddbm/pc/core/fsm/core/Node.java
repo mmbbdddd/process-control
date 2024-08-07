@@ -1,4 +1,4 @@
-package hz.ddbm.pc.core.domain;
+package hz.ddbm.pc.core.fsm.core;
 
 import hz.ddbm.pc.core.config.NodeProperties;
 import lombok.Getter;

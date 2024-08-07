@@ -1,6 +1,6 @@
 package hz.ddbm.pc.core.utils;
 
-import hz.ddbm.pc.core.domain.Action;
+import hz.ddbm.pc.core.fsm.core.Action;
 import hz.ddbm.pc.core.factory.fsm.Fsm;
 import org.junit.Test;
 

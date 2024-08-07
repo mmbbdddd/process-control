@@ -1,6 +1,6 @@
-package hz.ddbm.pc.core.session;
+package hz.ddbm.pc.core.service.session;
 
-import hz.ddbm.pc.core.domain.Flow;
+import hz.ddbm.pc.core.fsm.core.Flow;
 import lombok.Getter;
 
 @Getter

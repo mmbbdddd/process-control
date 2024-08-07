@@ -1,7 +1,7 @@
-package hz.ddbm.pc.core.support;
+package hz.ddbm.pc.core.service.chaos;
 
-import hz.ddbm.pc.core.domain.Action;
-import hz.ddbm.pc.core.domain.BizContext;
+import hz.ddbm.pc.core.fsm.core.Action;
+import hz.ddbm.pc.core.fsm.core.BizContext;
 
 public class ChaosAction implements Action {
     String actionDsl;

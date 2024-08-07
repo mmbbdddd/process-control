@@ -1,7 +1,7 @@
 package hz.ddbm.pc.pay.actions;
 
-import hz.ddbm.pc.core.domain.Action;
-import hz.ddbm.pc.core.domain.BizContext;
+import hz.ddbm.pc.core.fsm.core.Action;
+import hz.ddbm.pc.core.fsm.core.BizContext;
 import org.assertj.core.util.Lists;
 
 import java.util.HashMap;

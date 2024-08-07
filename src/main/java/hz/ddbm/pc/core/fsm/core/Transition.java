@@ -1,7 +1,7 @@
-package hz.ddbm.pc.core.domain;
+package hz.ddbm.pc.core.fsm.core;
 
 import hz.ddbm.pc.core.config.TransitionProperties;
-import hz.ddbm.pc.core.exception.BuildFlowException;
+import hz.ddbm.pc.core.service.exception.BuildFlowException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;

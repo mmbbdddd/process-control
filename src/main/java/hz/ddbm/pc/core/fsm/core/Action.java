@@ -1,7 +1,7 @@
-package hz.ddbm.pc.core.domain;
+package hz.ddbm.pc.core.fsm.core;
 
 import hz.ddbm.pc.core.config.Coast;
-import hz.ddbm.pc.core.support.ChaosAction;
+import hz.ddbm.pc.core.service.chaos.ChaosAction;
 import hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.util.Objects;

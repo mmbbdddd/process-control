@@ -1,4 +1,4 @@
-package hz.ddbm.pc.core.exception;
+package hz.ddbm.pc.core.service.exception;
 
 public class BuildFlowException extends RuntimeException {
     public BuildFlowException(String msg) {

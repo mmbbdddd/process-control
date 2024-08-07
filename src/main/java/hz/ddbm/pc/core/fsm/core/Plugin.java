@@ -1,4 +1,4 @@
-package hz.ddbm.pc.core.domain;
+package hz.ddbm.pc.core.fsm.core;
 
 /**
  * 插件:

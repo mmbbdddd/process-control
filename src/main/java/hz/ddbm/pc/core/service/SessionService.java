@@ -1,6 +1,6 @@
-package hz.ddbm.pc.core;
+package hz.ddbm.pc.core.service;
 
-import hz.ddbm.pc.core.domain.Flow;
+import hz.ddbm.pc.core.fsm.core.Flow;
 
 import java.io.Serializable;
 

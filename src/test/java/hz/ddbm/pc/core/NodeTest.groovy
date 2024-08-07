@@ -2,7 +2,7 @@ package hz.ddbm.pc.core
 
 import hz.ddbm.pc.core.config.Coast
 import hz.ddbm.pc.core.config.NodeProperties
-import hz.ddbm.pc.core.domain.Node
+import hz.ddbm.pc.core.fsm.core.Node
 import org.assertj.core.util.Lists
 import spock.lang.Specification
 

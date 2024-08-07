@@ -1,6 +1,6 @@
 package hz.ddbm.pc.core.config;
 
-import hz.ddbm.pc.core.domain.Node;
+import hz.ddbm.pc.core.fsm.core.Node;
 import lombok.Getter;
 
 @Getter
