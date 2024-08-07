@@ -20,6 +20,8 @@ public class FlowContext<T extends FlowEntity> {
     //    运行时数据
     @Setter
     private FlowStatus          status;
+    @Setter
+    private AtomExecutor        atomExecutor;
 
 
     public FlowContext(Flow flow, Serializable id, T data, String event, Map<String, Object> args) {

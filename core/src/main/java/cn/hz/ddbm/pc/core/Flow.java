@@ -26,7 +26,7 @@ public class Flow {
         this.name = name;
         this.attrs = attrs;
         this.plugins = plugins;
-        this.routers = routers.stream().collect(Collectors.toMap(Router::getName, t -> t));
+        this.routers = routers.stream().collect(Collectors.toMap(Router::name, t -> t));
         this.nodes = nodes.stream().collect(Collectors.toMap(Node::getName, t -> t));
     }
 
@@ -53,6 +53,7 @@ public class Flow {
         String       node         = getOrInitNode(ctx);
         FsmRecord    atom         = fsmTable.onEvent(node, ctx.getEvent());
         AtomExecutor atomExecutor = null;
+        ctx.setAtomExecutor(atomExecutor);
         atomExecutor.execute(ctx);
     }
 

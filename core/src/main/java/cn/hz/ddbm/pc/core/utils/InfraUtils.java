@@ -9,6 +9,7 @@ import cn.hz.ddbm.pc.core.support.StatusManager;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
 
 public class InfraUtils {
 
@@ -21,6 +22,9 @@ public class InfraUtils {
     }
 
     public static MetricsWindows getMetricsWindows(String obj, Date date) {
+        return null;
+    }
+    public static ExecutorService getPluginExecutorService() {
         return null;
     }
 

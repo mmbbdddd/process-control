@@ -13,16 +13,10 @@ import lombok.Getter;
  * ___fork://routerName
  * ___join://conditionExpression:flowstatus
  */
-public abstract class Router {
-    @Getter
-    String name;
+public interface Router {
+    String name();
 
-    public Router(String name) {
-        this.name = name;
-    }
+    String route(FlowContext<?> ctx);
 
-    public abstract String route(FlowContext<?> ctx);
-
-
-    public abstract String failover();
+    String failover(String preNode,FlowContext<?> ctx);
 }

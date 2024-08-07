@@ -1,6 +1,11 @@
 package cn.hz.ddbm.pc.core.support;
 
 
+import cn.hz.ddbm.pc.core.FlowStatus;
+
+import java.io.IOException;
+import java.io.Serializable;
+
 /**
  * @Description TODO
  * @Author wanglin
@@ -10,4 +15,5 @@ package cn.hz.ddbm.pc.core.support;
 
 
 public interface StatusManager {
+    void updateStatus(String flow, Serializable flowId, FlowStatus flowStatus) throws IOException;
 }
