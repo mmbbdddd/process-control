@@ -1,8 +1,6 @@
 package cn.hz.ddbm.pc.core.support;
 
 
-import java.io.Serializable;
-
 /**
  * @Description TODO
  * @Author wanglin
