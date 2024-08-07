@@ -118,7 +118,7 @@
 
 # 能力词典
 
-![img_11.png](doc/img_11.png)
+![img.png](doc/img.png)
 
 
 
