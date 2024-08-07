@@ -31,20 +31,18 @@ public class FlowContext<T extends FlowEntity> {
         this.status = data.getStatus();
     }
 
-
-
-    public boolean isContinue() {
-        if (flow.getNode(status.getNode()).type == Node.Type.END) {
-            return false;
-        }
-        if (status.getFlow() != Flow.STAUS.RUNNABLE) {
-            return false;
-        }
-        if (InfraUtils.getMetricsWindows(status.getNode(), new Date()).getTimes() > flow.getNode(status.getNode()).retry) {
-            return false;
-        }
-        return true;
-    }
+//    public boolean isContinue() {
+//        if (flow.getNode(status.getNode()).type == Node.Type.END) {
+//            return false;
+//        }
+//        if (status.getFlow() != Flow.STAUS.RUNNABLE) {
+//            return false;
+//        }
+//        if (InfraUtils.getMetricsWindows(status.getNode(), new Date()).getTimes() > flow.getNode(status.getNode()).retry) {
+//            return false;
+//        }
+//        return true;
+//    }
 
     public void metricsNode(String node) {
         InfraUtils.getMetricsWindows(node, new Date()).incrementTimes();
