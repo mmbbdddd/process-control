@@ -18,7 +18,7 @@
 
     参见下图：流程编排解决了某一类的流程类架构需求
 
-![img_6.png](img_6.png)
+![img_6.png](doc/img_6.png)
    
       备注
       liteflow，ssm，cola等流程编排技术更接近于状态机——除了具备5（流程构建器）。流程编排的核心能力分布式任务重试、
@@ -28,7 +28,7 @@
       介于工作流和流程编排之间。
 
 # quickstart
-![img_4.png](img_4.png)
+![img_4.png](doc/img_4.png)
 **代码**
 
     <dependency>
@@ -112,11 +112,11 @@
 
 
 # 架构介绍
-![img_9.png](img_9.png)
+![img_9.png](doc/img_9.png)
 
 # 能力词典
 
-![img_10.png](img_10.png)
+![img_11.png](doc/img_11.png)
 
 
 
