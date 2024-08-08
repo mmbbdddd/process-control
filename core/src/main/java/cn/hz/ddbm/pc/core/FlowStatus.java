@@ -1,6 +1,7 @@
 package cn.hz.ddbm.pc.core;
 
 
+import cn.hutool.core.lang.Assert;
 import lombok.Data;
 
 /**
@@ -17,6 +18,7 @@ public class FlowStatus {
     String     node;
 
     public static FlowStatus pause(String node) {
+        Assert.notNull(node,"nodeStatus is null");
         FlowStatus status = new FlowStatus();
         status.node = node;
         status.flow = Flow.STAUS.PAUSE;
@@ -24,6 +26,7 @@ public class FlowStatus {
     }
 
     public static FlowStatus of(String node) {
+        Assert.notNull(node,"nodeStatus is null");
         FlowStatus status = new FlowStatus();
         status.node = node;
         status.flow = Flow.STAUS.RUNNABLE;
@@ -31,6 +34,8 @@ public class FlowStatus {
     }
 
     public static FlowStatus of(String flowStatus, String nodeStatus) {
+        Assert.notNull(flowStatus,"flowStatus is null");
+        Assert.notNull(nodeStatus,"nodeStatus is null");
         FlowStatus status = new FlowStatus();
         status.node = nodeStatus;
         status.flow = Flow.STAUS.valueOf(flowStatus);

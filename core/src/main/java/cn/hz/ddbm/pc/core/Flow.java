@@ -11,7 +11,6 @@ import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.*;
@@ -288,12 +287,7 @@ public class Flow {
 
         @Override
         public String toString() {
-            return "{" +
-                    "from:'" + from + '\'' +
-                    ", event:'" + event + '\'' +
-                    ", action:'" + action + '\'' +
-                    ", router:'" + router + '\'' +
-                    '}';
+            return "{" + "from:'" + from + '\'' + ", event:'" + event + '\'' + ", action:'" + action + '\'' + ", router:'" + router + '\'' + '}';
         }
     }
 

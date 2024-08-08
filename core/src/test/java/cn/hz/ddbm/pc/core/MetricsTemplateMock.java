@@ -4,9 +4,7 @@ import cn.hz.ddbm.pc.core.support.MetricsTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
 public class MetricsTemplateMock implements MetricsTemplate {
     Map<String, AtomicInteger> map = new HashMap<>();

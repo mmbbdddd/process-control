@@ -1,8 +1,6 @@
 package cn.hz.ddbm.pc.core.support;
 
 
-import java.util.Date;
-
 /**
  * @Description TODO
  * @Author wanglin
