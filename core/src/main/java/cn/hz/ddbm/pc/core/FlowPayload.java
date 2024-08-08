@@ -11,7 +11,7 @@ import java.io.Serializable;
  **/
 
 
-public interface FlowEntity {
+public interface FlowPayload {
     Serializable getId();
 
     FlowStatus getStatus();

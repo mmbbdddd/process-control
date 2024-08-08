@@ -7,6 +7,7 @@
         <groupId>cn.hz.ddbm</groupId>
         <artifactId>pc-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
     </parent>
     <artifactId>pc-framework</artifactId>
     <version>${pc.version}</version>
@@ -17,5 +18,13 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.hz.ddbm</groupId>
+            <artifactId>pc-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -11,6 +11,7 @@ import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,6 +20,7 @@ import java.util.*;
 public class Flow {
     String              name;
     String              descr;
+    @Setter
     Boolean             fluent = true;
     String              sessionManager;
     String              statusManager;

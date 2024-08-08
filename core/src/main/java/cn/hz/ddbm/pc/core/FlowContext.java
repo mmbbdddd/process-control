@@ -9,23 +9,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public class FlowContext<T extends FlowEntity> {
+public class FlowContext<T extends FlowPayload> {
     //    入参
     @Setter
-    private String              event;
-    private Map<String, Object> args;
-    private Serializable        id;
-    private T                   data;
-    private Flow                flow;
+    private String       event;
+    private Serializable id;
+    private T            data;
+    private Flow         flow;
     //    运行时数据
     @Setter
-    private FlowStatus          status;
+    private FlowStatus   status;
     @Setter
-    private AtomExecutor        atomExecutor;
+    private AtomExecutor atomExecutor;
 
 
     public FlowContext(Flow flow, T data, String event, Map<String, Object> args) {
@@ -42,7 +40,6 @@ public class FlowContext<T extends FlowEntity> {
         this.data   = data;
         this.id     = data.getId();
         this.flow   = flow;
-        this.args   = (null == args) ? new HashMap<>() : args;
         this.status = data.getStatus();
     }
 
