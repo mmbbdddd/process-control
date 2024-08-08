@@ -13,7 +13,7 @@ class FlowTest extends Specification {
         ctx.register(TestConfig.class)
         ctx.refresh()
 
-        flow = Flow.devOf("test")
+        flow = Flow.devOf("test","测试流程")
         flow.nodes = [
                 "init"     : new Node(Node.Type.START, "init", [] as HashMap),
                 "pay"      : new Node(Node.Type.TASK, "pay", [] as HashMap),
@@ -32,7 +32,7 @@ class FlowTest extends Specification {
 
     def "Of"() {
         expect:
-        Flow f = Flow.of(name, [plugin], [] as HashMap)
+        Flow f = Flow.of(name, "",[plugin], [] as HashMap)
         String.format("%s:%s:%s", f.name, f.sessionManager, f.statusManager) == result
         where:
         name | plugin | session | status | result
@@ -42,8 +42,6 @@ class FlowTest extends Specification {
 
     }
 
-    def "DevOf"() {}
-
     def "AddNode"() {}
 
     def "AddRouter"() {}
@@ -51,10 +49,6 @@ class FlowTest extends Specification {
     def "OnEventRouter"() {}
 
     def "OnEventTo"() {}
-
-    def "Validate"() {}
-
-    def "GetNode"() {}
 
     def "Execute"() {
         expect:
@@ -84,21 +78,6 @@ class FlowTest extends Specification {
 
     def "NodeNames"() {}
 
-    def "GetName"() {}
 
-    def "GetFluent"() {}
 
-    def "GetSessionManager"() {}
-
-    def "GetStatusManager"() {}
-
-    def "GetPlugins"() {}
-
-    def "GetFsmTable"() {}
-
-    def "GetAttrs"() {}
-
-    def "GetNodes"() {}
-
-    def "GetRouters"() {}
 }

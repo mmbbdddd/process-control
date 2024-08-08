@@ -18,6 +18,7 @@ import java.util.*;
 @Getter
 public class Flow {
     String              name;
+    String              descr;
     Boolean             fluent = true;
     String              sessionManager;
     String              statusManager;
@@ -36,8 +37,8 @@ public class Flow {
      * @param attrs
      * @return
      */
-    public static Flow of(String name, List<String> plugins, Map<String, Object> attrs) {
-        return new Flow(name, plugins, attrs);
+    public static Flow of(String name, String descr, List<String> plugins, Map<String, Object> attrs) {
+        return new Flow(name, descr, plugins, attrs);
     }
 
     /**
@@ -46,19 +47,20 @@ public class Flow {
      * @param name
      * @return
      */
-    public static Flow devOf(String name) {
+    public static Flow devOf(String name, String descr) {
         List<String> plugins = new ArrayList<>();
         plugins.add(Coasts.PLUGIN_DIGEST_LOG);
         plugins.add(Coasts.PLUGIN_ERROR_LOG);
         HashMap<String, Object> attrs = new HashMap<>();
         attrs.put(Coasts.SESSION_MANAGER, Coasts.SESSION_MANAGER_MEMORY);
         attrs.put(Coasts.STATUS_MANAGER, Coasts.STATUS_MANAGER_MEMORY);
-        return new Flow(name, plugins, attrs);
+        return new Flow(name, descr, plugins, attrs);
     }
 
-    public Flow(String name, List<String> plugins, Map<String, Object> attrs) {
+    public Flow(String name, String descr, List<String> plugins, Map<String, Object> attrs) {
         Assert.notNull(name, "flow.name is null");
         this.name           = name;
+        this.descr          = descr;
         this.plugins        = null == plugins ? Collections.emptyList() : plugins;
         this.nodes          = new HashMap<>();
         this.routers        = new HashMap<>();
