@@ -19,6 +19,13 @@ import java.util.Map;
  * ___join://conditionExpression:flowstatus
  */
 public abstract class Router {
+    @Getter
+    String name;
+
+    public Router(String name) {
+        this.name = name;
+    }
+
     private static String resolveProtocolHead(String dsl) {
         String[] splits = dsl.split("://");
         return splits[0];
@@ -28,16 +35,6 @@ public abstract class Router {
         String[] splits = dsl.split("://");
         return splits[1];
     }
-
-    @Getter
-    String name;
-
-    public Router(String name) {
-        this.name = name;
-    }
-
-    public abstract <T> String route(BizContext<T> ctx);
-
 
     public static Router dsl(String dsl, Flow flow) {
         Assert.notNull(dsl, "router dsl is null");
@@ -54,6 +51,8 @@ public abstract class Router {
         }
         throw new RuntimeException("not support this router dsl protocol");
     }
+
+    public abstract <T> String route(BizContext<T> ctx);
 
     @Getter
     public static class None extends Router {

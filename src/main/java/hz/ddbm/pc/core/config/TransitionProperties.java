@@ -16,7 +16,7 @@ public class TransitionProperties {
     String retryTimes;
 
     public TransitionProperties(String event, String action, String router) {
-        this.event = event;
+        this.event  = event;
         this.action = action;
         this.router = router;
     }

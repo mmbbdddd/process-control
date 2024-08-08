@@ -23,23 +23,19 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.Map;
 
-public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContextAware {
+public class InfraUtils implements BeanFactoryPostProcessor, ApplicationContextAware {
     private static ConfigurableListableBeanFactory beanFactory;
     private static ApplicationContext              applicationContext;
 
     public InfraUtils() {
     }
 
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        InfraUtils.beanFactory = beanFactory;
+    public static ApplicationContext getApplicationContext() {
+        return applicationContext;
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) {
-        InfraUtils. applicationContext = applicationContext;
-    }
-
-    public static ApplicationContext getApplicationContext() {
-        return applicationContext;
+        InfraUtils.applicationContext = applicationContext;
     }
 
     public static ListableBeanFactory getBeanFactory() {
@@ -47,7 +43,7 @@ public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContext
         if (null == factory) {
             throw new RuntimeException("No ConfigurableListableBeanFactory or ApplicationContext injected, maybe not in the Spring environment?");
         } else {
-            return (ListableBeanFactory)factory;
+            return (ListableBeanFactory) factory;
         }
     }
 
@@ -60,12 +56,11 @@ public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContext
                 throw new RuntimeException("No ConfigurableListableBeanFactory from context!");
             }
 
-            factory = ((ConfigurableApplicationContext)applicationContext).getBeanFactory();
+            factory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
         }
 
         return factory;
     }
-
 
     public static <T> T getBean(Class<T> clazz) {
         return getBeanFactory().getBean(clazz);
@@ -76,10 +71,10 @@ public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContext
     }
 
     public static <T> T getBean(TypeReference<T> reference) {
-        ParameterizedType parameterizedType = (ParameterizedType)reference.getType();
-        Class<T>          rawType           = (Class)parameterizedType.getRawType();
+        ParameterizedType parameterizedType = (ParameterizedType) reference.getType();
+        Class<T>          rawType           = (Class) parameterizedType.getRawType();
         Class<?>[] genericTypes = (Class[]) Arrays.stream(parameterizedType.getActualTypeArguments()).map((type) -> {
-            return (Class)type;
+            return (Class) type;
         }).toArray((x$0) -> {
             return new Class[x$0];
         });
@@ -115,8 +110,6 @@ public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContext
         return null == applicationContext ? null : applicationContext.getEnvironment().getActiveProfiles();
     }
 
-
-
     public static <T> void registerBean(String beanName, T bean) {
         ConfigurableListableBeanFactory factory = getConfigurableBeanFactory();
         factory.autowireBean(bean);
@@ -126,7 +119,7 @@ public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContext
     public static void unregisterBean(String beanName) {
         ConfigurableListableBeanFactory factory = getConfigurableBeanFactory();
         if (factory instanceof DefaultSingletonBeanRegistry) {
-            DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry)factory;
+            DefaultSingletonBeanRegistry registry = (DefaultSingletonBeanRegistry) factory;
             registry.destroySingleton(beanName);
         } else {
             throw new RuntimeException("Can not unregister bean, the factory is not a DefaultSingletonBeanRegistry!");
@@ -146,9 +139,6 @@ public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContext
         }
     }
 
-
-    /////
-
     /**
      * 1，如果application.propierites.pc.session.provider = redis/jvm指定，则使用指定的。
      * 2，检测是否存在RedisSessionService
@@ -158,13 +148,16 @@ public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContext
      * @return
      */
     public static SessionService getSessionService() {
-        String             provider = getApplicationContext().getEnvironment().getProperty("pc.session.provider");
+        String provider = getApplicationContext().getEnvironment().getProperty("pc.session.provider");
         if (StringUtils.isEmpty(provider)) {
             return getSessionServiceAuto();
         } else {
             return getSessionServiceSpecial(provider);
         }
     }
+
+
+    /////
 
     private static SessionService getSessionServiceSpecial(String provider) {
         switch (provider) {
@@ -178,7 +171,7 @@ public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContext
     }
 
     private static SessionService getSessionServiceAuto() {
-        SessionService     bean = null;
+        SessionService bean = null;
         try {
             bean = getApplicationContext().getBean(RedisSessionService.class);
         } catch (NoSuchBeanDefinitionException e) {
@@ -191,7 +184,6 @@ public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContext
         return bean;
     }
 
-
     /**
      * 如果有用户自定义实现，则使用用户自定义实现。否则，使用缺省实现。
      *
@@ -203,5 +195,9 @@ public  class InfraUtils implements BeanFactoryPostProcessor, ApplicationContext
         } else {
             return (StatusService) getSessionService();
         }
+    }
+
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        InfraUtils.beanFactory = beanFactory;
     }
 }

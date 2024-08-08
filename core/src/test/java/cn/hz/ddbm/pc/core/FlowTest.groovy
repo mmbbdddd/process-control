@@ -1,6 +1,6 @@
 package cn.hz.ddbm.pc.core
 
-import cn.hutool.core.lang.hash.Hash
+
 import cn.hz.ddbm.pc.core.coast.Coasts
 import org.junit.Assert
 import org.springframework.context.annotation.AnnotationConfigApplicationContext

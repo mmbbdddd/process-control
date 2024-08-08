@@ -24,9 +24,9 @@ public class Node {
         Assert.notNull(attrs, "attrs is null");
         Assert.notNull(attrs.getName(), "name is null");
         Assert.notNull(events, "events is null");
-        this.attrs = attrs;
-        this.type = attrs.getType();
-        this.name = attrs.getName();
+        this.attrs  = attrs;
+        this.type   = attrs.getType();
+        this.name   = attrs.getName();
         this.events = events.stream().collect(Collectors.toMap(Transition::getEvent, Function.identity()));
     }
 
@@ -54,7 +54,6 @@ public class Node {
     public enum Type {
         START, TASK, END
     }
-
 
 
 }

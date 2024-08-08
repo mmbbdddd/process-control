@@ -1,4 +1,5 @@
 # demo
+
 以支付订单为例
 ![img_6.png](img_6.png)
 
@@ -6,21 +7,19 @@
 `init(订单已受理),
 send(发送中), 
 su,fail，pay_result_unknow(结果未知),` 几个状态
- 
 
 一个最简单的支付发送接口在SAGA事务下的状态是这样的。
 
-
- - 1，init
- - 2，init响应流程push事件
+- 1，init
+- 2，init响应流程push事件
     - 2.1 设置状态为pay_result_unknow，如果设置失败，则结束
     - 2.2 执行payAction
     - 2.3 执行路由
     - 2.3 解析结果su/fail，如以上过程有任何异常则设置状态pay_result_unknow
 
- - 3，响应任务调度事件
- - 4，获取当前状态pay_result_unknow，并执行其PayQueryAction获取当前结果
- - ......
+- 3，响应任务调度事件
+- 4，获取当前状态pay_result_unknow，并执行其PayQueryAction获取当前结果
+- ......
 
 这就是一个SAGA事务的典型流程，可以看出有如下特征
 

@@ -15,12 +15,12 @@ import org.springframework.context.annotation.*;
 public class PcConfiguration {
 
     @Bean
-    InfraUtils infraUtils( ) {
+    InfraUtils infraUtils() {
         return new InfraUtils();
     }
 
     @Bean
-    PcService pcService( ) {
+    PcService pcService() {
         return new PcService();
     }
 

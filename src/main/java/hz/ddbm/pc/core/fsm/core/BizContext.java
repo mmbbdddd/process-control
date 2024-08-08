@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 public class BizContext<T> {
+    ConcurrentHashMap<String, AtomicInteger> executeCounts;
     //    入参
     private String              event;
     private Map<String, Object> args;
@@ -30,16 +31,14 @@ public class BizContext<T> {
     @Setter
     private Flow.STAUS          flowStatus;
 
-    ConcurrentHashMap<String, AtomicInteger> executeCounts;
-
 
     public BizContext(Flow flow, Serializable id, T data, String event, Map<String, Object> args) {
-        this.event = event;
-        this.args = args;
-        this.id = id;
-        this.data = data;
-        this.flow = flow;
-        this.flowStatus = Flow.STAUS.RUNNABLE;
+        this.event         = event;
+        this.args          = args;
+        this.id            = id;
+        this.data          = data;
+        this.flow          = flow;
+        this.flowStatus    = Flow.STAUS.RUNNABLE;
         this.executeCounts = new ConcurrentHashMap<>();
         flow.nodes.forEach((nodeName, node) -> {
             this.executeCounts.put(nodeName, new AtomicInteger(1));

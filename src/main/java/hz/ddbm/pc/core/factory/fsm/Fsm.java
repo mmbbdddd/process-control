@@ -28,12 +28,12 @@ public abstract class Fsm {
         List<String>      plugin;
 
         public FlowBuilder(String name, String statusService, String sessionProvider) {
-            this.name = name;
-            this.statusService = statusService;
+            this.name            = name;
+            this.statusService   = statusService;
             this.sessionProvider = sessionProvider;
-            this.nodes = new ArrayList<>();
-            this.routers = new ArrayList<>();
-            this.plugin = new ArrayList<>();
+            this.nodes           = new ArrayList<>();
+            this.routers         = new ArrayList<>();
+            this.plugin          = new ArrayList<>();
         }
 
         public void addNode(NodeBuilder node) {
@@ -61,8 +61,8 @@ public abstract class Fsm {
         List<Transition> events;
 
         public NodeBuilder(Node.Type type, String name) {
-            this.type = type;
-            this.name = name;
+            this.type   = type;
+            this.name   = name;
             this.events = new ArrayList<>();
         }
 

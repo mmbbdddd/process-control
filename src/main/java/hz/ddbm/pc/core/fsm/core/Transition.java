@@ -27,10 +27,10 @@ public class Transition {
 
     //初始化Transition的bean属性（有容器、流程的上下文耦合）
     public Transition init(Node node, Flow flow) {
-        this.action = buildPluginAction(node, flow);
-        this.router = buildRouter(node, flow);
+        this.action     = buildPluginAction(node, flow);
+        this.router     = buildRouter(node, flow);
         this.failToNode = buildFailToNode(node, flow);
-        this.saga = buildSaga(node, flow);
+        this.saga       = buildSaga(node, flow);
         return this;
     }
 
@@ -64,7 +64,7 @@ public class Transition {
 
     private Action buildPluginAction(Node node, Flow flow) {
         if (!StringUtils.isEmpty(attrs.getAction())) {
-            return Action.dsl(attrs.getAction().trim(),flow);
+            return Action.dsl(attrs.getAction().trim(), flow);
         } else {
             throw new BuildFlowException("no action in transition[" + node.getName() + ":" + getEvent() + "]");
         }
@@ -79,9 +79,9 @@ public class Transition {
      * @param ctx
      */
     public <T> void execute(BizContext<T> ctx) {
-        Flow         flow = ctx.getFlow();
-        Serializable id   = ctx.getId();
-        String preNode = ctx.getNode();
+        Flow         flow    = ctx.getFlow();
+        Serializable id      = ctx.getId();
+        String       preNode = ctx.getNode();
         try {
             preActionPlugin(flow, ctx);
             if (this.saga) {

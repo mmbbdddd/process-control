@@ -48,7 +48,7 @@ public class FlowContext<T extends FlowEntity> {
 
 
     public void metricsNode(FlowContext<?> ctx) {
-        String windows = String.format("%s:%s:%s:%s", ctx.getFlow().getName(),ctx.getId(),ctx.getStatus().getNode(), Coasts.NODE_RETRY);
+        String          windows        = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getNode(), Coasts.NODE_RETRY);
         MetricsTemplate metricsWindows = InfraUtils.getMetricsTemplate();
         metricsWindows.increment(windows);
     }

@@ -70,7 +70,8 @@ public class AtomExecutor {
                         try {
                             plugin.preAction(action.beanName(), ctx);
                         } catch (Exception e) {
-                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);;
+                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+                            ;
                         }
                     });
         });
@@ -83,7 +84,8 @@ public class AtomExecutor {
                         try {
                             plugin.postAction(action.beanName(), ctx);
                         } catch (Exception e) {
-                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);;
+                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+                            ;
                         }
                     });
         });
@@ -109,7 +111,8 @@ public class AtomExecutor {
                         try {
                             plugin.onActionFinally(action.beanName(), ctx);
                         } catch (Exception e) {
-                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);;
+                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+                            ;
                         }
                     });
         });

@@ -1,6 +1,6 @@
 package cn.hz.ddbm.pc.core;
 
-public class TestAction implements Action{
+public class TestAction implements Action {
     @Override
     public String beanName() {
         return "test";

@@ -17,8 +17,8 @@ public class FlowProperties {
     }
 
     public FlowProperties(String name, String statusService, String sessionProvider) {
-        this.name = name;
-        this.statusService = statusService;
+        this.name            = name;
+        this.statusService   = statusService;
         this.sessionProvider = sessionProvider;
     }
 

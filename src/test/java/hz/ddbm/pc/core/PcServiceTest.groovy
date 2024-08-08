@@ -13,6 +13,7 @@ import spock.lang.Specification
 public class PcServiceTest extends Specification {
     @Autowired
     PcService pcService;
+
     @Test
     def "集成测试"() {
         expect: ""
@@ -33,8 +34,8 @@ public class PcServiceTest extends Specification {
 
     @Test
     def "多步测试"() {
-        given:''
-        expect:""
-        pcService.executeMore("testFlow",1, new Object(),Coast.EVENT_PUSH,null)
+        given: ''
+        expect: ""
+        pcService.executeMore("testFlow", 1, new Object(), Coast.EVENT_PUSH, null)
     }
 }

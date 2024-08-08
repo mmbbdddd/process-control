@@ -1,7 +1,6 @@
 package cn.hz.ddbm.pc.core;
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,14 +21,17 @@ public class TestConfig {
     ContainerSpring container() {
         return new ContainerSpring();
     }
+
     @Bean
     Action testAction() {
         return new TestAction();
     }
+
     @Bean
     MetricsTemplateMock metricsTemplateMock() {
         return new MetricsTemplateMock();
     }
+
     @Bean
     DigestLogPlugin digestLogPlugin() {
         return new DigestLogPlugin();

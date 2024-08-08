@@ -11,6 +11,7 @@ public class FlowNodeStatus {
     public FlowNodeStatus() {
 
     }
+
     public FlowNodeStatus(Flow.STAUS flow, String node) {
         this.flow = flow;
         this.node = node;

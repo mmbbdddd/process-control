@@ -1,5 +1,3 @@
-
-
 package cn.hz.ddbm.pc.core.exception;
 
 /**

@@ -2,7 +2,6 @@ package cn.hz.ddbm.pc.plugin;
 
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.Plugin;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

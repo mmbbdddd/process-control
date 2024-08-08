@@ -15,14 +15,14 @@ public class ExpressionAnyRouter implements AnyRouter {
 
     ExpressionEngine expressionEngine;
 
-    @Override
-    public String name() {
-        return null;
-    }
-
     public ExpressionAnyRouter(Map<String, String> expressions) {
         this.expressions      = expressions;
         this.expressionEngine = InfraUtils.getExpressionEngine();
+    }
+
+    @Override
+    public String name() {
+        return null;
     }
 
     @Override

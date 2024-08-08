@@ -30,7 +30,7 @@ public class LogPlugin implements Plugin {
 
     @Override
     public void postRoute(String beanName, String preNode, BizContext ctx) {
-        log.info("{},{},{},{}",ctx.getFlow().getName(),ctx.getId(),preNode,ctx.getNode());
+        log.info("{},{},{},{}", ctx.getFlow().getName(), ctx.getId(), preNode, ctx.getNode());
     }
 
     @Override

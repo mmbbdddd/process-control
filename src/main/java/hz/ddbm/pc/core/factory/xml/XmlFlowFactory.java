@@ -151,7 +151,7 @@ class FlowHanlder extends DefaultHandler {
         if (!StringUtils.isEmpty(name)) {
             fb.addPlugin(name);
         }
-        this.node = null;
+        this.node       = null;
         this.routerName = null;
     }
 
@@ -167,25 +167,25 @@ class FlowHanlder extends DefaultHandler {
 
     private void initEnd(Attributes attributes) {
         String name = attributes.getValue("name");
-        this.node = fb.addNode(Node.Type.END, name);
+        this.node       = fb.addNode(Node.Type.END, name);
         this.routerName = null;
     }
 
     private void initNode(Attributes attributes) {
         String name = attributes.getValue("name");
-        this.node = fb.addNode(Node.Type.TASK, name);
+        this.node       = fb.addNode(Node.Type.TASK, name);
         this.routerName = null;
     }
 
     private void initStart(Attributes attributes) {
-        this.node = fb.addNode(Node.Type.START, "start");
+        this.node       = fb.addNode(Node.Type.START, "start");
         this.routerName = null;
     }
 
     private void initFlow(Attributes attributes) {
         String flowName = attributes.getValue("name");
-        fb = new FlowB(flowName);
-        this.node = null;
+        fb              = new FlowB(flowName);
+        this.node       = null;
         this.routerName = null;
     }
 
@@ -212,7 +212,7 @@ class FlowHanlder extends DefaultHandler {
     }
 }
 
-class FlowB{
+class FlowB {
 
     public FlowB(String flowName) {
 
@@ -230,7 +230,8 @@ class FlowB{
         return null;
     }
 }
-class NodeB{
+
+class NodeB {
 
 }
 

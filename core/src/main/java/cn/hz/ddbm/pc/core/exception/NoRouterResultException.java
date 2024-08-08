@@ -1,4 +1,4 @@
 package cn.hz.ddbm.pc.core.exception;
 
-public class NoRouterResultException extends PauseFlowException{
+public class NoRouterResultException extends PauseFlowException {
 }

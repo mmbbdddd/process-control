@@ -7,9 +7,9 @@ import hz.ddbm.pc.core.service.SessionService;
 
 import java.io.Serializable;
 
-public class RedisSessionService implements SessionService,StatusService {
+public class RedisSessionService implements SessionService, StatusService {
     @Override
-    public void updateNodeState(Flow flow, Serializable id,String nodeStatus, BizContext ctx) {
+    public void updateNodeState(Flow flow, Serializable id, String nodeStatus, BizContext ctx) {
 
     }
 
@@ -25,12 +25,12 @@ public class RedisSessionService implements SessionService,StatusService {
 
 
     @Override
-    public void put(Flow flow, Serializable id,String key, Object value) {
+    public void put(Flow flow, Serializable id, String key, Object value) {
 
     }
 
     @Override
-    public Object get(Flow flow, Serializable id,String key) {
+    public Object get(Flow flow, Serializable id, String key) {
         return null;
     }
 }

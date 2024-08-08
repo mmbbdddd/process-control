@@ -14,6 +14,6 @@ public class MockEntity implements FlowEntity {
 
     @Override
     public FlowStatus getStatus() {
-        return FlowStatus.of(flowStatus,nodeStatus);
+        return FlowStatus.of(flowStatus, nodeStatus);
     }
 }

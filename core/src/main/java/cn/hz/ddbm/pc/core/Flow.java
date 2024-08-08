@@ -29,6 +29,23 @@ public class Flow {
     Map<String, Node>   nodes;
     Map<String, Router> routers;
 
+    public Flow(String name, String descr, List<String> plugins, Map<String, Object> attrs) {
+        Assert.notNull(name, "flow.name is null");
+        this.name           = name;
+        this.descr          = descr;
+        this.plugins        = null == plugins ? Collections.emptyList() : plugins;
+        this.nodes          = new HashMap<>();
+        this.routers        = new HashMap<>();
+        this.fsmTable       = new FsmTable();
+        this.attrs          = (null == attrs) ? new HashMap<>() : attrs;
+        this.sessionManager = (this.getAttrs()
+                .get(Coasts.SESSION_MANAGER) == null) ? Coasts.SESSION_MANAGER_REDIS : (String) this.getAttrs()
+                .get(Coasts.SESSION_MANAGER);
+        this.statusManager  = (this.getAttrs()
+                .get(Coasts.STATUS_MANAGER) == null) ? Coasts.STATUS_MANAGER_REDIS : (String) this.getAttrs()
+                .get(Coasts.STATUS_MANAGER);
+    }
+
     /**
      * 定义流程参数
      *
@@ -55,23 +72,6 @@ public class Flow {
         attrs.put(Coasts.SESSION_MANAGER, Coasts.SESSION_MANAGER_MEMORY);
         attrs.put(Coasts.STATUS_MANAGER, Coasts.STATUS_MANAGER_MEMORY);
         return new Flow(name, descr, plugins, attrs);
-    }
-
-    public Flow(String name, String descr, List<String> plugins, Map<String, Object> attrs) {
-        Assert.notNull(name, "flow.name is null");
-        this.name           = name;
-        this.descr          = descr;
-        this.plugins        = null == plugins ? Collections.emptyList() : plugins;
-        this.nodes          = new HashMap<>();
-        this.routers        = new HashMap<>();
-        this.fsmTable       = new FsmTable();
-        this.attrs          = (null == attrs) ? new HashMap<>() : attrs;
-        this.sessionManager = (this.getAttrs()
-                .get(Coasts.SESSION_MANAGER) == null) ? Coasts.SESSION_MANAGER_REDIS : (String) this.getAttrs()
-                .get(Coasts.SESSION_MANAGER);
-        this.statusManager  = (this.getAttrs()
-                .get(Coasts.STATUS_MANAGER) == null) ? Coasts.STATUS_MANAGER_REDIS : (String) this.getAttrs()
-                .get(Coasts.STATUS_MANAGER);
     }
 
     public void addNode(Node node) {

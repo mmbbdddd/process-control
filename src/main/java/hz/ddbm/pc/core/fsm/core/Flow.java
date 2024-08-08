@@ -23,24 +23,24 @@ public class Flow {
     Map<String, Node>   nodes;
     List<Plugin>        plugins;
     Map<String, Router> routers;
-    StatusService statusService;
-    SessionService sessionService;
+    StatusService       statusService;
+    SessionService      sessionService;
 
     public Flow(FlowProperties attrs, List<Node> nodes, List<Plugin> plugins, List<Router> routers) {
         Assert.notNull(attrs.getName(), "flow.name is null");
         Assert.notNull(nodes, "flow.nodes is null");
-        plugins = null == plugins ? Collections.emptyList() : plugins;
-        routers = null == routers ? Collections.emptyList() : routers;
-        this.name = attrs.getName();
-        this.attrs = attrs;
+        plugins      = null == plugins ? Collections.emptyList() : plugins;
+        routers      = null == routers ? Collections.emptyList() : routers;
+        this.name    = attrs.getName();
+        this.attrs   = attrs;
         this.plugins = plugins;
         this.routers = routers.stream().collect(Collectors.toMap(Router::getName, t -> t));
-        this.nodes = nodes.stream().collect(Collectors.toMap(Node::getName, t -> t));
+        this.nodes   = nodes.stream().collect(Collectors.toMap(Node::getName, t -> t));
     }
 
     //初始化Flow的bean属性
     public Flow init() {
-        this.statusService = InfraUtils.getStatusService(this.attrs.getStatusService());
+        this.statusService  = InfraUtils.getStatusService(this.attrs.getStatusService());
         this.sessionService = InfraUtils.getSessionService();
         this.nodes.forEach((nodeName, node) -> {
             node.init(this);

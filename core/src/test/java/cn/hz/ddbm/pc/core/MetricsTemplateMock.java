@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MetricsTemplateMock implements MetricsTemplate {
     Map<String, AtomicInteger> map = new HashMap<>();
+
     @Override
     public void increment(String windows) {
         map.computeIfAbsent(windows, s -> new AtomicInteger(0)).incrementAndGet();
@@ -15,6 +16,6 @@ public class MetricsTemplateMock implements MetricsTemplate {
 
     @Override
     public Integer get(String windows) {
-        return map.computeIfAbsent(windows,s -> new AtomicInteger(0)).get();
+        return map.computeIfAbsent(windows, s -> new AtomicInteger(0)).get();
     }
 }

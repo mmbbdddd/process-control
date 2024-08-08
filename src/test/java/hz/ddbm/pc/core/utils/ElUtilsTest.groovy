@@ -18,11 +18,11 @@ public class ElUtilsTest {
     void evalBoolean() {
         try {
             Assert.assertTrue(ElUtils.evalBoolean("1+1", null))
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
         Assert.assertTrue(ElUtils.evalBoolean("true", null))
-        Assert.assertTrue(ElUtils.evalBoolean("actionResult.code == '0001'", [actionResult: [code:'0001']]))
+        Assert.assertTrue(ElUtils.evalBoolean("actionResult.code == '0001'", [actionResult: [code: '0001']]))
     }
 
 

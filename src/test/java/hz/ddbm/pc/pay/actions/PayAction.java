@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PayAction implements Action , InitializingBean {
+public class PayAction implements Action, InitializingBean {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
@@ -21,19 +21,19 @@ public class PayAction implements Action , InitializingBean {
 
     @Override
     public void execute(BizContext ctx) throws Exception {
-        if(Math.random()<0.4){
+        if (Math.random() < 0.4) {
             throw new Exception();
         }
-        if(Math.random()<0.4){
+        if (Math.random() < 0.4) {
             throw new RuntimeException();
         }
-        Map<String,Object> result = new HashMap<>();
-        result.put("code",randomCode(Lists.newArrayList("0000","0001")));
+        Map<String, Object> result = new HashMap<>();
+        result.put("code", randomCode(Lists.newArrayList("0000", "0001")));
         ctx.setActionResult(result);
     }
 
     private String randomCode(List<String> codes) {
-        int random = (int)Math.round(Math.floor(Math.random()*2));
+        int random = (int) Math.round(Math.floor(Math.random() * 2));
         return codes.get(random);
     }
 

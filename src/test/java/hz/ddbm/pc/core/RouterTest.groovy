@@ -1,5 +1,5 @@
 package hz.ddbm.pc.core
 
-class RouterTest   {
+class RouterTest {
 
 }
