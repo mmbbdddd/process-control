@@ -10,6 +10,6 @@ package cn.hz.ddbm.pc.core.support;
 
 
 public interface MetricsWindows {
-    void incrementTimes();
-    Integer getTimes();
+    void incrementRetrys();
+    Integer getRetrys();
 }

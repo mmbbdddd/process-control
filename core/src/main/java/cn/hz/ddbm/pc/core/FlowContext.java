@@ -25,11 +25,11 @@ public class FlowContext<T extends FlowEntity> {
 
 
     public FlowContext(Flow flow, Serializable id, T data, String event, Map<String, Object> args) {
-        this.event = event;
-        this.args = args;
-        this.id = id;
-        this.data = data;
-        this.flow = flow;
+        this.event  = event;
+        this.args   = args;
+        this.id     = id;
+        this.data   = data;
+        this.flow   = flow;
         this.status = data.getStatus();
     }
 
@@ -47,6 +47,14 @@ public class FlowContext<T extends FlowEntity> {
 //    }
 
     public void metricsNode(String node) {
-        InfraUtils.getMetricsWindows(node, new Date()).incrementTimes();
+        InfraUtils.getNodeMetricsWindows(node, new Date()).incrementRetrys();
+    }
+
+    /**
+     * 确保上下文状态一致
+     * 1，status ==> entity
+     */
+    public void flush() {
+
     }
 }

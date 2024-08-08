@@ -2,6 +2,7 @@ package cn.hz.ddbm.pc.core;
 
 
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,13 +18,14 @@ import java.util.List;
 
 @Slf4j
 @Getter
+@Builder
 public class AtomExecutor {
     String       event;
     List<Plugin> plugins;
     Action       action;
     Router       router;
 
-    public void execute(FlowContext<?> ctx) {
+    public void execute(FlowContext<?> ctx) throws Exception {
         Flow         flow     = ctx.getFlow();
         Serializable id       = ctx.getId();
         String       lastNode = ctx.getStatus().getNode();
@@ -39,6 +41,7 @@ public class AtomExecutor {
                 //服务失败，异常打印
                 log.error("", e);
             }
+            throw e;
         } finally {
             onActionFinallyPlugin(flow, ctx);
         }
