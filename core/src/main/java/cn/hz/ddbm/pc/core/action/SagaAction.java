@@ -39,8 +39,8 @@ public interface SagaAction extends Action {
         } catch (IOException e) {
             throw new InterruptedFlowException(e);
         }
-        executeSafe(ctx);
+        executeTx(ctx);
     }
 
-    void executeSafe(FlowContext<?> ctx);
+    void executeTx(FlowContext<?> ctx);
 }
