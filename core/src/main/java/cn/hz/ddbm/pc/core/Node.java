@@ -8,7 +8,6 @@ import java.util.Map;
 
 
 @Getter
-@Slf4j
 public class Node {
     final Type                type;
     final String              name;

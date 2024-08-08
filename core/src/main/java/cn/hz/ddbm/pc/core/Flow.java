@@ -4,6 +4,7 @@ import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
 import cn.hz.ddbm.pc.core.exception.PauseFlowException;
+import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.router.ExpressionAnyRouter;
 import cn.hz.ddbm.pc.core.router.ToRouter;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -16,7 +17,6 @@ import java.io.IOException;
 import java.util.*;
 
 @Getter
-@Slf4j
 public class Flow {
     String              name;
     Boolean             fluent = true;
@@ -157,23 +157,24 @@ public class Flow {
             ctx.setAtomExecutor(atomExecutor);
             atomExecutor.execute(ctx);
         } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             ctx.flush();
+            return;
         } catch (IOException e) {
             e.printStackTrace();
             ctx.flush();
         } catch (InterruptedFlowException e) {
-            e.printStackTrace();
+            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             flush(ctx);
             releaseLock(ctx);
             return;
         } catch (PauseFlowException e) {
-            e.printStackTrace();
+            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             flush(ctx);
             releaseLock(ctx);
             return;
         } catch (Throwable e) {
-            e.printStackTrace();
+            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             flush(ctx);
             releaseLock(ctx);
             return;
@@ -217,11 +218,11 @@ public class Flow {
         Node.Type nodeType = nodeObj.getType();
 
         if (!flowStatus.equals(STAUS.RUNNABLE)) {
-            log.info("流程不可运行：{},{},{}", name, ctx.getId(), flowStatus.name());
+            Logs.flow.info("流程不可运行：{},{},{}", name, ctx.getId(), flowStatus.name());
             return false;
         }
         if (nodeType.equals(Node.Type.END)) {
-            log.info("流程已结束：{},{},{}", name, ctx.getId(), node);
+            Logs.flow.info("流程已结束：{},{},{}", name, ctx.getId(), node);
             return false;
         }
         String windows = String.format("%s:%s:%s:%s", ctx.getFlow()
@@ -230,7 +231,7 @@ public class Flow {
                 .get(windows);
         Integer nodeRetry = nodeObj.getRetry();
         if (exeRetry > nodeObj.getRetry()) {
-            log.info("流程已限流：{},{},{},{}>{}", name, ctx.getId(), node, exeRetry, nodeRetry);
+            Logs.flow.info("流程已限流：{},{},{},{}>{}", name, ctx.getId(), node, exeRetry, nodeRetry);
             return false;
         }
         return true;
