@@ -7,9 +7,9 @@
         <groupId>cn.hz.ddbm</groupId>
         <artifactId>pc-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+<!--        <relativePath>../../pom.xml</relativePath>-->
     </parent>
-    <artifactId>memory-session</artifactId>
+    <artifactId>pc-session-memory</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
