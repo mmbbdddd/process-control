@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.core
 
+import cn.hutool.core.lang.hash.Hash
 import cn.hz.ddbm.pc.core.coast.Coasts
-import jdk.nashorn.internal.runtime.regexp.joni.constants.NodeType
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Specification
 
@@ -32,6 +32,32 @@ class FlowTest extends Specification {
 
     def "Of"() {
         expect:
+        Flow f = Flow.of(name, [plugin], [] as HashMap)
+        String.format("%s:%s:%s", f.name, f.sessionManager, f.statusManager) == result
+        where:
+        name | plugin | session | status | result
+//        null | null|null|null|null
+        "i"  | "log"  | null    | null   | String.format("%s:%s:%s", "i", "redis", "redis")
+
+
+    }
+
+    def "DevOf"() {}
+
+    def "AddNode"() {}
+
+    def "AddRouter"() {}
+
+    def "OnEventRouter"() {}
+
+    def "OnEventTo"() {}
+
+    def "Validate"() {}
+
+    def "GetNode"() {}
+
+    def "Execute"() {
+        expect:
         FlowEntity date = new MockEntity(
                 id: 1,
                 flowStatus: flowStatus,
@@ -53,22 +79,6 @@ class FlowTest extends Specification {
         Flow.STAUS.RUNNABLE.name() | "init"     | "init"
 
     }
-
-    def "DevOf"() {}
-
-    def "AddNode"() {}
-
-    def "AddRouter"() {}
-
-    def "OnEventRouter"() {}
-
-    def "OnEventTo"() {}
-
-    def "Validate"() {}
-
-    def "GetNode"() {}
-
-    def "Execute"() {}
 
     def "StartStep"() {}
 

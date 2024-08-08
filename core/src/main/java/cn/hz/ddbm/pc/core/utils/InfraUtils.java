@@ -17,7 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class InfraUtils {
-    static Logger lockLog = LoggerFactory.getLogger("");
 
 
     static Container                   container;
