@@ -2,6 +2,7 @@ package cn.hz.ddbm.pc.core.utils;
 
 
 import cn.hutool.core.lang.Pair;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Plugin;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class InfraUtils {
     static Logger lockLog = LoggerFactory.getLogger("");
@@ -50,7 +52,8 @@ public class InfraUtils {
     }
 
     public static List<Plugin> getPluginBeans(List<String> plugins) {
-        return new ArrayList<>();
+        return new ArrayList<>(container.getBeansOfType(Plugin.class)
+                .values());
     }
 
     public static Action getActionBean(String action) {

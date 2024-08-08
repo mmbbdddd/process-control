@@ -33,4 +33,8 @@ public class TestConfig {
     MetricsTemplateMock metricsTemplateMock() {
         return new MetricsTemplateMock();
     }
+    @Bean
+    DigestLogPlugin digestLogPlugin() {
+        return new DigestLogPlugin();
+    }
 }
