@@ -60,7 +60,7 @@ class FlowTest extends Specification {
         );
         String event = Coasts.EVENT_DEFAULT;
 //        try {
-        FlowContext ctx = new FlowContext(flow, date, event, [] as HashMap)
+        FlowContext ctx = new FlowContext(flow, date, event)
         ctx.getStatus().node == result
         flow.execute(ctx)
 //        } catch (Exception e) {

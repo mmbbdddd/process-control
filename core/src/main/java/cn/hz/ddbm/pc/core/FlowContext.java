@@ -26,7 +26,7 @@ public class FlowContext<T extends FlowPayload> {
     private AtomExecutor atomExecutor;
 
 
-    public FlowContext(Flow flow, T data, String event, Map<String, Object> args) {
+    public FlowContext(Flow flow, T data, String event) {
         Assert.notNull(flow, "flow is null");
         Assert.notNull(data, "data is null");
         Assert.notNull(event, "event is null");
