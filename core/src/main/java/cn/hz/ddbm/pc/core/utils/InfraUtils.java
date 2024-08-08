@@ -5,35 +5,44 @@ import cn.hutool.core.lang.Pair;
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Plugin;
-import cn.hz.ddbm.pc.core.Router;
-import cn.hz.ddbm.pc.core.support.MetricsWindows;
-import cn.hz.ddbm.pc.core.support.SessionManager;
-import cn.hz.ddbm.pc.core.support.StatusManager;
+import cn.hz.ddbm.pc.core.support.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class InfraUtils {
     static Logger lockLog = LoggerFactory.getLogger("");
 
-    public static SessionManager getSessionManager() {
-        return null;
+
+    static Container                   container;
+    static Map<String, SessionManager> sessionManagerMap;
+    static Map<String, StatusManager>  statusManagerMap;
+
+    public InfraUtils(Container container) {
+        InfraUtils.container = container;
     }
 
-    public static StatusManager getStatusManager() {
-        return null;
+    public static SessionManager getSessionManager(String code) {
+        return sessionManagerMap.get(code);
     }
 
-    public static MetricsWindows getNodeMetricsWindows(String node, Date date) {
-        return null;
+    public static StatusManager getStatusManager(String code) {
+        return statusManagerMap.get(code);
+    }
+
+    public static MetricsTemplate getMetricsTemplate() {
+        return container.getBean(MetricsTemplate.class);
     }
 
     public static ExecutorService getPluginExecutorService() {
-        return null;
+        return Executors.newFixedThreadPool(3);
     }
 
     public static Pair<Flow.STAUS, String> syncStatus(String name, Serializable id) {
@@ -41,22 +50,31 @@ public class InfraUtils {
     }
 
     public static List<Plugin> getPluginBeans(List<String> plugins) {
-        return null;
+        return new ArrayList<>();
     }
 
     public static Action getActionBean(String action) {
-        return null;
+        return container.getBean(action, Action.class);
     }
 
-    public static Router getRouterBean(String router) {
-        return null;
-    }
+
     //如果持有锁，续锁，如果没有，新建，返回true
     //拿不到锁，返回false。
     public static Boolean tryLock(String key, int seconds) {
-        return null;
+        return true;
     }
+
     public static Boolean releaseLock(String key) {
         return null;
     }
+
+    public static String getDomain() {
+        return "";
+    }
+
+    public static ExpressionEngine getExpressionEngine() {
+        return null;
+    }
+
+
 }

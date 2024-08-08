@@ -20,9 +20,10 @@ public class Node {
         Assert.notNull(type, "type is null");
         Assert.notNull(name, "name is null");
         this.attrs = attrs;
-        this.type = type == null ? Type.TASK : type;
-        this.name = name;
-        this.retry = (null != attrs && null != attrs.get("retry")) ? Integer.parseInt(attrs.get("retry").toString()) : 1;
+        this.type  = type == null ? Type.TASK : type;
+        this.name  = name;
+        this.retry = (null != attrs && null != attrs.get("retry")) ? Integer.parseInt(attrs.get("retry")
+                .toString()) : 1;
     }
 
 

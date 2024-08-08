@@ -1,6 +1,9 @@
 package cn.hz.ddbm.pc.core.router;
 
 
+import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.Router;
+
 /**
  * @Description TODO
  * @Author wanglin
@@ -9,5 +12,5 @@ package cn.hz.ddbm.pc.core.router;
  **/
 
 
-public class AnyRouter {
+public interface AnyRouter extends Router {
 }

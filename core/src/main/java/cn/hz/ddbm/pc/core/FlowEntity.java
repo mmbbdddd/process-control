@@ -1,6 +1,8 @@
 package cn.hz.ddbm.pc.core;
 
 
+import java.io.Serializable;
+
 /**
  * @Description TODO
  * @Author wanglin
@@ -10,5 +12,7 @@ package cn.hz.ddbm.pc.core;
 
 
 public interface FlowEntity {
+    Serializable getId();
+
     FlowStatus getStatus();
 }

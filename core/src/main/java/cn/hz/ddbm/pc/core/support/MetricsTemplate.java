@@ -1,6 +1,8 @@
 package cn.hz.ddbm.pc.core.support;
 
 
+import java.util.Date;
+
 /**
  * @Description TODO
  * @Author wanglin
@@ -9,7 +11,8 @@ package cn.hz.ddbm.pc.core.support;
  **/
 
 
-public interface MetricsWindows {
-    void incrementRetrys();
-    Integer getRetrys();
+public interface MetricsTemplate {
+    void increment(String windows);
+
+    Integer get(String windows);
 }

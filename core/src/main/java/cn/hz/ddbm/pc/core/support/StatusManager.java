@@ -15,5 +15,6 @@ import java.io.Serializable;
 
 
 public interface StatusManager {
+    String code();
     void updateStatus(String flow, Serializable flowId, FlowStatus flowStatus) throws IOException;
 }

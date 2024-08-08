@@ -18,5 +18,5 @@ public interface Router {
 
     String route(FlowContext<?> ctx);
 
-    String failover(String preNode,FlowContext<?> ctx);
+    String failover(String preNode, FlowContext<?> ctx);
 }

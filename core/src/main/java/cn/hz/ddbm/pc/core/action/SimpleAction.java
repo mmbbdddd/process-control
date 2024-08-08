@@ -14,6 +14,7 @@ import cn.hz.ddbm.pc.core.FlowContext;
 
 public class SimpleAction implements Action {
     Action action;
+
     @Override
     public String beanName() {
         return action.beanName();

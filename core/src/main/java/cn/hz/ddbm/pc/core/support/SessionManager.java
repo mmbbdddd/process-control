@@ -10,7 +10,8 @@ package cn.hz.ddbm.pc.core.support;
 
 
 public interface SessionManager {
-    void set(String flowName,String flowId,String key,Object value);
+    String code();
+    void set(String flowName, String flowId, String key, Object value);
 
-    Object get(String flowName,String flowId,String key);
+    Object get(String flowName, String flowId, String key);
 }

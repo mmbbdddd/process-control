@@ -1,24 +1,23 @@
 package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.lang.Assert;
+import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
 import cn.hz.ddbm.pc.core.exception.PauseFlowException;
+import cn.hz.ddbm.pc.core.router.ExpressionAnyRouter;
+import cn.hz.ddbm.pc.core.router.ToRouter;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.*;
-import java.util.stream.Collectors;
-
-import static cn.hz.ddbm.pc.core.utils.InfraUtils.releaseLock;
 
 @Getter
 @Slf4j
 public class Flow {
-    String              domain;
     String              name;
     Boolean             fluent = true;
     String              sessionManager;
@@ -27,23 +26,104 @@ public class Flow {
     FsmTable            fsmTable;
     Map<String, Object> attrs;
 
-    Map<String, Node> nodes;
+    Map<String, Node>   nodes;
+    Map<String, Router> routers;
 
-    public Flow(String name, List<Node> nodes, List<String> plugins, List<String> routers, Map<String, Object> attrs) {
+    /**
+     * 定义流程参数
+     *
+     * @param name
+     * @param plugins
+     * @param attrs
+     * @return
+     */
+    public static Flow of(String name, List<String> plugins, Map<String, Object> attrs) {
+        return new Flow(name, plugins, attrs);
+    }
+
+    /**
+     * 定义开发环境流程参数
+     *
+     * @param name
+     * @return
+     */
+    public static Flow devOf(String name) {
+        List<String> plugins = new ArrayList<>();
+        plugins.add(Coasts.PLUGIN_DIGEST_LOG);
+        plugins.add(Coasts.PLUGIN_ERROR_LOG);
+        HashMap<String, Object> attrs = new HashMap<>();
+        attrs.put(Coasts.SESSION_MANAGER, Coasts.SESSION_MANAGER_MEMORY);
+        attrs.put(Coasts.STATUS_MANAGER, Coasts.STATUS_MANAGER_MEMORY);
+        return new Flow(name, plugins, attrs);
+    }
+
+    public Flow(String name, List<String> plugins, Map<String, Object> attrs) {
         Assert.notNull(name, "flow.name is null");
-        Assert.notNull(nodes, "flow.nodes is null");
-        plugins      = null == plugins ? Collections.emptyList() : plugins;
-        routers      = null == routers ? Collections.emptyList() : routers;
-        this.name    = name;
-        this.attrs   = attrs;
-        this.plugins = plugins;
-        this.nodes   = nodes.stream().collect(Collectors.toMap(Node::getName, t -> t));
+        this.name           = name;
+        this.plugins        = null == plugins ? Collections.emptyList() : plugins;
+        this.nodes          = new HashMap<>();
+        this.routers        = new HashMap<>();
+        this.fsmTable       = new FsmTable();
+        this.attrs          = (null == attrs) ? new HashMap<>() : attrs;
+        this.sessionManager = (this.getAttrs()
+                .get(Coasts.SESSION_MANAGER) == null) ? Coasts.SESSION_MANAGER_REDIS : (String) this.getAttrs()
+                .get(Coasts.SESSION_MANAGER);
+        this.statusManager  = (this.getAttrs()
+                .get(Coasts.STATUS_MANAGER) == null) ? Coasts.STATUS_MANAGER_REDIS : (String) this.getAttrs()
+                .get(Coasts.STATUS_MANAGER);
+    }
+
+    public void addNode(Node node) {
+
+    }
+
+    /**
+     * 定义流程的router
+     */
+    public void addRouter(Router router) {
+        this.routers.put(router.name(), router);
+    }
+
+    /**
+     * 定义流程事件绑定关系
+     *
+     * @param source
+     * @param event
+     * @param action
+     * @param router
+     */
+    public void onEventRouter(String source, String event, String action, ExpressionAnyRouter router) {
+        this.fsmTable.records.add(FsmRecord.builder()
+                .from(source)
+                .event(event)
+                .action(action)
+                .router(router.name())
+                .build());
+        addRouter(router);
+
+    }
+
+    public void onEventTo(String source, String event, String action, String to) {
+        Router toRouter = new ToRouter(source, event, to);
+        this.fsmTable.records.add(FsmRecord.builder()
+                .from(source)
+                .event(event)
+                .action(action)
+                .router(toRouter.name())
+                .build());
+        addRouter(toRouter);
     }
 
     //初始化Flow的bean属性
     public void validate() {
-        Assert.isTrue(nodes.values().stream().filter(n -> n.type.equals(Node.Type.START)).count() == 1, "node.start count != 1");
-        Assert.isTrue(nodes.values().stream().anyMatch(n -> n.type.equals(Node.Type.END)), "node.end count != 1");
+        Assert.notNull(fsmTable, "fsm table is null");
+        Assert.isTrue(nodes.values()
+                .stream()
+                .filter(n -> n.type.equals(Node.Type.START))
+                .count() == 1, "node.start count != 1");
+        Assert.isTrue(nodes.values()
+                .stream()
+                .anyMatch(n -> n.type.equals(Node.Type.END)), "node.end count != 1");
     }
 
 
@@ -52,48 +132,64 @@ public class Flow {
     }
 
     /**
-     * 1，获取当前节点状态，如无则为开始节点
-     * 2，
+     * 执行状态机
      *
      * @param ctx
      */
     public <T> void execute(FlowContext<?> ctx) {
+        Assert.isTrue(true, "ctx is null");
+        if (Boolean.FALSE.equals(tryLock(ctx))) {
+            return;
+        }
         try {
-            if (Boolean.FALSE.equals(tryLock(ctx))) {
-                return;
-            }
-            Assert.isTrue(ctx != null, "ctx is null");
-            String       node         = getOrInitNode(ctx);
-            FsmRecord    atom         = fsmTable.onEvent(node, ctx.getEvent());
-            AtomExecutor atomExecutor = AtomExecutor.builder().event(atom.getEvent()).plugins(InfraUtils.getPluginBeans(plugins)).action(InfraUtils.getActionBean(atom.getAction())).router(InfraUtils.getRouterBean(atom.getRouter())).build();
+            String node = ctx.getStatus()
+                    .getNode();
+            FsmRecord atom = fsmTable.onEvent(node, ctx.getEvent());
+            Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent(), ctx.getFlow()
+                    .getFsmTable()
+                    .toString()));
+            AtomExecutor atomExecutor = AtomExecutor.builder()
+                    .event(atom.getEvent())
+                    .plugins(InfraUtils.getPluginBeans(plugins))
+                    .action(InfraUtils.getActionBean(atom.getAction()))
+                    .router(getRouters().get(atom.getRouter()))
+                    .build();
             ctx.setAtomExecutor(atomExecutor);
             atomExecutor.execute(ctx);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            ctx.flush();
         } catch (IOException e) {
+            e.printStackTrace();
             ctx.flush();
         } catch (InterruptedFlowException e) {
+            e.printStackTrace();
             flush(ctx);
             releaseLock(ctx);
             return;
         } catch (PauseFlowException e) {
+            e.printStackTrace();
             flush(ctx);
             releaseLock(ctx);
             return;
         } catch (Throwable e) {
+            e.printStackTrace();
             flush(ctx);
             releaseLock(ctx);
             return;
         }
         if (fluent && isCanContinue(ctx)) {
+            ctx.setEvent(Coasts.EVENT_DEFAULT);
             execute(ctx);
         }
     }
 
     private void releaseLock(FlowContext<?> ctx) {
-        InfraUtils.releaseLock(String.format("%s:%s:%s", domain, ctx.getFlow().name, ctx.getId()));
+        InfraUtils.releaseLock(String.format("%s:%s:%s", InfraUtils.getDomain(), ctx.getFlow().name, ctx.getId()));
     }
 
     private Boolean tryLock(FlowContext<?> ctx) {
-        return InfraUtils.tryLock(String.format("%s:%s:%s", domain, ctx.getFlow().name, ctx.getId()), 10);
+        return InfraUtils.tryLock(String.format("%s:%s:%s", InfraUtils.getDomain(), ctx.getFlow().name, ctx.getId()), 10);
     }
 
     /**
@@ -113,10 +209,13 @@ public class Flow {
      * @return
      */
     private boolean isCanContinue(FlowContext<?> ctx) {
-        Flow.STAUS flowStatus = null;
-        String     node       = null;
-        Node       nodeObj    = null;
-        Node.Type  nodeType   = null;
+        Flow.STAUS flowStatus = ctx.getStatus()
+                .getFlow();
+        String node = ctx.getStatus()
+                .getNode();
+        Node      nodeObj  = getNode(node);
+        Node.Type nodeType = nodeObj.getType();
+
         if (!flowStatus.equals(STAUS.RUNNABLE)) {
             log.info("流程不可运行：{},{},{}", name, ctx.getId(), flowStatus.name());
             return false;
@@ -125,7 +224,10 @@ public class Flow {
             log.info("流程已结束：{},{},{}", name, ctx.getId(), node);
             return false;
         }
-        Integer exeRetry  = InfraUtils.getNodeMetricsWindows(node, new Date()).getRetrys();
+        String windows = String.format("%s:%s:%s:%s", ctx.getFlow()
+                .getName(), ctx.getId(), node, Coasts.NODE_RETRY);
+        Integer exeRetry = InfraUtils.getMetricsTemplate()
+                .get(windows);
         Integer nodeRetry = nodeObj.getRetry();
         if (exeRetry > nodeObj.getRetry()) {
             log.info("流程已限流：{},{},{},{}>{}", name, ctx.getId(), node, exeRetry, nodeRetry);
@@ -135,12 +237,12 @@ public class Flow {
     }
 
 
-    private String getOrInitNode(FlowContext<?> ctx) {
-        return null;
-    }
-
     public Node startStep() {
-        return nodes.values().stream().filter(t -> t.type.equals(Node.Type.START)).findFirst().get();
+        return nodes.values()
+                .stream()
+                .filter(t -> t.type.equals(Node.Type.START))
+                .findFirst()
+                .get();
     }
 
 
@@ -156,19 +258,42 @@ public class Flow {
 
     @Data
     public static class FsmTable {
-        List<FsmRecord> records;
+        private List<FsmRecord> records;
+
+        public FsmTable() {
+            this.records = new ArrayList<>();
+        }
 
         public FsmRecord onEvent(String step, String event) {
-            return records.stream().filter(r -> Objects.equals(r.getStep(), step) && Objects.equals(r.getEvent(), event)).findFirst().orElse(null);
+            return records.stream()
+                    .filter(r -> Objects.equals(r.getFrom(), step) && Objects.equals(r.getEvent(), event))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        @Override
+        public String toString() {
+            return Arrays.toString(records.toArray());
         }
     }
 
     @Data
+    @Builder
     public static class FsmRecord {
-        String step;
+        String from;
         String event;
         String action;
         String router;
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "from:'" + from + '\'' +
+                    ", event:'" + event + '\'' +
+                    ", action:'" + action + '\'' +
+                    ", router:'" + router + '\'' +
+                    '}';
+        }
     }
 
 
