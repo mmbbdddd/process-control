@@ -1,7 +1,12 @@
-package cn.hz.ddbm.pc.core;
+package cn.hz.ddbm.pc.test;
 
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hz.ddbm.pc.ChaosService;
+import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
+import cn.hz.ddbm.pc.test.support.ContainerMock;
+import cn.hz.ddbm.pc.test.support.DigestLogPluginMock;
+import cn.hz.ddbm.pc.test.support.MetricsTemplateMock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +20,10 @@ public class TestConfig {
     @Bean
     SpringUtil springUtil() {
         return new SpringUtil();
+    }
+    @Bean
+    ChaosService chaosService() {
+        return new ChaosService();
     }
 
     @Bean

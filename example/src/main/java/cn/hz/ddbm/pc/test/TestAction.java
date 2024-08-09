@@ -1,4 +1,7 @@
-package cn.hz.ddbm.pc.core;
+package cn.hz.ddbm.pc.test;
+
+import cn.hz.ddbm.pc.core.Action;
+import cn.hz.ddbm.pc.core.FlowContext;
 
 public class TestAction implements Action {
     @Override

@@ -1,4 +1,4 @@
-package cn.hz.ddbm.pc.core;
+package cn.hz.ddbm.pc.test.support;
 
 import cn.hz.ddbm.pc.core.support.MetricsTemplate;
 

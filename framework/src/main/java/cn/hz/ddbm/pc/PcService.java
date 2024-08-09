@@ -23,7 +23,7 @@ public class PcService {
 
         for (T payload : payloads) {
             FlowContext<T> ctx = new FlowContext<>(flow, payload, event);
-            ctx.getFlow().execute(ctx);
+            execute(ctx);
         }
     }
 
@@ -33,8 +33,11 @@ public class PcService {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = flows.get(flowName);
         FlowContext<T> ctx  = new FlowContext<>(flow, payload, event);
-        ctx.getFlow().execute(ctx);
+        execute(ctx);
     }
 
+    public <T extends FlowPayload> void execute(FlowContext<T> ctx) {
+        ctx.getFlow().execute(ctx);
+    }
 
 }
