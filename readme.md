@@ -120,7 +120,7 @@ pc    ：轻量级、高性能、高可靠的流程编排框架。
 
 # 架构介绍
 
-![img_9.png](doc/img_9.png)
+![img.png](doc/img13.png)
 
 # 能力词典
 
