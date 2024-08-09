@@ -7,7 +7,7 @@ import java.util.Map;
 
 
 @Getter
-public class Node {
+public class Node implements Step.Persist {
     final Type                type;
     final String              name;
     final Integer             retry;
@@ -22,6 +22,11 @@ public class Node {
         this.name  = name;
         this.retry = (null != attrs && null != attrs.get("retry")) ? Integer.parseInt(attrs.get("retry")
                 .toString()) : 1;
+    }
+
+    @Override
+    public String status() {
+        return name;
     }
 
 

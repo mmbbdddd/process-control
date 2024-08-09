@@ -1,11 +1,16 @@
 package cn.hz.ddbm.pc.core.router;
 
+import cn.hz.ddbm.pc.core.Event;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.Router;
 
-public class ChaosRouter implements Router {
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
+public class ChaosRouter implements Router<Set<String>> {
     @Override
-    public String name() {
+    public String routerName() {
         return "chaosRouter";
     }
 
@@ -33,7 +38,7 @@ public class ChaosRouter implements Router {
      * @return
      */
     @Override
-    public String route(FlowContext<?> ctx) {
+    public Set<String> route(FlowContext<?> ctx) {
         return null;
     }
 
@@ -41,4 +46,11 @@ public class ChaosRouter implements Router {
     public String failover(String preNode, FlowContext<?> ctx) {
         return null;
     }
+
+    @Override
+    public Set<String> toNodes() {
+        return Collections.emptySet();
+    }
+
+
 }

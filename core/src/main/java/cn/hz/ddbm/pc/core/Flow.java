@@ -85,7 +85,7 @@ public class Flow {
      * 定义流程的router
      */
     public void addRouter(Router router) {
-        this.routers.put(router.name(), router);
+        this.routers.put(router.routerName(), router);
     }
 
     /**
@@ -96,24 +96,24 @@ public class Flow {
      * @param action
      * @param router
      */
-    public void onEventRouter(String source, String event, String action, ExpressionAnyRouter router) {
+    public void onEventRouter(String source, Event event, String action, ExpressionAnyRouter router) {
         this.fsmTable.records.add(FsmRecord.builder()
                 .from(source)
                 .event(event)
                 .action(action)
-                .router(router.name())
+                .router(router.routerName())
                 .build());
         addRouter(router);
 
     }
 
-    public void onEventTo(String source, String event, String action, String to) {
+    public void onEventTo(String source, Event event, String action, String to) {
         Router toRouter = new ToRouter(source, event, to);
         this.fsmTable.records.add(FsmRecord.builder()
                 .from(source)
                 .event(event)
                 .action(action)
-                .router(toRouter.name())
+                .router(toRouter.routerName())
                 .build());
         addRouter(toRouter);
     }
@@ -166,7 +166,7 @@ public class Flow {
         try {
             String node = ctx.getStatus()
                     .getNode();
-            FsmRecord atom = fsmTable.onEvent(node, ctx.getEvent());
+            FsmRecord atom = fsmTable.find(node, ctx.getEvent());
             Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent(), ctx.getFlow()
                     .getFsmTable()
                     .toString()));
@@ -288,11 +288,29 @@ public class Flow {
             this.records = new ArrayList<>();
         }
 
-        public FsmRecord onEvent(String step, String event) {
+        public FsmRecord find(String node, String event) {
             return records.stream()
-                    .filter(r -> Objects.equals(r.getFrom(), step) && Objects.equals(r.getEvent(), event))
+                    .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent(), event))
                     .findFirst()
                     .orElse(null);
+        }
+
+        /**
+         * 暴露给用户的接口
+         * 内部被拆分成1+N
+         * 1，node=>event==>nodeOf(action,router)
+         * 2,nodeOf(action,router)==>routerResultEvent==>routerResultNode
+         * 参见onInner
+         */
+        public void on(String node, String event, String action, String routerName) {
+
+        }
+
+        private void onInner(String node, Event event, ActionRouter actionRouter) {
+            this.records.add(FsmRecord.builder().from(node).event(event).to(actionRouter.status()).build());
+            actionRouter.eventToNodes().forEach((routerResultEvent, routerResultNode) -> {
+                this.records.add(FsmRecord.builder().from(actionRouter.status()).event(routerResultEvent).to(routerResultNode).build());
+            });
         }
 
         @Override
@@ -305,7 +323,8 @@ public class Flow {
     @Builder
     public static class FsmRecord {
         String from;
-        String event;
+        Event  event;
+        String to;
         String action;
         String router;
 

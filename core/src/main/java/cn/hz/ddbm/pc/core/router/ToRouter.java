@@ -1,8 +1,11 @@
 package cn.hz.ddbm.pc.core.router;
 
 
+import cn.hz.ddbm.pc.core.Event;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.Router;
+
+import java.util.*;
 
 /**
  * @Description TODO
@@ -12,18 +15,18 @@ import cn.hz.ddbm.pc.core.Router;
  **/
 
 
-public class ToRouter implements Router {
+public class ToRouter implements Router<String> {
     String from;
     String to;
     String routerName;
 
-    public ToRouter(String from, String event, String to) {
+    public ToRouter(String from, Event event, String to) {
         this.to         = to;
         this.routerName = String.format("%s>%s>%s", from, event, to);
     }
 
     @Override
-    public String name() {
+    public String routerName() {
         return routerName;
     }
 
@@ -36,4 +39,13 @@ public class ToRouter implements Router {
     public String failover(String preNode, FlowContext<?> ctx) {
         return from;
     }
+
+    @Override
+    public Set<String> toNodes() {
+        return new HashSet<String>(){{
+            add(to);
+        }};
+    }
+
+
 }

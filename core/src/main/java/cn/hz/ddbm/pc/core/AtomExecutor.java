@@ -19,10 +19,10 @@ import java.util.List;
 @Getter
 @Builder
 public class AtomExecutor {
-    String       event;
-    List<Plugin> plugins;
-    Action       action;
-    Router       router;
+    Event          event;
+    List<Plugin>   plugins;
+    Action         action;
+    Router<String> router;
 
     public void execute(FlowContext<?> ctx) throws Exception {
         Flow         flow = ctx.getFlow();
