@@ -3,12 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>cn.hz.ddbm.pc</groupId>
-        <artifactId>parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
-        <relativePath/>
-    </parent>
+<!--    <parent>-->
+<!--        <groupId>cn.hz.ddbm.pc</groupId>-->
+<!--        <artifactId>parent</artifactId>-->
+<!--        <version>0.0.1-SNAPSHOT</version>-->
+<!--        <relativePath/>-->
+<!--    </parent>-->
     <groupId>cn.hz.ddbm.pc.factory</groupId>
     <artifactId>builder</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -25,11 +25,32 @@
             <artifactId>framework</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.statemachine</groupId>-->
+        <!--            <artifactId>spring-statemachine-starter</artifactId>-->
+        <!--            <version>2.0.2.RELEASE</version>-->
+        <!--        </dependency>-->
+        <!--        使用3，看起来在设计上已经接近pc了，可以考虑底层适配它-->
+        <!--        不要，值得吐槽的是ssm3的设计太复杂了。-->
         <dependency>
             <groupId>org.springframework.statemachine</groupId>
-            <artifactId>spring-statemachine-starter</artifactId>
-            <version>2.0.2.RELEASE</version>
+            <artifactId>spring-statemachine-core</artifactId>
+            <version>3.2.0</version>
+            <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>4.0.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+            <scope>test</scope>
+            <version> 2.6.13</version>
+        </dependency>
+
     </dependencies>
 
 
