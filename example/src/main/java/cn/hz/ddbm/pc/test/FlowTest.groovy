@@ -4,7 +4,6 @@ import cn.hz.ddbm.pc.core.Flow
 import cn.hz.ddbm.pc.core.FlowContext
 import cn.hz.ddbm.pc.core.FlowPayload
 import cn.hz.ddbm.pc.core.coast.Coasts
-import cn.hz.ddbm.pc.test.support.BaseSpec
 import cn.hz.ddbm.pc.test.support.PayloadMock
 import org.junit.Assert
 
