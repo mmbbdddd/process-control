@@ -8,11 +8,9 @@ import cn.hz.ddbm.pc.core.FlowPayload;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class ChaosService extends PcService {
 
@@ -42,7 +40,7 @@ public class ChaosService extends PcService {
             });
         }
         try {
-            cdl.await(1000000,TimeUnit.SECONDS);
+            cdl.await(timeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -67,6 +65,10 @@ public class ChaosService extends PcService {
     }
 
     static class ReportTable {
+        List<StatisticsLine> statisticsLines;
+    }
+
+    static class StatisticsLine {
 
     }
 }
