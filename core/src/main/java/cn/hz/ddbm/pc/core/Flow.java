@@ -107,6 +107,9 @@ public class Flow {
 
     }
 
+    public void onEventTo(String source, String event, String action, String to) {
+        onEventTo(source,Event.of(event),action,to);
+    }
     public void onEventTo(String source, Event event, String action, String to) {
         Router toRouter = new ToRouter(source, event, to);
         this.fsmTable.records.add(FsmRecord.builder()
