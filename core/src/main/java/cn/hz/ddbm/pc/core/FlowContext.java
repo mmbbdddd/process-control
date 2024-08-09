@@ -15,7 +15,7 @@ import java.util.Map;
 public class FlowContext<T extends FlowPayload> {
     //    入参
     @Setter
-    private String       event;
+    private Event        event;
     private Serializable id;
     private T            data;
     private Flow         flow;
@@ -32,11 +32,9 @@ public class FlowContext<T extends FlowPayload> {
         Assert.notNull(event, "event is null");
         Assert.notNull(data.getId(), "date.id is null");
         Assert.notNull(data.getStatus(), "date.status is null");
-        Assert.notNull(data.getStatus()
-                .getFlow(), "date.status.flow is null");
-        Assert.notNull(data.getStatus()
-                .getNode(), "date.status.node is null");
-        this.event  = event;
+        Assert.notNull(data.getStatus().getFlow(), "date.status.flow is null");
+        Assert.notNull(data.getStatus().getNode(), "date.status.node is null");
+        this.event  = Event.of(event);
         this.data   = data;
         this.id     = data.getId();
         this.flow   = flow;

@@ -206,7 +206,7 @@ public class Flow {
             return;
         }
         if (fluent && isCanContinue(ctx)) {
-            ctx.setEvent(Coasts.EVENT_DEFAULT);
+            ctx.setEvent(Event.of(Coasts.EVENT_DEFAULT));
             execute(ctx);
         }
     }
@@ -291,7 +291,7 @@ public class Flow {
             this.records = new ArrayList<>();
         }
 
-        public FsmRecord find(String node, String event) {
+        public FsmRecord find(String node, Event event) {
             return records.stream()
                     .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent(), event))
                     .findFirst()
