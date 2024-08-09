@@ -70,6 +70,7 @@ public class SSMConfig {
                     log.info("action 行为： {}",context.getMessage());
                     // 可以模拟抛出异常，将会触发 errorAction
                     //throw new RuntimeException("xxx 异常");
+
                 }
             };
         }
