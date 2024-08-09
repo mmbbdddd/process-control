@@ -4,7 +4,7 @@ import cn.hz.ddbm.pc.core.log.Logs;
 import org.springframework.stereotype.Component;
 
 @Component("digestLogPlugin")
-public class DigestLogPlugin implements Plugin {
+public class DigestLogPluginMock implements Plugin {
     @Override
     public void preAction(String name, FlowContext ctx) {
 

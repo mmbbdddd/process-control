@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TestConfig {
     @Bean
-    InfraUtils infraUtils(ContainerSpring container) {
+    InfraUtils infraUtils(ContainerMock container) {
         return new InfraUtils(container);
     }
 
@@ -18,8 +18,8 @@ public class TestConfig {
     }
 
     @Bean
-    ContainerSpring container() {
-        return new ContainerSpring();
+    ContainerMock container() {
+        return new ContainerMock();
     }
 
     @Bean
@@ -33,7 +33,7 @@ public class TestConfig {
     }
 
     @Bean
-    DigestLogPlugin digestLogPlugin() {
-        return new DigestLogPlugin();
+    DigestLogPluginMock digestLogPlugin() {
+        return new DigestLogPluginMock();
     }
 }

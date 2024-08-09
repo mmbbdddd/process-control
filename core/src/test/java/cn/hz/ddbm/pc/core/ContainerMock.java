@@ -5,7 +5,7 @@ import cn.hz.ddbm.pc.core.support.Container;
 
 import java.util.Map;
 
-public class ContainerSpring implements Container {
+public class ContainerMock implements Container {
     @Override
     public <T> T getBean(Class<T> clazz) {
         return SpringUtil.getBean(clazz);

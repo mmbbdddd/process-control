@@ -2,7 +2,7 @@ package cn.hz.ddbm.pc.core;
 
 import java.io.Serializable;
 
-public class MockEntity implements FlowPayload {
+public class PayloadMock implements FlowPayload {
     String id;
     String nodeStatus;
     String flowStatus;

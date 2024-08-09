@@ -53,7 +53,7 @@ class FlowTest extends Specification {
 
     def "Execute"() {
         expect:
-        FlowPayload date = new MockEntity(
+        FlowPayload date = new PayloadMock(
                 id: 1,
                 flowStatus: flowStatus,
                 nodeStatus: nodeStatus
