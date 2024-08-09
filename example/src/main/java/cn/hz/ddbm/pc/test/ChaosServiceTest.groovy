@@ -20,7 +20,7 @@ public class ChaosServiceTest extends Specification {
         ctx.register(TestConfig.class)
         ctx.refresh()
 
-        flow = Flow.devOf("test", "测试流程")
+        flow = Flow.of("test", "测试流程",[],[] as HashMap)
         flow.nodes = [
                 "init"     : new Node(Node.Type.START, "init", [] as HashMap),
                 "pay"      : new Node(Node.Type.TASK, "pay", [] as HashMap),

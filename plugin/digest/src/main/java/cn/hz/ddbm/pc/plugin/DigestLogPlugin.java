@@ -7,6 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DigestLogPlugin implements Plugin {
     @Override
+    public String code() {
+        return "digest";
+    }
+
+    @Override
     public void preAction(String name, FlowContext ctx) {
 
     }

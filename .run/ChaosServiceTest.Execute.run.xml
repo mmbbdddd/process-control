@@ -7,7 +7,7 @@
         <option name="ENABLED" value="true" />
       </pattern>
       <pattern>
-        <option name="PATTERN" value="cn.hz.ddbm.pc.*" />
+        <option name="PATTERN" value="cn.hz.ddbm.pc.factory.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

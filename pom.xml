@@ -17,7 +17,7 @@
         <module>core</module>
         <module>framework</module>
         <module>factory</module>
-        <module>configcenter</module>
+        <module>resouce</module>
         <module>plugin</module>
         <module>session</module>
         <module>status</module>

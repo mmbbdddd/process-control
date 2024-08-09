@@ -1,9 +1,10 @@
-package cn.hz.ddbm.pc.common;
+package cn.hz.ddbm.pc.common.lang;
 
 
 import java.util.Objects;
 
 public class Triple<L, M, R> {
+    private static final long serialVersionUID = 1L;
     final L left;
     final M middle;
     final R right;

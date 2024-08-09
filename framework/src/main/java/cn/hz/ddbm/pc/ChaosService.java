@@ -1,8 +1,8 @@
 package cn.hz.ddbm.pc;
 
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
-import cn.hz.ddbm.pc.common.Triple;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowPayload;
@@ -54,11 +54,12 @@ public class ChaosService extends PcService {
     }
 
     private void printStatisticsReport() {
-        Map<Triple, List<StatisticsLine>> groups = statisticsLines.stream()
-                .collect(Collectors.groupingBy(t -> Triple.of(t.index,t.result.type,t.result.value)));
-       groups.forEach((triple,list)->{
-           Logs.flow.info("{},{},{},{}",triple.getLeft(),triple.getMiddle(),triple.getRight(),list.size());
-       });
+        Map<Pair, List<StatisticsLine>> groups = statisticsLines.stream()
+                .collect(Collectors.groupingBy(t -> Pair.of(t.result.type, t.result.value)));
+        Logs.flow.info("混沌测试报告：\\n");
+        groups.forEach((triple, list) -> {
+            Logs.flow.info("{},{},{}", triple.getKey(), triple.getValue(), list.size());
+        });
 
         statisticsLines.clear();
     }
@@ -105,7 +106,7 @@ public class ChaosService extends PcService {
 
         public TypeValue(FlowContext<?> ctx) {
             this.type  = ctx.getClass().getSimpleName();
-            this.value = String.format("%s:%s",ctx.getStatus().getFlow().name(),ctx.getStatus().getNode());
+            this.value = String.format("%s:%s", ctx.getStatus().getFlow().name(), ctx.getStatus().getNode());
         }
 
         @Override

@@ -7,6 +7,7 @@ package cn.hz.ddbm.pc.core;
  */
 
 public interface Plugin {
+    String code();
 
     void preAction(String name, FlowContext ctx);
 

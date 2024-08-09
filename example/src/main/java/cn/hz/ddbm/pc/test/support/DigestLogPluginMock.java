@@ -8,6 +8,11 @@ import org.springframework.stereotype.Component;
 @Component("digestLogPlugin")
 public class DigestLogPluginMock implements Plugin {
     @Override
+    public String code() {
+        return "digest";
+    }
+
+    @Override
     public void preAction(String name, FlowContext ctx) {
 
     }

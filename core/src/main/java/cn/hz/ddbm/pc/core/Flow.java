@@ -15,13 +15,14 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public class Flow {
-    String              name;
-    String              descr;
+    String name;
+    String descr;
     @Setter
-    Boolean             fluent = true;
+    Boolean fluent = true;
     String              sessionManager;
     String              statusManager;
     List<String>        plugins;
@@ -139,6 +140,24 @@ public class Flow {
      *
      * @param ctx
      */
+    List<Plugin> pluginBeans;
+
+    public List<Plugin> getPluginBeans() {
+        if (null != pluginBeans) {
+            return pluginBeans;
+        } else {
+            synchronized (this) {
+                Map<String, Plugin> map = InfraUtils.getPluginBeans();
+                this.pluginBeans = plugins.stream()
+                        .filter(Objects::nonNull)
+                        .map(t -> map.getOrDefault(t, null))
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+            }
+            return pluginBeans;
+        }
+    }
+
     public <T> void execute(FlowContext<?> ctx) {
         Assert.isTrue(true, "ctx is null");
         if (Boolean.FALSE.equals(tryLock(ctx))) {
@@ -151,9 +170,10 @@ public class Flow {
             Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent(), ctx.getFlow()
                     .getFsmTable()
                     .toString()));
+
             AtomExecutor atomExecutor = AtomExecutor.builder()
                     .event(atom.getEvent())
-                    .plugins(InfraUtils.getPluginBeans(plugins))
+                    .plugins(getPluginBeans())
                     .action(InfraUtils.getActionBean(atom.getAction()))
                     .router(getRouters().get(atom.getRouter()))
                     .build();

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.hz.ddbm.pc</groupId>
-    <artifactId>configcenter</artifactId>
+    <artifactId>resouce</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 

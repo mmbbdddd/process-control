@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class InfraUtils {
 
@@ -45,9 +46,11 @@ public class InfraUtils {
         return null;
     }
 
-    public static List<Plugin> getPluginBeans(List<String> plugins) {
-        return new ArrayList<>(container.getBeansOfType(Plugin.class)
-                .values());
+    public static Map<String,Plugin> getPluginBeans() {
+        return container.getBeansOfType(Plugin.class).values().stream().collect(Collectors.toMap(
+                t->t.code(),
+                t->t
+        ));
     }
 
     public static Action getActionBean(String action) {
