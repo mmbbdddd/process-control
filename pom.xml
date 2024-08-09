@@ -22,6 +22,7 @@
         <module>session</module>
         <module>status</module>
         <module>container</module>
+        <module>example</module>
     </modules>
 
     <!--    <dependencies>-->
