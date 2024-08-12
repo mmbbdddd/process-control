@@ -178,7 +178,7 @@ public class Flow {
             AtomExecutor atomExecutor = AtomExecutor.builder()
                     .event(atom.getEvent())
                     .plugins(getPluginBeans())
-                    .actionRouter(InfraUtils.getActionRouter(atom.getAction(), atom.getRouter()))
+                    .actionRouter(InfraUtils.getActionRouter(atom.getAction(), ctx.getFlow().routers.get(atom.getRouter())))
                     .build();
             ctx.setAtomExecutor(atomExecutor);
             atomExecutor.execute(ctx);

@@ -2,10 +2,7 @@ package cn.hz.ddbm.pc.core.utils;
 
 
 import cn.hutool.core.lang.Pair;
-import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.ActionRouter;
-import cn.hz.ddbm.pc.core.Flow;
-import cn.hz.ddbm.pc.core.Plugin;
+import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.support.*;
 
 import java.io.Serializable;
@@ -78,7 +75,8 @@ public class InfraUtils {
     }
 
 
-    public static ActionRouter getActionRouter(String action, String router) {
-        return null;
+    public static ActionRouter getActionRouter(String action, Router router) {
+        Action actionBean = getActionBean(action);
+        return new ActionRouter(actionBean,router);
     }
 }
