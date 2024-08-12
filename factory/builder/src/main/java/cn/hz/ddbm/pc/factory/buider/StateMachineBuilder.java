@@ -47,15 +47,19 @@ public class StateMachineBuilder {
         public <E> void states(Set<E> enumSet) {
 
         }
+
+        public States ends(String... ends) {
+            return null;
+        }
     }
 
     public static class Transitions {
 
-        public Transitions toEvent(String node, String event, String action, String to) {
+        public Transitions to(String node, String event, String action, String to) {
             return null;
         }
 
-        public <A extends ActionAttrs> Transitions routerEvent(String node, String event, String action, String router, A attr) {
+        public <A extends ActionAttrs> Transitions router(String node, String event, String action, String router, A attr) {
             return null;
         }
 

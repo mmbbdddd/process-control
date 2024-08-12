@@ -25,12 +25,13 @@ public class PcConfig implements FSM<PcConfig.PcState> {
                 .beanFactory(beanFactory);
 
         builder.withStates()
-                .initial("UNPAID")
+                .initial("init")
+                .ends("su","fail","error")
                 .states(EnumSet.allOf(PcState.class));
 
         builder.withTransitions()
-                .toEvent("", "", "", "")
-                .routerEvent("", "", "", "",null);
+                .to("", "", "", "")
+                .router("", "", "", "", null);
 
         return builder.build();
     }
