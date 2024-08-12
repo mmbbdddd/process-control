@@ -6,6 +6,7 @@ import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowStatus;
 import cn.hz.ddbm.pc.core.Router;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
+import cn.hz.ddbm.pc.core.router.AnyRouter;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
@@ -22,9 +23,11 @@ import java.io.Serializable;
 
 public interface SagaAction extends Action {
 
+    String failover();
+
     @Override
     default void execute(FlowContext<?> ctx) {
-        Router       router       = ctx.getAtomExecutor().getRouter();
+        Router       router       = ctx.getAtomExecutor().getActionRouter().getRouter();
         String       flow         = ctx.getFlow().getName();
         Serializable flowId       = ctx.getId();
         String       failOverNode = router.failover(ctx.getStatus().getNode(), ctx);
@@ -39,4 +42,8 @@ public interface SagaAction extends Action {
     }
 
     void executeTx(FlowContext<?> ctx);
+
+    interface SagaRouter extends AnyRouter {
+
+    }
 }

@@ -19,10 +19,9 @@ import java.util.List;
 @Getter
 @Builder
 public class AtomExecutor {
-    Event          event;
-    List<Plugin>   plugins;
-    Action         action;
-    Router<String> router;
+    Event        event;
+    List<Plugin> plugins;
+    ActionRouter actionRouter;
 
     public void execute(FlowContext<?> ctx) throws Exception {
         Flow         flow = ctx.getFlow();
@@ -31,11 +30,11 @@ public class AtomExecutor {
                 .getNode();
         try {
             preActionPlugin(flow, ctx);
-            this.action.execute(ctx);
+            this.actionRouter.action.execute(ctx);
             postActionPlugin(flow, ctx);
         } catch (Exception e) {
             try {
-                ctx.setStatus(FlowStatus.of(router.failover(lastNode, ctx)));
+                ctx.setStatus(FlowStatus.of(this.actionRouter.router.failover(lastNode, ctx)));
                 onActionExceptionPlugin(flow, lastNode, e, ctx);
             } catch (Exception e2) {
                 //服务失败，异常打印
@@ -48,14 +47,14 @@ public class AtomExecutor {
         }
 
         try {
-            String nextNode = router.route(ctx);
+            String nextNode = this.actionRouter.router.route(ctx);
             ctx.setStatus(FlowStatus.of(nextNode));
             postRoutePlugin(flow, lastNode, ctx);
         } catch (Exception e) {
             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             onRouterExceptionPlugin(flow, e, ctx);
             //服务失败，异常打印&暂停
-            ctx.setStatus(FlowStatus.pause(router.failover(lastNode, ctx)));
+            ctx.setStatus(FlowStatus.pause(this.actionRouter.router.failover(lastNode, ctx)));
             throw e;
         }
 
@@ -68,7 +67,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.preAction(action.beanName(), ctx);
+                            plugin.preAction(this.actionRouter.action.beanName(), ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
                             ;
@@ -82,7 +81,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.postAction(action.beanName(), ctx);
+                            plugin.postAction(this.actionRouter.action.beanName(), ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
                             ;
@@ -96,7 +95,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.onActionException(action.beanName(), preNode, e, ctx);
+                            plugin.onActionException(this.actionRouter.action.beanName(), preNode, e, ctx);
                         } catch (Exception e2) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e2);
                         }
@@ -109,7 +108,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.onActionFinally(action.beanName(), ctx);
+                            plugin.onActionFinally(this.actionRouter.action.beanName(), ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
                             ;
@@ -123,7 +122,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.postRoute(action.beanName(), preNode, ctx);
+                            plugin.postRoute(this.actionRouter.action.beanName(), preNode, ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
                         }
@@ -136,7 +135,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.onRouteExcetion(action.beanName(), e, ctx);
+                            plugin.onRouteExcetion(this.actionRouter.action.beanName(), e, ctx);
                         } catch (Exception e2) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e2);
                         }

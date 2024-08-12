@@ -33,7 +33,7 @@ pc    ：轻量级、高性能、高可靠的流程编排框架。
 
 # quickstart
 
-![img_4.png](doc/img_4.png)
+![doc/img_16.png](doc/img_16.png)
 **代码**
 
     <dependency>

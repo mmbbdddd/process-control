@@ -108,8 +108,9 @@ public class Flow {
     }
 
     public void onEventTo(String source, String event, String action, String to) {
-        onEventTo(source,Event.of(event),action,to);
+        onEventTo(source, Event.of(event), action, to);
     }
+
     public void onEventTo(String source, Event event, String action, String to) {
         Router toRouter = new ToRouter(source, event, to);
         this.fsmTable.records.add(FsmRecord.builder()
@@ -177,8 +178,7 @@ public class Flow {
             AtomExecutor atomExecutor = AtomExecutor.builder()
                     .event(atom.getEvent())
                     .plugins(getPluginBeans())
-                    .action(InfraUtils.getActionBean(atom.getAction()))
-                    .router(getRouters().get(atom.getRouter()))
+                    .actionRouter(InfraUtils.getActionRouter(atom.getAction(), atom.getRouter()))
                     .build();
             ctx.setAtomExecutor(atomExecutor);
             atomExecutor.execute(ctx);

@@ -42,10 +42,7 @@ public class ExpressionAnyRouter implements AnyRouter {
         throw new NoRouterResultException();
     }
 
-    @Override
-    public String failover(String preNode, FlowContext<?> ctx) {
-        return null;
-    }
+
 
     @Override
     public Set<String> toNodes() {
