@@ -19,7 +19,7 @@ public class DemoApplication implements CommandLineRunner {
      }
 
     @Autowired
-    private SSMConfig.OrderStateMachineBuilder orderStateMachineBuilder;
+    private SSMConfig orderStateMachineBuilder;
 
     @Autowired
     private BeanFactory beanFactory;
