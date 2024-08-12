@@ -7,7 +7,7 @@ import java.util.List;
 public interface FSM<S> {
     String machineid();
 
-    StateMachine<S, String, String, String> build(BeanFactory beanFactory) throws Exception;
+    StateMachine<S> build(BeanFactory beanFactory) throws Exception;
 
     List<String> plugins();
 

@@ -7,13 +7,13 @@ import org.springframework.beans.factory.BeanFactory;
 
 import java.util.Set;
 
-public class StateMachineBuilder {
-    public static <F, E, A, R> Builder<F, E, A, R> builder() {
+public class StateMachineBuilder<S> {
+    public static <S> Builder<S> builder() {
         return new Builder<>();
     }
 
-    public static class Builder<F, E, A, R> {
-        public StateMachine<F, E, A, R> build() {
+    public static class Builder<S> {
+        public StateMachine<S> build() {
             return null;
         }
 
@@ -21,12 +21,12 @@ public class StateMachineBuilder {
             return null;
         }
 
-        public States withStates() {
+        public States<S> withStates() {
             return null;
         }
 
-        public Transitions withTransitions() {
-            return null;
+        public Transitions<S> withTransitions() {
+            return new Transitions<>();
         }
 
         public Routers withRouters() {
@@ -44,32 +44,33 @@ public class StateMachineBuilder {
         }
     }
 
-    public static class States {
+    public static class States<S> {
 
-        public States initial(String unpaid) {
+        public States<S> initial(String unpaid) {
             return null;
         }
 
-        public <E> void states(Set<E> enumSet) {
+        public void states(Set<S> enumSet) {
 
         }
 
-        public States ends(String... ends) {
+        public States<S> ends(S... ends) {
             return null;
         }
     }
 
-    public static class Transitions {
+    public static class Transitions<S> {
 
-        public Transitions to(String node, String event, String action, String to) {
+        public Transitions<S> to(S node, String event, String action, S to) {
             return null;
         }
 
-        public <A extends ActionAttrs> Transitions router(String node, String event, String action, String router, A attr) {
+        public <A extends ActionAttrs> Transitions<S> router(S node, String event, String action, String router, A attr) {
             return null;
         }
 
     }
+
     public static class Routers {
 
 
