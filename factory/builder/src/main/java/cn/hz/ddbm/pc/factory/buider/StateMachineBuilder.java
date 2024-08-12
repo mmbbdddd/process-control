@@ -1,6 +1,8 @@
 package cn.hz.ddbm.pc.factory.buider;
 
 import cn.hz.ddbm.pc.core.ActionAttrs;
+import cn.hz.ddbm.pc.core.Router;
+import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import org.springframework.beans.factory.BeanFactory;
 
 import java.util.Set;
@@ -24,6 +26,10 @@ public class StateMachineBuilder {
         }
 
         public Transitions withTransitions() {
+            return null;
+        }
+
+        public Routers withRouters() {
             return null;
         }
     }
@@ -63,6 +69,13 @@ public class StateMachineBuilder {
             return null;
         }
 
+    }
+    public static class Routers {
+
+
+        public Routers register(String simpleRouter, Router expressionRouter) {
+            return null;
+        }
     }
 
 

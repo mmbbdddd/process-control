@@ -5,7 +5,7 @@ import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
 import cn.hz.ddbm.pc.core.exception.PauseFlowException;
 import cn.hz.ddbm.pc.core.log.Logs;
-import cn.hz.ddbm.pc.core.router.ExpressionAnyRouter;
+import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.router.ToRouter;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Builder;
@@ -96,7 +96,7 @@ public class Flow {
      * @param action
      * @param router
      */
-    public void onEventRouter(String source, Event event, String action, ExpressionAnyRouter router) {
+    public void onEventRouter(String source, Event event, String action, ExpressionRouter router) {
         this.fsmTable.records.add(FsmRecord.builder()
                 .from(source)
                 .event(event)
