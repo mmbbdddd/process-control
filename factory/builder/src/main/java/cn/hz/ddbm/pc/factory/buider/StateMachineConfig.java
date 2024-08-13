@@ -32,6 +32,7 @@ public interface StateMachineConfig<S> extends InitializingBean {
     Map<String, Object> attrs();
 
     default Action getAction(String action) {
+        //todo
         return new NoneAction();
     }
 
