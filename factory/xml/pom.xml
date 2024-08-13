@@ -7,6 +7,7 @@
         <groupId>cn.hz.ddbm.pc</groupId>
         <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath/>
     </parent>
     <groupId>cn.hz.ddbm.pc.factory</groupId>
     <artifactId>factory-xml</artifactId>

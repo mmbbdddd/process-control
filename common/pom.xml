@@ -7,7 +7,7 @@
         <groupId>cn.hz.ddbm.pc</groupId>
         <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../parent/pom.xml</relativePath>
+        <relativePath/>
     </parent>
     <artifactId>common</artifactId>
     <version>0.0.1-SNAPSHOT</version>

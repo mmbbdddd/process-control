@@ -7,7 +7,7 @@
         <groupId>cn.hz.ddbm.pc</groupId>
         <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath/>
     </parent>
     <groupId>cn.hz.ddbm.pc</groupId>
     <artifactId>plugin-digest</artifactId>
