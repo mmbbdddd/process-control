@@ -9,5 +9,5 @@ import java.util.List;
  * 有xml，json，buider等方式。
  */
 public interface FlowFactory<R extends Resource> {
-    List<Flow> loadBeanDefinitions(ResourceLoader<R> resource);
+    List<Flow> loadFlowByResource(ResourceLoader<R> resource);
 }

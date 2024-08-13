@@ -9,7 +9,7 @@ import java.util.List;
 public class DslFlowFactory implements FlowFactory<DslFlowFactory.DslResouce> {
 
     @Override
-    public List<Flow> loadBeanDefinitions(ResourceLoader<DslResouce> resource) {
+    public List<Flow> loadFlowByResource(ResourceLoader<DslResouce> resource) {
         return Collections.emptyList();
     }
 
