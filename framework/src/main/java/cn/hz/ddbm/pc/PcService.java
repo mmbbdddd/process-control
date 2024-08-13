@@ -43,4 +43,7 @@ public class PcService {
         ctx.getFlow().execute(ctx);
     }
 
+    void addFlow(Flow flow) {
+        this.flows.put(flow.getName(),flow);
+    }
 }
