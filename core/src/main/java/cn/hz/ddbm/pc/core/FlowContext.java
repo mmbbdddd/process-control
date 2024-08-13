@@ -52,7 +52,7 @@ public class FlowContext<T extends FlowPayload> {
      * 确保上下文状态一致
      * 1，status ==> entity
      */
-    public void syncStatusToPayLoad() {
+    public void syncPayLoad() {
         data.setStatus(status);
     }
 

@@ -4,8 +4,6 @@ package cn.hz.ddbm.pc.core.support;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.exception.SessionException;
 
-import java.io.IOException;
-
 /**
  * @Description TODO
  * @Author wanglin

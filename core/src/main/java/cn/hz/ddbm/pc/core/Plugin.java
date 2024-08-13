@@ -6,7 +6,7 @@ package cn.hz.ddbm.pc.core;
  * ___2,如果业务和插件之间需要信息交互，通过上下文完成。
  */
 
-public interface Plugin extends ValueObject{
+public interface Plugin extends ValueObject {
     String code();
 
     void preAction(String name, FlowContext<?> ctx);

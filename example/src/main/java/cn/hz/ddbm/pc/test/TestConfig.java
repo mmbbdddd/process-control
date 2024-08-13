@@ -3,7 +3,6 @@ package cn.hz.ddbm.pc.test;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.ChaosService;
 import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -55,7 +54,9 @@ public class TestConfig {
     @Bean
     SessionManager sessionManager() {
         return new MemorySessionManager();
-    } @Bean
+    }
+
+    @Bean
     StatusManager statusManager() {
         return new MemoryStatusManager();
     }

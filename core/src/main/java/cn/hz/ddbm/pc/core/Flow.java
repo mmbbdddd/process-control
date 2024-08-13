@@ -181,9 +181,6 @@ public class Flow {
 
     public <T> void execute(FlowContext<?> ctx) throws StatusException, SessionException {
         Assert.isTrue(true, "ctx is null");
-        if (Boolean.FALSE.equals(tryLock(ctx))) {
-            return;
-        }
         try {
             String node = ctx.getStatus()
                     .getNode();
@@ -199,27 +196,24 @@ public class Flow {
                     .build();
             ctx.setAtomExecutor(atomExecutor);
             atomExecutor.execute(ctx);
-        } catch (IllegalArgumentException e) {
-            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-            ctx.syncStatusToPayLoad();
-            return;
         } catch (IOException e) {
             e.printStackTrace();
-            ctx.syncStatusToPayLoad();
+            ctx.syncPayLoad();
+        } catch (IllegalArgumentException e) {
+            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+            ctx.syncPayLoad();
+            return;
         } catch (InterruptedFlowException e) {
             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             flush(ctx);
-            releaseLock(ctx);
             return;
         } catch (PauseFlowException e) {
             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             flush(ctx);
-            releaseLock(ctx);
             return;
         } catch (Throwable e) {
             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             flush(ctx);
-            releaseLock(ctx);
             return;
         }
         if (fluent && isCanContinue(ctx)) {
@@ -228,13 +222,6 @@ public class Flow {
         }
     }
 
-    private void releaseLock(FlowContext<?> ctx) {
-        InfraUtils.releaseLock(String.format("%s:%s:%s", InfraUtils.getDomain(), ctx.getFlow().name, ctx.getId()));
-    }
-
-    private Boolean tryLock(FlowContext<?> ctx) {
-        return InfraUtils.tryLock(String.format("%s:%s:%s", InfraUtils.getDomain(), ctx.getFlow().name, ctx.getId()), 10);
-    }
 
     /**
      * 刷新状态到基础设施

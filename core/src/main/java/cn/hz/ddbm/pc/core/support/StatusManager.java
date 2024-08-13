@@ -21,7 +21,7 @@ public interface StatusManager {
 
     void updateStatus(String flow, Serializable flowId, FlowStatus flowStatus) throws IOException;
 
-    default void flush(FlowContext<?> ctx)  throws StatusException {
+    default void flush(FlowContext<?> ctx) throws StatusException {
 
     }
 }

@@ -1,4 +1,4 @@
 package cn.hz.ddbm.pc.core.exception;
 
-public class SessionException extends Exception{
+public class SessionException extends Exception {
 }

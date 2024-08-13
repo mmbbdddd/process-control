@@ -1,10 +1,8 @@
 package cn.hz.ddbm.pc.test
 
-
 import cn.hz.ddbm.pc.ChaosService
 import cn.hz.ddbm.pc.core.Flow
 import cn.hz.ddbm.pc.core.FlowPayload
-import cn.hz.ddbm.pc.core.Node
 import cn.hz.ddbm.pc.core.coast.Coasts
 import cn.hz.ddbm.pc.test.support.PayloadMock
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
@@ -20,7 +18,7 @@ public class ChaosServiceTest extends Specification {
         ctx.register(TestConfig.class)
         ctx.refresh()
 
-        flow = Flow.devOf("test", "测试流程", "init", ["su", "fail"] as Set, ["pay","pay_error"] as Set)
+        flow = Flow.devOf("test", "测试流程", "init", ["su", "fail"] as Set, ["pay", "pay_error"] as Set)
 
         flow.onEventTo("init", Coasts.EVENT_DEFAULT, "testAction", "pay")
         flow.onEventTo("pay", Coasts.EVENT_DEFAULT, "testAction", "pay_error")
@@ -28,7 +26,7 @@ public class ChaosServiceTest extends Specification {
         flow.onEventTo("pay_error", Coasts.EVENT_DEFAULT, "testAction", "su")
         flow.validate()
 
-        chaosService.addFlow( flow)
+        chaosService.addFlow(flow)
     }
 
 
