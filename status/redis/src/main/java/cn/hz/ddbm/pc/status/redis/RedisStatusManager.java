@@ -12,21 +12,23 @@ import java.time.Duration;
 
 public class RedisStatusManager implements StatusManager {
     @Autowired
-    RedisTemplate<String,FlowStatus> redisTemplate;
+    RedisTemplate<String, FlowStatus> redisTemplate;
+
     @Override
     public String code() {
         return Coasts.STATUS_MANAGER_MEMORY;
     }
+
     String keyTemplate = "%s:%s";
 
     @Override
     public void setStatus(String flow, Serializable flowId, FlowStatus flowStatus, Long timeout) throws IOException {
-        redisTemplate.opsForValue().set(String.format(keyTemplate,flow,flowId),flowStatus);
+        redisTemplate.opsForValue().set(String.format(keyTemplate, flow, flowId), flowStatus, timeout);
     }
 
     @Override
     public FlowStatus getStatus(String flow, Serializable flowId) throws IOException {
-        return null;
+        return redisTemplate.opsForValue().get(String.format(keyTemplate, flow, flowId));
     }
 
 }
