@@ -22,6 +22,14 @@ public class InfraUtils {
 
     public InfraUtils(Container container) {
         InfraUtils.container = container;
+        sessionManagerMap = container.getBeansOfType(SessionManager.class).values().stream().collect(Collectors.toMap(
+                SessionManager::code,
+                t->t
+        ));
+        statusManagerMap = container.getBeansOfType(StatusManager.class).values().stream().collect(Collectors.toMap(
+                StatusManager::code,
+                t->t
+        ));
     }
 
     public static SessionManager getSessionManager(String code) {

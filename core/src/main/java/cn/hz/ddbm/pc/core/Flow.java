@@ -149,13 +149,6 @@ public class Flow {
     //初始化Flow的bean属性
     public void validate() {
         Assert.notNull(fsmTable, "fsm table is null");
-        Assert.isTrue(nodes.values()
-                .stream()
-                .filter(n -> n.type.equals(Node.Type.START))
-                .count() == 1, "node.start count != 1");
-        Assert.isTrue(nodes.values()
-                .stream()
-                .anyMatch(n -> n.type.equals(Node.Type.END)), "node.end count != 1");
     }
 
 
@@ -186,7 +179,7 @@ public class Flow {
         }
     }
 
-    public <T> void execute(FlowContext<?> ctx) throws StatusException,SessionException {
+    public <T> void execute(FlowContext<?> ctx) throws StatusException, SessionException {
         Assert.isTrue(true, "ctx is null");
         if (Boolean.FALSE.equals(tryLock(ctx))) {
             return;
@@ -290,16 +283,16 @@ public class Flow {
 
 
     public Node startStep() {
-        return nodes.values()
-                .stream()
-                .filter(t -> t.type.equals(Node.Type.START))
-                .findFirst()
-                .get();
+        return init;
     }
 
 
     public Set<String> nodeNames() {
-        return nodes.keySet();
+        return new HashSet<String>() {{
+            add(init.name);
+            addAll(ends.keySet());
+            addAll(nodes.keySet());
+        }};
     }
 
     public void setFluent(boolean fluent) {

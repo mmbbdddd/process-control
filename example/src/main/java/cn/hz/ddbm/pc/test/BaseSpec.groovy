@@ -14,14 +14,8 @@ public abstract class BaseSpec extends Specification {
         ctx.register(TestConfig.class)
         ctx.refresh()
 
-        flow = Flow.devOf("test", "测试流程")
-        flow.nodes = [
-                "init"     : new Node(Node.Type.START, "init", [] as HashMap),
-                "pay"      : new Node(Node.Type.TASK, "pay", [] as HashMap),
-                "pay_error": new Node(Node.Type.TASK, "pay_error", [] as HashMap),
-                "su"       : new Node(Node.Type.END, "su", [] as HashMap),
-                "fail"     : new Node(Node.Type.END, "fail", [] as HashMap),
-        ]
+        flow = Flow.devOf("test", "测试流程", "init", ["su", "fail"] as Set, ["pay","pay_error"] as Set)
+
         flow.onEventTo("init", Coasts.EVENT_DEFAULT, "testAction", "pay")
         flow.onEventTo("pay", Coasts.EVENT_DEFAULT, "testAction", "pay_error")
         flow.onEventTo("pay_error", Coasts.EVENT_DEFAULT, "testAction", "pay_error")
