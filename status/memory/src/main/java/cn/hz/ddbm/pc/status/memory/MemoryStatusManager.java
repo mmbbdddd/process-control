@@ -26,4 +26,9 @@ public class MemoryStatusManager implements StatusManager {
     public void updateStatus(String flow, Serializable flowId, FlowStatus flowStatus) throws IOException {
 
     }
+
+    @Override
+    public FlowStatus getStatus(String flow, Serializable flowId) throws IOException {
+        return null;
+    }
 }

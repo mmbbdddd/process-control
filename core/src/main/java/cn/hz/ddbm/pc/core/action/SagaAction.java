@@ -5,11 +5,8 @@ import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowStatus;
 import cn.hz.ddbm.pc.core.Router;
-import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
-import cn.hz.ddbm.pc.core.router.AnyRouter;
 import cn.hz.ddbm.pc.core.support.StatusManager;
-import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -31,10 +28,10 @@ public interface SagaAction extends Action {
         Router       router       = ctx.getAtomExecutor().getActionRouter().getRouter();
         String       flow         = ctx.getFlow().getName();
         Serializable flowId       = ctx.getId();
-        String       failOverNode = router.failover(ctx.getStatus().getNode(), ctx);
+        String       failOverNode = failover();
         try {
             StatusManager statusManager = ctx.getFlow().getStatusManager();
-            statusManager.updateStatus(flow, flowId, FlowStatus.of(failOverNode));
+            statusManager.setStatus(flow, flowId, FlowStatus.of(failOverNode),null);
         } catch (IOException e) {
             throw new InterruptedFlowException(e);
         }
