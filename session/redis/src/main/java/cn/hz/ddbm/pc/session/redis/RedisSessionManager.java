@@ -2,14 +2,16 @@ package cn.hz.ddbm.pc.session.redis;
 
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.support.SessionManager;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.time.Duration;
 
 public class RedisSessionManager implements SessionManager {
 
-    String                keyTemplate = "%s:%s;%s";
+    @Autowired
+    RedisTemplate<String, Object> redisTemplate;
+    String keyTemplate = "%s:%s;%s";
 
     @Override
     public String code() {
@@ -18,11 +20,11 @@ public class RedisSessionManager implements SessionManager {
 
     @Override
     public void set(String flowName, String flowId, String key, Object value) {
-        cache.put(String.format(keyTemplate, flowId, flowId, key), value);
+        redisTemplate.opsForValue().set(String.format(keyTemplate, flowId, flowId, key), value);
     }
 
     @Override
     public Object get(String flowName, String flowId, String key) {
-        return cache.getIfPresent(String.format(keyTemplate, flowId, flowId, key));
+        return redisTemplate.opsForValue().get(String.format(keyTemplate, flowId, flowId, key));
     }
 }
