@@ -1,6 +1,5 @@
-package cn.hz.ddbm.pc.factory.buider.pc;
+package cn.hz.ddbm.pc.example;
 
-import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.coast.Coasts;
@@ -34,7 +33,7 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
         logger.info("构建订单状态机");
 
         builder.withStates()
-                .initial("init")
+                .initial(PcState.init)
                 .ends(PcState.su, PcState.fail, PcState.error)
                 .states(EnumSet.allOf(PcState.class));
 

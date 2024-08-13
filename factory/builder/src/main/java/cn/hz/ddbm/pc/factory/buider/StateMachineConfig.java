@@ -3,6 +3,7 @@ package cn.hz.ddbm.pc.factory.buider;
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Plugin;
+import cn.hz.ddbm.pc.core.action.NoneAction;
 import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
@@ -31,7 +32,7 @@ public interface StateMachineConfig<S> extends InitializingBean {
     Map<String, Object> attrs();
 
     default Action getAction(String action) {
-        return InfraUtils.getActionBean(action);
+        return new NoneAction();
     }
 
     @Override

@@ -41,6 +41,12 @@
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>cn.hz.ddbm.pc</groupId>
+            <artifactId>factory-builder</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-junit4</artifactId>
             <version>2.3-groovy-4.0</version>
@@ -53,6 +59,7 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+
 
     </dependencies>
 

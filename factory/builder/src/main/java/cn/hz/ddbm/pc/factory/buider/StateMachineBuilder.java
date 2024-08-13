@@ -67,16 +67,19 @@ public class StateMachineBuilder<S> {
         Set<S> ends;
         Set<S> states;
 
-        public States<S> initial(String unpaid) {
-            return null;
+        public States<S> initial(S init) {
+            this.init = init;
+            return this;
         }
 
-        public void states(Set<S> enumSet) {
-
+        public States<S> states(Set<S> states) {
+            this.states = states;
+            return this;
         }
 
         public States<S> ends(S... ends) {
-            return null;
+            this.ends = Arrays.stream(ends).collect(Collectors.toSet());
+            return this;
         }
     }
 
