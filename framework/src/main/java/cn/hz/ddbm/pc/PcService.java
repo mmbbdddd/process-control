@@ -79,6 +79,9 @@ public class PcService {
     public void addFlow(Flow flow) {
         this.flows.put(flow.getName(), flow);
     }
+    protected Flow getFlow(String flowName) {
+        return this.flows.get(flowName);
+    }
 
     /**
      * 可继续运行

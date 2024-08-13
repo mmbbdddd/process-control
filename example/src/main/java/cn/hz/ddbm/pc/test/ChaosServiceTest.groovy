@@ -1,6 +1,6 @@
 package cn.hz.ddbm.pc.test
 
-import cn.hz.ddbm.pc.ChaosService
+import cn.hz.ddbm.pc.choasprofile.ChaosPcService
 import cn.hz.ddbm.pc.core.Flow
 import cn.hz.ddbm.pc.core.FlowPayload
 import cn.hz.ddbm.pc.core.coast.Coasts
@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 public class ChaosServiceTest extends Specification {
 
-    ChaosService chaosService = new ChaosService();
+    ChaosPcService chaosService = new ChaosPcService();
     Flow flow
 
     public void setup() {

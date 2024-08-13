@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.test;
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hz.ddbm.pc.ChaosService;
+import cn.hz.ddbm.pc.choasprofile.ChaosPcService;
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
@@ -27,8 +27,8 @@ public class TestConfig {
     }
 
     @Bean
-    ChaosService chaosService() {
-        return new ChaosService();
+    ChaosPcService chaosPcService() {
+        return new ChaosPcService();
     }
 
     @Bean

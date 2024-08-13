@@ -1,8 +1,9 @@
-package cn.hz.ddbm.pc;
+package cn.hz.ddbm.pc.choasprofile;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
+import cn.hz.ddbm.pc.PcService;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowPayload;
@@ -21,7 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class ChaosService extends PcService {
+public class ChaosPcService extends PcService {
 
     ExecutorService      threadPool = Executors.newFixedThreadPool(20);
     List<StatisticsLine> statisticsLines;
@@ -75,7 +76,7 @@ public class ChaosService extends PcService {
 
     private <T extends FlowPayload> FlowContext<T> standalone(String flowName, T payload, String event) throws StatusException, SessionException {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
-        Flow           flow = flows.get(flowName);
+        Flow           flow = getFlow(flowName);
         FlowContext<T> ctx  = new FlowContext<>(flow, payload, event);
         execute(ctx);
         return ctx;
