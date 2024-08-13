@@ -198,8 +198,8 @@ public class Flow {
          * 2,nodeOf(action,router)==>routerResultEvent==>routerResultNode
          * 参见onInner
          */
-        public void on(String node, Event event, Action action, Router router) {
-            onInner(node, event, new ActionRouter(action, router));
+        public void on(String from, Event event, Action action, Router router) {
+            onInner(from, event, new ActionRouter(from,event.code,action, router));
         }
 
         private void onInner(String node, Event event, ActionRouter actionRouter) {
@@ -232,13 +232,24 @@ public class Flow {
 
         @Override
         public String toString() {
-            return "{" + "from:'" + from + '\'' + ", event:'" + event + '\'' + ", action:'" + action + '\'' + ", router:'" + router + '\'' + '}';
+            return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + action.beanName() + '\'' + ", router:'" + router.routerName() + '\'' + '}';
         }
 
         public ActionRouter getActionRouter() {
-            return new ActionRouter(action, router);
+            return new ActionRouter(from,event.getCode(),action, router);
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "{" +
+                "name:'" + name + '\'' +
+                ", descr:'" + descr + '\'' +
+                ", init:" + init +
+                ", ends:" + ends +
+                ", nodes:" + nodes +
+                ", routers:" + Arrays.toString(routers.values().toArray(new Router[routers.size()])) +
+                ", fsmTable:" + Arrays.toString(fsmTable.records.toArray(new FsmRecord[fsmTable.records.size()])) +
+                '}';
+    }
 }

@@ -7,17 +7,19 @@ import java.util.Map;
 
 @Getter
 public class ActionRouter implements Step.Instant {
-    Action         action;
-    Router  router;
+    String status;
+    Action action;
+    Router router;
 
-    public ActionRouter(Action action, Router  router) {
+    public ActionRouter(String from, String event, Action action, Router router) {
         this.action = action;
         this.router = router;
+        this.status = String.format("%s||%sInstantStatus", from, event);
     }
 
     @Override
     public String status() {
-        return "";
+        return status;
     }
 
     /**

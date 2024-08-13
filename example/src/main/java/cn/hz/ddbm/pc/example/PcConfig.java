@@ -3,7 +3,7 @@ package cn.hz.ddbm.pc.example;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.router.SagaRouter;
+import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
@@ -53,8 +53,8 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
 
         builder.withRouters()
 //                .register("simpleRouter", new ExpressionRouter(new HashMap<>()))
-                .register(new SagaRouter("send_failover"))
-                .register(new SagaRouter("miss_data"))
+                .register(new ExpressionRouter("sendRouter"))
+                .register(new ExpressionRouter("notifyRouter"))
         ;
 
         return builder.build();

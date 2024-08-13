@@ -83,8 +83,6 @@ public class InfraUtils {
     }
 
 
-    public static ActionRouter getActionRouter(Action action, Router router) {
-        return new ActionRouter(action, router);
-    }
+
 
 }

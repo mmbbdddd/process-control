@@ -6,6 +6,8 @@ import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.session.memory.MemorySessionManager;
 import cn.hz.ddbm.pc.status.memory.MemoryStatusManager;
 import cn.hz.ddbm.pc.test.support.ContainerMock;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -20,9 +22,8 @@ public class PcDemo {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
         ctx.register(PcDemo.class);
         ctx.refresh();
-        ;
         PcConfig pcConfig = new PcConfig();
-        System.out.println(pcConfig.build(null));
+        System.out.println(pcConfig.build(null).toString());
     }
 
     @Bean

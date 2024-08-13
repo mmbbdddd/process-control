@@ -26,5 +26,8 @@ public class Node implements Step.Persist {
         return name;
     }
 
-
+    @Override
+    public String toString() {
+        return name;
+    }
 }

@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ExpressionRouter implements AnyRouter {
+    String routerName;
     /**
      * Node>Expression
      */
@@ -20,7 +21,8 @@ public class ExpressionRouter implements AnyRouter {
 
     ExpressionEngine expressionEngine;
 
-    public ExpressionRouter(NodeExpression... nodeExpressionPairs) {
+    public ExpressionRouter(String routerName,NodeExpression... nodeExpressionPairs) {
+        this.routerName = routerName;
         this.nodeExpressionPairs = nodeExpressionPairs;
         this.expressionEngine    = InfraUtils.getExpressionEngine();
         this.toNodes             = Arrays.stream(this.nodeExpressionPairs).map(t -> t.to).collect(Collectors.toSet());
@@ -28,7 +30,7 @@ public class ExpressionRouter implements AnyRouter {
 
     @Override
     public String routerName() {
-        return null;
+        return routerName;
     }
 
     @Override
@@ -53,7 +55,21 @@ public class ExpressionRouter implements AnyRouter {
     public static class NodeExpression {
         String to;
         String expression;
+
+        @Override
+        public String toString() {
+            return "{" +
+                    "to='" + to + '\'' +
+                    ", expression='" + expression + '\'' +
+                    '}';
+        }
     }
 
-
+    @Override
+    public String toString() {
+        return "{" +
+                "routerName:" + routerName() +
+                ",expr:" + Arrays.toString(nodeExpressionPairs) +
+                '}';
+    }
 }
