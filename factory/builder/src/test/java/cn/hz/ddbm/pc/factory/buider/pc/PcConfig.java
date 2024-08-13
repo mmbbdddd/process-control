@@ -1,20 +1,20 @@
 package cn.hz.ddbm.pc.factory.buider.pc;
 
+import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.router.SagaRouter;
+import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
+import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.factory.buider.StateMachineBuilder;
 import cn.hz.ddbm.pc.factory.buider.StateMachineConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactory;
 
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
     Logger logger = LoggerFactory.getLogger(getClass());
@@ -29,13 +29,9 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
         }
     }
 
-    public Flow build(BeanFactory beanFactory) throws Exception {
+    public Flow build(Container container) throws Exception {
         StateMachineBuilder.Builder<PcState> builder = StateMachineBuilder.builder(this);
         logger.info("构建订单状态机");
-//
-        builder.withConfiguration()
-                .machineId(machineId())
-                .beanFactory(beanFactory);
 
         builder.withStates()
                 .initial("init")
@@ -58,8 +54,8 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
 
         builder.withRouters()
 //                .register("simpleRouter", new ExpressionRouter(new HashMap<>()))
-                .register("sendRouter", new SagaRouter("send_failover"))
-                .register("notifyRouter", new SagaRouter("miss_data"))
+                .register(new SagaRouter("send_failover"))
+                .register(new SagaRouter("miss_data"))
         ;
 
         return builder.build();
@@ -67,23 +63,24 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
 
     @Override
     public List<Plugin> plugins() {
-        return null;
+        return new ArrayList<Plugin>();
     }
 
     @Override
     public SessionManager sessionManager() {
-        return null;
+        return InfraUtils.getSessionManager(Coasts.SESSION_MANAGER_MEMORY);
     }
 
     @Override
     public StatusManager statusManager() {
-        return null;
+        return InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
     }
 
     @Override
     public Map<String, Object> attrs() {
-        return null;
+        return new HashMap<>();
     }
+
 
     public String machineId() {
         return "test";
@@ -91,7 +88,7 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
 
     @Override
     public String describe() {
-        return null;
+        return "test";
     }
 
 }

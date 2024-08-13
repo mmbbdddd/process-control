@@ -8,9 +8,9 @@ import java.util.Map;
 @Getter
 public class ActionRouter implements Step.Instant {
     Action         action;
-    Router<String> router;
+    Router  router;
 
-    public ActionRouter(Action action, Router<String> router) {
+    public ActionRouter(Action action, Router  router) {
         this.action = action;
         this.router = router;
     }

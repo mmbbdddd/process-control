@@ -16,7 +16,7 @@ import java.util.Set;
  **/
 
 
-public class ToRouter implements Router<String> {
+public class ToRouter implements Router  {
     String from;
     String to;
     String routerName;

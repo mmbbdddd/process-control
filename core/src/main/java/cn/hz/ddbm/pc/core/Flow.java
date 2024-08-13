@@ -3,18 +3,14 @@ package cn.hz.ddbm.pc.core;
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.*;
-import cn.hz.ddbm.pc.core.log.Logs;
-import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.router.ToRouter;
 import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
-import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,9 +25,9 @@ public class Flow {
     final Map<String, Object> attrs;
     final Map<String, Node>   ends;
     final Map<String, Node>   nodes;
-    Map<String, Router<?>> routers;
-    List<Plugin>           plugins;
-    FsmTable               fsmTable;
+    Map<String, Router> routers;
+    List<Plugin>        plugins;
+    FsmTable            fsmTable;
 
     public Flow(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManager, StatusManager statusManager, Map<String, Object> attrs) {
         Assert.notNull(name, "flow.name is null");
@@ -95,9 +91,6 @@ public class Flow {
         return flow;
     }
 
-    public void addNode(Node node) {
-        this.nodes.put(node.name, node);
-    }
 
     /**
      * 定义流程的router
@@ -114,29 +107,18 @@ public class Flow {
      * @param action
      * @param router
      */
-    public void onEventRouter(String source, Event event, String action, ExpressionRouter router) {
-        this.fsmTable.records.add(FsmRecord.builder()
-                .from(source)
-                .event(event)
-                .action(action)
-                .router(router.routerName())
-                .build());
+    public void router(String source, String event, Action action, Router router) {
+        Event e = Event.of(event);
+        this.fsmTable.records.add(new FsmRecord(source, e, action, router));
         addRouter(router);
 
     }
 
-    public void onEventTo(String source, String event, String action, String to) {
-        onEventTo(source, Event.of(event), action, to);
-    }
 
-    public void onEventTo(String source, Event event, String action, String to) {
-        Router toRouter = new ToRouter(source, event, to);
-        this.fsmTable.records.add(FsmRecord.builder()
-                .from(source)
-                .event(event)
-                .action(action)
-                .router(toRouter.routerName())
-                .build());
+    public void to(String source, String event, Action action, String to) {
+        Event  e        = Event.of(event);
+        Router toRouter = new ToRouter(source, e, to);
+        this.fsmTable.on(source, e, action, toRouter);
         addRouter(toRouter);
     }
 
@@ -163,7 +145,7 @@ public class Flow {
         AtomExecutor atomExecutor = AtomExecutor.builder()
                 .event(atom.getEvent())
                 .plugins(plugins)
-                .actionRouter(InfraUtils.getActionRouter(atom.getAction(), ctx.getFlow().routers.get(atom.getRouter())))
+                .actionRouter(atom.getActionRouter())
                 .build();
         ctx.setAtomExecutor(atomExecutor);
         atomExecutor.execute(ctx);
@@ -195,7 +177,7 @@ public class Flow {
 
 
     @Data
-    public static class FsmTable {
+    static class FsmTable {
         private List<FsmRecord> records;
 
         public FsmTable() {
@@ -216,14 +198,15 @@ public class Flow {
          * 2,nodeOf(action,router)==>routerResultEvent==>routerResultNode
          * 参见onInner
          */
-        public void on(String node, String event, String action, String routerName) {
-
+        public void on(String node, Event event, Action action, Router router) {
+            onInner(node, event, new ActionRouter(action, router));
         }
 
         private void onInner(String node, Event event, ActionRouter actionRouter) {
-            this.records.add(FsmRecord.builder().from(node).event(event).to(actionRouter.status()).build());
+            this.records.add(new FsmRecord(node, event, actionRouter.action, actionRouter.router));
             actionRouter.eventToNodes().forEach((routerResultEvent, routerResultNode) -> {
-                this.records.add(FsmRecord.builder().from(actionRouter.status()).event(routerResultEvent).to(routerResultNode).build());
+                ToRouter toRouter = new ToRouter(actionRouter.status(), routerResultEvent, routerResultNode);
+                this.records.add(new FsmRecord(actionRouter.status(), routerResultEvent, Coasts.DIRECT_ACTION_BEAN, toRouter));
             });
         }
 
@@ -234,17 +217,26 @@ public class Flow {
     }
 
     @Data
-    @Builder
-    public static class FsmRecord {
+    static class FsmRecord {
         String from;
         Event  event;
-        String to;
-        String action;
-        String router;
+        Action action;
+        Router router;
+
+        public FsmRecord(String from, Event event, Action action, Router router) {
+            this.from   = from;
+            this.event  = event;
+            this.action = action;
+            this.router = router;
+        }
 
         @Override
         public String toString() {
             return "{" + "from:'" + from + '\'' + ", event:'" + event + '\'' + ", action:'" + action + '\'' + ", router:'" + router + '\'' + '}';
+        }
+
+        public ActionRouter getActionRouter() {
+            return new ActionRouter(action, router);
         }
     }
 

@@ -1,5 +1,9 @@
 package cn.hz.ddbm.pc.core.coast;
 
+import cn.hz.ddbm.pc.core.Action;
+import cn.hz.ddbm.pc.core.action.DirectAction;
+import cn.hz.ddbm.pc.core.action.SimpleAction;
+
 public class Coasts {
     public static final String NODE_RETRY             = "retry";
     public static final String PLUGIN_DIGEST_LOG      = "digestLogPlugin";
@@ -7,6 +11,8 @@ public class Coasts {
     public static final String EVENT_DEFAULT          = "push";
     public static final String EVENT_CANCEL           = "cancel";
     public static final String EVENT_PAUSE            = "pause";
+    public static final String DIRECT_ACTION          = "directAction";
+    public static final Action DIRECT_ACTION_BEAN     = new DirectAction();
     public static       String SESSION_MANAGER        = "session_manager";
     public static       String STATUS_MANAGER         = "status_manager";
     public static       String SESSION_MANAGER_MEMORY = "memory";

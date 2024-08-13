@@ -83,9 +83,8 @@ public class InfraUtils {
     }
 
 
-    public static ActionRouter getActionRouter(String action, Router router) {
-        Action actionBean = getActionBean(action);
-        return new ActionRouter(actionBean, router);
+    public static ActionRouter getActionRouter(Action action, Router router) {
+        return new ActionRouter(action, router);
     }
 
 }

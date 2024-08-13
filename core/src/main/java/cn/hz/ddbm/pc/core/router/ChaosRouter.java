@@ -6,7 +6,7 @@ import cn.hz.ddbm.pc.core.Router;
 import java.util.Collections;
 import java.util.Set;
 
-public class ChaosRouter implements Router<Set<String>> {
+public class ChaosRouter implements Router {
     @Override
     public String routerName() {
         return "chaosRouter";
@@ -36,7 +36,7 @@ public class ChaosRouter implements Router<Set<String>> {
      * @return
      */
     @Override
-    public Set<String> route(FlowContext<?> ctx) {
+    public String route(FlowContext<?> ctx) {
         return null;
     }
 
