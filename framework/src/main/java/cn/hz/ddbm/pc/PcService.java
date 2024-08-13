@@ -76,7 +76,7 @@ public class PcService {
 
     }
 
-    void addFlow(Flow flow) {
+    public void addFlow(Flow flow) {
         this.flows.put(flow.getName(), flow);
     }
 
