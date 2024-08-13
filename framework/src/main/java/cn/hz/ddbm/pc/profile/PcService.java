@@ -1,4 +1,4 @@
-package cn.hz.ddbm.pc;
+package cn.hz.ddbm.pc.profile;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PcService {
+class PcService {
     Map<String, Flow> flows = new HashMap<>();
 
 
@@ -79,6 +79,7 @@ public class PcService {
     public void addFlow(Flow flow) {
         this.flows.put(flow.getName(), flow);
     }
+
     protected Flow getFlow(String flowName) {
         return this.flows.get(flowName);
     }

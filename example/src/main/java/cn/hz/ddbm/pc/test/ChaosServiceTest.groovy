@@ -1,6 +1,6 @@
 package cn.hz.ddbm.pc.test
 
-import cn.hz.ddbm.pc.choasprofile.ChaosPcService
+import cn.hz.ddbm.pc.profile.ChaosPcService
 import cn.hz.ddbm.pc.core.Flow
 import cn.hz.ddbm.pc.core.FlowPayload
 import cn.hz.ddbm.pc.core.coast.Coasts

@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.test;
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hz.ddbm.pc.choasprofile.ChaosPcService;
+import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
