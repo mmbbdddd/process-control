@@ -5,7 +5,8 @@ import cn.hz.ddbm.pc.core.Event;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.Router;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @Description TODO
@@ -42,7 +43,7 @@ public class ToRouter implements Router<String> {
 
     @Override
     public Set<String> toNodes() {
-        return new HashSet<String>(){{
+        return new HashSet<String>() {{
             add(to);
         }};
     }

@@ -52,8 +52,8 @@ public class FlowContext<T extends FlowPayload> {
      * 确保上下文状态一致
      * 1，status ==> entity
      */
-    public void flush() {
-
+    public void syncStatusToPayLoad() {
+        data.setStatus(status);
     }
 
     public Map<String, Object> buildExpressionContext() {

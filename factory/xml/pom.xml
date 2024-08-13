@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <groupId>cn.hz.ddbm.pc.factory</groupId>
-    <artifactId>xml</artifactId>
+    <artifactId>factory-xml</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>

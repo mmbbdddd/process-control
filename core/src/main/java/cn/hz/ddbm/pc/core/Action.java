@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.core;
 
 
-public interface Action   {
+public interface Action {
 
 
     String beanName();

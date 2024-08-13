@@ -1,16 +1,15 @@
-package cn.hz.ddbm.pc.test;
+package cn.hz.ddbm.pc.test
 
-import cn.hz.ddbm.pc.core.Flow;
-import cn.hz.ddbm.pc.core.Node;
+import cn.hz.ddbm.pc.core.Flow
+import cn.hz.ddbm.pc.core.Node
 import cn.hz.ddbm.pc.core.coast.Coasts
-import cn.hz.ddbm.pc.test.TestConfig;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
-import spock.lang.Specification;
+import spock.lang.Specification
 
 public abstract class BaseSpec extends Specification {
     Flow flow
 
-   public void setup() {
+    public void setup() {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext()
         ctx.register(TestConfig.class)
         ctx.refresh()
@@ -29,7 +28,7 @@ public abstract class BaseSpec extends Specification {
         flow.onEventTo("pay_error", Coasts.EVENT_DEFAULT, "testAction", "su")
         flow.validate()
 
-       hook();
+        hook();
     }
 
     abstract void hook()

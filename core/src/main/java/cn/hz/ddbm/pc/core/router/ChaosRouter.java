@@ -1,11 +1,9 @@
 package cn.hz.ddbm.pc.core.router;
 
-import cn.hz.ddbm.pc.core.Event;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.Router;
 
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 public class ChaosRouter implements Router<Set<String>> {
@@ -31,7 +29,7 @@ public class ChaosRouter implements Router<Set<String>> {
      * 参数异常
      * Error
      * Thrable
-     *
+     * <p>
      * 定义各种异常发生的概率
      *
      * @param ctx

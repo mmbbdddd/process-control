@@ -8,8 +8,8 @@
         <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>cn.hz.ddbm.pc.status</groupId>
-    <artifactId>redis</artifactId>
+    <groupId>cn.hz.ddbm.pc</groupId>
+    <artifactId>status-redis</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>

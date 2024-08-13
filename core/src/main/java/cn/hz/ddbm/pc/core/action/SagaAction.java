@@ -5,6 +5,7 @@ import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowStatus;
 import cn.hz.ddbm.pc.core.Router;
+import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
 import cn.hz.ddbm.pc.core.router.AnyRouter;
 import cn.hz.ddbm.pc.core.support.StatusManager;
@@ -32,7 +33,7 @@ public interface SagaAction extends Action {
         Serializable flowId       = ctx.getId();
         String       failOverNode = router.failover(ctx.getStatus().getNode(), ctx);
         try {
-            StatusManager statusManager = InfraUtils.getStatusManager(ctx.getFlow().getStatusManager());
+            StatusManager statusManager = InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
 
             statusManager.updateStatus(flow, flowId, FlowStatus.of(failOverNode));
         } catch (IOException e) {

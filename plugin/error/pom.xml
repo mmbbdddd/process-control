@@ -8,8 +8,8 @@
         <artifactId>parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>cn.hz.ddbm.pc.plugin</groupId>
-    <artifactId>error</artifactId>
+    <groupId>cn.hz.ddbm.pc</groupId>
+    <artifactId>plugin-error</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>

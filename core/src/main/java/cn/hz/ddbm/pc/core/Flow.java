@@ -4,14 +4,18 @@ import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
 import cn.hz.ddbm.pc.core.exception.PauseFlowException;
+import cn.hz.ddbm.pc.core.exception.SessionException;
+import cn.hz.ddbm.pc.core.exception.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.router.ToRouter;
+import cn.hz.ddbm.pc.core.support.Container;
+import cn.hz.ddbm.pc.core.support.SessionManager;
+import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,46 +23,64 @@ import java.util.stream.Collectors;
 
 @Getter
 public class Flow {
-    String name;
-    String descr;
-    @Setter
-    Boolean fluent = true;
-    String              sessionManager;
-    String              statusManager;
-    List<String>        plugins;
-    FsmTable            fsmTable;
-    Map<String, Object> attrs;
+    final String              name;
+    final String              descr;
+    final SessionManager      sessionManager;
+    final StatusManager       statusManager;
+    final Node                init;
+    final Container           container;
+    final Map<String, Object> attrs;
+    final Map<String, Node>   ends;
+    final Map<String, Node>   nodes;
+    Map<String, Router<?>> routers;
+    List<Plugin>           plugins;
+    FsmTable               fsmTable;
+    //这个方法是隐患啊 ，只能测试环境用，混沌方法用。
+    Boolean                fluent;
 
-    Map<String, Node>   nodes;
-    Map<String, Router> routers;
-
-    public Flow(String name, String descr, List<String> plugins, Map<String, Object> attrs) {
+    public Flow(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManager, StatusManager statusManager, Map<String, Object> attrs) {
         Assert.notNull(name, "flow.name is null");
+        Assert.notNull(init, "start.node is null");
+        Assert.notNull(ends, "ends.node is null");
         this.name           = name;
         this.descr          = descr;
-        this.plugins        = null == plugins ? Collections.emptyList() : plugins;
-        this.nodes          = new HashMap<>();
-        this.routers        = new HashMap<>();
+        this.attrs          = attrs == null ? new HashMap<>() : attrs;
+        this.init           = new Node(Node.Type.START, init, new HashMap<>());
+        this.ends           = ends.stream().map(e -> new Node(Node.Type.END, e, new HashMap<>())).collect(Collectors.toMap(Node::getName, t -> t));
+        this.nodes          = nodes.stream().map(e -> new Node(Node.Type.TASK, e, new HashMap<>())).collect(Collectors.toMap(Node::getName, t -> t));
+        this.fluent         = true;
+        this.container      = InfraUtils.getContainer();
+        this.sessionManager = sessionManager == null ? buildSessionManager() : sessionManager;
+        this.statusManager  = statusManager == null ? buildStatusManager() : statusManager;
         this.fsmTable       = new FsmTable();
-        this.attrs          = (null == attrs) ? new HashMap<>() : attrs;
-        this.sessionManager = (this.getAttrs()
-                .get(Coasts.SESSION_MANAGER) == null) ? Coasts.SESSION_MANAGER_REDIS : (String) this.getAttrs()
-                .get(Coasts.SESSION_MANAGER);
-        this.statusManager  = (this.getAttrs()
-                .get(Coasts.STATUS_MANAGER) == null) ? Coasts.STATUS_MANAGER_REDIS : (String) this.getAttrs()
-                .get(Coasts.STATUS_MANAGER);
+        this.routers        = new HashMap<>();
+        this.plugins        = new ArrayList<>();
+    }
+
+    private StatusManager buildStatusManager() {
+        String statusManager = this.getAttrs().get(Coasts.STATUS_MANAGER) == null ?
+                Coasts.STATUS_MANAGER_REDIS :
+                (String) this.getAttrs().get(Coasts.STATUS_MANAGER);
+        return container.getBean(statusManager, StatusManager.class);
+    }
+
+    private SessionManager buildSessionManager() {
+        String sessionManager = this.getAttrs().get(Coasts.SESSION_MANAGER) == null ?
+                Coasts.SESSION_MANAGER_REDIS :
+                (String) this.getAttrs().get(Coasts.SESSION_MANAGER);
+        return container.getBean(sessionManager, SessionManager.class);
     }
 
     /**
      * 定义流程参数
      *
      * @param name
-     * @param plugins
      * @param attrs
      * @return
      */
-    public static Flow of(String name, String descr, List<String> plugins, Map<String, Object> attrs) {
-        return new Flow(name, descr, plugins, attrs);
+    public static Flow of(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManger, StatusManager statusManager, Map<String, Object> attrs) {
+        Flow flow = new Flow(name, descr, init, ends, nodes, sessionManger, statusManager, attrs);
+        return flow;
     }
 
     /**
@@ -67,18 +89,20 @@ public class Flow {
      * @param name
      * @return
      */
-    public static Flow devOf(String name, String descr) {
+    public static Flow devOf(String name, String descr, String init, Set<String> ends, Set<String> nodes) {
         List<String> plugins = new ArrayList<>();
         plugins.add(Coasts.PLUGIN_DIGEST_LOG);
         plugins.add(Coasts.PLUGIN_ERROR_LOG);
-        HashMap<String, Object> attrs = new HashMap<>();
-        attrs.put(Coasts.SESSION_MANAGER, Coasts.SESSION_MANAGER_MEMORY);
-        attrs.put(Coasts.STATUS_MANAGER, Coasts.STATUS_MANAGER_MEMORY);
-        return new Flow(name, descr, plugins, attrs);
+
+        SessionManager sessionManager1 = InfraUtils.getSessionManager(Coasts.SESSION_MANAGER_MEMORY);
+        StatusManager  statusManager1  = InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
+        Flow           flow            = new Flow(name, descr, init, ends, nodes, sessionManager1, statusManager1, new HashMap<>());
+        flow.plugins = InfraUtils.getContainer().getByCodesOfType(plugins, Plugin.class);
+        return flow;
     }
 
     public void addNode(Node node) {
-
+        this.nodes.put(node.name, node);
     }
 
     /**
@@ -162,7 +186,7 @@ public class Flow {
         }
     }
 
-    public <T> void execute(FlowContext<?> ctx) {
+    public <T> void execute(FlowContext<?> ctx) throws StatusException,SessionException {
         Assert.isTrue(true, "ctx is null");
         if (Boolean.FALSE.equals(tryLock(ctx))) {
             return;
@@ -184,11 +208,11 @@ public class Flow {
             atomExecutor.execute(ctx);
         } catch (IllegalArgumentException e) {
             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-            ctx.flush();
+            ctx.syncStatusToPayLoad();
             return;
         } catch (IOException e) {
             e.printStackTrace();
-            ctx.flush();
+            ctx.syncStatusToPayLoad();
         } catch (InterruptedFlowException e) {
             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             flush(ctx);
@@ -222,8 +246,9 @@ public class Flow {
     /**
      * 刷新状态到基础设施
      */
-    private void flush(FlowContext<?> ctx) {
-
+    private void flush(FlowContext<?> ctx) throws SessionException, StatusException {
+        sessionManager.flush(ctx);
+        statusManager.flush(ctx);
     }
 
     /**
@@ -275,6 +300,10 @@ public class Flow {
 
     public Set<String> nodeNames() {
         return nodes.keySet();
+    }
+
+    public void setFluent(boolean fluent) {
+        this.fluent = fluent;
     }
 
 

@@ -15,4 +15,6 @@ public interface FlowPayload {
     Serializable getId();
 
     FlowStatus getStatus();
+
+    void setStatus(FlowStatus status);
 }

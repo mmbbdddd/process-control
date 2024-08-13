@@ -2,13 +2,14 @@ package cn.hz.ddbm.pc.core.router;
 
 import cn.hz.ddbm.pc.core.FlowContext;
 
+import java.util.List;
 import java.util.Map;
 
-public class SagaRouter extends ExpressionRouter{
+public class SagaRouter extends ExpressionRouter {
 
     private final String failover;
 
-    public SagaRouter(String failover, Map<String, String> expressions) {
+    public SagaRouter(String failover, NodeExpression... expressions) {
         super(expressions);
         this.failover = failover;
     }

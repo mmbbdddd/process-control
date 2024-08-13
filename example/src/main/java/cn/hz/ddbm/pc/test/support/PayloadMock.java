@@ -19,4 +19,9 @@ public class PayloadMock implements FlowPayload {
     public FlowStatus getStatus() {
         return FlowStatus.of(flowStatus, nodeStatus);
     }
+
+    @Override
+    public void setStatus(FlowStatus status) {
+
+    }
 }

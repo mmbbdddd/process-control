@@ -3,17 +3,17 @@ package cn.hz.ddbm.pc.common.lang;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Pair<K, V>  implements Serializable {
+public class Pair<K, V> implements Serializable {
     private static final long serialVersionUID = 1L;
-    protected K key;
-    protected V value;
+    protected            K    key;
+    protected            V    value;
 
     public static <K, V> Pair<K, V> of(K key, V value) {
         return new Pair(key, value);
     }
 
     public Pair(K key, V value) {
-        this.key = key;
+        this.key   = key;
         this.value = value;
     }
 
@@ -35,7 +35,7 @@ public class Pair<K, V>  implements Serializable {
         } else if (!(o instanceof Pair)) {
             return false;
         } else {
-            Pair<?, ?> pair = (Pair)o;
+            Pair<?, ?> pair = (Pair) o;
             return Objects.equals(this.getKey(), pair.getKey()) && Objects.equals(this.getValue(), pair.getValue());
         }
     }

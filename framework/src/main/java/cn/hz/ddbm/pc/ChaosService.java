@@ -7,13 +7,18 @@ import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowPayload;
 import cn.hz.ddbm.pc.core.coast.Coasts;
+import cn.hz.ddbm.pc.core.exception.SessionException;
+import cn.hz.ddbm.pc.core.exception.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class ChaosService extends PcService {
@@ -68,7 +73,7 @@ public class ChaosService extends PcService {
         statisticsLines.add(new StatisticsLine(i, requestInfo, result));
     }
 
-    private <T extends FlowPayload> FlowContext<T> standalone(String flowName, T payload, String event) {
+    private <T extends FlowPayload> FlowContext<T> standalone(String flowName, T payload, String event) throws StatusException, SessionException {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = flows.get(flowName);
         FlowContext<T> ctx  = new FlowContext<>(flow, payload, event);

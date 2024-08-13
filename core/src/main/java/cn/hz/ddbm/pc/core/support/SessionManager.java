@@ -1,6 +1,11 @@
 package cn.hz.ddbm.pc.core.support;
 
 
+import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.exception.SessionException;
+
+import java.io.IOException;
+
 /**
  * @Description TODO
  * @Author wanglin
@@ -15,4 +20,8 @@ public interface SessionManager {
     void set(String flowName, String flowId, String key, Object value);
 
     Object get(String flowName, String flowId, String key);
+
+    default void flush(FlowContext<?> ctx) throws SessionException {
+        //todo
+    }
 }

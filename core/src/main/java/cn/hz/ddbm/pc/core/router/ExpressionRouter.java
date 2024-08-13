@@ -5,20 +5,26 @@ import cn.hz.ddbm.pc.core.exception.NoRouterResultException;
 import cn.hz.ddbm.pc.core.support.ExpressionEngine;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ExpressionRouter implements AnyRouter {
     /**
      * Node>Expression
      */
-    Map<String, String> expressions;
+    NodeExpression[] nodeExpressionPairs;
+
+    Set<String> toNodes;
 
     ExpressionEngine expressionEngine;
 
-    public ExpressionRouter(Map<String, String> expressions) {
-        this.expressions      = expressions;
-        this.expressionEngine = InfraUtils.getExpressionEngine();
+    public ExpressionRouter(NodeExpression... nodeExpressionPairs) {
+        this.nodeExpressionPairs = nodeExpressionPairs;
+        this.expressionEngine    = InfraUtils.getExpressionEngine();
+        this.toNodes             = Arrays.stream(this.nodeExpressionPairs).map(t -> t.to).collect(Collectors.toSet());
     }
 
     @Override
@@ -28,12 +34,11 @@ public class ExpressionRouter implements AnyRouter {
 
     @Override
     public String route(FlowContext<?> ctx) {
-        Map<String, Object> eCtx = ctx.buildExpressionContext();
-        String              to   = null;
-        for (Map.Entry<String, String> entry : expressions.entrySet()) {
-            to = entry.getKey();
-            String expr = entry.getValue();
-            if (expressionEngine.eval(expr, eCtx, Boolean.class)) {
+        Map<String, Object> exprCtx = ctx.buildExpressionContext();
+        String              to      = null;
+        for (NodeExpression ne : nodeExpressionPairs) {
+            to = ne.to;
+            if (expressionEngine.eval(ne.expression, exprCtx, Boolean.class)) {
                 return to;
             }
         }
@@ -41,10 +46,14 @@ public class ExpressionRouter implements AnyRouter {
     }
 
 
-
     @Override
     public Set<String> toNodes() {
-        return expressions.keySet();
+        return this.toNodes;
+    }
+
+    public static class NodeExpression {
+        String to;
+        String expression;
     }
 
 

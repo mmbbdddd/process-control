@@ -25,11 +25,11 @@ public class Event {
         return new Event(type, event);
     }
 
-    public static Event of(Type type,String event) {
+    public static Event of(Type type, String event) {
         return new Event(type, event);
     }
 
-   public   enum Type {
+    public enum Type {
         //来自外部输入的指令
         FLOW_EVENT,
         NODE_EVENT,

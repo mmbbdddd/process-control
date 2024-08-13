@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class Triple<L, M, R> {
     private static final long serialVersionUID = 1L;
-    final L left;
-    final M middle;
-    final R right;
+    final                L    left;
+    final                M    middle;
+    final                R    right;
 
     public Triple(L left, M middle, R right) {
         this.left   = left;

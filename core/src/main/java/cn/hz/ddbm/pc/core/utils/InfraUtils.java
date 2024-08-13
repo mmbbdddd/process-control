@@ -4,10 +4,9 @@ package cn.hz.ddbm.pc.core.utils;
 import cn.hutool.core.lang.Pair;
 import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.support.*;
+import lombok.Getter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,6 +15,7 @@ import java.util.stream.Collectors;
 public class InfraUtils {
 
 
+    @Getter
     static Container                   container;
     static Map<String, SessionManager> sessionManagerMap;
     static Map<String, StatusManager>  statusManagerMap;
@@ -44,10 +44,10 @@ public class InfraUtils {
         return null;
     }
 
-    public static Map<String,Plugin> getPluginBeans() {
+    public static Map<String, Plugin> getPluginBeans() {
         return container.getBeansOfType(Plugin.class).values().stream().collect(Collectors.toMap(
-                t->t.code(),
-                t->t
+                Plugin::code,
+                t -> t
         ));
     }
 
@@ -77,6 +77,7 @@ public class InfraUtils {
 
     public static ActionRouter getActionRouter(String action, Router router) {
         Action actionBean = getActionBean(action);
-        return new ActionRouter(actionBean,router);
+        return new ActionRouter(actionBean, router);
     }
+
 }

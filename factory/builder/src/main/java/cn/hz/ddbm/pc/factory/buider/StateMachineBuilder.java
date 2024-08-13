@@ -1,40 +1,69 @@
 package cn.hz.ddbm.pc.factory.buider;
 
 import cn.hz.ddbm.pc.core.ActionAttrs;
+import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Router;
-import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import org.springframework.beans.factory.BeanFactory;
 
 import java.util.Set;
 
+/**
+ * 写法风格同spring-state-machine。
+ * 降低学习和迁移成本
+ *
+ * @param <S>
+ */
 public class StateMachineBuilder<S> {
-    public static <S> Builder<S> builder() {
-        return new Builder<>();
+    public static <S> Builder<S> builder(StateMachineConfig<S> fsm) {
+        return new Builder<>(fsm);
     }
 
     public static class Builder<S> {
-        public StateMachine<S> build() {
-            return null;
+        StateMachineConfig<S>   fsm;
+        ConfigurationConfigurer configurer;
+        States<S>               states;
+        Transitions<S>          transitions;
+        Routers<S>              routers;
+
+        public Builder(StateMachineConfig<S> fsm) {
+            this.fsm         = fsm;
+            this.configurer  = new ConfigurationConfigurer();
+            this.states      = new States<>();
+            this.transitions = new Transitions<>();
+            this.routers     = new Routers<>();
+        }
+
+        public Flow build() {
+            String      init  = null;
+            Set<String> ends  = null;
+            Set<String> nodes = null;
+            Flow        flow  = Flow.of(fsm.machineId(), fsm.describe(), init, ends, nodes, fsm.sessionManager(), fsm.statusManager(), null);
+//            flow.addNode();
+//            flow.addRouter();
+//            flow.getFsmTable();
+//            flow.setFluent(true);
+            return flow;
         }
 
         public ConfigurationConfigurer withConfiguration() {
-            return null;
+            return configurer;
         }
 
         public States<S> withStates() {
-            return null;
+            return states;
         }
 
         public Transitions<S> withTransitions() {
-            return new Transitions<>();
+            return transitions;
         }
 
-        public Routers withRouters() {
-            return null;
+        public Routers<S> withRouters() {
+            return routers;
         }
     }
 
     public static class ConfigurationConfigurer {
+
         public ConfigurationConfigurer machineId(String machineid) {
             return this;
         }
@@ -45,6 +74,8 @@ public class StateMachineBuilder<S> {
     }
 
     public static class States<S> {
+        S      init;
+        Set<S> ends;
 
         public States<S> initial(String unpaid) {
             return null;
@@ -71,10 +102,9 @@ public class StateMachineBuilder<S> {
 
     }
 
-    public static class Routers {
+    public static class Routers<S> {
 
-
-        public Routers register(String simpleRouter, Router expressionRouter) {
+        public Routers<S> register(String simpleRouter, Router expressionRouter) {
             return null;
         }
     }

@@ -1,11 +1,12 @@
 package cn.hz.ddbm.pc.factory.buider.pc;
 
-import cn.hz.ddbm.pc.core.ActionAttrs;
+import cn.hz.ddbm.pc.core.Flow;
+import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.router.SagaRouter;
-import cn.hz.ddbm.pc.factory.buider.FSM;
-import cn.hz.ddbm.pc.factory.buider.StateMachine;
+import cn.hz.ddbm.pc.core.support.SessionManager;
+import cn.hz.ddbm.pc.core.support.StatusManager;
+import cn.hz.ddbm.pc.factory.buider.StateMachineConfig;
 import cn.hz.ddbm.pc.factory.buider.StateMachineBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,9 @@ import org.springframework.beans.factory.BeanFactory;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class PcConfig implements FSM<PcConfig.PcState> {
+public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     public enum PcState {
@@ -28,12 +30,12 @@ public class PcConfig implements FSM<PcConfig.PcState> {
         }
     }
 
-    public StateMachine<PcState> build(BeanFactory beanFactory) throws Exception {
-        StateMachineBuilder.Builder<PcState> builder = StateMachineBuilder.builder();
+    public Flow build(BeanFactory beanFactory) throws Exception {
+        StateMachineBuilder.Builder<PcState> builder = StateMachineBuilder.builder(this);
         logger.info("构建订单状态机");
 //
         builder.withConfiguration()
-                .machineId(machineid())
+                .machineId(machineId())
                 .beanFactory(beanFactory);
 
         builder.withStates()
@@ -57,30 +59,40 @@ public class PcConfig implements FSM<PcConfig.PcState> {
 
         builder.withRouters()
 //                .register("simpleRouter", new ExpressionRouter(new HashMap<>()))
-                .register("sendRouter", new SagaRouter("send_failover", new HashMap<>()))
-                .register("notifyRouter", new SagaRouter("miss_data", new HashMap<>()))
+                .register("sendRouter", new SagaRouter("send_failover"))
+                .register("notifyRouter", new SagaRouter("miss_data"))
         ;
 
         return builder.build();
     }
 
     @Override
-    public List<String> plugins() {
+    public List<Plugin> plugins() {
         return null;
     }
 
     @Override
-    public String sessionManager() {
+    public SessionManager sessionManager() {
         return null;
     }
 
     @Override
-    public String statusManager() {
+    public StatusManager statusManager() {
         return null;
     }
 
-    public String machineid() {
+    @Override
+    public Map<String, Object> attrs() {
+        return null;
+    }
+
+    public String machineId() {
         return "test";
+    }
+
+    @Override
+    public String describe() {
+        return null;
     }
 
 }

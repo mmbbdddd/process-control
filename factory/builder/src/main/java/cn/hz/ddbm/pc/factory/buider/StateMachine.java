@@ -1,8 +1,7 @@
 package cn.hz.ddbm.pc.factory.buider;
 
 /**
- *
- * @param <S>   FromNode
+ * @param <S> FromNode
  */
-public class StateMachine <S>{
+public class StateMachine<S> {
 }

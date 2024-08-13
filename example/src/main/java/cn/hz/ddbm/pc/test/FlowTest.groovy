@@ -14,12 +14,12 @@ class FlowTest extends BaseSpec {
 
     def "Of"() {
         expect:
-        Flow f = Flow.of(name, "", [plugin], [] as HashMap)
+        Flow f = Flow.devOf(name, "xx", [plugin], [] as HashMap)
         String.format("%s:%s:%s", f.name, f.sessionManager, f.statusManager) == result
         where:
-        name | plugin | session | status | result
+        name  | session | status | result
 //        null | null|null|null|null
-        "i"  | "log"  | null    | null   | String.format("%s:%s:%s", "i", "redis", "redis")
+        "i"   | null    | null   | String.format("%s:%s:%s", "i", "redis", "redis")
 
 
     }
