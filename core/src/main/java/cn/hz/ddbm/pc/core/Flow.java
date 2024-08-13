@@ -40,9 +40,9 @@ public class Flow {
         this.name           = name;
         this.descr          = descr;
         this.attrs          = attrs == null ? new HashMap<>() : attrs;
-        this.init           = new Node(Node.Type.START, init, new HashMap<>());
-        this.ends           = ends.stream().map(e -> new Node(Node.Type.END, e, new HashMap<>())).collect(Collectors.toMap(Node::getName, t -> t));
-        this.nodes          = nodes.stream().map(e -> new Node(Node.Type.TASK, e, new HashMap<>())).collect(Collectors.toMap(Node::getName, t -> t));
+        this.init           = new Node(init, new HashMap<>());
+        this.ends           = ends.stream().map(e -> new Node(e, new HashMap<>())).collect(Collectors.toMap(Node::getName, t -> t));
+        this.nodes          = nodes.stream().map(e -> new Node(e, new HashMap<>())).collect(Collectors.toMap(Node::getName, t -> t));
         this.container      = InfraUtils.getContainer();
         this.sessionManager = sessionManager == null ? buildSessionManager() : sessionManager;
         this.statusManager  = statusManager == null ? buildStatusManager() : statusManager;
@@ -140,11 +140,6 @@ public class Flow {
         addRouter(toRouter);
     }
 
-    //初始化Flow的bean属性
-    public void validate() {
-        Assert.notNull(fsmTable, "fsm table is null");
-    }
-
 
     public Node getNode(String stepName) {
         Node node = nodes.get(stepName);
@@ -157,7 +152,7 @@ public class Flow {
 
     public <T> void execute(FlowContext<?> ctx) throws StatusException, SessionException, RouterException, ActionException {
         Assert.isTrue(true, "ctx is null");
-//        try {
+
         String node = ctx.getStatus()
                 .getNode();
         FsmRecord atom = fsmTable.find(node, ctx.getEvent());
@@ -172,38 +167,7 @@ public class Flow {
                 .build();
         ctx.setAtomExecutor(atomExecutor);
         atomExecutor.execute(ctx);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            ctx.syncPayLoad();
-//        } catch (IllegalArgumentException e) {
-//            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-//            return;
-//        } catch (InterruptedFlowException e) {
-//            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-//            flush(ctx);
-//            return;
-//        } catch (PauseFlowException e) {
-//            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-//            flush(ctx);
-//            return;
-//        } catch (Throwable e) {
-//            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-//            flush(ctx);
-//            return;
-//        }
-//        if (fluent && isCanContinue(ctx)) {
-//            ctx.setEvent(Event.of(Coasts.EVENT_DEFAULT));
-//            execute(ctx);
-//        }
-    }
 
-
-    /**
-     * 刷新状态到基础设施
-     */
-    private void flush(FlowContext<?> ctx) throws SessionException, StatusException {
-        sessionManager.flush(ctx);
-        statusManager.flush(ctx);
     }
 
 
@@ -220,6 +184,9 @@ public class Flow {
         }};
     }
 
+    public boolean isEnd(String state) {
+        return ends.keySet().contains(state);
+    }
 
 
     public enum STAUS {

@@ -90,19 +90,16 @@ public class PcService {
      * @return
      */
     private boolean isCanContinue(FlowContext<?> ctx) {
-        Flow.STAUS flowStatus = ctx.getStatus()
-                .getFlow();
-        String node = ctx.getStatus()
-                .getNode();
-        String    flowName = ctx.getFlow().getName();
-        Node      nodeObj  = ctx.getFlow().getNode(node);
-        Node.Type nodeType = nodeObj.getType();
+        Flow.STAUS flowStatus = ctx.getStatus().getFlow();
+        String     node       = ctx.getStatus().getNode();
+        String     flowName   = ctx.getFlow().getName();
+        Node       nodeObj    = ctx.getFlow().getNode(node);
 
         if (!flowStatus.equals(Flow.STAUS.RUNNABLE)) {
             Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), flowStatus.name());
             return false;
         }
-        if (nodeType.equals(Node.Type.END)) {
+        if (ctx.getFlow().isEnd(node)) {
             Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
             return false;
         }

@@ -24,7 +24,7 @@ public class ChaosServiceTest extends Specification {
         flow.onEventTo("pay", Coasts.EVENT_DEFAULT, "testAction", "pay_error")
         flow.onEventTo("pay_error", Coasts.EVENT_DEFAULT, "testAction", "pay_error")
         flow.onEventTo("pay_error", Coasts.EVENT_DEFAULT, "testAction", "su")
-        flow.validate()
+
 
         chaosService.addFlow(flow)
     }
