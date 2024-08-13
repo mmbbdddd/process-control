@@ -14,12 +14,13 @@ import java.util.Map;
 @Getter
 public class FlowContext<T extends FlowPayload> {
     //    入参
-    @Setter
-    private Event        event;
     private Serializable id;
     private T            data;
     private Flow         flow;
-    //    运行时数据
+    @Setter
+    private Boolean      fluent;
+    @Setter
+    private Event        event;
     @Setter
     private FlowStatus   status;
     @Setter
@@ -39,6 +40,7 @@ public class FlowContext<T extends FlowPayload> {
         this.id     = data.getId();
         this.flow   = flow;
         this.status = data.getStatus();
+        this.fluent = true;
     }
 
 

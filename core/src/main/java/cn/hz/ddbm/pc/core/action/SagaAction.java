@@ -33,8 +33,7 @@ public interface SagaAction extends Action {
         Serializable flowId       = ctx.getId();
         String       failOverNode = router.failover(ctx.getStatus().getNode(), ctx);
         try {
-            StatusManager statusManager = InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
-
+            StatusManager statusManager = ctx.getFlow().getStatusManager();
             statusManager.updateStatus(flow, flowId, FlowStatus.of(failOverNode));
         } catch (IOException e) {
             throw new InterruptedFlowException(e);
@@ -44,7 +43,4 @@ public interface SagaAction extends Action {
 
     void executeTx(FlowContext<?> ctx);
 
-    interface SagaRouter extends AnyRouter {
-
-    }
 }

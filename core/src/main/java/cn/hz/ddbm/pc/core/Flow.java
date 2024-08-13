@@ -2,10 +2,7 @@ package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
-import cn.hz.ddbm.pc.core.exception.PauseFlowException;
-import cn.hz.ddbm.pc.core.exception.SessionException;
-import cn.hz.ddbm.pc.core.exception.StatusException;
+import cn.hz.ddbm.pc.core.exception.*;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.router.ToRouter;
@@ -35,8 +32,6 @@ public class Flow {
     Map<String, Router<?>> routers;
     List<Plugin>           plugins;
     FsmTable               fsmTable;
-    //这个方法是隐患啊 ，只能测试环境用，混沌方法用。
-    Boolean                fluent;
 
     public Flow(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManager, StatusManager statusManager, Map<String, Object> attrs) {
         Assert.notNull(name, "flow.name is null");
@@ -48,7 +43,6 @@ public class Flow {
         this.init           = new Node(Node.Type.START, init, new HashMap<>());
         this.ends           = ends.stream().map(e -> new Node(Node.Type.END, e, new HashMap<>())).collect(Collectors.toMap(Node::getName, t -> t));
         this.nodes          = nodes.stream().map(e -> new Node(Node.Type.TASK, e, new HashMap<>())).collect(Collectors.toMap(Node::getName, t -> t));
-        this.fluent         = true;
         this.container      = InfraUtils.getContainer();
         this.sessionManager = sessionManager == null ? buildSessionManager() : sessionManager;
         this.statusManager  = statusManager == null ? buildStatusManager() : statusManager;
@@ -153,73 +147,54 @@ public class Flow {
 
 
     public Node getNode(String stepName) {
-        return nodes.get(stepName);
-    }
-
-    /**
-     * 执行状态机
-     *
-     * @param ctx
-     */
-    List<Plugin> pluginBeans;
-
-    public List<Plugin> getPluginBeans() {
-        if (null != pluginBeans) {
-            return pluginBeans;
-        } else {
-            synchronized (this) {
-                Map<String, Plugin> map = InfraUtils.getPluginBeans();
-                this.pluginBeans = plugins.stream()
-                        .filter(Objects::nonNull)
-                        .map(t -> map.getOrDefault(t, null))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-            }
-            return pluginBeans;
+        Node node = nodes.get(stepName);
+        if (null == node) {
+            node = ends.get(stepName);
         }
+        return node;
     }
 
-    public <T> void execute(FlowContext<?> ctx) throws StatusException, SessionException {
+
+    public <T> void execute(FlowContext<?> ctx) throws StatusException, SessionException, RouterException, ActionException {
         Assert.isTrue(true, "ctx is null");
-        try {
-            String node = ctx.getStatus()
-                    .getNode();
-            FsmRecord atom = fsmTable.find(node, ctx.getEvent());
-            Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent(), ctx.getFlow()
-                    .getFsmTable()
-                    .toString()));
+//        try {
+        String node = ctx.getStatus()
+                .getNode();
+        FsmRecord atom = fsmTable.find(node, ctx.getEvent());
+        Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent(), ctx.getFlow()
+                .getFsmTable()
+                .toString()));
 
-            AtomExecutor atomExecutor = AtomExecutor.builder()
-                    .event(atom.getEvent())
-                    .plugins(getPluginBeans())
-                    .actionRouter(InfraUtils.getActionRouter(atom.getAction(), ctx.getFlow().routers.get(atom.getRouter())))
-                    .build();
-            ctx.setAtomExecutor(atomExecutor);
-            atomExecutor.execute(ctx);
-        } catch (IOException e) {
-            e.printStackTrace();
-            ctx.syncPayLoad();
-        } catch (IllegalArgumentException e) {
-            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-            ctx.syncPayLoad();
-            return;
-        } catch (InterruptedFlowException e) {
-            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-            flush(ctx);
-            return;
-        } catch (PauseFlowException e) {
-            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-            flush(ctx);
-            return;
-        } catch (Throwable e) {
-            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-            flush(ctx);
-            return;
-        }
-        if (fluent && isCanContinue(ctx)) {
-            ctx.setEvent(Event.of(Coasts.EVENT_DEFAULT));
-            execute(ctx);
-        }
+        AtomExecutor atomExecutor = AtomExecutor.builder()
+                .event(atom.getEvent())
+                .plugins(plugins)
+                .actionRouter(InfraUtils.getActionRouter(atom.getAction(), ctx.getFlow().routers.get(atom.getRouter())))
+                .build();
+        ctx.setAtomExecutor(atomExecutor);
+        atomExecutor.execute(ctx);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            ctx.syncPayLoad();
+//        } catch (IllegalArgumentException e) {
+//            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+//            return;
+//        } catch (InterruptedFlowException e) {
+//            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+//            flush(ctx);
+//            return;
+//        } catch (PauseFlowException e) {
+//            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+//            flush(ctx);
+//            return;
+//        } catch (Throwable e) {
+//            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+//            flush(ctx);
+//            return;
+//        }
+//        if (fluent && isCanContinue(ctx)) {
+//            ctx.setEvent(Event.of(Coasts.EVENT_DEFAULT));
+//            execute(ctx);
+//        }
     }
 
 
@@ -229,43 +204,6 @@ public class Flow {
     private void flush(FlowContext<?> ctx) throws SessionException, StatusException {
         sessionManager.flush(ctx);
         statusManager.flush(ctx);
-    }
-
-    /**
-     * 可继续运行
-     * 1，流程状态是Runable状态
-     * 2，节点状态类型是非end的
-     * 3，运行时限制为false（执行次数限制等）
-     *
-     * @param ctx
-     * @return
-     */
-    private boolean isCanContinue(FlowContext<?> ctx) {
-        Flow.STAUS flowStatus = ctx.getStatus()
-                .getFlow();
-        String node = ctx.getStatus()
-                .getNode();
-        Node      nodeObj  = getNode(node);
-        Node.Type nodeType = nodeObj.getType();
-
-        if (!flowStatus.equals(STAUS.RUNNABLE)) {
-            Logs.flow.info("流程不可运行：{},{},{}", name, ctx.getId(), flowStatus.name());
-            return false;
-        }
-        if (nodeType.equals(Node.Type.END)) {
-            Logs.flow.info("流程已结束：{},{},{}", name, ctx.getId(), node);
-            return false;
-        }
-        String windows = String.format("%s:%s:%s:%s", ctx.getFlow()
-                .getName(), ctx.getId(), node, Coasts.NODE_RETRY);
-        Integer exeRetry = InfraUtils.getMetricsTemplate()
-                .get(windows);
-        Integer nodeRetry = nodeObj.getRetry();
-        if (exeRetry > nodeObj.getRetry()) {
-            Logs.flow.info("流程已限流：{},{},{},{}>{}", name, ctx.getId(), node, exeRetry, nodeRetry);
-            return false;
-        }
-        return true;
     }
 
 
@@ -282,9 +220,6 @@ public class Flow {
         }};
     }
 
-    public void setFluent(boolean fluent) {
-        this.fluent = fluent;
-    }
 
 
     public enum STAUS {

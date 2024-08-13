@@ -1,6 +1,8 @@
 package cn.hz.ddbm.pc.core;
 
 
+import cn.hz.ddbm.pc.core.exception.ActionException;
+import cn.hz.ddbm.pc.core.exception.RouterException;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Builder;
@@ -23,7 +25,7 @@ public class AtomExecutor {
     List<Plugin> plugins;
     ActionRouter actionRouter;
 
-    public void execute(FlowContext<?> ctx) throws Exception {
+    public void execute(FlowContext<?> ctx) throws ActionException,RouterException {
         Flow         flow = ctx.getFlow();
         Serializable id   = ctx.getId();
         String lastNode = ctx.getStatus()
@@ -40,7 +42,7 @@ public class AtomExecutor {
                 //服务失败，异常打印
                 Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             }
-            throw e;
+            throw new ActionException(e);
         } finally {
             onActionFinallyPlugin(flow, ctx);
             ctx.metricsNode(ctx);
@@ -55,7 +57,7 @@ public class AtomExecutor {
             onRouterExceptionPlugin(flow, e, ctx);
             //服务失败，异常打印&暂停
             ctx.setStatus(FlowStatus.pause(this.actionRouter.router.failover(lastNode, ctx)));
-            throw e;
+            throw new RouterException(e);
         }
 
     }

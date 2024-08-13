@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class InterruptedFlowException extends RuntimeException {
 
-    public InterruptedFlowException(IOException e) {
+    public InterruptedFlowException(Exception e) {
         super(e);
     }
 }
