@@ -206,7 +206,7 @@ public class Flow {
             this.records.add(new FsmRecord(node, event, actionRouter.action, actionRouter.router));
             actionRouter.eventToNodes().forEach((routerResultEvent, routerResultNode) -> {
                 ToRouter toRouter = new ToRouter(actionRouter.status(), routerResultEvent, routerResultNode);
-                this.records.add(new FsmRecord(actionRouter.status(), routerResultEvent, Coasts.DIRECT_ACTION_BEAN, toRouter));
+                this.records.add(new FsmRecord(actionRouter.status(), routerResultEvent, Coasts.NONE_ACTION, toRouter));
             });
         }
 

@@ -15,10 +15,10 @@ public abstract class BaseSpec extends Specification {
 
         flow = Flow.devOf("test", "测试流程", "init", ["su", "fail"] as Set, ["pay", "pay_error"] as Set)
 
-        flow.to("init", Coasts.EVENT_DEFAULT, "testAction", "pay")
-        flow.to("pay", Coasts.EVENT_DEFAULT, "testAction", "pay_error")
-        flow.to("pay_error", Coasts.EVENT_DEFAULT, "testAction", "pay_error")
-        flow.to("pay_error", Coasts.EVENT_DEFAULT, "testAction", "su")
+        flow.to("init", Coasts.EVENT_DEFAULT, Coasts.NONE_ACTION, "pay")
+        flow.to("pay", Coasts.EVENT_DEFAULT, Coasts.NONE_ACTION, "pay_error")
+        flow.to("pay_error", Coasts.EVENT_DEFAULT, Coasts.NONE_ACTION, "pay_error")
+        flow.to("pay_error", Coasts.EVENT_DEFAULT, Coasts.NONE_ACTION, "su")
 
 
         hook();

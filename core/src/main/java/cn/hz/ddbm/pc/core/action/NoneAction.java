@@ -4,10 +4,10 @@ import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 
-public class DirectAction implements Action {
+public class NoneAction implements Action {
     @Override
     public String beanName() {
-        return Coasts.DIRECT_ACTION;
+        return Coasts.NONE;
     }
 
     @Override

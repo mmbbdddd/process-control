@@ -1,8 +1,7 @@
 package cn.hz.ddbm.pc.core.coast;
 
 import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.action.DirectAction;
-import cn.hz.ddbm.pc.core.action.SimpleAction;
+import cn.hz.ddbm.pc.core.action.NoneAction;
 
 public class Coasts {
     public static final String NODE_RETRY             = "retry";
@@ -11,8 +10,8 @@ public class Coasts {
     public static final String EVENT_DEFAULT          = "push";
     public static final String EVENT_CANCEL           = "cancel";
     public static final String EVENT_PAUSE            = "pause";
-    public static final String DIRECT_ACTION          = "directAction";
-    public static final Action DIRECT_ACTION_BEAN     = new DirectAction();
+    public static final String NONE                   = "none";
+    public static final Action NONE_ACTION            = new NoneAction();
     public static       String SESSION_MANAGER        = "session_manager";
     public static       String STATUS_MANAGER         = "status_manager";
     public static       String SESSION_MANAGER_MEMORY = "memory";
