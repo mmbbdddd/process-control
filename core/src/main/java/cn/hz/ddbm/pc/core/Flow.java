@@ -147,9 +147,7 @@ public class Flow {
         String node = ctx.getStatus()
                 .getNode();
         FsmRecord atom = fsmTable.find(node, ctx.getEvent());
-        Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent(), ctx.getFlow()
-                .getFsmTable()
-                .toString()));
+        Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent().getCode(), ctx.getStatus().getNode()));
 
         AtomExecutor atomExecutor = AtomExecutor.builder()
                 .event(atom.getEvent())
@@ -187,10 +185,10 @@ public class Flow {
 
     @Data
     static class FsmTable {
-        private List<FsmRecord> records;
+        private Set<FsmRecord> records;
 
         public FsmTable() {
-            this.records = new ArrayList<>();
+            this.records = new HashSet<>();
         }
 
         public FsmRecord find(String node, Event event) {
@@ -233,7 +231,6 @@ public class Flow {
 
     @Data
     static class FsmRecord {
-        Boolean      instant;
         String       from;
         Event        event;
         ActionRouter actionRouter;
@@ -244,6 +241,19 @@ public class Flow {
             this.event        = event;
             this.actionRouter = actionRouter;
             this.to           = actionRouter.status();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            FsmRecord fsmRecord = (FsmRecord) o;
+            return Objects.equals(from, fsmRecord.from) && Objects.equals(event, fsmRecord.event);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(from, event);
         }
 
         @Override

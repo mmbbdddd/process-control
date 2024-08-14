@@ -54,13 +54,13 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
         builder.withRouters()
 //                .register("simpleRouter", new ExpressionRouter(new HashMap<>()))
                 .register(new ExpressionRouter("sendRouter",
-                        new ExpressionRouter.NodeExpression("pay_error", "Math.random() > 0.1"),
+                        new ExpressionRouter.NodeExpression("sendRouter", "Math.random() > 0.1"),
                         new ExpressionRouter.NodeExpression("su", "Math.random() > 0.6"),
                         new ExpressionRouter.NodeExpression("init", "Math.random() > 0.1"),
                         new ExpressionRouter.NodeExpression("fail", "Math.random() > 0.2")
                 ))
                 .register(new ExpressionRouter("notifyRouter",
-                        new ExpressionRouter.NodeExpression("pay_error", "Math.random() > 0.1"),
+                        new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() > 0.1"),
                         new ExpressionRouter.NodeExpression("su", "Math.random() > 0.6"),
                         new ExpressionRouter.NodeExpression("init", "Math.random() > 0.1"),
                         new ExpressionRouter.NodeExpression("fail", "Math.random() > 0.2")
