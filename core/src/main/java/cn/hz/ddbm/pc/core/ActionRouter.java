@@ -14,7 +14,7 @@ public class ActionRouter implements Step.Instant {
     public ActionRouter(String from, String event, Action action, Router router) {
         this.action = action;
         this.router = router;
-        this.status = String.format("%s||%sInstantStatus", from, event);
+        this.status = String.format("instant(%s,%s)", from, event);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class ActionRouter implements Step.Instant {
     public Map<Event, String> eventToNodes() {
         return new HashMap<Event, String>() {{
             router.toNodes().forEach(toNode -> {
-                put(Event.of(Event.Type.INSTANT_TO_EVENT, status()), toNode);
+                put(Event.instantOf(status,toNode), toNode);
             });
         }};
     }

@@ -1,112 +1,34 @@
-{
-  name: 'test',
-  descr: 'test',
-  init: init,
-  ends: {
-    fail=fail,
-    su=su,
-    error=error
-  },
-  nodes: {
-    fail=fail,
-    init=init,
-    su=su,
-    miss_data_fulled=miss_data_fulled,
-    sended=sended,
-    send_failover=send_failover,
-    error=error,
-    miss_data=miss_data
-  },
-  routers: [
-    {
-      from: 'null',
-      to: 'notifyRouter'
-    },
-    {
-      from: 'null',
-      to: 'init'
-    },
-    {
-      routerName: notifyRouter,
-      expr: []
-    },
-    {
-      from: 'null',
-      to: 'sendRouter'
-    },
-    {
-      from: 'null',
-      to: 'sendRouter'
-    },
-    {
-      from: 'null',
-      to: 'sendRouter'
-    },
-    {
-      routerName: sendRouter,
-      expr: []
-    }
-  ],
-  fsmTable: [
+[
+  [
     {
       from: 'init',
-      event: 'push',
+      event: 'pause',
       action: 'none',
-      router: 'init||push||sendRouterRouter'
+      router: 'pay_router'
     },
     {
-      from: 'init||pushInstantStatus',
-      event: 'init||pushInstantStatus',
+      from: 'instant(init,pause)',
+      event: 'toEvent(instant(init,pause),fail)',
       action: 'none',
-      router: 'init||pushInstantStatus||init||pushInstantStatus||sendRouterRouter'
+      router: 'router(instant(init,pause),fail)'
     },
     {
-      from: 'send_failover',
-      event: 'push',
+      from: 'instant(init,pause)',
+      event: 'toEvent(instant(init,pause),su)',
       action: 'none',
-      router: 'send_failover||push||sendRouterRouter'
+      router: 'router(instant(init,pause),su)'
     },
     {
-      from: 'send_failover||pushInstantStatus',
-      event: 'send_failover||pushInstantStatus',
+      from: 'instant(init,pause)',
+      event: 'toEvent(instant(init,pause),init)',
       action: 'none',
-      router: 'send_failover||pushInstantStatus||send_failover||pushInstantStatus||sendRouterRouter'
+      router: 'router(instant(init,pause),init)'
     },
     {
-      from: 'sended',
-      event: 'push',
+      from: 'instant(init,pause)',
+      event: 'toEvent(instant(init,pause),pay_error)',
       action: 'none',
-      router: 'sended||push||sendRouterRouter'
-    },
-    {
-      from: 'sended||pushInstantStatus',
-      event: 'sended||pushInstantStatus',
-      action: 'none',
-      router: 'sended||pushInstantStatus||sended||pushInstantStatus||sendRouterRouter'
-    },
-    {
-      from: 'miss_data',
-      event: 'push',
-      action: 'none',
-      router: 'miss_data||push||notifyRouterRouter'
-    },
-    {
-      from: 'miss_data||pushInstantStatus',
-      event: 'miss_data||pushInstantStatus',
-      action: 'none',
-      router: 'miss_data||pushInstantStatus||miss_data||pushInstantStatus||notifyRouterRouter'
-    },
-    {
-      from: 'miss_data_fulled',
-      event: 'push',
-      action: 'none',
-      router: 'miss_data_fulled||push||initRouter'
-    },
-    {
-      from: 'miss_data_fulled||pushInstantStatus',
-      event: 'miss_data_fulled||pushInstantStatus',
-      action: 'none',
-      router: 'miss_data_fulled||pushInstantStatus||miss_data_fulled||pushInstantStatus||initRouter'
+      router: 'router(instant(init,pause),pay_error)'
     }
   ]
-}
+]

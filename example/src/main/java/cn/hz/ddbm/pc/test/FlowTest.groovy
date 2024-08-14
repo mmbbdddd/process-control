@@ -4,7 +4,10 @@ import cn.hz.ddbm.pc.core.Flow
 import cn.hz.ddbm.pc.core.FlowContext
 import cn.hz.ddbm.pc.core.FlowPayload
 import cn.hz.ddbm.pc.core.coast.Coasts
+import cn.hz.ddbm.pc.core.router.ExpressionRouter
 import cn.hz.ddbm.pc.test.support.PayloadMock
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.serializer.SerializerFeature
 import org.junit.Assert
 
 class FlowTest extends BaseSpec {
@@ -26,7 +29,21 @@ class FlowTest extends BaseSpec {
 
     def "AddNode"() {}
 
-    def "AddRouter"() {}
+    def "AddRouter"() {
+        when:
+        Flow f = Flow.devOf("test", "测试流程", "init", ["su", "fail"] as Set, ["pay", "pay_error"] as Set)
+        f.router("init",Coasts.EVENT_PAUSE,Coasts.NONE_ACTION,new ExpressionRouter("pay_router",
+            new ExpressionRouter.NodeExpression(to:"pay_error",expression: "Math.random() > 0.1"),
+            new ExpressionRouter.NodeExpression(to:"su",expression: "Math.random() > 0.6"),
+            new ExpressionRouter.NodeExpression(to:"init",expression: "Math.random() > 0.1"),
+            new ExpressionRouter.NodeExpression(to:"fail",expression: "Math.random() > 0.2"),
+        ))
+
+        then:
+//        System.out.println(JSON.toJSONString(f.getFsmTable().getRecords(), SerializerFeature.PrettyFormat))
+        System.out.println(Arrays.toString(f.getFsmTable().getRecords()))
+
+    }
 
     def "OnEventRouter"() {}
 

@@ -23,7 +23,7 @@ public class ToRouter implements Router  {
 
     public ToRouter(String from, Event event, String to) {
         this.to         = to;
-        this.routerName = String.format("%s||%s||%sRouter", from, event.getCode(), to);
+        this.routerName = String.format("fromToRouter(%s,%s)", from,  to);
     }
 
     @Override

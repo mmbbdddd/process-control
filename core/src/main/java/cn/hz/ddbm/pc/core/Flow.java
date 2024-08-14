@@ -102,14 +102,14 @@ public class Flow {
     /**
      * 定义流程事件绑定关系
      *
-     * @param source
+     * @param from
      * @param event
      * @param action
      * @param router
      */
-    public void router(String source, String event, Action action, Router router) {
+    public void router(String from, String event, Action action, Router router) {
         Event e = Event.of(event);
-        this.fsmTable.records.add(new FsmRecord(source, e, action, router));
+        this.fsmTable.on(from, e, action, router);
         addRouter(router);
 
     }
@@ -199,11 +199,13 @@ public class Flow {
          * 参见onInner
          */
         public void on(String from, Event event, Action action, Router router) {
-            onInner(from, event, new ActionRouter(from,event.code,action, router));
+            onInner(from, event, new ActionRouter(from, event.code, action, router));
         }
 
         private void onInner(String node, Event event, ActionRouter actionRouter) {
+            //增加外部event事件
             this.records.add(new FsmRecord(node, event, actionRouter.action, actionRouter.router));
+            //增加瞬态事件
             actionRouter.eventToNodes().forEach((routerResultEvent, routerResultNode) -> {
                 ToRouter toRouter = new ToRouter(actionRouter.status(), routerResultEvent, routerResultNode);
                 this.records.add(new FsmRecord(actionRouter.status(), routerResultEvent, Coasts.NONE_ACTION, toRouter));
@@ -218,10 +220,11 @@ public class Flow {
 
     @Data
     static class FsmRecord {
-        String from;
-        Event  event;
-        Action action;
-        Router router;
+        Boolean instant;
+        String    from;
+        Event   event;
+        Action  action;
+        Router  router;
 
         public FsmRecord(String from, Event event, Action action, Router router) {
             this.from   = from;
@@ -236,7 +239,7 @@ public class Flow {
         }
 
         public ActionRouter getActionRouter() {
-            return new ActionRouter(from,event.getCode(),action, router);
+            return new ActionRouter(from, event.getCode(), action, router);
         }
     }
 

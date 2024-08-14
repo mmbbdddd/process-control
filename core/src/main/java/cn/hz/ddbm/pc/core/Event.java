@@ -29,12 +29,16 @@ public class Event {
         return new Event(type, event);
     }
 
+    public static Event instantOf(String status,String to) {
+        return new Event(Type.INSTANT_EVENT,String.format("toEvent(%s,%s)",status,to));
+    }
+
     public enum Type {
         //来自外部输入的指令
         FLOW_EVENT,
         NODE_EVENT,
         EVENT_2_INSTANT,
-        INSTANT_TO_EVENT
+        INSTANT_EVENT
     }
 
     @Override
