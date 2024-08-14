@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
     <groupId>cn.hz.ddbm.pc</groupId>
-    <artifactId>factory-builder</artifactId>
+    <artifactId>factory-dsl</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>

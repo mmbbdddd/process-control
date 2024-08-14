@@ -1,4 +1,4 @@
-package cn.hz.ddbm.pc.factory.buider;
+package cn.hz.ddbm.pc.factory.dsl;
 
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.Flow;
@@ -12,10 +12,9 @@ import cn.hz.ddbm.pc.profile.PcService;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.List;
-import java.util.Map;
 
 public interface StateMachineConfig<S> extends InitializingBean {
-    String machineId();
+    String flowId();
 
     String describe();
 
@@ -27,10 +26,8 @@ public interface StateMachineConfig<S> extends InitializingBean {
 
     StatusManager statusManager();
 
-    Map<String, Object> attrs();
 
     default Action getAction(String action) {
-        //todo
         return new NoneAction();
     }
 

@@ -16,7 +16,7 @@
     </properties>
 
     <modules>
-        <module>builder</module>
+        <module>dsl</module>
         <module>xml</module>
         <module>json</module>
     </modules>

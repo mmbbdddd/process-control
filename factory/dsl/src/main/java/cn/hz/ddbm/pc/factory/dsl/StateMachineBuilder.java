@@ -1,4 +1,4 @@
-package cn.hz.ddbm.pc.factory.buider;
+package cn.hz.ddbm.pc.factory.dsl;
 
 import cn.hz.ddbm.pc.core.ActionAttrs;
 import cn.hz.ddbm.pc.core.Flow;
@@ -37,7 +37,7 @@ public class StateMachineBuilder<S> {
             String      init  = states.init.name();
             Set<String> ends  = states.ends.stream().map(Enum::name).collect(Collectors.toSet());
             Set<String> nodes = states.states.stream().map(Enum::name).collect(Collectors.toSet());
-            Flow        flow  = Flow.of(fsm.machineId(), fsm.describe(), init, ends, nodes, fsm.sessionManager(), fsm.statusManager(), null);
+            Flow        flow  = Flow.of(fsm.flowId(), fsm.describe(), init, ends, nodes, fsm.sessionManager(), fsm.statusManager(), null);
             this.routers.routers.forEach((rn, r) -> flow.addRouter(r));
             this.transitions.transitions.forEach(transition -> {
                 if (Objects.equals(null, transition.getTo())) {

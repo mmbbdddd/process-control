@@ -8,6 +8,6 @@ import java.util.List;
  * 定义的流程的定义方式
  * 有xml，json，buider等方式。
  */
-public interface FlowFactory<R extends Resource> {
-    List<Flow> loadFlowByResource(ResourceLoader<R> resource);
+public interface FlowFactory  {
+    List<Flow> loadFlowByResource(ResourceLoader resource);
 }

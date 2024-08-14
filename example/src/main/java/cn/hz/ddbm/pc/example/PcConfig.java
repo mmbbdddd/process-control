@@ -8,8 +8,8 @@ import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
-import cn.hz.ddbm.pc.factory.buider.StateMachineBuilder;
-import cn.hz.ddbm.pc.factory.buider.StateMachineConfig;
+import cn.hz.ddbm.pc.factory.dsl.StateMachineBuilder;
+import cn.hz.ddbm.pc.factory.dsl.StateMachineConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,13 +86,10 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
         return InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
     }
 
-    @Override
-    public Map<String, Object> attrs() {
-        return new HashMap<>();
-    }
 
 
-    public String machineId() {
+
+    public String flowId() {
         return "test";
     }
 
