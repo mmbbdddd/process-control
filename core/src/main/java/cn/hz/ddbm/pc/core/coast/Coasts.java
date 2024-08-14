@@ -13,6 +13,7 @@ public class Coasts {
     public static final String  NONE                   = "none";
     public static final Action  NONE_ACTION            = new NoneAction();
     public static final Integer DEFAULT_RETRY          = 1;
+    public static final Integer DEFAULT_TIMEOUT        = 3000;
     public static       String  SESSION_MANAGER        = "session_manager";
     public static       String  STATUS_MANAGER         = "status_manager";
     public static       String  SESSION_MANAGER_MEMORY = "memory";

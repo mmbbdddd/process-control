@@ -1,5 +1,6 @@
 package cn.hz.ddbm.pc.status.memory;
 
+import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowStatus;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.support.StatusManager;
@@ -24,7 +25,7 @@ public class MemoryStatusManager implements StatusManager {
     }
 
     @Override
-    public void setStatus(String flow, Serializable flowId, FlowStatus flowStatus, Long timeout) throws IOException {
+    public void setStatus(String flow, Serializable flowId, FlowStatus flowStatus, Integer timeout, FlowContext<?> ctx) throws IOException {
         cache.put(String.format(keyTemplate, flow, flowId), flowStatus);
     }
 

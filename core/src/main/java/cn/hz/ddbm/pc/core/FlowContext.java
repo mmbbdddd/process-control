@@ -25,6 +25,8 @@ public class FlowContext<T extends FlowPayload> {
     private FlowStatus   status;
     @Setter
     private AtomExecutor atomExecutor;
+    @Setter
+    private Profile      profile;
 
 
     public FlowContext(Flow flow, T data, String event) {
