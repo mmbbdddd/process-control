@@ -14,9 +14,11 @@ import java.util.stream.Collectors;
 public class FlowFactory<R extends Resource> {
     @javax.annotation.Resource
     ResourceLoader<R> resourceLoader;
+    @javax.annotation.Resource
+    Container         container;
 
     @PostConstruct
-    public List<Flow> loadFlowByResource(Container container) {
+    public List<Flow> loadFlowByResource() {
         return resourceLoader.loadResources(container).stream().map(Resource::resolve).collect(Collectors.toList());
     }
 }

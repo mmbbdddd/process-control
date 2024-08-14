@@ -7,6 +7,8 @@ import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.ExpressionEngine;
 import cn.hz.ddbm.pc.core.support.MetricsTemplate;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
+import cn.hz.ddbm.pc.factory.FlowFactory;
+import cn.hz.ddbm.pc.factory.dsl.DslResourceLoader;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.session.memory.MemorySessionManager;
 import cn.hz.ddbm.pc.status.memory.MemoryStatusManager;
@@ -43,6 +45,14 @@ public class PcDemo {
         }
     }
 
+    @Bean
+    DslResourceLoader dslResourceLoader() {
+        return new DslResourceLoader();
+    }
+    @Bean
+    FlowFactory flowFactory() {
+        return new FlowFactory();
+    }
     @Bean
     ExpressionEngine expressionEngine() {
         return new ExpressionEngineMock();
