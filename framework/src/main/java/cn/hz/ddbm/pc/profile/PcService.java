@@ -51,24 +51,24 @@ public class PcService {
             }
         } catch (ActionException e) {
             //io异常 = 可重试
-            if (e.getCause() instanceof IOException) {
+            if (e.getRaw() instanceof IOException) {
                 Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
                 flush(ctx);
                 execute(ctx);
             }
             //中断流程除（内部错误：不可重复执行，执行次数受限……）再次调度可触发：
-            if (e.getCause() instanceof InterruptedFlowException) {
+            if (e.getRaw() instanceof InterruptedFlowException) {
                 Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
                 flush(ctx);
             }
             //中断流程（内部程序错误：配置错误，代码错误）再次调度不响应：
-            if (e.getCause() instanceof PauseFlowException) {
+            if (e.getRaw() instanceof PauseFlowException) {
                 Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
                 flush(ctx);
             }
         } catch (RouterException e) {
             //即PauseFlowException
-            Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
+            Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e.getRaw());
             flush(ctx);
         } finally {
             releaseLock(ctx);
@@ -96,8 +96,8 @@ public class PcService {
     private boolean isCanContinue(FlowContext<?> ctx) {
         Flow.STAUS flowStatus = ctx.getStatus().getFlow();
         String     node       = ctx.getStatus().getNode();
-        String flowName = ctx.getFlow().getName();
-        State  nodeObj  = ctx.getFlow().getStep(node);
+        String     flowName   = ctx.getFlow().getName();
+        State      nodeObj    = ctx.getFlow().getStep(node);
 
         if (!flowStatus.equals(Flow.STAUS.RUNNABLE)) {
             Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), flowStatus.name());

@@ -68,6 +68,8 @@ public class StateMachineBuilder<S> {
         Set<S> ends;
         Set<S> states;
 
+        Profile profile;
+
         public States<S> initial(S init) {
             this.init = init;
             return this;
@@ -80,6 +82,11 @@ public class StateMachineBuilder<S> {
 
         public States<S> ends(S... ends) {
             this.ends = Arrays.stream(ends).collect(Collectors.toSet());
+            return this;
+        }
+
+        public States<S> profile(Profile profile) {
+            this.profile = profile;
             return this;
         }
     }

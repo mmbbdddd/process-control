@@ -10,4 +10,7 @@ package cn.hz.ddbm.pc.core.exception;
 
 
 public class IllegalEntityException extends PauseFlowException {
+    public IllegalEntityException(Throwable raw) {
+        super(raw);
+    }
 }

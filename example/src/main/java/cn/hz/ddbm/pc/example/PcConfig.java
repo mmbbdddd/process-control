@@ -2,6 +2,7 @@ package cn.hz.ddbm.pc.example;
 
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Plugin;
+import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.Container;
@@ -35,7 +36,8 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
         builder.withStates()
                 .initial(PcState.init)
                 .ends(PcState.su, PcState.fail, PcState.error)
-                .states(EnumSet.allOf(PcState.class));
+                .states(EnumSet.allOf(PcState.class))
+        ;
 
         builder.withTransitions()
                 .router(PcState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter", null)
@@ -54,16 +56,16 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
         builder.withRouters()
 //                .register("simpleRouter", new ExpressionRouter(new HashMap<>()))
                 .register(new ExpressionRouter("sendRouter",
-                        new ExpressionRouter.NodeExpression("sendRouter", "Math.random() > 0.1"),
-                        new ExpressionRouter.NodeExpression("su", "Math.random() > 0.6"),
-                        new ExpressionRouter.NodeExpression("init", "Math.random() > 0.1"),
-                        new ExpressionRouter.NodeExpression("fail", "Math.random() > 0.2")
+                        new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.1"),
+                        new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
+                        new ExpressionRouter.NodeExpression("init", "Math.random() < 0.1"),
+                        new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
                 ))
                 .register(new ExpressionRouter("notifyRouter",
-                        new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() > 0.1"),
-                        new ExpressionRouter.NodeExpression("su", "Math.random() > 0.6"),
-                        new ExpressionRouter.NodeExpression("init", "Math.random() > 0.1"),
-                        new ExpressionRouter.NodeExpression("fail", "Math.random() > 0.2")
+                        new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.1"),
+                        new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
+                        new ExpressionRouter.NodeExpression("init", "Math.random() < 0.1"),
+                        new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
                 ))
         ;
 

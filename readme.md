@@ -36,48 +36,121 @@ pc ：轻量级、高性能、高可靠的流程编排框架。
 ![doc/img_16.png](doc/img_16.png)
 **代码**
 
-    <dependency>
-      <groupId>hz.ddbm</groupId>
-      <artifactId>pc</artifactId> 
-      <version>${version}</version>
-    </dependency>
+        <dependency>
+            <groupId>cn.hz.ddbm.pc</groupId>
+            <artifactId>pc</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
 参见hz.ddbm.jfsm.pay包
 
  ```java
- public class PayFsm extends Fsm {
-    //    定义工作流
-    @Override
-    public Flow flow() {
-        return new FlowBuilder("testFlow", null, null) {
-            {
-                addNode(new NodeBuilder(Node.Type.START, "init") {{
-                    onEvent(Coast.EVENT_PUSH, "payAction", "any://payRouter", "pay_unknow", "true");
-                }});
-                addNode(new NodeBuilder(Node.Type.TASK, "pay_unknow") {{
-                    onEvent(Coast.EVENT_PUSH, "payQueryAction", "any://payRouter");
-                }});
-                addNode(new NodeBuilder(Node.Type.END, "su"));
-                addNode(new NodeBuilder(Node.Type.END, "fail"));
+package cn.hz.ddbm.pc.example;
 
-                addRouter(payRouter());
-                addPlugin("logPlugin");
-            }
-//            回忆
+import cn.hz.ddbm.pc.core.Flow;
+import cn.hz.ddbm.pc.core.Plugin;
+import cn.hz.ddbm.pc.core.Profile;
+import cn.hz.ddbm.pc.core.coast.Coasts;
+import cn.hz.ddbm.pc.core.router.ExpressionRouter;
+import cn.hz.ddbm.pc.core.support.Container;
+import cn.hz.ddbm.pc.core.support.SessionManager;
+import cn.hz.ddbm.pc.core.support.StatusManager;
+import cn.hz.ddbm.pc.core.utils.InfraUtils;
+import cn.hz.ddbm.pc.factory.buider.StateMachineBuilder;
+import cn.hz.ddbm.pc.factory.buider.StateMachineConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-        }.build();
+import java.util.*;
+
+public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
+  Logger logger = LoggerFactory.getLogger(getClass());
+
+  public enum PcState {
+    init("初始化"), sended("已发送"), send_failover("发送错误"), miss_data("客户资料缺乏"), miss_data_fulled("客户资料已补"), su("成功"), fail("失败"), error("异常");
+
+    private final String descr;
+
+    PcState(String descr) {
+      this.descr = descr;
     }
+  }
 
-    //定义路由
-    private Router payRouter() {
-        return new Router.Any("payRouter", new HashMap<String, String>() {{
-            put("su", "null != actionResult && actionResult.code == '0000'");
-            put("fail", "null != actionResult &&  actionResult.code == '0001'");
-            put("pay_unknow", "true");
-        }});
-    }
+  public Flow build(Container container) throws Exception {
+    StateMachineBuilder.Builder<PcState> builder = StateMachineBuilder.builder(this);
+    logger.info("构建订单状态机");
+
+    builder.withStates()
+            .initial(PcState.init)
+            .ends(PcState.su, PcState.fail, PcState.error)
+            .states(EnumSet.allOf(PcState.class))
+    ;
+
+    builder.withTransitions()
+            .router(PcState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter", null)
+            //发送异常，不明确是否发送
+            .router(PcState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
+            //已发送，对方处理中
+            .router(PcState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
+            //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
+            .router(PcState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter", null)
+//                资料就绪状态，可重新发送
+            .to(PcState.miss_data_fulled, Coasts.EVENT_DEFAULT, "", PcState.init)
+    //用户上传资料  && 更新资料状态
+//                .to(PcState.miss_data, "uploade", "", "miss_data")
+    ;
+
+    builder.withRouters()
+//                .register("simpleRouter", new ExpressionRouter(new HashMap<>()))
+            .register(new ExpressionRouter("sendRouter",
+                    new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.1"),
+                    new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
+                    new ExpressionRouter.NodeExpression("init", "Math.random() < 0.1"),
+                    new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
+            ))
+            .register(new ExpressionRouter("notifyRouter",
+                    new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.1"),
+                    new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
+                    new ExpressionRouter.NodeExpression("init", "Math.random() < 0.1"),
+                    new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
+            ))
+    ;
+
+    return builder.build();
+  }
+
+  @Override
+  public List<Plugin> plugins() {
+    return new ArrayList<Plugin>();
+  }
+
+  @Override
+  public SessionManager sessionManager() {
+    return InfraUtils.getSessionManager(Coasts.SESSION_MANAGER_MEMORY);
+  }
+
+  @Override
+  public StatusManager statusManager() {
+    return InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
+  }
+
+  @Override
+  public Map<String, Object> attrs() {
+    return new HashMap<>();
+  }
+
+
+  public String machineId() {
+    return "test";
+  }
+
+  @Override
+  public String describe() {
+    return "test";
+  }
 
 }
+
  ```
 
 **测试**

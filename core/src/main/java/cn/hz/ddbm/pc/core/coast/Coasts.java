@@ -4,21 +4,22 @@ import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.action.NoneAction;
 
 public class Coasts {
-    public static final String NODE_RETRY             = "retry";
-    public static final String PLUGIN_DIGEST_LOG      = "digestLogPlugin";
-    public static final String PLUGIN_ERROR_LOG       = "errorLogPlugin";
-    public static final String EVENT_DEFAULT          = "push";
-    public static final String EVENT_CANCEL           = "cancel";
-    public static final String EVENT_PAUSE            = "pause";
-    public static final String NONE                   = "none";
-    public static final Action NONE_ACTION            = new NoneAction();
-    public static       String SESSION_MANAGER        = "session_manager";
-    public static       String STATUS_MANAGER         = "status_manager";
-    public static       String SESSION_MANAGER_MEMORY = "memory";
-    public static       String SESSION_MANAGER_REDIS  = "redis";
-    public static       String STATUS_MANAGER_MEMORY  = "memory";
-    public static       String STATUS_MANAGER_REDIS   = "redis";
-    public static       String STATUS_MANAGER_DAO     = "dao";
+    public static final String  NODE_RETRY             = "retry";
+    public static final String  PLUGIN_DIGEST_LOG      = "digestLogPlugin";
+    public static final String  PLUGIN_ERROR_LOG       = "errorLogPlugin";
+    public static final String  EVENT_DEFAULT          = "push";
+    public static final String  EVENT_CANCEL           = "cancel";
+    public static final String  EVENT_PAUSE            = "pause";
+    public static final String  NONE                   = "none";
+    public static final Action  NONE_ACTION            = new NoneAction();
+    public static final Integer DEFAULT_RETRY          = 1;
+    public static       String  SESSION_MANAGER        = "session_manager";
+    public static       String  STATUS_MANAGER         = "status_manager";
+    public static       String  SESSION_MANAGER_MEMORY = "memory";
+    public static       String  SESSION_MANAGER_REDIS  = "redis";
+    public static       String  STATUS_MANAGER_MEMORY  = "memory";
+    public static       String  STATUS_MANAGER_REDIS   = "redis";
+    public static       String  STATUS_MANAGER_DAO     = "dao";
 
     public static class DEFAULT_STATUS {
         public static String SU     = "su";

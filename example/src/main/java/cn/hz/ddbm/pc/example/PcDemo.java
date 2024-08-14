@@ -37,13 +37,10 @@ public class PcDemo {
         String   event    = Coasts.EVENT_DEFAULT;
         chaosService.addFlow(flow);
 
-        while (true) {
-            try {
-                chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
+        try {
+            chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -51,6 +48,7 @@ public class PcDemo {
     ExpressionEngine expressionEngine() {
         return new ExpressionEngineMock();
     }
+
     @Bean
     MetricsTemplate metricsTemplate() {
         return new MetricsTemplateMock();

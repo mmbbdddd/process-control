@@ -2,10 +2,7 @@ package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.exception.ActionException;
-import cn.hz.ddbm.pc.core.exception.RouterException;
-import cn.hz.ddbm.pc.core.exception.SessionException;
-import cn.hz.ddbm.pc.core.exception.StatusException;
+import cn.hz.ddbm.pc.core.exception.*;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.router.ToRouter;
 import cn.hz.ddbm.pc.core.support.Container;
@@ -20,29 +17,29 @@ import java.util.stream.Collectors;
 
 @Getter
 public class Flow {
-    final String              name;
-    final String              descr;
-    final SessionManager      sessionManager;
-    final StatusManager       statusManager;
-    final Node                init;
-    final Container           container;
-    final Map<String, Object> attrs;
-    final Map<String, Node>   ends;
-    final Map<String, Node>   nodes;
+    final String            name;
+    final String            descr;
+    final SessionManager    sessionManager;
+    final StatusManager     statusManager;
+    final Node              init;
+    final Container         container;
+    final Profile           profile;
+    final Map<String, Node> ends;
+    final Map<String, Node> nodes;
     Map<String, ExpressionRouter> routers;
     List<Plugin>                  plugins;
     FsmTable                      fsmTable;
 
-    public Flow(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManager, StatusManager statusManager, Map<String, Object> attrs) {
+    public Flow(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManager, StatusManager statusManager, Profile profile) {
         Assert.notNull(name, "flow.name is null");
         Assert.notNull(init, "start.node is null");
         Assert.notNull(ends, "ends.node is null");
         this.name           = name;
         this.descr          = descr;
-        this.attrs          = attrs == null ? new HashMap<>() : attrs;
-        this.init           = new Node(init, new HashMap<>());
-        this.ends           = ends.stream().map(e -> new Node(e, new HashMap<>())).collect(Collectors.toMap(Node::getName, t -> t));
-        this.nodes          = nodes.stream().map(e -> new Node(e, new HashMap<>())).collect(Collectors.toMap(Node::getName, t -> t));
+        this.profile        = profile == null ? Profile.defaultOf() : profile;
+        this.init           = new Node(init, this.profile.getStepAttrsOrDefault(init));
+        this.ends           = ends.stream().map(e -> new Node(e, this.profile.getStepAttrsOrDefault(e))).collect(Collectors.toMap(Node::getName, t -> t));
+        this.nodes          = nodes.stream().map(e -> new Node(e, this.profile.getStepAttrsOrDefault(e))).collect(Collectors.toMap(Node::getName, t -> t));
         this.container      = InfraUtils.getContainer();
         this.sessionManager = sessionManager == null ? buildSessionManager() : sessionManager;
         this.statusManager  = statusManager == null ? buildStatusManager() : statusManager;
@@ -52,16 +49,16 @@ public class Flow {
     }
 
     private StatusManager buildStatusManager() {
-        String statusManager = this.getAttrs().get(Coasts.STATUS_MANAGER) == null ?
+        String statusManager = this.profile.getStatusManager() == null ?
                 Coasts.STATUS_MANAGER_REDIS :
-                (String) this.getAttrs().get(Coasts.STATUS_MANAGER);
+                this.profile.getStatusManager();
         return container.getBean(statusManager, StatusManager.class);
     }
 
     private SessionManager buildSessionManager() {
-        String sessionManager = this.getAttrs().get(Coasts.SESSION_MANAGER) == null ?
+        String sessionManager = this.profile.getSessionManager() == null ?
                 Coasts.SESSION_MANAGER_REDIS :
-                (String) this.getAttrs().get(Coasts.SESSION_MANAGER);
+                this.profile.getSessionManager();
         return container.getBean(sessionManager, SessionManager.class);
     }
 
@@ -69,11 +66,11 @@ public class Flow {
      * 定义流程参数
      *
      * @param name
-     * @param attrs
+     * @param profile
      * @return
      */
-    public static Flow of(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManger, StatusManager statusManager, Map<String, Object> attrs) {
-        Flow flow = new Flow(name, descr, init, ends, nodes, sessionManger, statusManager, attrs);
+    public static Flow of(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManger, StatusManager statusManager, Profile profile) {
+        Flow flow = new Flow(name, descr, init, ends, nodes, sessionManger, statusManager, profile);
         return flow;
     }
 
@@ -90,7 +87,7 @@ public class Flow {
 
         SessionManager sessionManager1 = InfraUtils.getSessionManager(Coasts.SESSION_MANAGER_MEMORY);
         StatusManager  statusManager1  = InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
-        Flow           flow            = new Flow(name, descr, init, ends, nodes, sessionManager1, statusManager1, new HashMap<>());
+        Flow           flow            = new Flow(name, descr, init, ends, nodes, sessionManager1, statusManager1, Profile.defaultOf());
         flow.plugins = InfraUtils.getContainer().getByCodesOfType(plugins, Plugin.class);
         return flow;
     }
@@ -141,7 +138,7 @@ public class Flow {
     }
 
 
-    public <T> void execute(FlowContext<?> ctx) throws StatusException, SessionException, RouterException, ActionException {
+    public <T> void execute(FlowContext<?> ctx) throws RouterException, ActionException {
         Assert.isTrue(true, "ctx is null");
 
         String node = ctx.getStatus()
@@ -155,6 +152,7 @@ public class Flow {
                 .actionRouter(atom.getActionRouter())
                 .build();
         ctx.setAtomExecutor(atomExecutor);
+
         atomExecutor.execute(ctx);
 
     }

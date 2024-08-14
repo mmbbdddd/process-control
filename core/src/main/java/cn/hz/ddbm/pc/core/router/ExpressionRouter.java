@@ -2,7 +2,6 @@ package cn.hz.ddbm.pc.core.router;
 
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.State;
-import cn.hz.ddbm.pc.core.exception.NoRouterResultException;
 import cn.hz.ddbm.pc.core.support.ExpressionEngine;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
@@ -11,8 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ExpressionRouter implements AnyRouter , State.Instant {
-    String routerName;
+public class ExpressionRouter implements AnyRouter, State.Instant {
+    String           routerName;
     /**
      * Node>Expression
      */
@@ -22,8 +21,8 @@ public class ExpressionRouter implements AnyRouter , State.Instant {
 
     ExpressionEngine expressionEngine;
 
-    public ExpressionRouter(String routerName,NodeExpression... nodeExpressionPairs) {
-        this.routerName = routerName;
+    public ExpressionRouter(String routerName, NodeExpression... nodeExpressionPairs) {
+        this.routerName          = routerName;
         this.nodeExpressionPairs = nodeExpressionPairs;
         this.expressionEngine    = InfraUtils.getExpressionEngine();
         this.toNodes             = Arrays.stream(this.nodeExpressionPairs).map(t -> t.to).collect(Collectors.toSet());
@@ -44,7 +43,7 @@ public class ExpressionRouter implements AnyRouter , State.Instant {
                 return to;
             }
         }
-        throw new NoRouterResultException();
+        throw new RuntimeException("no router result for status:" + ctx.getStatus().getNode());
     }
 
 

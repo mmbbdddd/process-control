@@ -7,11 +7,12 @@ import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowPayload;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.ActionException;
+import cn.hz.ddbm.pc.core.exception.RouterException;
 import cn.hz.ddbm.pc.core.exception.SessionException;
 import cn.hz.ddbm.pc.core.exception.StatusException;
 
 public class DevPcService extends PcService {
-    public <T extends FlowPayload> void oneStep(String flowName, T payload, String event) throws StatusException, SessionException, ActionException {
+    public <T extends FlowPayload> void oneStep(String flowName, T payload, String event) throws ActionException, RouterException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
@@ -20,7 +21,7 @@ public class DevPcService extends PcService {
         oneStep(ctx);
     }
 
-    public void oneStep(FlowContext<?> ctx) throws StatusException, SessionException, ActionException {
+    public void oneStep(FlowContext<?> ctx) throws RouterException, ActionException   {
         Flow    flow      = ctx.getFlow();
         Boolean rawFluent = ctx.getFluent();
         ctx.setFluent(false);

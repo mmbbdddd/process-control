@@ -15,5 +15,8 @@ package cn.hz.ddbm.pc.core.exception;
  **/
 
 
-public class PauseFlowException extends RuntimeException {
+public class PauseFlowException extends WrapedException {
+    public PauseFlowException(Throwable raw) {
+        super(raw);
+    }
 }
