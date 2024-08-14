@@ -4,31 +4,31 @@
       from: 'init',
       event: 'pause',
       action: 'none',
-      router: 'pay_router'
+      to: 'pay_router'
     },
     {
-      from: 'instant(init,pause)',
-      event: 'toEvent(instant(init,pause),fail)',
+      from: 'pay_router',
+      event: 'expression_router_event(pay_router,su)',
       action: 'none',
-      router: 'router(instant(init,pause),fail)'
+      to: 'su'
     },
     {
-      from: 'instant(init,pause)',
-      event: 'toEvent(instant(init,pause),su)',
+      from: 'pay_router',
+      event: 'expression_router_event(pay_router,init)',
       action: 'none',
-      router: 'router(instant(init,pause),su)'
+      to: 'init'
     },
     {
-      from: 'instant(init,pause)',
-      event: 'toEvent(instant(init,pause),init)',
+      from: 'pay_router',
+      event: 'expression_router_event(pay_router,fail)',
       action: 'none',
-      router: 'router(instant(init,pause),init)'
+      to: 'fail'
     },
     {
-      from: 'instant(init,pause)',
-      event: 'toEvent(instant(init,pause),pay_error)',
+      from: 'pay_router',
+      event: 'expression_router_event(pay_router,pay_error)',
       action: 'none',
-      router: 'router(instant(init,pause),pay_error)'
+      to: 'pay_error'
     }
   ]
 ]

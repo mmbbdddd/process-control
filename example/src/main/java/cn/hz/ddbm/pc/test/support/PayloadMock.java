@@ -1,14 +1,22 @@
 package cn.hz.ddbm.pc.test.support;
 
+import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.FlowPayload;
 import cn.hz.ddbm.pc.core.FlowStatus;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 public class PayloadMock implements FlowPayload {
     String id;
     String nodeStatus;
     String flowStatus;
+
+    public PayloadMock(String init) {
+        this.id = UUID.randomUUID().toString();
+        this.flowStatus = Flow.STAUS.RUNNABLE.name();
+        this.nodeStatus = init;
+    }
 
     @Override
     public Serializable getId() {

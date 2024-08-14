@@ -2,7 +2,11 @@ package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.exception.*;
+import cn.hz.ddbm.pc.core.exception.ActionException;
+import cn.hz.ddbm.pc.core.exception.RouterException;
+import cn.hz.ddbm.pc.core.exception.SessionException;
+import cn.hz.ddbm.pc.core.exception.StatusException;
+import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.router.ToRouter;
 import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.SessionManager;
@@ -25,9 +29,9 @@ public class Flow {
     final Map<String, Object> attrs;
     final Map<String, Node>   ends;
     final Map<String, Node>   nodes;
-    Map<String, Router> routers;
-    List<Plugin>        plugins;
-    FsmTable            fsmTable;
+    Map<String, ExpressionRouter> routers;
+    List<Plugin>                  plugins;
+    FsmTable                      fsmTable;
 
     public Flow(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManager, StatusManager statusManager, Map<String, Object> attrs) {
         Assert.notNull(name, "flow.name is null");
@@ -95,31 +99,36 @@ public class Flow {
     /**
      * 定义流程的router
      */
-    public void addRouter(Router router) {
+    public void addRouter(ExpressionRouter router) {
         this.routers.put(router.routerName(), router);
     }
 
     /**
      * 定义流程事件绑定关系
+     * 1,增加路由关系
+     * 2，增加节点（瞬态）
      *
      * @param from
      * @param event
      * @param action
      * @param router
      */
-    public void router(String from, String event, Action action, Router router) {
+    public void router(String from, String event, Action action, ExpressionRouter router) {
         Event e = Event.of(event);
         this.fsmTable.on(from, e, action, router);
-        addRouter(router);
+    }
 
+    public void router(String from, String event, Action action, String routerName) {
+        ExpressionRouter router = routers.get(routerName);
+        router(from, event, action, router);
     }
 
 
     public void to(String source, String event, Action action, String to) {
         Event  e        = Event.of(event);
-        Router toRouter = new ToRouter(source, e, to);
+        Router toRouter = new ToRouter(source, to);
         this.fsmTable.on(source, e, action, toRouter);
-        addRouter(toRouter);
+//        addRouter(toRouter);
     }
 
 
@@ -186,7 +195,7 @@ public class Flow {
 
         public FsmRecord find(String node, Event event) {
             return records.stream()
-                    .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent(), event))
+                    .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent().getCode(), event.getCode()))
                     .findFirst()
                     .orElse(null);
         }
@@ -199,17 +208,21 @@ public class Flow {
          * 参见onInner
          */
         public void on(String from, Event event, Action action, Router router) {
-            onInner(from, event, new ActionRouter(from, event.code, action, router));
+            onInner(from, event, new ActionRouter(from, action, router));
         }
 
-        private void onInner(String node, Event event, ActionRouter actionRouter) {
+        private void onInner(String from, Event event, ActionRouter actionRouter) {
             //增加外部event事件
-            this.records.add(new FsmRecord(node, event, actionRouter.action, actionRouter.router));
-            //增加瞬态事件
-            actionRouter.eventToNodes().forEach((routerResultEvent, routerResultNode) -> {
-                ToRouter toRouter = new ToRouter(actionRouter.status(), routerResultEvent, routerResultNode);
-                this.records.add(new FsmRecord(actionRouter.status(), routerResultEvent, Coasts.NONE_ACTION, toRouter));
-            });
+            this.records.add(new FsmRecord(from, event, actionRouter));
+            if (actionRouter.getRouter() instanceof ExpressionRouter) {
+                String routerStatus = actionRouter.status();
+                this.records.add(new FsmRecord(routerStatus, event, new ActionRouter(routerStatus, Coasts.NONE_ACTION, actionRouter.getRouter())));
+            }
+//            //增加瞬态事件
+//            actionRouter.eventToNodes().forEach((routerResultEvent, routerResultNode) -> {
+//                ToRouter toRouter = new ToRouter(actionRouter.status(), routerResultNode);
+//                this.records.add(new FsmRecord(actionRouter.status(), routerResultEvent, new ActionRouter(from, Coasts.NONE_ACTION, toRouter)));
+//            });
         }
 
         @Override
@@ -220,27 +233,25 @@ public class Flow {
 
     @Data
     static class FsmRecord {
-        Boolean instant;
-        String    from;
-        Event   event;
-        Action  action;
-        Router  router;
+        Boolean      instant;
+        String       from;
+        Event        event;
+        ActionRouter actionRouter;
+        String       to;
 
-        public FsmRecord(String from, Event event, Action action, Router router) {
-            this.from   = from;
-            this.event  = event;
-            this.action = action;
-            this.router = router;
+        public FsmRecord(String from, Event event, ActionRouter actionRouter) {
+            this.from         = from;
+            this.event        = event;
+            this.actionRouter = actionRouter;
+            this.to           = actionRouter.status();
         }
 
         @Override
         public String toString() {
-            return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + action.beanName() + '\'' + ", router:'" + router.routerName() + '\'' + '}';
+            return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + actionRouter.getAction()
+                    .beanName() + '\'' + ", to:'" + to + '\'' + '}';
         }
 
-        public ActionRouter getActionRouter() {
-            return new ActionRouter(from, event.getCode(), action, router);
-        }
     }
 
     @Override

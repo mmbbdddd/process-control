@@ -29,16 +29,20 @@ public class Event {
         return new Event(type, event);
     }
 
-    public static Event instantOf(String status,String to) {
-        return new Event(Type.INSTANT_EVENT,String.format("toEvent(%s,%s)",status,to));
+    public static Event expressionRouterOf(String routerStatus, String expressionResult) {
+        return new Event(Type.EXPRESSION_ROUTER_EVENT, String.format("expression_router_event(%s,%s)", routerStatus, expressionResult));
+    }
+
+    public static Event toRouterOf(String from, String to) {
+        return new Event(Type.TO_ROUTER_EVENT, String.format("to_router_event(%s,%s)", from, to));
     }
 
     public enum Type {
         //来自外部输入的指令
         FLOW_EVENT,
         NODE_EVENT,
-        EVENT_2_INSTANT,
-        INSTANT_EVENT
+        TO_ROUTER_EVENT,
+        EXPRESSION_ROUTER_EVENT
     }
 
     @Override

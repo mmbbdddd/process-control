@@ -2,6 +2,7 @@ package cn.hz.ddbm.pc.factory.buider;
 
 import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.router.AnyRouter;
+import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import lombok.Getter;
 
 import java.util.*;
@@ -39,7 +40,7 @@ public class StateMachineBuilder<S> {
             this.routers.routers.forEach((rn, r) -> flow.addRouter(r));
             this.transitions.transitions.forEach(transition -> {
                 if (Objects.equals(null, transition.getTo())) {
-                    flow.to(transition.getFrom().name(), transition.getEvent(), fsm.getAction(transition.getAction()), transition.getRouter());
+                    flow.router(transition.getFrom().name(), transition.getEvent(), fsm.getAction(transition.getAction()), transition.getRouter());
                 } else {
                     flow.to(transition.getFrom().name(), transition.getEvent(), fsm.getAction(transition.getAction()), transition.getTo().name());
                 }
@@ -103,13 +104,13 @@ public class StateMachineBuilder<S> {
     }
 
     public static class Routers {
-        Map<String, Router> routers;
+        Map<String, ExpressionRouter> routers;
 
         public Routers() {
             this.routers = new HashMap<>();
         }
 
-        public Routers register(AnyRouter router) {
+        public Routers register(ExpressionRouter router) {
             this.routers.put(router.routerName(), router);
             return this;
         }

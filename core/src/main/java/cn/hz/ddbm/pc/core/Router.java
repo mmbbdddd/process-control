@@ -13,9 +13,13 @@ import java.util.Set;
  * ___fork://routerName
  * ___join://conditionExpression:flowstatus
  */
-public interface Router  {
+public interface Router {
     String routerName();
 
+    /**
+     * @param ctx
+     * @return String : event
+     */
     String route(FlowContext<?> ctx);
 
     default String failover(String beforeNode, FlowContext<?> ctx) {

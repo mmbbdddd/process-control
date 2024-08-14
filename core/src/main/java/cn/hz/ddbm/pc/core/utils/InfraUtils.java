@@ -79,7 +79,7 @@ public class InfraUtils {
     }
 
     public static ExpressionEngine getExpressionEngine() {
-        return null;
+        return container.getBean(ExpressionEngine.class);
     }
 
 

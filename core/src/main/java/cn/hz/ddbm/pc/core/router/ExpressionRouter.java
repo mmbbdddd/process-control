@@ -1,6 +1,7 @@
 package cn.hz.ddbm.pc.core.router;
 
 import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.Step;
 import cn.hz.ddbm.pc.core.exception.NoRouterResultException;
 import cn.hz.ddbm.pc.core.support.ExpressionEngine;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ExpressionRouter implements AnyRouter {
+public class ExpressionRouter implements AnyRouter , Step.Instant {
     String routerName;
     /**
      * Node>Expression
@@ -52,9 +53,19 @@ public class ExpressionRouter implements AnyRouter {
         return this.toNodes;
     }
 
+    @Override
+    public String status() {
+        return routerName;
+    }
+
     public static class NodeExpression {
         String to;
         String expression;
+
+        public NodeExpression(String to, String expression) {
+            this.to         = to;
+            this.expression = expression;
+        }
 
         @Override
         public String toString() {

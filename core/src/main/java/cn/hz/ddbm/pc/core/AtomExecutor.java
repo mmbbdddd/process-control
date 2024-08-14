@@ -49,7 +49,8 @@ public class AtomExecutor {
         }
 
         try {
-            String nextNode = this.actionRouter.router.route(ctx);
+            String nextNode = actionRouter.router.route(ctx);
+//            String nextNode = flow.route(actionRouter,ctx);
             ctx.setStatus(FlowStatus.of(nextNode));
             postRoutePlugin(flow, lastNode, ctx);
         } catch (Exception e) {
