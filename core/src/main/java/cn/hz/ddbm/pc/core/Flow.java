@@ -177,6 +177,14 @@ public class Flow {
         return ends.keySet().contains(state);
     }
 
+    public State getStep(String state) {
+        State sts = nodes.get(state);
+        if (null == sts) {
+            sts = routers.get(state);
+        }
+        return sts;
+    }
+
 
     public enum STAUS {
         RUNNABLE, PAUSE, CANCEL, FINISH

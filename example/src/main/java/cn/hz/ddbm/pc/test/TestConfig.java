@@ -1,6 +1,7 @@
 package cn.hz.ddbm.pc.test;
 
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hz.ddbm.pc.core.support.ExpressionEngine;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.support.SessionManager;
@@ -10,12 +11,17 @@ import cn.hz.ddbm.pc.session.memory.MemorySessionManager;
 import cn.hz.ddbm.pc.status.memory.MemoryStatusManager;
 import cn.hz.ddbm.pc.test.support.ContainerMock;
 import cn.hz.ddbm.pc.test.support.DigestLogPluginMock;
+import cn.hz.ddbm.pc.test.support.ExpressionEngineMock;
 import cn.hz.ddbm.pc.test.support.MetricsTemplateMock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class TestConfig {
+    @Bean
+    ExpressionEngine expressionEngine(ContainerMock container) {
+        return new ExpressionEngineMock();
+    }
     @Bean
     InfraUtils infraUtils(ContainerMock container) {
         return new InfraUtils(container);

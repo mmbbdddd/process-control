@@ -7,7 +7,7 @@ import java.util.Map;
 
 
 @Getter
-public class Node implements Step.Persist {
+public class Node implements State.Persist {
     final String              name;
     final Integer             retry;
     final Map<String, Object> attrs;

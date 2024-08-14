@@ -33,11 +33,7 @@ public class ChaosServiceTest extends Specification {
     def "Execute"() {
         expect:
 
-        FlowPayload date = new PayloadMock(
-                id: Math.random().intValue() * 1000,
-                flowStatus: flowStatus,
-                nodeStatus: nodeStatus
-        );
+        FlowPayload date = new PayloadMock("init");
         String event = Coasts.EVENT_DEFAULT;
         chaosService.execute("test", date, event, 100, 10)
 

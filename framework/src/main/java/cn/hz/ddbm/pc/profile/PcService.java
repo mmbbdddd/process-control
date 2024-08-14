@@ -96,8 +96,8 @@ public class PcService {
     private boolean isCanContinue(FlowContext<?> ctx) {
         Flow.STAUS flowStatus = ctx.getStatus().getFlow();
         String     node       = ctx.getStatus().getNode();
-        String     flowName   = ctx.getFlow().getName();
-        Node       nodeObj    = ctx.getFlow().getNode(node);
+        String flowName = ctx.getFlow().getName();
+        State  nodeObj  = ctx.getFlow().getStep(node);
 
         if (!flowStatus.equals(Flow.STAUS.RUNNABLE)) {
             Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), flowStatus.name());

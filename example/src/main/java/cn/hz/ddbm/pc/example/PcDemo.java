@@ -8,6 +8,7 @@ import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.ExpressionEngine;
 import cn.hz.ddbm.pc.core.support.MetricsTemplate;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
+import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.session.memory.MemorySessionManager;
 import cn.hz.ddbm.pc.status.memory.MemoryStatusManager;
 import cn.hz.ddbm.pc.test.support.ContainerMock;
@@ -19,6 +20,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 
 public class PcDemo {
+
+    ChaosPcService chaosService = new ChaosPcService();
+
     /**
      * doc/img_4.png
      */
@@ -31,11 +35,11 @@ public class PcDemo {
         PcConfig pcConfig = new PcConfig();
         Flow     flow     = pcConfig.build(null);
         String   event    = Coasts.EVENT_DEFAULT;
-//        try {
-        FlowContext fctx = new FlowContext(flow, new PayloadMock(flow.getInit().getName()), event);
+        chaosService.addFlow(flow);
+
         while (true) {
             try {
-                flow.execute(fctx);
+                chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10);
             } catch (Exception e) {
                 e.printStackTrace();
                 return;

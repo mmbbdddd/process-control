@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public class ActionRouter implements Step.Instant {
+public class ActionRouter implements State.Instant {
     String from;
     String to;
     Action action;
