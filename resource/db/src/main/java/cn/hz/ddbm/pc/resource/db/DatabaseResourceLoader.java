@@ -1,4 +1,4 @@
-package cn.hz.ddbm.pc.resource.nacos;
+package cn.hz.ddbm.pc.resource.db;
 
 
 import cn.hz.ddbm.pc.core.support.Container;
@@ -7,7 +7,7 @@ import cn.hz.ddbm.pc.factory.ResourceLoader;
 
 import java.util.List;
 
-public class NacosResourceLoader implements ResourceLoader<Resource> {
+public class DatabaseResourceLoader implements ResourceLoader<Resource> {
 
 
     @Override

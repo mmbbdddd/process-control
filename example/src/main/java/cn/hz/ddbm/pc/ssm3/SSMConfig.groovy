@@ -1,3 +1,4 @@
+package cn.hz.ddbm.pc.ssm3
 //package cn.hz.ddbm.pc.factory.buider.ssm3
 //
 //import lombok.extern.slf4j.Slf4j
