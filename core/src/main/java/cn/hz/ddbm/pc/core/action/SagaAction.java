@@ -31,7 +31,7 @@ public interface SagaAction extends Action {
         String       failOverNode = failover();
         try {
             StatusManager statusManager = ctx.getFlow().getStatusManager();
-            statusManager.setStatus(flow, flowId, FlowStatus.of(failOverNode),ctx.getProfile().getStatusTimeout(),ctx);
+            statusManager.setStatus(flow, flowId, FlowStatus.of(failOverNode), ctx.getProfile().getStatusTimeout(), ctx);
         } catch (IOException e) {
             throw new InterruptedFlowException(e);
         }

@@ -41,7 +41,7 @@ public class ChaosPcService extends PcService {
                     FlowContext<T> ctx = standalone(flowName, payload, event);
                     result = ctx;
                 } catch (Throwable t) {
-                    Logs.error.error("",t);
+                    Logs.error.error("", t);
                     result = t;
                 } finally {
                     cdl.countDown();
@@ -53,7 +53,7 @@ public class ChaosPcService extends PcService {
         try {
             cdl.await(timeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            Logs.error.error("",e);
+            Logs.error.error("", e);
             throw new RuntimeException(e);
         }
         printStatisticsReport();
@@ -77,7 +77,7 @@ public class ChaosPcService extends PcService {
     private <T extends FlowPayload> FlowContext<T> standalone(String flowName, T payload, String event) throws StatusException, SessionException {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = getFlow(flowName);
-        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event,profile());
+        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, profile());
         execute(ctx);
         return ctx;
     }

@@ -2,7 +2,6 @@ package cn.hz.ddbm.pc.core.router;
 
 
 import cn.hutool.core.lang.Assert;
-import cn.hz.ddbm.pc.core.Event;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.Router;
 import lombok.Getter;
@@ -18,18 +17,18 @@ import java.util.Set;
  **/
 
 
-public class ToRouter implements Router  {
+public class ToRouter implements Router {
     String from;
     @Getter
     String to;
     String routerName;
 
-    public ToRouter(String from,  String to) {
-        Assert.notNull(from,"from is null");
-        Assert.notNull(to,"to is null");
+    public ToRouter(String from, String to) {
+        Assert.notNull(from, "from is null");
+        Assert.notNull(to, "to is null");
         this.to         = to;
-        this.from = from;
-        this.routerName = String.format("fromToRouter(%s,%s)", from,  to);
+        this.from       = from;
+        this.routerName = String.format("fromToRouter(%s,%s)", from, to);
     }
 
     @Override

@@ -5,8 +5,6 @@ import cn.hz.ddbm.pc.core.support.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.time.Duration;
-
 public class RedisSessionManager implements SessionManager {
 
     @Autowired

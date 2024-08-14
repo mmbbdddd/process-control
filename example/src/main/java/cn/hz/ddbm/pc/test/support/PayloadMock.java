@@ -13,7 +13,7 @@ public class PayloadMock implements FlowPayload {
     String flowStatus;
 
     public PayloadMock(String init) {
-        this.id = UUID.randomUUID().toString();
+        this.id         = UUID.randomUUID().toString();
         this.flowStatus = Flow.STAUS.RUNNABLE.name();
         this.nodeStatus = init;
     }

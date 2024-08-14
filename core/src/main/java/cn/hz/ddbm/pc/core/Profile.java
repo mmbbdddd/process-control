@@ -11,7 +11,7 @@ public class Profile {
     private Integer                  statusTimeout = Coasts.DEFAULT_TIMEOUT;
     private String                   sessionManager;
     private String                   statusManager;
-    private Integer                  retry = Coasts.DEFAULT_RETRY;
+    private Integer                  retry         = Coasts.DEFAULT_RETRY;
     private Map<String, StepAttrs>   states;
     private Map<String, ActionAttrs> actions;
 

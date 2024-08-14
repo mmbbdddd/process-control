@@ -11,7 +11,7 @@ import cn.hz.ddbm.pc.core.Router;
  **/
 
 
-public interface AnyRouter extends Router  {
+public interface AnyRouter extends Router {
 
 
 }

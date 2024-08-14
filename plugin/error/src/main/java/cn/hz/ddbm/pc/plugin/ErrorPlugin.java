@@ -24,7 +24,7 @@ public class ErrorPlugin implements Plugin {
 
     @Override
     public void onActionException(String actionName, String preNode, Exception e, FlowContext<?> ctx) {
-        log.error("Action错误{}:",actionName,e);
+        log.error("Action错误{}:", actionName, e);
     }
 
     @Override
@@ -39,6 +39,6 @@ public class ErrorPlugin implements Plugin {
 
     @Override
     public void onRouteExcetion(String routerName, Exception e, FlowContext<?> ctx) {
-        log.error("路由错误{}:",routerName,e);
+        log.error("路由错误{}:", routerName, e);
     }
 }

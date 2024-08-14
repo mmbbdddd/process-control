@@ -29,6 +29,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
         </dependency>
-     </dependencies>
+    </dependencies>
 
 </project>

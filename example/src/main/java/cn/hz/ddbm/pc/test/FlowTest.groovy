@@ -3,11 +3,10 @@ package cn.hz.ddbm.pc.test
 import cn.hz.ddbm.pc.core.Flow
 import cn.hz.ddbm.pc.core.FlowContext
 import cn.hz.ddbm.pc.core.FlowPayload
+import cn.hz.ddbm.pc.core.Profile
 import cn.hz.ddbm.pc.core.coast.Coasts
 import cn.hz.ddbm.pc.core.router.ExpressionRouter
 import cn.hz.ddbm.pc.test.support.PayloadMock
-import com.alibaba.fastjson.JSON
-import com.alibaba.fastjson.serializer.SerializerFeature
 import org.junit.Assert
 
 class FlowTest extends BaseSpec {
@@ -32,11 +31,11 @@ class FlowTest extends BaseSpec {
     def "AddRouter"() {
         when:
         Flow f = Flow.devOf("test", "测试流程", "init", ["su", "fail"] as Set, ["pay", "pay_error"] as Set)
-        f.router("init",Coasts.EVENT_PAUSE,Coasts.NONE_ACTION,new ExpressionRouter("pay_router",
-            new ExpressionRouter.NodeExpression("pay_error", "Math.random() > 0.1"),
-            new ExpressionRouter.NodeExpression("su", "Math.random() > 0.6"),
-            new ExpressionRouter.NodeExpression("init", "Math.random() > 0.1"),
-            new ExpressionRouter.NodeExpression("fail", "Math.random() > 0.2"),
+        f.router("init", Coasts.EVENT_PAUSE, Coasts.NONE_ACTION, new ExpressionRouter("pay_router",
+                new ExpressionRouter.NodeExpression("pay_error", "Math.random() > 0.1"),
+                new ExpressionRouter.NodeExpression("su", "Math.random() > 0.6"),
+                new ExpressionRouter.NodeExpression("init", "Math.random() > 0.1"),
+                new ExpressionRouter.NodeExpression("fail", "Math.random() > 0.2"),
         ))
 
         then:
@@ -51,14 +50,10 @@ class FlowTest extends BaseSpec {
 
     def "Execute"() {
         expect:
-        FlowPayload date = new PayloadMock(
-                id: 1,
-                flowStatus: flowStatus,
-                nodeStatus: nodeStatus
-        );
+        FlowPayload date = new PayloadMock("init");
         String event = Coasts.EVENT_DEFAULT;
 //        try {
-        FlowContext ctx = new FlowContext(flow, date, event)
+        FlowContext ctx = new FlowContext(flow, date, event, Profile.defaultOf())
         ctx.getStatus().node == result
         flow.execute(ctx)
 //        } catch (Exception e) {

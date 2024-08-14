@@ -3,7 +3,6 @@ package cn.hz.ddbm.pc.core;
 
 import cn.hz.ddbm.pc.core.exception.ActionException;
 import cn.hz.ddbm.pc.core.exception.RouterException;
-import cn.hz.ddbm.pc.core.exception.WrapedException;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Builder;

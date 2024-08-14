@@ -1,8 +1,6 @@
 package cn.hz.ddbm.pc.core.exception;
 
 
-import java.io.IOException;
-
 /**
  * @Description 中断异常
  * 停止连续执行，直到下一次事件再次触发
@@ -20,6 +18,7 @@ public class InterruptedFlowException extends RuntimeException {
     public InterruptedFlowException() {
 
     }
+
     public InterruptedFlowException(Exception e) {
         super(e);
     }
