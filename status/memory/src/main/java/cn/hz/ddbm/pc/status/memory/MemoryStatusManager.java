@@ -11,11 +11,12 @@ import java.io.Serializable;
 import java.time.Duration;
 
 public class MemoryStatusManager implements StatusManager {
-    Cache<String, Object> cache = Caffeine.newBuilder()
+    Cache<String, FlowStatus> cache       = Caffeine.newBuilder()
             .initialCapacity(1)
             .maximumSize(100)
             .expireAfterWrite(Duration.ofHours(2))
             .build();
+    String                    keyTemplate = "%s:%s";
 
     @Override
     public String code() {
@@ -23,7 +24,13 @@ public class MemoryStatusManager implements StatusManager {
     }
 
     @Override
-    public void updateStatus(String flow, Serializable flowId, FlowStatus flowStatus) throws IOException {
+    public void setStatus(String flow, Serializable flowId, FlowStatus flowStatus, Long timeout) throws IOException {
+        cache.put(String.format(keyTemplate, flow, flowId), flowStatus);
+    }
 
+
+    @Override
+    public FlowStatus getStatus(String flow, Serializable flowId) throws IOException {
+        return cache.getIfPresent(String.format(keyTemplate, flow, flowId));
     }
 }
