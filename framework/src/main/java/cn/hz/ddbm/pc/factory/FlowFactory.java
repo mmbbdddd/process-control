@@ -2,7 +2,6 @@ package cn.hz.ddbm.pc.factory;
 
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.support.Container;
-import lombok.Getter;
 
 import javax.annotation.PostConstruct;
 import java.util.List;

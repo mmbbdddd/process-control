@@ -13,7 +13,9 @@ import cn.hz.ddbm.pc.factory.dsl.StateMachineConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
     Logger logger = LoggerFactory.getLogger(getClass());
