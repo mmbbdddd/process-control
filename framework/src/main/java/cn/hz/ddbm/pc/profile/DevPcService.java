@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowPayload;
+import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.ActionException;
 import cn.hz.ddbm.pc.core.exception.RouterException;
@@ -17,7 +18,7 @@ public class DevPcService extends PcService {
         Assert.notNull(payload, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = getFlow(flowName);
-        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event);
+        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event,profile());
         oneStep(ctx);
     }
 
@@ -27,5 +28,10 @@ public class DevPcService extends PcService {
         ctx.setFluent(false);
         flow.execute(ctx);
         ctx.setFluent(rawFluent);
+    }
+
+    @Override
+    public Profile profile() {
+        return Profile.defaultOf();
     }
 }

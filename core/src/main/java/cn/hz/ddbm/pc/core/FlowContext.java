@@ -29,7 +29,7 @@ public class FlowContext<T extends FlowPayload> {
     private Profile      profile;
 
 
-    public FlowContext(Flow flow, T data, String event) {
+    public FlowContext(Flow flow, T data, String event, Profile profile) {
         Assert.notNull(flow, "flow is null");
         Assert.notNull(data, "data is null");
         Assert.notNull(event, "event is null");
@@ -37,12 +37,13 @@ public class FlowContext<T extends FlowPayload> {
         Assert.notNull(data.getStatus(), "date.status is null");
         Assert.notNull(data.getStatus().getFlow(), "date.status.flow is null");
         Assert.notNull(data.getStatus().getNode(), "date.status.node is null");
-        this.event  = Event.of(event);
-        this.data   = data;
-        this.id     = data.getId();
-        this.flow   = flow;
-        this.status = data.getStatus();
-        this.fluent = true;
+        this.event   = Event.of(event);
+        this.data    = data;
+        this.id      = data.getId();
+        this.flow    = flow;
+        this.status  = data.getStatus();
+        this.fluent  = true;
+        this.profile = profile;
     }
 
 

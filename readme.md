@@ -178,37 +178,32 @@ public void pc() throws Exception {
 
 **测试**
 
-    17:06:18.828 [pool-1-thread-2] INFO flow - 流程已结束：test,52f795d3-de26-40d1-bdb4-5b0f89a601fc,su
-    17:06:18.828 [pool-1-thread-20] INFO flow - 流程已结束：test,52f795d3-de26-40d1-bdb4-5b0f89a601fc,su
-    17:06:18.827 [pool-1-thread-7] INFO flow - 流程已结束：test,52f795d3-de26-40d1-bdb4-5b0f89a601fc,su
-    17:06:18.829 [pool-1-thread-18] INFO flow - 流程已结束：test,52f795d3-de26-40d1-bdb4-5b0f89a601fc,su
-    17:06:18.829 [pool-1-thread-3] INFO flow - 流程已结束：test,52f795d3-de26-40d1-bdb4-5b0f89a601fc,su
-    17:06:18.829 [pool-1-thread-13] INFO flow - 流程已结束：test,52f795d3-de26-40d1-bdb4-5b0f89a601fc,fail
-    17:06:18.829 [pool-1-thread-1] INFO flow - 流程已结束：test,52f795d3-de26-40d1-bdb4-5b0f89a601fc,su
-    17:06:18.829 [pool-1-thread-9] INFO flow - 流程已结束：test,52f795d3-de26-40d1-bdb4-5b0f89a601fc,su
-    17:06:18.831 [pool-1-thread-3] INFO flow - 流程已限流：test,52f795d3-de26-40d1-bdb4-5b0f89a601fc,init,52>1
-    java.lang.RuntimeException: no router result for status:init
-    at cn.hz.ddbm.pc.core.router.ExpressionRouter.route(ExpressionRouter.java:46)
-    at cn.hz.ddbm.pc.core.AtomExecutor.execute(AtomExecutor.java:53)
-    at cn.hz.ddbm.pc.core.Flow.execute(Flow.java:156)
-    at cn.hz.ddbm.pc.profile.PcService.execute(PcService.java:47)
-    at cn.hz.ddbm.pc.profile.ChaosPcService.standalone(ChaosPcService.java:80)
-    at cn.hz.ddbm.pc.profile.ChaosPcService.lambda$execute$0(ChaosPcService.java:40)
-    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
-    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
-    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
-    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
-    at java.lang.Thread.run(Thread.java:750)
-    17:06:18.829 [pool-1-thread-4] ERROR error - test,52f795d3-de26-40d1-bdb4-5b0f89a601fc
-    
-            …………
-    17:06:18.836 [main] INFO flow - 混沌测试报告：\n
-    17:06:18.837 [main] INFO flow - FlowContext,PAUSE:sendRouter,2
-    17:06:18.837 [main] INFO flow - FlowContext,RUNNABLE:sendRouter,3
-    17:06:18.837 [main] INFO flow - FlowContext,PAUSE:init,30
-    17:06:18.837 [main] INFO flow - FlowContext,RUNNABLE:init,5
-    17:06:18.837 [main] INFO flow - FlowContext,RUNNABLE:fail,4
-    17:06:18.837 [main] INFO flow - FlowContext,RUNNABLE:su,56
+      19:12:32.001 [main] INFO cn.hz.ddbm.pc.example.PcConfig - 构建订单状态机
+      19:12:32.064 [pool-1-thread-10] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.063 [pool-1-thread-13] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.063 [pool-1-thread-8] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.064 [pool-1-thread-20] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.065 [pool-1-thread-9] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      ..............
+      19:12:32.069 [pool-1-thread-15] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.069 [pool-1-thread-10] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.069 [pool-1-thread-14] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.070 [pool-1-thread-4] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.070 [pool-1-thread-2] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.070 [pool-1-thread-20] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.070 [pool-1-thread-7] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.070 [pool-1-thread-18] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.070 [pool-1-thread-19] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.070 [pool-1-thread-1] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.070 [pool-1-thread-12] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.070 [pool-1-thread-8] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.072 [main] INFO flow - 混沌测试报告：\n
+      19:12:32.072 [main] INFO flow - FlowContext,PAUSE:sendRouter,1
+      19:12:32.072 [main] INFO flow - FlowContext,RUNNABLE:sendRouter,4
+      19:12:32.072 [main] INFO flow - FlowContext,PAUSE:init,18
+      19:12:32.072 [main] INFO flow - FlowContext,RUNNABLE:init,5
+      19:12:32.072 [main] INFO flow - FlowContext,RUNNABLE:fail,1
+      19:12:32.072 [main] INFO flow - FlowContext,RUNNABLE:su,70
    
 # 功能
 

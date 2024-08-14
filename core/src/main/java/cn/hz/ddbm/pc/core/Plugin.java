@@ -13,11 +13,11 @@ public interface Plugin extends ValueObject {
 
     void postAction(String name, FlowContext<?> ctx);
 
-    void onActionException(String name, String preNode, Exception e, FlowContext<?> ctx);
+    void onActionException(String actionName, String preNode, Exception e, FlowContext<?> ctx);
 
     void onActionFinally(String name, FlowContext<?> ctx);
 
-    void postRoute(String beanName, String preNode, FlowContext<?> ctx);
+    void postRoute(String routerName, String preNode, FlowContext<?> ctx);
 
-    void onRouteExcetion(String beanName, Exception e, FlowContext<?> ctx);
+    void onRouteExcetion(String routerName, Exception e, FlowContext<?> ctx);
 }

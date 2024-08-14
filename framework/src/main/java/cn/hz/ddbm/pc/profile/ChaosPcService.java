@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowPayload;
+import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.SessionException;
 import cn.hz.ddbm.pc.core.exception.StatusException;
@@ -76,11 +77,15 @@ public class ChaosPcService extends PcService {
     private <T extends FlowPayload> FlowContext<T> standalone(String flowName, T payload, String event) throws StatusException, SessionException {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = getFlow(flowName);
-        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event);
+        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event,profile());
         execute(ctx);
         return ctx;
     }
 
+    @Override
+    public Profile profile() {
+        return Profile.defaultOf();
+    }
 
     static class StatisticsLine {
         int       index;

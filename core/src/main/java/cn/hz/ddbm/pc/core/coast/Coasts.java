@@ -5,8 +5,8 @@ import cn.hz.ddbm.pc.core.action.NoneAction;
 
 public class Coasts {
     public static final String  NODE_RETRY             = "retry";
-    public static final String  PLUGIN_DIGEST_LOG      = "digestLogPlugin";
-    public static final String  PLUGIN_ERROR_LOG       = "errorLogPlugin";
+    public static final String  PLUGIN_DIGEST_LOG      = "digest";
+    public static final String  PLUGIN_ERROR_LOG       = "error";
     public static final String  EVENT_DEFAULT          = "push";
     public static final String  EVENT_CANCEL           = "cancel";
     public static final String  EVENT_PAUSE            = "pause";

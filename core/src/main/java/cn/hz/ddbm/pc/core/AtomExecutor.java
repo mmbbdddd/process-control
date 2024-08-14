@@ -36,13 +36,8 @@ public class AtomExecutor {
             this.actionRouter.action.execute(ctx);
             postActionPlugin(flow, ctx);
         } catch (Exception e) {
-            try {
-                ctx.setStatus(FlowStatus.of(this.actionRouter.router.failover(lastNode, ctx)));
-                onActionExceptionPlugin(flow, lastNode, e, ctx);
-            } catch (Exception e2) {
-                //服务失败，异常打印
-                Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-            }
+            ctx.setStatus(FlowStatus.of(this.actionRouter.router.failover(lastNode, ctx)));
+            onActionExceptionPlugin(flow, lastNode, e, ctx);
             throw new ActionException(e);
         } finally {
             onActionFinallyPlugin(flow, ctx);
@@ -51,11 +46,9 @@ public class AtomExecutor {
 
         try {
             String nextNode = actionRouter.router.route(ctx);
-//            String nextNode = flow.route(actionRouter,ctx);
             ctx.setStatus(FlowStatus.of(nextNode));
             postRoutePlugin(flow, lastNode, ctx);
         } catch (Exception e) {
-//            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
             onRouterExceptionPlugin(flow, e, ctx);
             //服务失败，异常打印&暂停
             ctx.setStatus(FlowStatus.pause(this.actionRouter.router.failover(lastNode, ctx)));
@@ -74,7 +67,6 @@ public class AtomExecutor {
                             plugin.preAction(this.actionRouter.action.beanName(), ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-                            ;
                         }
                     });
         });
@@ -88,7 +80,6 @@ public class AtomExecutor {
                             plugin.postAction(this.actionRouter.action.beanName(), ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-                            ;
                         }
                     });
         });
@@ -115,7 +106,6 @@ public class AtomExecutor {
                             plugin.onActionFinally(this.actionRouter.action.beanName(), ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-                            ;
                         }
                     });
         });
@@ -126,7 +116,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.postRoute(this.actionRouter.action.beanName(), preNode, ctx);
+                            plugin.postRoute(this.actionRouter.router.routerName(), preNode, ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
                         }
@@ -139,7 +129,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.onRouteExcetion(this.actionRouter.action.beanName(), e, ctx);
+                            plugin.onRouteExcetion(this.actionRouter.router.routerName(), e, ctx);
                         } catch (Exception e2) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e2);
                         }

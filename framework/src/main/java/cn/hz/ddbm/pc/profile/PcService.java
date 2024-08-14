@@ -13,9 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PcService {
+public abstract class PcService {
     Map<String, Flow> flows = new HashMap<>();
 
+    public abstract Profile profile();
 
     public <T extends FlowPayload> void batchExecute(String flowName, List<T> payloads, String event) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
@@ -24,17 +25,18 @@ public class PcService {
         Flow flow = flows.get(flowName);
 
         for (T payload : payloads) {
-            FlowContext<T> ctx = new FlowContext<>(flow, payload, event);
+            FlowContext<T> ctx = new FlowContext<>(flow, payload, event, profile());
             execute(ctx);
         }
     }
+
 
     public <T extends FlowPayload> void execute(String flowName, T payload, String event) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = flows.get(flowName);
-        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event);
+        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, profile());
         execute(ctx);
     }
 
@@ -52,23 +54,23 @@ public class PcService {
         } catch (ActionException e) {
             //io异常 = 可重试
             if (e.getRaw() instanceof IOException) {
-                Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
+//                Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
                 flush(ctx);
                 execute(ctx);
             }
             //中断流程除（内部错误：不可重复执行，执行次数受限……）再次调度可触发：
             if (e.getRaw() instanceof InterruptedFlowException) {
-                Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
+//                Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
                 flush(ctx);
             }
             //中断流程（内部程序错误：配置错误，代码错误）再次调度不响应：
             if (e.getRaw() instanceof PauseFlowException) {
-                Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
+//                Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
                 flush(ctx);
             }
         } catch (RouterException e) {
             //即PauseFlowException
-            Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e.getRaw());
+//            Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e.getRaw());
             flush(ctx);
         } finally {
             releaseLock(ctx);

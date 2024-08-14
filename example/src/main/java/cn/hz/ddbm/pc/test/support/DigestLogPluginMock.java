@@ -22,7 +22,7 @@ public class DigestLogPluginMock implements Plugin {
     }
 
     @Override
-    public void onActionException(String name, String preNode, Exception e, FlowContext ctx) {
+    public void onActionException(String actionName, String preNode, Exception e, FlowContext ctx) {
     }
 
     @Override
@@ -31,14 +31,14 @@ public class DigestLogPluginMock implements Plugin {
     }
 
     @Override
-    public void postRoute(String beanName, String preNode, FlowContext ctx) {
+    public void postRoute(String routerName, String preNode, FlowContext ctx) {
         Logs.digest.info("{},{},{},{}", ctx.getFlow()
                 .getName(), ctx.getId(), preNode, ctx.getStatus()
                 .getNode());
     }
 
     @Override
-    public void onRouteExcetion(String beanName, Exception e, FlowContext ctx) {
+    public void onRouteExcetion(String routerName, Exception e, FlowContext ctx) {
 
     }
 }
