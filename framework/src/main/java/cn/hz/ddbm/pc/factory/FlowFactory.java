@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
  * 定义的流程的定义方式
  * 有xml，json，buider等方式。
  */
-public abstract class FlowFactory<R extends Resource>   {
-
-    public abstract ResourceLoader<R> resourceLoader();
+public class FlowFactory<R extends Resource> {
+    @javax.annotation.Resource
+    ResourceLoader<R> resourceLoader;
 
     @PostConstruct
     public List<Flow> loadFlowByResource(Container container) {
-        return resourceLoader().loadResources(container).stream().map(Resource::resolve).collect(Collectors.toList());
+        return resourceLoader.loadResources(container).stream().map(Resource::resolve).collect(Collectors.toList());
     }
 }
