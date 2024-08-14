@@ -151,6 +151,24 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
 
 }
 
+
+@Test
+public void pc() throws Exception {
+    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+    ctx.register(PcDemo.class);
+    ctx.refresh();
+    PcConfig pcConfig = new PcConfig();
+    Flow     flow     = pcConfig.build(null);
+    String   event    = Coasts.EVENT_DEFAULT;
+    chaosService.addFlow(flow);
+  
+    try {
+      chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+}
+
  ```
 
 **测试**
