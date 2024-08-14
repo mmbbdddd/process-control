@@ -167,6 +167,7 @@ public void pc() throws Exception {
     chaosService.addFlow(flow);
   
     try {
+        //验证100次，统计流程健壮性报表
       chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10);
     } catch (Exception e) {
       e.printStackTrace();
