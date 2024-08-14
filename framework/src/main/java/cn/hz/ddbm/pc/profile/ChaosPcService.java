@@ -40,7 +40,7 @@ public class ChaosPcService extends PcService {
                     FlowContext<T> ctx = standalone(flowName, payload, event);
                     result = ctx;
                 } catch (Throwable t) {
-                    t.printStackTrace();
+                    Logs.error.error("",t);
                     result = t;
                 } finally {
                     cdl.countDown();
@@ -52,7 +52,7 @@ public class ChaosPcService extends PcService {
         try {
             cdl.await(timeout, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logs.error.error("",e);
             throw new RuntimeException(e);
         }
         printStatisticsReport();
