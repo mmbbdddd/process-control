@@ -184,6 +184,7 @@ public void pc() throws Exception {
       19:12:32.063 [pool-1-thread-8] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
       19:12:32.064 [pool-1-thread-20] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
       19:12:32.065 [pool-1-thread-9] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
+      19:12:32.064 [pool-1-thread-16] INFO flow - 流程已限流：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,init,20>1      
       ..............
       19:12:32.069 [pool-1-thread-15] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
       19:12:32.069 [pool-1-thread-10] INFO flow - 流程已结束：test,063a4fbc-19ca-415d-a0a5-5b76e027fbcd,su
