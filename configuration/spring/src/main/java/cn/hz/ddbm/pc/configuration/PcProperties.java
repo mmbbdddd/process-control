@@ -4,8 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "dddd.pc")
 public class PcProperties {
-    DefineStyle defineStyle;
-    String      resourceUrl;
+    DefineStyle defineStyle = DefineStyle.dsl;
 
     enum DefineStyle {
         dsl, json, xml
