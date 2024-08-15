@@ -7,15 +7,18 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import java.util.concurrent.locks.ReentrantLock
 import java.util.function.Function
 import static org.mockito.Mockito.*
 
 class JdkLockerTest {
-    @Mock
-    ConcurrentHashMap<String, ReentrantLock> locks
     @InjectMocks
     JdkLocker jdkLocker
+
+    ExecutorService es = Executors.newFixedThreadPool(3);
 
     @Before
     void setUp() {
@@ -24,13 +27,21 @@ class JdkLockerTest {
 
     @Test
     void testTryLock() {
-        when(locks.computeIfAbsent(anyString(), any(Function < ? super String, ? extends ReentrantLock >.class ) ) ).thenReturn(new ReentrantLock(true))
-        when(locks.computeIfAbsent(anyString(), any(Function < ? super String, ? extends ReentrantLock >.class ) ) ).thenReturn(new ReentrantLock(true))
+        CountDownLatch c = new CountDownLatch(1000)
+        1000.times {
+            es.submit {
+                try {
+                    double d = Math.random();
+                    jdkLocker.tryLock("key" + d, 1)
+                    jdkLocker.releaseLock("key" +d)
+                    c.countDown()
+                } catch (Exception e) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        c.await()
 
-        jdkLocker.tryLock("key", 1)
-
-
-        jdkLocker.releaseLock("key")
     }
 
     @Test

@@ -21,7 +21,7 @@ public class JdkLocker implements Locker {
     @Override
     public void releaseLock(String key) throws Exception {
         try {
-            locks.computeIfAbsent(key, s -> new ReentrantLock()).unlock();
+            locks.get(key).unlock();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
