@@ -125,8 +125,8 @@ public abstract class PcService {
      * 刷新状态到基础设施
      */
     private void flush(FlowContext<?> ctx) throws SessionException, StatusException {
-        ctx.getFlow().getSessionManager().flush(ctx);
-        ctx.getFlow().getStatusManager().flush(ctx);
+        ctx.getProfile().getSessionManagerBean().flush(ctx);
+        ctx.getProfile().getStatusManagerBean().flush(ctx);
     }
 
 

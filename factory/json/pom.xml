@@ -25,6 +25,18 @@
             <artifactId>framework</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>4.0.13</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>

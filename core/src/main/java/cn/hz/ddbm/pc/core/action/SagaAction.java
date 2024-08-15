@@ -30,7 +30,7 @@ public interface SagaAction extends Action {
         Serializable flowId       = ctx.getId();
         String       failOverNode = failover();
         try {
-            StatusManager statusManager = ctx.getFlow().getStatusManager();
+            StatusManager statusManager = ctx.getFlow().getProfile().getStatusManagerBean();
             statusManager.setStatus(flow, flowId, FlowStatus.of(failOverNode), ctx.getProfile().getStatusTimeout(), ctx);
         } catch (IOException e) {
             throw new InterruptedFlowException(e);

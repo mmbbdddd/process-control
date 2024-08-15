@@ -9,11 +9,11 @@ import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.profile.PcService;
-import org.springframework.beans.factory.InitializingBean;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
-public interface StateMachineConfig<S> extends InitializingBean {
+public interface StateMachineConfig<S>   {
     String flowId();
 
     String describe();
@@ -31,7 +31,7 @@ public interface StateMachineConfig<S> extends InitializingBean {
         return new NoneAction();
     }
 
-    @Override
+    @PostConstruct
     default void afterPropertiesSet() throws Exception {
         InfraUtils.getContainer().getBean(PcService.class).addFlow(build(InfraUtils.getContainer()));
     }

@@ -4,6 +4,8 @@ import cn.hz.ddbm.pc.core.ActionAttrs;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
+import cn.hz.ddbm.pc.core.support.Container;
+import cn.hz.ddbm.pc.profile.PcService;
 import lombok.Getter;
 
 import java.util.*;
@@ -33,11 +35,11 @@ public class StateMachineBuilder<S> {
             this.transitions = new Transitions<>();
         }
 
-        public Flow build() {
+        public Flow build(Container container) {
             String      init  = states.init.name();
             Set<String> ends  = states.ends.stream().map(Enum::name).collect(Collectors.toSet());
             Set<String> nodes = states.states.stream().map(Enum::name).collect(Collectors.toSet());
-            Flow        flow  = Flow.of(fsm.flowId(), fsm.describe(), init, ends, nodes, fsm.sessionManager(), fsm.statusManager(), null);
+            Flow        flow  = Flow.of(fsm.flowId(), fsm.describe(), init, ends, nodes,   container.getBean(PcService.class).profile());
             this.routers.routers.forEach((rn, r) -> flow.addRouter(r));
             this.transitions.transitions.forEach(transition -> {
                 if (Objects.equals(null, transition.getTo())) {
@@ -69,7 +71,7 @@ public class StateMachineBuilder<S> {
         Set<S> ends;
         Set<S> states;
 
-        Profile profile;
+//        Profile profile;
 
         public States<S> initial(S init) {
             this.init = init;
@@ -86,10 +88,10 @@ public class StateMachineBuilder<S> {
             return this;
         }
 
-        public States<S> profile(Profile profile) {
-            this.profile = profile;
-            return this;
-        }
+//        public States<S> profile(Profile profile) {
+//            this.profile = profile;
+//            return this;
+//        }
     }
 
     public static class Transitions<S extends Enum> {
@@ -104,7 +106,7 @@ public class StateMachineBuilder<S> {
             return this;
         }
 
-        public <A extends ActionAttrs> Transitions<S> router(S node, String event, String action, String router, A attr) {
+        public <A extends ActionAttrs> Transitions<S> router(S node, String event, String action, String router) {
             transitions.add(new Transition<>(node, event, action, router));
             return this;
         }

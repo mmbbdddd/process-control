@@ -20,10 +20,7 @@ import java.util.stream.Collectors;
 public class Flow {
     final String            name;
     final String            descr;
-    final SessionManager    sessionManager;
-    final StatusManager     statusManager;
     final Node              init;
-    final Container         container;
     final Profile           profile;
     final Map<String, Node> ends;
     final Map<String, Node> nodes;
@@ -31,37 +28,21 @@ public class Flow {
     List<Plugin>                  plugins;
     FsmTable                      fsmTable;
 
-    public Flow(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManager, StatusManager statusManager, Profile profile) {
+    public Flow(String name, String descr, String init, Set<String> ends, Set<String> nodes, Profile profile) {
         Assert.notNull(name, "flow.name is null");
         Assert.notNull(init, "start.node is null");
         Assert.notNull(ends, "ends.node is null");
-        this.name           = name;
-        this.descr          = descr;
-        this.profile        = profile == null ? Profile.defaultOf() : profile;
-        this.init           = new Node(init, this.profile.getStepAttrsOrDefault(init));
-        this.ends           = ends.stream().map(e -> new Node(e, this.profile.getStepAttrsOrDefault(e))).collect(Collectors.toMap(Node::getName, t -> t));
-        this.nodes          = nodes.stream().map(e -> new Node(e, this.profile.getStepAttrsOrDefault(e))).collect(Collectors.toMap(Node::getName, t -> t));
-        this.container      = InfraUtils.getContainer();
-        this.sessionManager = sessionManager == null ? buildSessionManager() : sessionManager;
-        this.statusManager  = statusManager == null ? buildStatusManager() : statusManager;
-        this.fsmTable       = new FsmTable();
-        this.routers        = new HashMap<>();
-        this.plugins        = new ArrayList<>();
+        this.name     = name;
+        this.descr    = descr;
+        this.profile  = profile == null ? Profile.defaultOf() : profile;
+        this.init     = new Node(init, this.profile.getStepAttrsOrDefault(init));
+        this.ends     = ends.stream().map(e -> new Node(e, this.profile.getStepAttrsOrDefault(e))).collect(Collectors.toMap(Node::getName, t -> t));
+        this.nodes    = nodes.stream().map(e -> new Node(e, this.profile.getStepAttrsOrDefault(e))).collect(Collectors.toMap(Node::getName, t -> t));
+        this.fsmTable = new FsmTable();
+        this.routers  = new HashMap<>();
+        this.plugins  = new ArrayList<>();
     }
 
-    private StatusManager buildStatusManager() {
-        String statusManager = this.profile.getStatusManager() == null ?
-                Coasts.STATUS_MANAGER_REDIS :
-                this.profile.getStatusManager();
-        return container.getBean(statusManager, StatusManager.class);
-    }
-
-    private SessionManager buildSessionManager() {
-        String sessionManager = this.profile.getSessionManager() == null ?
-                Coasts.SESSION_MANAGER_REDIS :
-                this.profile.getSessionManager();
-        return container.getBean(sessionManager, SessionManager.class);
-    }
 
     /**
      * 定义流程参数
@@ -70,8 +51,8 @@ public class Flow {
      * @param profile
      * @return
      */
-    public static Flow of(String name, String descr, String init, Set<String> ends, Set<String> nodes, SessionManager sessionManger, StatusManager statusManager, Profile profile) {
-        Flow flow = new Flow(name, descr, init, ends, nodes, sessionManger, statusManager, profile);
+    public static Flow of(String name, String descr, String init, Set<String> ends, Set<String> nodes, Profile profile) {
+        Flow flow = new Flow(name, descr, init, ends, nodes, profile);
         return flow;
     }
 
@@ -85,10 +66,7 @@ public class Flow {
         List<String> plugins = new ArrayList<>();
         plugins.add(Coasts.PLUGIN_DIGEST_LOG);
         plugins.add(Coasts.PLUGIN_ERROR_LOG);
-
-        SessionManager sessionManager1 = InfraUtils.getSessionManager(Coasts.SESSION_MANAGER_MEMORY);
-        StatusManager  statusManager1  = InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
-        Flow           flow            = new Flow(name, descr, init, ends, nodes, sessionManager1, statusManager1, Profile.defaultOf());
+        Flow flow = new Flow(name, descr, init, ends, nodes, Profile.defaultOf());
         flow.plugins = InfraUtils.getContainer().getByCodesOfType(plugins, Plugin.class);
         return flow;
     }

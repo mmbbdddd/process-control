@@ -10,6 +10,8 @@ import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.factory.FlowFactory;
 import cn.hz.ddbm.pc.factory.dsl.DslResourceLoader;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
+import cn.hz.ddbm.pc.profile.DevPcService;
+import cn.hz.ddbm.pc.profile.PcService;
 import cn.hz.ddbm.pc.session.memory.MemorySessionManager;
 import cn.hz.ddbm.pc.status.memory.MemoryStatusManager;
 import cn.hz.ddbm.pc.test.support.ContainerMock;
@@ -22,7 +24,7 @@ import org.springframework.context.annotation.Bean;
 
 public class PcDemo {
 
-    ChaosPcService chaosService = new ChaosPcService();
+    ChaosPcService chaosService  ;
 
     /**
      * doc/img_4.png
@@ -33,9 +35,12 @@ public class PcDemo {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
         ctx.register(PcDemo.class);
         ctx.refresh();
-        PcConfig pcConfig = new PcConfig();
-        Flow     flow     = pcConfig.build(null);
-        String   event    = Coasts.EVENT_DEFAULT;
+//        PcService devPcService = ctx.getBean(DevPcService.class);
+        Container container = ctx.getBean(Container.class);
+        chaosService = ctx.getBean(ChaosPcService.class);
+        PcConfig  pcConfig  = new PcConfig();
+        Flow      flow      = pcConfig.build(container);
+        String    event     = Coasts.EVENT_DEFAULT;
         chaosService.addFlow(flow);
 
         try {
@@ -46,13 +51,20 @@ public class PcDemo {
     }
 
     @Bean
+    ChaosPcService chaosPcService() {
+        return new ChaosPcService();
+    }
+
+    @Bean
     DslResourceLoader dslResourceLoader() {
         return new DslResourceLoader();
     }
+
     @Bean
     FlowFactory flowFactory() {
         return new FlowFactory();
     }
+
     @Bean
     ExpressionEngine expressionEngine() {
         return new ExpressionEngineMock();

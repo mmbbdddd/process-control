@@ -10,6 +10,7 @@ import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.factory.dsl.StateMachineBuilder;
 import cn.hz.ddbm.pc.factory.dsl.StateMachineConfig;
+import cn.hz.ddbm.pc.profile.PcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,16 +39,17 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
                 .initial(PcState.init)
                 .ends(PcState.su, PcState.fail, PcState.error)
                 .states(EnumSet.allOf(PcState.class))
+//                .profile(container.getBean(PcService.class).profile())
         ;
 
         builder.withTransitions()
-                .router(PcState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter", null)
+                .router(PcState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter")
                 //发送异常，不明确是否发送
-                .router(PcState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
+                .router(PcState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
                 //已发送，对方处理中
-                .router(PcState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
+                .router(PcState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
                 //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
-                .router(PcState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter", null)
+                .router(PcState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter")
 //                资料就绪状态，可重新发送
                 .to(PcState.miss_data_fulled, Coasts.EVENT_DEFAULT, "", PcState.init)
         //用户上传资料  && 更新资料状态
@@ -70,7 +72,7 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
                 ))
         ;
 
-        return builder.build();
+        return builder.build(container);
     }
 
     @Override

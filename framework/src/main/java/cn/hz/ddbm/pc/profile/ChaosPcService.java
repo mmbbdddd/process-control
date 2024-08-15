@@ -11,6 +11,7 @@ import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.SessionException;
 import cn.hz.ddbm.pc.core.exception.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
+import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,7 @@ public class ChaosPcService extends PcService {
 
     @Override
     public Profile profile() {
-        return Profile.defaultOf();
+        return Profile.chaosOf(InfraUtils.getContainer());
     }
 
     static class StatisticsLine {
