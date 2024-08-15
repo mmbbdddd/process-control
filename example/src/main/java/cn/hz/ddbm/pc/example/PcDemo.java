@@ -5,10 +5,12 @@ import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.ExpressionEngine;
+import cn.hz.ddbm.pc.core.support.Locker;
 import cn.hz.ddbm.pc.core.support.MetricsTemplate;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.factory.FlowFactory;
 import cn.hz.ddbm.pc.factory.dsl.DslResourceLoader;
+import cn.hz.ddbm.pc.lock.JdkLocker;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.profile.DevPcService;
 import cn.hz.ddbm.pc.profile.PcService;
@@ -24,7 +26,7 @@ import org.springframework.context.annotation.Bean;
 
 public class PcDemo {
 
-    ChaosPcService chaosService  ;
+    ChaosPcService chaosService;
 
     /**
      * doc/img_4.png
@@ -38,9 +40,9 @@ public class PcDemo {
 //        PcService devPcService = ctx.getBean(DevPcService.class);
         Container container = ctx.getBean(Container.class);
         chaosService = ctx.getBean(ChaosPcService.class);
-        PcConfig  pcConfig  = new PcConfig();
-        Flow      flow      = pcConfig.build(container);
-        String    event     = Coasts.EVENT_DEFAULT;
+        PcConfig pcConfig = new PcConfig();
+        Flow     flow     = pcConfig.build(container);
+        String   event    = Coasts.EVENT_DEFAULT;
         chaosService.addFlow(flow);
 
         try {
@@ -53,6 +55,11 @@ public class PcDemo {
     @Bean
     ChaosPcService chaosPcService() {
         return new ChaosPcService();
+    }
+
+    @Bean
+    Locker jdkLocker() {
+        return new JdkLocker();
     }
 
     @Bean

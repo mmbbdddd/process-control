@@ -51,18 +51,9 @@ public class InfraUtils {
     }
 
     public static Locker getLocker() {
-        return null;
+        return container.getBean(Locker.class);
     }
-
-    //如果持有锁，续锁，如果没有，新建，返回true
-    //拿不到锁，返回false。
-    public static Boolean tryLock(String key, int seconds) {
-        return true;
-    }
-
-    public static Boolean releaseLock(String key) {
-        return null;
-    }
+ 
 
     public static String getDomain() {
         return "";
