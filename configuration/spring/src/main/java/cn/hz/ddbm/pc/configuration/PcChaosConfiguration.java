@@ -1,25 +1,32 @@
 package cn.hz.ddbm.pc.configuration;
 
-import cn.hz.ddbm.pc.core.support.SessionManager;
+import cn.hz.ddbm.pc.container.ChaosAspect;
+import cn.hz.ddbm.pc.container.SpringContainer;
+import cn.hz.ddbm.pc.container.chaos.ChaosHandler;
+import cn.hz.ddbm.pc.core.support.Container;
+import cn.hz.ddbm.pc.core.support.ExpressionEngine;
+import cn.hz.ddbm.pc.core.support.Locker;
+import cn.hz.ddbm.pc.core.support.MetricsTemplate;
+import cn.hz.ddbm.pc.core.utils.InfraUtils;
+import cn.hz.ddbm.pc.lock.JdkLocker;
+import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.profile.PcService;
 import cn.hz.ddbm.pc.profile.StablePcService;
 import cn.hz.ddbm.pc.session.memory.MemorySessionManager;
-import cn.hz.ddbm.pc.session.redis.RedisSessionManager;
 import cn.hz.ddbm.pc.status.memory.MemoryStatusManager;
-import cn.hz.ddbm.pc.status.redis.RedisStatusManager;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @ConditionalOnClass({PcService.class})
 @EnableConfigurationProperties({RedisProperties.class})
+@EnableAspectJAutoProxy
 public class PcChaosConfiguration {
     @Bean
-    StablePcService pcService() {
-        return new StablePcService();
+    ChaosPcService pcService() {
+        return new ChaosPcService();
     }
 
     @Bean
@@ -30,6 +37,51 @@ public class PcChaosConfiguration {
     @Bean
     MemorySessionManager memorySessionManager() {
         return new MemorySessionManager();
+    }
+
+    @Bean
+    ChaosHandler chaosHandler(ChaosPcService pcService) {
+        return new ChaosHandler(pcService);
+    }
+
+    @Bean
+    ChaosAspect aspect() {
+        return new ChaosAspect();
+    }
+
+    @Bean
+    Container container() {
+        return new SpringContainer();
+    }
+
+    @Bean
+    Locker locker() {
+        return new JdkLocker();
+    }
+
+    @Bean
+    ExpressionEngine expressionEngine() {
+        return new ExpressionEngine();
+    }
+
+    @Bean
+    InfraUtils infraUtils(Container container) {
+        return new InfraUtils(container);
+    }
+
+    @Bean
+    MetricsTemplate metricsTemplate(Container container) {
+        return new MetricsTemplate() {
+            @Override
+            public void increment(String windows) {
+//todo
+            }
+
+            @Override
+            public Integer get(String windows) {
+                return null;
+            }
+        };
     }
 
 

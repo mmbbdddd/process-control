@@ -1,6 +1,7 @@
 package cn.hz.ddbm.pc.example;
 
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hz.ddbm.pc.configuration.PcChaosConfiguration;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.support.Container;
@@ -14,6 +15,7 @@ import cn.hz.ddbm.pc.lock.JdkLocker;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.profile.DevPcService;
 import cn.hz.ddbm.pc.profile.PcService;
+import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
 import cn.hz.ddbm.pc.session.memory.MemorySessionManager;
 import cn.hz.ddbm.pc.status.memory.MemoryStatusManager;
 import cn.hz.ddbm.pc.test.support.ContainerMock;
@@ -23,6 +25,9 @@ import cn.hz.ddbm.pc.test.support.PayloadMock;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PcDemo {
 
@@ -35,7 +40,7 @@ public class PcDemo {
     @Test
     public void pc() throws Exception {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(PcDemo.class);
+        ctx.register(PcChaosConfiguration.class);
         ctx.refresh();
 //        PcService devPcService = ctx.getBean(DevPcService.class);
         Container container = ctx.getBean(Container.class);
@@ -44,9 +49,14 @@ public class PcDemo {
         Flow     flow     = pcConfig.build(container);
         String   event    = Coasts.EVENT_DEFAULT;
         chaosService.addFlow(flow);
-
+        List<ChaosRule> rules = new ArrayList<ChaosRule>() {{
+            add(new ChaosRule("true", 0.1, new ArrayList<Class<? extends Throwable>>() {{
+                add(RuntimeException.class);
+                add(Exception.class);
+            }}));
+        }};
         try {
-            chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10);
+            chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10,rules);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,54 +67,5 @@ public class PcDemo {
         return new ChaosPcService();
     }
 
-    @Bean
-    Locker jdkLocker() {
-        return new JdkLocker();
-    }
-
-    @Bean
-    DslResourceLoader dslResourceLoader() {
-        return new DslResourceLoader();
-    }
-
-    @Bean
-    FlowFactory flowFactory() {
-        return new FlowFactory();
-    }
-
-    @Bean
-    ExpressionEngine expressionEngine() {
-        return new ExpressionEngineMock();
-    }
-
-    @Bean
-    MetricsTemplate metricsTemplate() {
-        return new MetricsTemplateMock();
-    }
-
-    @Bean
-    MemoryStatusManager memoryStatusManager() {
-        return new MemoryStatusManager();
-    }
-
-    @Bean
-    MemorySessionManager memorySessionManager() {
-        return new MemorySessionManager();
-    }
-
-    @Bean
-    SpringUtil springUtil() {
-        return new SpringUtil();
-    }
-
-    @Bean
-    Container container() {
-        return new ContainerMock();
-    }
-
-    @Bean
-    InfraUtils infraUtils(Container container) {
-        return new InfraUtils(container);
-    }
 
 }

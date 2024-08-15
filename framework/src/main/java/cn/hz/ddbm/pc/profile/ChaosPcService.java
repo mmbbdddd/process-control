@@ -28,11 +28,17 @@ public class ChaosPcService extends PcService {
 
     ExecutorService      threadPool = Executors.newFixedThreadPool(20);
     List<StatisticsLine> statisticsLines;
+    List<ChaosRule>      chaosRules;
 
-    public <T extends FlowPayload> void execute(String flowName, T payload, String event, Integer times, Integer timeout) {
+    public ChaosPcService( ) {
+        this.chaosRules = new ArrayList<>();
+    }
+
+    public <T extends FlowPayload> void execute(String flowName, T payload, String event, Integer times, Integer timeout,List<ChaosRule> rules) {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         CountDownLatch cdl = new CountDownLatch(times);
+        this.chaosRules = rules;
         statisticsLines = new ArrayList<>(times);
         for (int i = 0; i < times; i++) {
             int finalI = i;
@@ -63,7 +69,7 @@ public class ChaosPcService extends PcService {
 
     private void printStatisticsReport() {
         Map<Pair, List<StatisticsLine>> groups = statisticsLines.stream()
-                .collect(Collectors.groupingBy(t -> Pair.of(t.result.type, t.result.value)));
+                                                                .collect(Collectors.groupingBy(t -> Pair.of(t.result.type, t.result.value)));
         Logs.flow.info("混沌测试报告：\\n");
         groups.forEach((triple, list) -> {
             Logs.flow.info("{},{},{}", triple.getKey(), triple.getValue(), list.size());
@@ -90,7 +96,7 @@ public class ChaosPcService extends PcService {
     }
 
     public List<ChaosRule> chaosRules() {
-        return null;
+        return chaosRules;
     }
 
     static class StatisticsLine {

@@ -47,6 +47,11 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>cn.hz.ddbm.pc</groupId>
+            <artifactId>configuration-spring</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy</artifactId>
             <version>4.0.22</version>

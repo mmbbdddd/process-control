@@ -1,6 +1,7 @@
 package cn.hz.ddbm.pc.container.chaos;
 
-import cn.hz.ddbm.pc.container.ChaosContainer;
+import cn.hz.ddbm.pc.core.support.Container;
+import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
 
@@ -11,9 +12,12 @@ import java.util.List;
 
 
 public class ChaosHandler {
-    List<ChaosRule> chaosRules;
-    @Resource
-    ChaosContainer container;
+
+    ChaosPcService chaosPcService;
+
+    public ChaosHandler(ChaosPcService chaosPcService) {
+        this.chaosPcService = chaosPcService;
+    }
 
     /**
      * 判断当前执行对象有没有触发混沌规则表（chaosRule）
@@ -25,8 +29,9 @@ public class ChaosHandler {
      */
     public void handle(Object proxy, Method method, Object[] args) throws Throwable {
         System.out.println("chaos");
-        if (null != chaosRules) {
-            for (ChaosRule rule : chaosRules) {
+        List<ChaosRule> rules = chaosPcService.chaosRules();
+        if (null != rules) {
+            for (ChaosRule rule : rules) {
                 if (rule.match(proxy, method, args) && rule.probabilityIsTrue()) {
                     rule.raiseException();
                 }
@@ -34,10 +39,7 @@ public class ChaosHandler {
         }
     }
 
-    @PostConstruct
-    public void init() {
-        this.chaosRules = container.getBean(ChaosPcService.class).chaosRules();
-    }
+
 
 
 }

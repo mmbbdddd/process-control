@@ -5,7 +5,7 @@ import org.mvel2.MVEL;
 
 import java.util.Map;
 
-public class ExpressionEngineMock implements ExpressionEngine {
+public class ExpressionEngineMock extends ExpressionEngine {
     @Override
     public <T> T eval(String expression, Map<String, Object> ctx, Class<T> resultType) {
         try {

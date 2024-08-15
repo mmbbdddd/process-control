@@ -22,9 +22,9 @@ public class ChaosRule {
     //触发概率
     double                 probability;
     //触发后，跑出的异常类型（随便选一个）
-    List<Class<Throwable>> errorTypes;
+    List<Class<?extends Throwable>> errorTypes;
 
-    public ChaosRule(String expression, double probability, List<Class<Throwable>> errorTypes) {
+    public ChaosRule(String expression, double probability, List<Class<? extends Throwable>> errorTypes) {
         this.expression  = expression;
         this.probability = probability;
         this.errorTypes  = errorTypes;
