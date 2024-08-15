@@ -18,6 +18,7 @@
 
     <modules>
         <module>spring</module>
+        <module>chaos</module>
         <module>guice</module>
     </modules>
 </project>

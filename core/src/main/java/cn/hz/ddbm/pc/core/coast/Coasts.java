@@ -3,6 +3,8 @@ package cn.hz.ddbm.pc.core.coast;
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.action.NoneAction;
 
+import java.util.List;
+
 public class Coasts {
     public static final String  NODE_RETRY             = "retry";
     public static final String  PLUGIN_DIGEST_LOG      = "digest";
@@ -14,6 +16,7 @@ public class Coasts {
     public static final Action  NONE_ACTION            = new NoneAction();
     public static final Integer DEFAULT_RETRY          = 1;
     public static final Integer DEFAULT_TIMEOUT        = 3000;
+    public static final String  PC_SERVICE_CHAOS       = "chaosPcService";
     public static       String  SESSION_MANAGER        = "session_manager";
     public static       String  STATUS_MANAGER         = "status_manager";
     public static       String  SESSION_MANAGER_MEMORY = "memory";

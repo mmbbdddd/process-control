@@ -2,7 +2,6 @@ package cn.hz.ddbm.pc.factory.dsl;
 
 import cn.hz.ddbm.pc.core.ActionAttrs;
 import cn.hz.ddbm.pc.core.Flow;
-import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.profile.PcService;
@@ -71,8 +70,6 @@ public class StateMachineBuilder<S> {
         Set<S> ends;
         Set<S> states;
 
-//        Profile profile;
-
         public States<S> initial(S init) {
             this.init = init;
             return this;
@@ -88,10 +85,6 @@ public class StateMachineBuilder<S> {
             return this;
         }
 
-//        public States<S> profile(Profile profile) {
-//            this.profile = profile;
-//            return this;
-//        }
     }
 
     public static class Transitions<S extends Enum> {
@@ -120,7 +113,7 @@ public class StateMachineBuilder<S> {
             this.routers = new HashMap<>();
         }
 
-        public Routers register(ExpressionRouter router) {
+        public Routers add(ExpressionRouter router) {
             this.routers.put(router.routerName(), router);
             return this;
         }

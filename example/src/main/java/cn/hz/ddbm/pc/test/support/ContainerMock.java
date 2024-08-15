@@ -7,6 +7,11 @@ import java.util.Map;
 
 public class ContainerMock implements Container {
     @Override
+    public Object getBean(String beanName) {
+        return SpringUtil.getBean(beanName);
+    }
+
+    @Override
     public <T> T getBean(Class<T> clazz) {
         return SpringUtil.getBean(clazz);
     }
@@ -21,8 +26,5 @@ public class ContainerMock implements Container {
         return SpringUtil.getBeansOfType(type);
     }
 
-    @Override
-    public <E> void publishEvent(E event) {
 
-    }
 }

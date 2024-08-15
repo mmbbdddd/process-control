@@ -50,21 +50,9 @@ public class InfraUtils {
         return Executors.newFixedThreadPool(3);
     }
 
-    public static Pair<Flow.STAUS, String> syncStatus(String name, Serializable id) {
+    public static Locker getLocker(String key, int seconds) {
         return null;
     }
-
-    public static Map<String, Plugin> getPluginBeans() {
-        return container.getBeansOfType(Plugin.class).values().stream().collect(Collectors.toMap(
-                Plugin::code,
-                t -> t
-        ));
-    }
-
-    public static Action getActionBean(String action) {
-        return container.getBean(action, Action.class);
-    }
-
 
     //如果持有锁，续锁，如果没有，新建，返回true
     //拿不到锁，返回false。

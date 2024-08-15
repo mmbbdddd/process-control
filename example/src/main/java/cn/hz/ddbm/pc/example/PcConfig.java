@@ -10,7 +10,6 @@ import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.factory.dsl.StateMachineBuilder;
 import cn.hz.ddbm.pc.factory.dsl.StateMachineConfig;
-import cn.hz.ddbm.pc.profile.PcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,13 +57,13 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
 
         builder.withRouters()
 //                .register("simpleRouter", new ExpressionRouter(new HashMap<>()))
-                .register(new ExpressionRouter("sendRouter",
+                .add(new ExpressionRouter("sendRouter",
                         new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.1"),
                         new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
                         new ExpressionRouter.NodeExpression("init", "Math.random() < 0.1"),
                         new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
                 ))
-                .register(new ExpressionRouter("notifyRouter",
+                .add(new ExpressionRouter("notifyRouter",
                         new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.1"),
                         new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
                         new ExpressionRouter.NodeExpression("init", "Math.random() < 0.1"),
