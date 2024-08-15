@@ -1,18 +1,13 @@
 package cn.hz.ddbm.pc.lock
 
-import org.junit.Test
 import org.junit.Before
+import org.junit.Test
 import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.locks.ReentrantLock
-import java.util.function.Function
-import static org.mockito.Mockito.*
 
 class JdkLockerTest {
     @InjectMocks
