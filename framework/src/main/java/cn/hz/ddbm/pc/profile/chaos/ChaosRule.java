@@ -24,6 +24,12 @@ public class ChaosRule {
     //触发后，跑出的异常类型（随便选一个）
     List<Class<Throwable>> errorTypes;
 
+    public ChaosRule(String expression, double probability, List<Class<Throwable>> errorTypes) {
+        this.expression  = expression;
+        this.probability = probability;
+        this.errorTypes  = errorTypes;
+    }
+
     public boolean match(Object proxy, Method method, Object[] args) {
         Map<String, Object> ctx = new HashMap<>();
         ctx.put("obj", proxy);

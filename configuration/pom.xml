@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.hz.ddbm.pc</groupId>
-    <artifactId>resource-apollo</artifactId>
+    <artifactId>configuration</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -14,12 +15,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>framework</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>spring</module>
+        <module>chaos</module>
+        <module>guice</module>
+    </modules>
 
 </project>

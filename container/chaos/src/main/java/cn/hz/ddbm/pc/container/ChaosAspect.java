@@ -4,7 +4,8 @@ import cn.hz.ddbm.pc.container.chaos.ChaosHandler;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.stereotype.Component;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
@@ -14,32 +15,48 @@ public class ChaosAspect {
     @Resource
     ChaosHandler chaosHandler;
 
-    @Around("execution(* cn.hz.ddbm.pc.core.Action.action(*))")
+    @Around(" execution(* cn.hz.ddbm.pc.core.Action.*(*))")
     public Object action(ProceedingJoinPoint pjp) throws Throwable {
         Object   target = pjp.getTarget();
-        Method   method = null;
-        Object[] args   = null;
+        Method   method = ((MethodSignature)pjp.getSignature()).getMethod();
+        Object[] args   = pjp.getArgs();
         chaosHandler.handle(target, method, args);
         return pjp.proceed();
     }
 
-    @Around("within(cn.hz.ddbm.pc.core.Router)")
+    @Around("execution(* cn.hz.ddbm.pc.core.Router.route(*))")
     public Object router(ProceedingJoinPoint pjp) throws Throwable {
+        Object   target = pjp.getTarget();
+        Method   method = ((MethodSignature)pjp.getSignature()).getMethod();
+        Object[] args   = pjp.getArgs();
+        chaosHandler.handle(target, method, args);
         return pjp.proceed();
     }
 
-    @Around("within(cn.hz.ddbm.pc.core.support.Locker)")
+    @Around("execution(* cn.hz.ddbm.pc.core.support.Locker.*(..))")
     public Object locker(ProceedingJoinPoint pjp) throws Throwable {
+        Object   target = pjp.getTarget();
+        Method   method = ((MethodSignature)pjp.getSignature()).getMethod();
+        Object[] args   = pjp.getArgs();
+        chaosHandler.handle(target, method, args);
         return pjp.proceed();
     }
 
-    @Around("within(cn.hz.ddbm.pc.core.support.SessionManager)")
+    @Around("execution(* cn.hz.ddbm.pc.core.support.SessionManager.*(..))")
     public Object session(ProceedingJoinPoint pjp) throws Throwable {
+        Object   target = pjp.getTarget();
+        Method   method = ((MethodSignature)pjp.getSignature()).getMethod();
+        Object[] args   = pjp.getArgs();
+        chaosHandler.handle(target, method, args);
         return pjp.proceed();
     }
 
-    @Around("within(cn.hz.ddbm.pc.core.support.StatusManager)")
+    @Around("execution(* cn.hz.ddbm.pc.core.support.StatusManager.*(..))")
     public Object status(ProceedingJoinPoint pjp) throws Throwable {
+        Object   target = pjp.getTarget();
+        Method   method = ((MethodSignature)pjp.getSignature()).getMethod();
+        Object[] args   = pjp.getArgs();
+        chaosHandler.handle(target, method, args);
         return pjp.proceed();
     }
 }

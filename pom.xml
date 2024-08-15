@@ -17,11 +17,11 @@
         <module>core</module>
         <module>framework</module>
         <module>factory</module>
-        <module>resource</module>
         <module>plugin</module>
         <module>session</module>
         <module>status</module>
         <module>container</module>
+        <module>configuration</module>
         <module>example</module>
         <module>build-all</module>
     </modules>
