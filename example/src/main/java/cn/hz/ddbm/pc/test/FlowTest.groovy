@@ -17,11 +17,11 @@ class FlowTest extends BaseSpec {
     def "Of"() {
         expect:
         Flow f = Flow.devOf(name, "测试流程", "init", ["su", "fail"] as Set, ["pay", "pay_error"] as Set)
-        String.format("%s:%s:%s", f.name, f.sessionManager.code(), f.statusManager.code()) == result
+        String.format("%s:%s:%s", f.name, f.profile.sessionManager, f.profile.statusManager) == result
         where:
         name | session | status | result
 //        null | null|null|null|null
-        "i"  | null    | null   | String.format("%s:%s:%s", "i", "memory", "memory")
+        "i"  | null    | null   | String.format("%s:%s:%s", "i", "redis", "redis")
 
 
     }
