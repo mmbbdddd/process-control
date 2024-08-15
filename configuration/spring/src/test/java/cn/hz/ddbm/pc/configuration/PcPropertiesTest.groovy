@@ -2,10 +2,15 @@ package cn.hz.ddbm.pc.configuration
 
 import cn.hutool.core.lang.Assert
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
+import org.springframework.test.context.junit4.SpringRunner
 
 @SpringBootTest(classes = PcApp.class,properties = ["application.properties"])
+@Import(PcStableConfiguration.class)
+@RunWith(SpringRunner)
 class PcPropertiesTest {
 
 //    @Mock
