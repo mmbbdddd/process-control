@@ -24,9 +24,9 @@ public class Flow {
     final Profile           profile;
     final Map<String, Node> ends;
     final Map<String, Node> nodes;
-    Map<String, ExpressionRouter> routers;
-    List<Plugin>                  plugins;
-    FsmTable                      fsmTable;
+    //    Map<String, ExpressionRouter> routers;
+    List<Plugin> plugins;
+    FsmTable     fsmTable;
 
     public Flow(String name, String descr, String init, Set<String> ends, Set<String> nodes, Profile profile) {
         Assert.notNull(name, "flow.name is null");
@@ -39,8 +39,8 @@ public class Flow {
         this.ends     = ends.stream().map(e -> new Node(e, this.profile.getStepAttrsOrDefault(e))).collect(Collectors.toMap(Node::getName, t -> t));
         this.nodes    = nodes.stream().map(e -> new Node(e, this.profile.getStepAttrsOrDefault(e))).collect(Collectors.toMap(Node::getName, t -> t));
         this.fsmTable = new FsmTable();
-        this.routers  = new HashMap<>();
-        this.plugins  = new ArrayList<>();
+//        this.routers  = new HashMap<>();
+        this.plugins = new ArrayList<>();
     }
 
 
@@ -72,12 +72,12 @@ public class Flow {
     }
 
 
-    /**
-     * 定义流程的router
-     */
-    public void addRouter(ExpressionRouter router) {
-        this.routers.put(router.routerName(), router);
-    }
+//    /**
+//     * 定义流程的router
+//     */
+//    public void addRouter(ExpressionRouter router) {
+//        this.routers.put(router.routerName(), router);
+//    }
 
     /**
      * 定义流程事件绑定关系
@@ -95,7 +95,8 @@ public class Flow {
     }
 
     public void router(String from, String event, Action action, String routerName) {
-        ExpressionRouter router = routers.get(routerName);
+        ExpressionRouter router = profile.getRouter(routerName);
+        Assert.notNull(router, "router not define:" + routerName);
         router(from, event, action, router);
     }
 
@@ -121,15 +122,15 @@ public class Flow {
         Assert.isTrue(true, "ctx is null");
 
         String node = ctx.getStatus()
-                .getNode();
+                         .getNode();
         FsmRecord atom = fsmTable.find(node, ctx.getEvent());
         Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent().getCode(), ctx.getStatus().getNode()));
 
         AtomExecutor atomExecutor = AtomExecutor.builder()
-                .event(atom.getEvent())
-                .plugins(plugins)
-                .actionRouter(atom.getActionRouter())
-                .build();
+                                                .event(atom.getEvent())
+                                                .plugins(plugins)
+                                                .actionRouter(atom.getActionRouter())
+                                                .build();
         ctx.setAtomExecutor(atomExecutor);
 
         atomExecutor.execute(ctx);
@@ -157,7 +158,7 @@ public class Flow {
     public State getStep(String state) {
         State sts = nodes.get(state);
         if (null == sts) {
-            sts = routers.get(state);
+            sts = profile.getRouter(state);
         }
         return sts;
     }
@@ -178,9 +179,9 @@ public class Flow {
 
         public FsmRecord find(String node, Event event) {
             return records.stream()
-                    .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent().getCode(), event.getCode()))
-                    .findFirst()
-                    .orElse(null);
+                          .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent().getCode(), event.getCode()))
+                          .findFirst()
+                          .orElse(null);
         }
 
         /**
@@ -244,7 +245,7 @@ public class Flow {
         @Override
         public String toString() {
             return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + actionRouter.getAction()
-                    .beanName() + '\'' + ", to:'" + to + '\'' + '}';
+                                                                                                                    .beanName() + '\'' + ", to:'" + to + '\'' + '}';
         }
 
     }
@@ -257,7 +258,6 @@ public class Flow {
                 ", init:" + init +
                 ", ends:" + ends +
                 ", nodes:" + nodes +
-                ", routers:" + Arrays.toString(routers.values().toArray(new Router[routers.size()])) +
                 ", fsmTable:" + Arrays.toString(fsmTable.records.toArray(new FsmRecord[fsmTable.records.size()])) +
                 '}';
     }

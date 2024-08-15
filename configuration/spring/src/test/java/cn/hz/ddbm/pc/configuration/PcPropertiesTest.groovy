@@ -28,7 +28,7 @@ class PcPropertiesTest {
 
     @Test
     public void initProperties() {
-        Assert.isTrue(pcProperties.format == "json")
+        Assert.isTrue(pcProperties.defineStyle == PcProperties.DefineStyle.dsl)
     }
 }
 

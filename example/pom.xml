@@ -9,7 +9,6 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath/>
     </parent>
-    <groupId>cn.hz.ddbm.pc</groupId>
     <artifactId>example</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 

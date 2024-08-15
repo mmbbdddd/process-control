@@ -109,10 +109,8 @@ public abstract class PcService {
             Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
             return false;
         }
-        String windows = String.format("%s:%s:%s:%s", ctx.getFlow()
-                .getName(), ctx.getId(), node, Coasts.NODE_RETRY);
-        Integer exeRetry = InfraUtils.getMetricsTemplate()
-                .get(windows);
+        String  windows   = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), node, Coasts.NODE_RETRY);
+        Integer exeRetry  = InfraUtils.getMetricsTemplate().get(windows);
         Integer nodeRetry = nodeObj.getRetry();
         if (exeRetry > nodeObj.getRetry()) {
             Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), node, exeRetry, nodeRetry);
@@ -131,11 +129,23 @@ public abstract class PcService {
 
 
     private void releaseLock(FlowContext<?> ctx) {
-        InfraUtils.releaseLock(String.format("%s:%s:%s", InfraUtils.getDomain(), ctx.getFlow().getName(), ctx.getId()));
+        String key = String.format("%s:%s:%s", InfraUtils.getDomain(), ctx.getFlow().getName(), ctx.getId());
+        try {
+            InfraUtils.getLocker().releaseLock(key);
+        } catch (Exception e) {
+            throw new LockException(e);
+        }
     }
 
     private Boolean tryLock(FlowContext<?> ctx) {
-        return InfraUtils.tryLock(String.format("%s:%s:%s", InfraUtils.getDomain(), ctx.getFlow().getName(), ctx.getId()), 10);
+        String key = String.format("%s:%s:%s", InfraUtils.getDomain(), ctx.getFlow().getName(), ctx.getId());
+        try {
+            InfraUtils.getLocker().tryLock(key, ctx.getProfile().getLockTimeout());
+            return true;
+        } catch (Exception e) {
+            Logs.error.error("", e);
+            return false;
+        }
     }
 
 }

@@ -50,7 +50,7 @@ public class InfraUtils {
         return Executors.newFixedThreadPool(3);
     }
 
-    public static Locker getLocker(String key, int seconds) {
+    public static Locker getLocker() {
         return null;
     }
 

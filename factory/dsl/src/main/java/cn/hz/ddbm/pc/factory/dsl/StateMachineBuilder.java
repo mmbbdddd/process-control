@@ -2,6 +2,7 @@ package cn.hz.ddbm.pc.factory.dsl;
 
 import cn.hz.ddbm.pc.core.ActionAttrs;
 import cn.hz.ddbm.pc.core.Flow;
+import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.profile.PcService;
@@ -35,11 +36,12 @@ public class StateMachineBuilder<S> {
         }
 
         public Flow build(Container container) {
-            String      init  = states.init.name();
-            Set<String> ends  = states.ends.stream().map(Enum::name).collect(Collectors.toSet());
-            Set<String> nodes = states.states.stream().map(Enum::name).collect(Collectors.toSet());
-            Flow        flow  = Flow.of(fsm.flowId(), fsm.describe(), init, ends, nodes,   container.getBean(PcService.class).profile());
-            this.routers.routers.forEach((rn, r) -> flow.addRouter(r));
+            String      init    = states.init.name();
+            Set<String> ends    = states.ends.stream().map(Enum::name).collect(Collectors.toSet());
+            Set<String> nodes   = states.states.stream().map(Enum::name).collect(Collectors.toSet());
+            Profile     profile = container.getBean(PcService.class).profile();
+            this.routers.routers.forEach((rn, r) -> profile.addRouter(r));
+            Flow flow = Flow.of(fsm.flowId(), fsm.describe(), init, ends, nodes, profile);
             this.transitions.transitions.forEach(transition -> {
                 if (Objects.equals(null, transition.getTo())) {
                     flow.router(transition.getFrom().name(), transition.getEvent(), fsm.getAction(transition.getAction()), transition.getRouter());
