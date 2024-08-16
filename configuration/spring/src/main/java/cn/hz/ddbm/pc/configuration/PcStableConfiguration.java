@@ -22,8 +22,8 @@ public class PcStableConfiguration {
     }
 
     @Bean
-    MemoryStatusManager memoryStatusManager() {
-        return new MemoryStatusManager();
+    MemoryStatusManager memoryStatusManager(PcProperties properties) {
+        return new MemoryStatusManager(properties.statusManager.cacheSize, properties.getStatusManager().hours);
     }
 
     @Bean
@@ -33,8 +33,8 @@ public class PcStableConfiguration {
     }
 
     @Bean
-    MemorySessionManager memorySessionManager() {
-        return new MemorySessionManager();
+    MemorySessionManager memorySessionManager(PcProperties properties) {
+        return new MemorySessionManager(properties.sessionManager.cacheSize, properties.sessionManager.hours);
     }
 
     @Bean

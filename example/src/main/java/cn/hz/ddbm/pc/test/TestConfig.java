@@ -62,11 +62,11 @@ public class TestConfig {
 
     @Bean
     SessionManager sessionManager() {
-        return new MemorySessionManager();
+        return new MemorySessionManager(256,2);
     }
 
     @Bean
     StatusManager statusManager() {
-        return new MemoryStatusManager();
+        return new MemoryStatusManager(256,2);
     }
 }

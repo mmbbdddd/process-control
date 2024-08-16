@@ -30,12 +30,12 @@ public class PcChaosConfiguration {
 
     @Bean
     MemoryStatusManager memoryStatusManager() {
-        return new MemoryStatusManager();
+        return new MemoryStatusManager(256,1);
     }
 
     @Bean
     MemorySessionManager memorySessionManager() {
-        return new MemorySessionManager();
+        return new MemorySessionManager(256,1);
     }
 
     @Bean
@@ -77,7 +77,7 @@ public class PcChaosConfiguration {
             }
 
             @Override
-            public Integer get(String windows) {
+            public Long get(String windows) {
                 return null;
             }
         };

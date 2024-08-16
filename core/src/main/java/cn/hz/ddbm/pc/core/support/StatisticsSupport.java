@@ -12,5 +12,5 @@ package cn.hz.ddbm.pc.core.support;
 public interface StatisticsSupport {
     void increment(String windows);
 
-    Integer get(String windows);
+    Long get(String windows);
 }

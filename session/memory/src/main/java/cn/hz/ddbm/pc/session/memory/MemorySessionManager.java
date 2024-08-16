@@ -1,5 +1,6 @@
 package cn.hz.ddbm.pc.session.memory;
 
+import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -8,12 +9,25 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import java.time.Duration;
 
 public class MemorySessionManager implements SessionManager {
-    Cache<String, Object> cache       = Caffeine.newBuilder()
-            .initialCapacity(1)
-            .maximumSize(100)
-            .expireAfterWrite(Duration.ofDays(1))
-            .build();
-    String                keyTemplate = "%s:%s;%s";
+
+    String keyTemplate = "%s:%s;%s";
+
+    Integer               cacheSize;
+    Integer               hours;
+    Cache<String, Object> cache;
+
+    public MemorySessionManager(Integer cacheSize, Integer hours) {
+        Assert.notNull(cacheSize, "cacheSize is null");
+        Assert.notNull(hours, "hours is null");
+        this.cacheSize = cacheSize;
+        this.hours     = hours;
+        this.cache     = Caffeine.newBuilder()
+                .initialCapacity(cacheSize > 256 ? cacheSize / 8 : cacheSize)
+                .maximumSize(cacheSize)
+                .expireAfterWrite(Duration.ofHours(hours))
+                .build();
+    }
+
 
     @Override
     public String code() {

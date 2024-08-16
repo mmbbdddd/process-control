@@ -1,5 +1,6 @@
 package cn.hz.ddbm.pc.status.memory;
 
+import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowStatus;
 import cn.hz.ddbm.pc.core.coast.Coasts;
@@ -12,12 +13,22 @@ import java.io.Serializable;
 import java.time.Duration;
 
 public class MemoryStatusManager implements StatusManager {
-    Cache<String, FlowStatus> cache       = Caffeine.newBuilder()
-            .initialCapacity(1)
-            .maximumSize(100)
-            .expireAfterWrite(Duration.ofHours(2))
-            .build();
+    private final Integer cacheSize;
+    private final Integer hours;
+    Cache<String, FlowStatus> cache;
     String                    keyTemplate = "%s:%s";
+
+    public MemoryStatusManager(Integer cacheSize, Integer hours) {
+        Assert.notNull(cacheSize, "cacheSize is null");
+        Assert.notNull(hours, "hours is null");
+        this.cacheSize = cacheSize;
+        this.hours     = hours;
+        this.cache     = Caffeine.newBuilder()
+                .initialCapacity(cacheSize > 256 ? cacheSize / 8 : cacheSize)
+                .maximumSize(cacheSize)
+                .expireAfterWrite(Duration.ofHours(hours))
+                .build();
+    }
 
     @Override
     public String code() {
