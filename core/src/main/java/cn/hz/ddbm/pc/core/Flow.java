@@ -190,12 +190,12 @@ public class Flow {
          * 参见onInner
          */
         public void on(String from, Event event, Action action, Router router) {
-            onInner(from, event, new ActionRouter(from, action, router));
+            onInner(from, event, new ActionRouter( action, router));
         }
 
         private void onInner(String from, Event event, ActionRouter actionRouter) {
             //增加外部event事件
-            this.records.addAll(actionRouter.fsmRecords(event));
+            this.records.addAll(actionRouter.fsmRecords(from,event));
         }
 
         @Override

@@ -10,15 +10,13 @@ import java.util.Set;
 
 @Getter
 public class ActionRouter implements State.Instant {
-    String from;
     String status;
     Action action;
     Router router;
 
-    public ActionRouter(String from, Action action, Router router) {
+    public ActionRouter(Action action, Router router) {
         this.action = action;
         this.router = router;
-        this.from   = from;
         this.status = null;
         if (router instanceof ToRouter) {
             this.status = ((ToRouter) router).getTo();
@@ -37,7 +35,7 @@ public class ActionRouter implements State.Instant {
      *
      * @return
      */
-    public Set<Flow.FsmRecord> fsmRecords(Event event) {
+    public Set<Flow.FsmRecord> fsmRecords(String from,Event event) {
         ActionRouter self = this;
         return new HashSet<Flow.FsmRecord>() {{
             if (router instanceof ToRouter) {
@@ -46,7 +44,7 @@ public class ActionRouter implements State.Instant {
             if (router instanceof ExpressionRouter) {
                 String status = ((ExpressionRouter) router).status();
                 add(new Flow.FsmRecord(from, event, self));
-                add(new Flow.FsmRecord(status, event, new ActionRouter(status, Coasts.NONE_ACTION, router)));
+                add(new Flow.FsmRecord(status, event, new ActionRouter( Coasts.NONE_ACTION, router)));
             }
         }};
     }
