@@ -25,6 +25,7 @@ class ActionTest extends Specification {
         null                    | "none"
         "payAction"             | "payAction"
         "payAction,queryAction" | "payAction,queryAction"
+        "ab,_b"                 | "ab"
     }
 
     def "exp"() {
@@ -35,6 +36,7 @@ class ActionTest extends Specification {
         "\\w+"          | "action" | true
         "(\\w+,)+\\w++" | "a,b"    | true
         "(\\w+,)+\\w++" | "a"      | false
+        "(\\w+,)_\\w+"  | "a,_a"   | true
 
     }
 

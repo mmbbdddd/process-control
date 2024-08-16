@@ -1,7 +1,6 @@
 package cn.hz.ddbm.pc.factory.dsl;
 
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hz.ddbm.pc.core.ActionAttrs;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
@@ -102,7 +101,7 @@ public class StateMachineBuilder<S> {
             return this;
         }
 
-        public <A extends ActionAttrs> Transitions<S> router(S node, String event, String action, String router) {
+        public   Transitions<S> router(S node, String event, String action, String router) {
             transitions.add(new Transition<>(node, event, action, router));
             return this;
         }
