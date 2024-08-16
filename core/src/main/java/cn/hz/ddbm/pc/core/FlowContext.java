@@ -3,7 +3,7 @@ package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.support.MetricsTemplate;
+import cn.hz.ddbm.pc.core.support.StatisticsSupport;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,8 +48,8 @@ public class FlowContext<T extends FlowPayload> {
 
 
     public void metricsNode(FlowContext<?> ctx) {
-        String          windows        = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getNode(), Coasts.NODE_RETRY);
-        MetricsTemplate metricsWindows = InfraUtils.getMetricsTemplate();
+        String            windows        = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getNode(), Coasts.NODE_RETRY);
+        StatisticsSupport metricsWindows = InfraUtils.getMetricsTemplate();
         metricsWindows.increment(windows);
     }
 

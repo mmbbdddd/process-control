@@ -1,14 +1,9 @@
 package cn.hz.ddbm.pc.core.utils;
 
 
-import cn.hutool.core.lang.Pair;
-import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.Flow;
-import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.support.*;
 import lombok.Getter;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,8 +37,8 @@ public class InfraUtils {
         return statusManagerMap.get(code);
     }
 
-    public static MetricsTemplate getMetricsTemplate() {
-        return container.getBean(MetricsTemplate.class);
+    public static StatisticsSupport getMetricsTemplate() {
+        return container.getBean(StatisticsSupport.class);
     }
 
     public static ExecutorService getPluginExecutorService() {
