@@ -7,11 +7,11 @@
     <parent>
         <groupId>cn.hz.ddbm.pc</groupId>
         <artifactId>parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.9.8-snapshot</version>
         <relativePath/>
     </parent>
     <artifactId>configuration-spring</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${pc.version}</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -20,69 +20,75 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
 
 
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>framework</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>container-spring</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>container-chaos</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>factory-dsl</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>factory-json</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>factory-xml</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
             <optional>true</optional>
         </dependency>
            <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>session-memory</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>session-redis</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>status-memory</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>status-redis</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>status-dao</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -120,7 +126,7 @@
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>lock-jdk</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
             <scope>compile</scope>
         </dependency>
 

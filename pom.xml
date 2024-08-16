@@ -4,12 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>cn.hz.ddbm.pc</groupId>
     <artifactId>pc</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.9.8-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <properties>
-        <pc.version>0.0.1-SNAPSHOT</pc.version>
-    </properties>
 
     <modules>
         <module>parent</module>

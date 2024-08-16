@@ -39,7 +39,7 @@ pc ：轻量级、高性能、高可靠的流程编排框架。
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>pc</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>0.9.8-SNAPSHOT</version>
         </dependency>
 
 参见hz.ddbm.jfsm.pay包

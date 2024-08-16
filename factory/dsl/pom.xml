@@ -6,12 +6,12 @@
     <parent>
         <groupId>cn.hz.ddbm.pc</groupId>
         <artifactId>parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.9.8-SNAPSHOT</version>
         <relativePath/>
     </parent>
     <groupId>cn.hz.ddbm.pc</groupId>
     <artifactId>factory-dsl</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${pc.version}</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -22,9 +22,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>framework</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${pc.version}</version>
         </dependency>
 <!--        <dependency>-->
 <!--            <groupId>org.jetbrains.kotlin</groupId>-->
