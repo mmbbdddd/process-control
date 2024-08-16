@@ -6,9 +6,6 @@ import cn.hz.ddbm.pc.core.exception.ActionException;
 import cn.hz.ddbm.pc.core.exception.RouterException;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.router.ToRouter;
-import cn.hz.ddbm.pc.core.support.Container;
-import cn.hz.ddbm.pc.core.support.SessionManager;
-import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Data;
 import lombok.Getter;
@@ -122,15 +119,15 @@ public class Flow {
         Assert.isTrue(true, "ctx is null");
 
         String node = ctx.getStatus()
-                         .getNode();
+                .getNode();
         FsmRecord atom = fsmTable.find(node, ctx.getEvent());
         Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent().getCode(), ctx.getStatus().getNode()));
 
         AtomExecutor atomExecutor = AtomExecutor.builder()
-                                                .event(atom.getEvent())
-                                                .plugins(plugins)
-                                                .actionRouter(atom.getActionRouter())
-                                                .build();
+                .event(atom.getEvent())
+                .plugins(plugins)
+                .actionRouter(atom.getActionRouter())
+                .build();
         ctx.setAtomExecutor(atomExecutor);
 
         atomExecutor.execute(ctx);
@@ -179,9 +176,9 @@ public class Flow {
 
         public FsmRecord find(String node, Event event) {
             return records.stream()
-                          .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent().getCode(), event.getCode()))
-                          .findFirst()
-                          .orElse(null);
+                    .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent().getCode(), event.getCode()))
+                    .findFirst()
+                    .orElse(null);
         }
 
         /**
@@ -245,7 +242,7 @@ public class Flow {
         @Override
         public String toString() {
             return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + actionRouter.getAction()
-                                                                                                                    .beanName() + '\'' + ", to:'" + to + '\'' + '}';
+                    .beanName() + '\'' + ", to:'" + to + '\'' + '}';
         }
 
     }

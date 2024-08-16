@@ -13,7 +13,8 @@ public class SimpleStatistics implements StatisticsSupport {
     Integer cacheSize;
     Integer hours;
 
-    Cache<String, AtomicLong> cache ;
+    Cache<String, AtomicLong> cache;
+
     public SimpleStatistics(Integer cacheSize, Integer hours) {
         Assert.notNull(cacheSize, "cacheSize is null");
         Assert.notNull(hours, "hours is null");

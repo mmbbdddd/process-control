@@ -4,7 +4,6 @@ import cn.hz.ddbm.pc.core.support.StatisticsSupport;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MetricsTemplateMock implements StatisticsSupport {

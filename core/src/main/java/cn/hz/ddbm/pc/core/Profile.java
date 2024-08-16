@@ -58,8 +58,9 @@ public class Profile {
     public StepAttrs getStepAttrsOrDefault(String state) {
         return this.states.getOrDefault(state, new StepAttrs(this));
     }
+
     public void addRouter(ExpressionRouter router) {
-         this.routers.put(router.routerName(),router);
+        this.routers.put(router.routerName(), router);
     }
 
     public ExpressionRouter getRouter(String routerName) {

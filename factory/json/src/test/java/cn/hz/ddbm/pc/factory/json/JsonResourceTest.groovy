@@ -12,11 +12,12 @@ class JsonResourceTest {
     void testResolve() {
         jsonResource.content = "{}"
         Flow result = jsonResource.resolve()
-        assert result == new Flow(null, null, "init", ["ends"] as Set<String>, ["nodes"] as Set<String>,   new Profile())
+        assert result == new Flow(null, null, "init", ["ends"] as Set<String>, ["nodes"] as Set<String>, new Profile())
     }
+
     @Test
     void json() {
-         println(JSONUtil.toJsonStr(new Flow("","","init",["su","fail"] as Set,[] as Set, null)))
+        println(JSONUtil.toJsonStr(new Flow("", "", "init", ["su", "fail"] as Set, [] as Set, null)))
     }
 }
 

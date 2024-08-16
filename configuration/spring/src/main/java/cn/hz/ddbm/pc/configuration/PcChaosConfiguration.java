@@ -15,7 +15,6 @@ import cn.hz.ddbm.pc.session.memory.MemorySessionManager;
 import cn.hz.ddbm.pc.statistics.SimpleStatistics;
 import cn.hz.ddbm.pc.status.memory.MemoryStatusManager;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -31,12 +30,12 @@ public class PcChaosConfiguration {
 
     @Bean
     MemoryStatusManager memoryStatusManager() {
-        return new MemoryStatusManager(256,1);
+        return new MemoryStatusManager(256, 1);
     }
 
     @Bean
     MemorySessionManager memorySessionManager() {
-        return new MemorySessionManager(256,1);
+        return new MemorySessionManager(256, 1);
     }
 
     @Bean
@@ -71,7 +70,7 @@ public class PcChaosConfiguration {
 
     @Bean
     StatisticsSupport statisticsSupport(PcProperties properties) {
-        return new SimpleStatistics(properties.statistics.cacheSize,properties.getStatistics().hours);
+        return new SimpleStatistics(properties.statistics.cacheSize, properties.getStatistics().hours);
     }
 
 

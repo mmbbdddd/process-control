@@ -13,7 +13,7 @@ import cn.hz.ddbm.pc.profile.PcService;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-public interface StateMachineConfig<S>   {
+public interface StateMachineConfig<S> {
     String flowId();
 
     String describe();

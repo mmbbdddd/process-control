@@ -64,114 +64,114 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
-  Logger logger = LoggerFactory.getLogger(getClass());
+    Logger logger = LoggerFactory.getLogger(getClass());
 
-  public enum PcState {
-    init("初始化"), sended("已发送"), send_failover("发送错误"), miss_data("客户资料缺乏"), miss_data_fulled("客户资料已补"), su("成功"), fail("失败"), error("异常");
+    public enum PcState {
+        init("初始化"), sended("已发送"), send_failover("发送错误"), miss_data("客户资料缺乏"), miss_data_fulled("客户资料已补"), su("成功"), fail("失败"), error("异常");
 
-    private final String descr;
+        private final String descr;
 
-    PcState(String descr) {
-      this.descr = descr;
+        PcState(String descr) {
+            this.descr = descr;
+        }
     }
-  }
 
-  public Flow build(Container container) throws Exception {
-    StateMachineBuilder.Builder<PcState> builder = StateMachineBuilder.builder(this);
-    logger.info("构建订单状态机");
+    public Flow build(Container container) throws Exception {
+        StateMachineBuilder.Builder<PcState> builder = StateMachineBuilder.builder(this);
+        logger.info("构建订单状态机");
 
-    builder.withStates()
-            .initial(PcState.init)
-            .ends(PcState.su, PcState.fail, PcState.error)
-            .states(EnumSet.allOf(PcState.class))
-    ;
+        builder.withStates()
+                .initial(PcState.init)
+                .ends(PcState.su, PcState.fail, PcState.error)
+                .states(EnumSet.allOf(PcState.class))
+        ;
 
-    builder.withTransitions()
-            .router(PcState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter", null)
-            //发送异常，不明确是否发送
-            .router(PcState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
-            //已发送，对方处理中
-            .router(PcState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
-            //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
-            .router(PcState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter", null)
+        builder.withTransitions()
+                .router(PcState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter", null)
+                //发送异常，不明确是否发送
+                .router(PcState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
+                //已发送，对方处理中
+                .router(PcState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
+                //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
+                .router(PcState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter", null)
 //                资料就绪状态，可重新发送
-            .to(PcState.miss_data_fulled, Coasts.EVENT_DEFAULT, "", PcState.init)
-    //用户上传资料  && 更新资料状态
+                .to(PcState.miss_data_fulled, Coasts.EVENT_DEFAULT, "", PcState.init)
+        //用户上传资料  && 更新资料状态
 //                .to(PcState.miss_data, "uploade", "", "miss_data")
-    ;
+        ;
 
-    builder.withRouters()
+        builder.withRouters()
 //                .register("simpleRouter", new ExpressionRouter(new HashMap<>()))
-            .register(new ExpressionRouter("sendRouter",
-                    //sendRouter 有1/10的机会命中
-                    new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.1"),
-                    //su 有6/10的机会命中
-                    new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
-                    //fail 有1/10的机会命中
-                    new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.1"),
-                    //error 有2/10的机会命中
-                    new ExpressionRouter.NodeExpression("error", "Math.random() < 0.2")
-            ))
-            .register(new ExpressionRouter("notifyRouter",
-                    new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.1"),
-                    new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
-                    new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.1"),
-                    new ExpressionRouter.NodeExpression("error", "Math.random() < 0.2")
-            ))
-    ;
+                .register(new ExpressionRouter("sendRouter",
+                        //sendRouter 有1/10的机会命中
+                        new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.1"),
+                        //su 有6/10的机会命中
+                        new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
+                        //fail 有1/10的机会命中
+                        new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.1"),
+                        //error 有2/10的机会命中
+                        new ExpressionRouter.NodeExpression("error", "Math.random() < 0.2")
+                ))
+                .register(new ExpressionRouter("notifyRouter",
+                        new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.1"),
+                        new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
+                        new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.1"),
+                        new ExpressionRouter.NodeExpression("error", "Math.random() < 0.2")
+                ))
+        ;
 
-    return builder.build();
-  }
+        return builder.build();
+    }
 
-  @Override
-  public List<Plugin> plugins() {
-    return new ArrayList<Plugin>();
-  }
+    @Override
+    public List<Plugin> plugins() {
+        return new ArrayList<Plugin>();
+    }
 
-  @Override
-  public SessionManager sessionManager() {
-    return InfraUtils.getSessionManager(Coasts.SESSION_MANAGER_MEMORY);
-  }
+    @Override
+    public SessionManager sessionManager() {
+        return InfraUtils.getSessionManager(Coasts.SESSION_MANAGER_MEMORY);
+    }
 
-  @Override
-  public StatusManager statusManager() {
-    return InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
-  }
+    @Override
+    public StatusManager statusManager() {
+        return InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
+    }
 
-  @Override
-  public Map<String, Object> attrs() {
-    return new HashMap<>();
-  }
+    @Override
+    public Map<String, Object> attrs() {
+        return new HashMap<>();
+    }
 
 
-  public String machineId() {
-    return "test";
-  }
+    public String machineId() {
+        return "test";
+    }
 
-  @Override
-  public String describe() {
-    return "test";
-  }
+    @Override
+    public String describe() {
+        return "test";
+    }
 
 }
 
 
 @Test
 public void pc() throws Exception {
-  AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-  ctx.register(PcDemo.class);
-  ctx.refresh();
-  PcConfig pcConfig = new PcConfig();
-  Flow     flow     = pcConfig.build(null);
-  String   event    = Coasts.EVENT_DEFAULT;
-  chaosService.addFlow(flow);
+    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+    ctx.register(PcDemo.class);
+    ctx.refresh();
+    PcConfig pcConfig = new PcConfig();
+    Flow     flow     = pcConfig.build(null);
+    String   event    = Coasts.EVENT_DEFAULT;
+    chaosService.addFlow(flow);
 
-  try {
-    //验证100次，统计流程健壮性报表
-    chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10);
-  } catch (Exception e) {
-    e.printStackTrace();
-  }
+    try {
+        //验证100次，统计流程健壮性报表
+        chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10);
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
 }
 
  ```

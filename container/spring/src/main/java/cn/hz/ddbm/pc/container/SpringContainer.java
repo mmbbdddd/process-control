@@ -4,7 +4,6 @@ import cn.hz.ddbm.pc.core.support.Container;
 import org.springframework.context.ApplicationContext;
 
 import javax.annotation.Resource;
-import java.awt.*;
 import java.util.Map;
 
 public class SpringContainer implements Container {

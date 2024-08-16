@@ -16,8 +16,6 @@ import cn.hz.ddbm.pc.test.support.MetricsTemplateMock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
-
 @Configuration
 public class TestConfig {
     @Bean
@@ -62,11 +60,11 @@ public class TestConfig {
 
     @Bean
     SessionManager sessionManager() {
-        return new MemorySessionManager(256,2);
+        return new MemorySessionManager(256, 2);
     }
 
     @Bean
     StatusManager statusManager() {
-        return new MemoryStatusManager(256,2);
+        return new MemoryStatusManager(256, 2);
     }
 }

@@ -61,7 +61,7 @@
             <version>${pc.version}</version>
             <optional>true</optional>
         </dependency>
-           <dependency>
+        <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>session-memory</artifactId>
             <version>${pc.version}</version>
@@ -97,25 +97,21 @@
             <version>${pc.version}</version>
         </dependency>
         <dependency>
+            <groupId>cn.hz.ddbm.pc</groupId>
+            <artifactId>lock-jdk</artifactId>
+            <version>${pc.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-autoconfigure</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>4.0.13</version>
+         <dependency>
+             <groupId>org.apache.groovy</groupId>
+             <artifactId>groovy</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -127,12 +123,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>lock-jdk</artifactId>
-            <version>${pc.version}</version>
-            <scope>compile</scope>
         </dependency>
 
 

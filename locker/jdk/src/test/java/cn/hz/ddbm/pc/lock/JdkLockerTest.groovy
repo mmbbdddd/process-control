@@ -28,7 +28,7 @@ class JdkLockerTest {
                 try {
                     double d = Math.random();
                     jdkLocker.tryLock("key" + d, 1)
-                    jdkLocker.releaseLock("key" +d)
+                    jdkLocker.releaseLock("key" + d)
                     c.countDown()
                 } catch (Exception e) {
                     e.printStackTrace()

@@ -30,11 +30,11 @@ public class ChaosPcService extends PcService {
     List<StatisticsLine> statisticsLines;
     List<ChaosRule>      chaosRules;
 
-    public ChaosPcService( ) {
+    public ChaosPcService() {
         this.chaosRules = new ArrayList<>();
     }
 
-    public <T extends FlowPayload> void execute(String flowName, T payload, String event, Integer times, Integer timeout,List<ChaosRule> rules) {
+    public <T extends FlowPayload> void execute(String flowName, T payload, String event, Integer times, Integer timeout, List<ChaosRule> rules) {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         CountDownLatch cdl = new CountDownLatch(times);
@@ -69,7 +69,7 @@ public class ChaosPcService extends PcService {
 
     private void printStatisticsReport() {
         Map<Pair, List<StatisticsLine>> groups = statisticsLines.stream()
-                                                                .collect(Collectors.groupingBy(t -> Pair.of(t.result.type, t.result.value)));
+                .collect(Collectors.groupingBy(t -> Pair.of(t.result.type, t.result.value)));
         Logs.flow.info("混沌测试报告：\\n");
         groups.forEach((triple, list) -> {
             Logs.flow.info("{},{},{}", triple.getKey(), triple.getValue(), list.size());

@@ -41,7 +41,7 @@ public class PcDemo {
             }}));
         }};
         try {
-            chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10,rules);
+            chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10, rules);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,15 +1,12 @@
-package cn.hz.ddbm.pc.container.chaos;
+package cn.hz.ddbm.pc.container.chaos
 
-import cn.hz.ddbm.pc.container.ChaosAspect;
+import cn.hz.ddbm.pc.container.ChaosAspect
 import cn.hz.ddbm.pc.container.SpringContainer
-import cn.hz.ddbm.pc.core.support.Container;
-import cn.hz.ddbm.pc.profile.ChaosPcService;
-import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import java.util.ArrayList;
-import java.util.List;
+import cn.hz.ddbm.pc.core.support.Container
+import cn.hz.ddbm.pc.profile.ChaosPcService
+import cn.hz.ddbm.pc.profile.chaos.ChaosRule
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
 @Configuration
 public class ChaosTestConfig {
@@ -34,9 +31,11 @@ public class ChaosTestConfig {
         return new ChaosPcService() {
             @Override
             public List<ChaosRule> chaosRules() {
-                return new ArrayList<ChaosRule>() {{
-                    add(new ChaosRule("true",0.5,[IOException.class,RuntimeException.class]));
-                }};
+                return new ArrayList<ChaosRule>() {
+                    {
+                        add(new ChaosRule("true", 0.5, [IOException.class, RuntimeException.class]));
+                    }
+                };
             }
         };
     }

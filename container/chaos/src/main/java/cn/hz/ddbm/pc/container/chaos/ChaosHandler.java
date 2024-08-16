@@ -1,12 +1,8 @@
 package cn.hz.ddbm.pc.container.chaos;
 
-import cn.hz.ddbm.pc.core.support.Container;
-import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -38,8 +34,6 @@ public class ChaosHandler {
             }
         }
     }
-
-
 
 
 }

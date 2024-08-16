@@ -5,7 +5,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
@@ -18,7 +17,7 @@ public class ChaosAspect {
     @Around(" execution(* cn.hz.ddbm.pc.core.Action.*(*))")
     public Object action(ProceedingJoinPoint pjp) throws Throwable {
         Object   target = pjp.getTarget();
-        Method   method = ((MethodSignature)pjp.getSignature()).getMethod();
+        Method   method = ((MethodSignature) pjp.getSignature()).getMethod();
         Object[] args   = pjp.getArgs();
         chaosHandler.handle(target, method, args);
         return pjp.proceed();
@@ -27,7 +26,7 @@ public class ChaosAspect {
     @Around("execution(* cn.hz.ddbm.pc.core.Router.route(*))")
     public Object router(ProceedingJoinPoint pjp) throws Throwable {
         Object   target = pjp.getTarget();
-        Method   method = ((MethodSignature)pjp.getSignature()).getMethod();
+        Method   method = ((MethodSignature) pjp.getSignature()).getMethod();
         Object[] args   = pjp.getArgs();
         chaosHandler.handle(target, method, args);
         return pjp.proceed();
@@ -36,7 +35,7 @@ public class ChaosAspect {
     @Around("execution(* cn.hz.ddbm.pc.core.support.Locker.*(..))")
     public Object locker(ProceedingJoinPoint pjp) throws Throwable {
         Object   target = pjp.getTarget();
-        Method   method = ((MethodSignature)pjp.getSignature()).getMethod();
+        Method   method = ((MethodSignature) pjp.getSignature()).getMethod();
         Object[] args   = pjp.getArgs();
         chaosHandler.handle(target, method, args);
         return pjp.proceed();
@@ -45,7 +44,7 @@ public class ChaosAspect {
     @Around("execution(* cn.hz.ddbm.pc.core.support.SessionManager.*(..))")
     public Object session(ProceedingJoinPoint pjp) throws Throwable {
         Object   target = pjp.getTarget();
-        Method   method = ((MethodSignature)pjp.getSignature()).getMethod();
+        Method   method = ((MethodSignature) pjp.getSignature()).getMethod();
         Object[] args   = pjp.getArgs();
         chaosHandler.handle(target, method, args);
         return pjp.proceed();
@@ -54,7 +53,7 @@ public class ChaosAspect {
     @Around("execution(* cn.hz.ddbm.pc.core.support.StatusManager.*(..))")
     public Object status(ProceedingJoinPoint pjp) throws Throwable {
         Object   target = pjp.getTarget();
-        Method   method = ((MethodSignature)pjp.getSignature()).getMethod();
+        Method   method = ((MethodSignature) pjp.getSignature()).getMethod();
         Object[] args   = pjp.getArgs();
         chaosHandler.handle(target, method, args);
         return pjp.proceed();

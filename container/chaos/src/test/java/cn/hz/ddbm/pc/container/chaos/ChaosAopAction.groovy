@@ -1,8 +1,8 @@
-package cn.hz.ddbm.pc.container.chaos;
+package cn.hz.ddbm.pc.container.chaos
 
-import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.FlowContext;
-import org.springframework.stereotype.Component;
+import cn.hz.ddbm.pc.core.Action
+import cn.hz.ddbm.pc.core.FlowContext
+import org.springframework.stereotype.Component
 
 @Component
 public class ChaosAopAction implements Action {

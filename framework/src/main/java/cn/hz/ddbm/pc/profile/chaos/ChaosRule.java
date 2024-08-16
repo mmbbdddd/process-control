@@ -18,11 +18,11 @@ public class ChaosRule {
      * method：方法
      * 参数：分别以args1，args2，args3.。。命名
      */
-    String                 expression;
+    String                           expression;
     //触发概率
-    double                 probability;
+    double                           probability;
     //触发后，跑出的异常类型（随便选一个）
-    List<Class<?extends Throwable>> errorTypes;
+    List<Class<? extends Throwable>> errorTypes;
 
     public ChaosRule(String expression, double probability, List<Class<? extends Throwable>> errorTypes) {
         this.expression  = expression;

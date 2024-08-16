@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 public interface Container {
     Object getBean(String beanName);
+
     <T> T getBean(Class<T> clazz);
 
     <T> T getBean(String name, Class<T> clazz);
