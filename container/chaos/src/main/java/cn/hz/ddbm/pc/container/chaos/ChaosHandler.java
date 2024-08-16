@@ -6,7 +6,9 @@ import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
 import java.lang.reflect.Method;
 import java.util.List;
 
-
+/**
+ * 混沌发生器。具体发生规则参见ChaosRule
+ */
 public class ChaosHandler {
 
     ChaosPcService chaosPcService;
@@ -24,7 +26,6 @@ public class ChaosHandler {
      * @throws Throwable
      */
     public void handle(Object proxy, Method method, Object[] args) throws Throwable {
-        System.out.println("chaos");
         List<ChaosRule> rules = chaosPcService.chaosRules();
         if (null != rules) {
             for (ChaosRule rule : rules) {
