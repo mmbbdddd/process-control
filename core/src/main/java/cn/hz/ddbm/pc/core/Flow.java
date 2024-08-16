@@ -9,6 +9,7 @@ import cn.hz.ddbm.pc.core.router.ToRouter;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Data;
 import lombok.Getter;
+import org.hamcrest.Condition;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -119,15 +120,15 @@ public class Flow {
         Assert.isTrue(true, "ctx is null");
 
         String node = ctx.getStatus()
-                .getNode();
+                         .getNode();
         FsmRecord atom = fsmTable.find(node, ctx.getEvent());
         Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent().getCode(), ctx.getStatus().getNode()));
 
         AtomExecutor atomExecutor = AtomExecutor.builder()
-                .event(atom.getEvent())
-                .plugins(plugins)
-                .actionRouter(atom.getActionRouter())
-                .build();
+                                                .event(atom.getEvent())
+                                                .plugins(plugins)
+                                                .actionRouter(atom.getState())
+                                                .build();
         ctx.setAtomExecutor(atomExecutor);
 
         atomExecutor.execute(ctx);
@@ -176,9 +177,9 @@ public class Flow {
 
         public FsmRecord find(String node, Event event) {
             return records.stream()
-                    .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent().getCode(), event.getCode()))
-                    .findFirst()
-                    .orElse(null);
+                          .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent().getCode(), event.getCode()))
+                          .findFirst()
+                          .orElse(null);
         }
 
         /**
@@ -194,16 +195,7 @@ public class Flow {
 
         private void onInner(String from, Event event, ActionRouter actionRouter) {
             //增加外部event事件
-            this.records.add(new FsmRecord(from, event, actionRouter));
-            if (actionRouter.getRouter() instanceof ExpressionRouter) {
-                String routerStatus = actionRouter.status();
-                this.records.add(new FsmRecord(routerStatus, event, new ActionRouter(routerStatus, Coasts.NONE_ACTION, actionRouter.getRouter())));
-            }
-//            //增加瞬态事件
-//            actionRouter.eventToNodes().forEach((routerResultEvent, routerResultNode) -> {
-//                ToRouter toRouter = new ToRouter(actionRouter.status(), routerResultNode);
-//                this.records.add(new FsmRecord(actionRouter.status(), routerResultEvent, new ActionRouter(from, Coasts.NONE_ACTION, toRouter)));
-//            });
+            this.records.addAll(actionRouter.fsmRecords(event));
         }
 
         @Override
@@ -213,17 +205,17 @@ public class Flow {
     }
 
     @Data
-    static class FsmRecord {
+    public static class FsmRecord {
         String       from;
         Event        event;
-        ActionRouter actionRouter;
+        ActionRouter state;
         String       to;
 
-        public FsmRecord(String from, Event event, ActionRouter actionRouter) {
-            this.from         = from;
-            this.event        = event;
-            this.actionRouter = actionRouter;
-            this.to           = actionRouter.status();
+        public FsmRecord(String from, Event event, ActionRouter state) {
+            this.from  = from;
+            this.event = event;
+            this.state = state;
+            this.to    = state.status();
         }
 
         @Override
@@ -241,8 +233,8 @@ public class Flow {
 
         @Override
         public String toString() {
-            return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + actionRouter.getAction()
-                    .beanName() + '\'' + ", to:'" + to + '\'' + '}';
+            return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + state.getAction()
+                                                                                                             .beanName() + '\'' + ", to:'" + to + '\'' + '}';
         }
 
     }

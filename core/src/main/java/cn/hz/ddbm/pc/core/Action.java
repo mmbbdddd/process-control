@@ -31,8 +31,6 @@ public interface Action {
      * @param actionDsl
      * @return
      */
-
-
     String single_regexp = "\\w{1,20}";
     String multi_regexp  = "(\\w+,)+\\w+";
     String saga_regexp   = "(\\w+,)_\\w+";

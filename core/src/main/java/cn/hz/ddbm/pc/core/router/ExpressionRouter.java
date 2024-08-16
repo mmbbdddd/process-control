@@ -47,10 +47,6 @@ public class ExpressionRouter implements AnyRouter, State.Instant {
     }
 
 
-    @Override
-    public Set<String> toNodes() {
-        return this.toNodes;
-    }
 
     @Override
     public String status() {

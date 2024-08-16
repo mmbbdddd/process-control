@@ -26,7 +26,7 @@ public interface Router {
         return beforeNode;
     }
 
-    Set<String> toNodes();
+
 
 
 }

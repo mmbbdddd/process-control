@@ -4,6 +4,7 @@ package cn.hz.ddbm.pc.core.router;
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.Router;
+import cn.hz.ddbm.pc.core.State;
 import lombok.Getter;
 
 import java.util.HashSet;
@@ -17,7 +18,7 @@ import java.util.Set;
  **/
 
 
-public class ToRouter implements Router {
+public class ToRouter implements Router, State {
     String from;
     @Getter
     String to;
@@ -46,12 +47,7 @@ public class ToRouter implements Router {
         return from;
     }
 
-    @Override
-    public Set<String> toNodes() {
-        return new HashSet<String>() {{
-            add(to);
-        }};
-    }
+
 
     @Override
     public String toString() {
@@ -59,5 +55,15 @@ public class ToRouter implements Router {
                 "from:'" + from + '\'' +
                 ", to:'" + to + '\'' +
                 '}';
+    }
+
+    @Override
+    public String status() {
+        return to;
+    }
+
+    @Override
+    public Integer getRetry() {
+        return Integer.MAX_VALUE;
     }
 }
