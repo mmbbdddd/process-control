@@ -13,18 +13,19 @@ public class SimpleStatistics implements StatisticsSupport {
     Integer cacheSize;
     Integer hours;
 
+    Cache<String, AtomicLong> cache ;
     public SimpleStatistics(Integer cacheSize, Integer hours) {
         Assert.notNull(cacheSize, "cacheSize is null");
         Assert.notNull(hours, "hours is null");
         this.cacheSize = cacheSize;
         this.hours     = hours;
+        this.cache     = Caffeine.newBuilder()
+                .initialCapacity(cacheSize > 256 ? cacheSize / 8 : cacheSize)
+                .maximumSize(cacheSize)
+                .expireAfterWrite(Duration.ofHours(hours))
+                .build();
     }
 
-    Cache<String, AtomicLong> cache = Caffeine.newBuilder()
-            .initialCapacity(1)
-            .maximumSize(cacheSize)
-            .expireAfterWrite(Duration.ofHours(hours))
-            .build();
 
     @Override
     public void increment(String windows) {
