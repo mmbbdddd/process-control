@@ -38,13 +38,14 @@ public class ActionRouter implements State.Instant {
      * @return
      */
     public Set<Flow.FsmRecord> fsmRecords(Event event) {
+        ActionRouter self = this;
         return new HashSet<Flow.FsmRecord>() {{
             if (router instanceof ToRouter) {
-                add(new Flow.FsmRecord(from, event, new ActionRouter(from, action, router)));
+                add(new Flow.FsmRecord(from, event, self));
             }
             if (router instanceof ExpressionRouter) {
                 String status = ((ExpressionRouter) router).status();
-                add(new Flow.FsmRecord(from, event, new ActionRouter(from, action, new ToRouter(from, status))));
+                add(new Flow.FsmRecord(from, event, self));
                 add(new Flow.FsmRecord(status, event, new ActionRouter(status, Coasts.NONE_ACTION, router)));
             }
         }};
