@@ -32,7 +32,7 @@ public interface Action {
 
 
     String single_regexp = "\\w{1,20}";
-    String multi_regexp  = "";
+    String multi_regexp  = "(\\w+,)+\\w+";
     String saga_regexp   = "";
 
     public static Action of(String actionDsl) {

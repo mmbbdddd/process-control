@@ -28,10 +28,14 @@ class ActionTest extends Specification {
     }
 
     def "exp"() {
-        when:
-        int i = 0;
-        then:
-        println "action".matches("\\w+")
+        expect:
+        str.matches(regex) == result
+        where:
+        regex           | str      | result
+        "\\w+"          | "action" | true
+        "(\\w+,)+\\w++" | "a,b"    | true
+        "(\\w+,)+\\w++" | "a"      | false
+
     }
 
     @ComponentScan("cn.hz.ddbm.pc.core.actions")
