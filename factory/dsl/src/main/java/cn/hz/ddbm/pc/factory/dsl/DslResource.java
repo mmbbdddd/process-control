@@ -14,7 +14,7 @@ public class DslResource extends Resource {
     @Override
     public Flow resolve() {
         try {
-            return config.build(InfraUtils.getContainer());
+            return config.build();
         } catch (Exception e) {
             //todo
             throw new RuntimeException(e);

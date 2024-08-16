@@ -3,7 +3,6 @@ package cn.hz.ddbm.pc.example;
 import cn.hz.ddbm.pc.configuration.PcChaosConfiguration;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
 import cn.hz.ddbm.pc.test.support.PayloadMock;
@@ -28,10 +27,9 @@ public class PcDemo {
         ctx.register(PcChaosConfiguration.class);
         ctx.refresh();
 //        PcService devPcService = ctx.getBean(DevPcService.class);
-        Container container = ctx.getBean(Container.class);
         chaosService = ctx.getBean(ChaosPcService.class);
         PcConfig pcConfig = new PcConfig();
-        Flow     flow     = pcConfig.build(container);
+        Flow     flow     = pcConfig.build();
         String   event    = Coasts.EVENT_DEFAULT;
         chaosService.addFlow(flow);
         List<ChaosRule> rules = new ArrayList<ChaosRule>() {{

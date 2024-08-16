@@ -64,7 +64,7 @@ public class Flow {
         plugins.add(Coasts.PLUGIN_DIGEST_LOG);
         plugins.add(Coasts.PLUGIN_ERROR_LOG);
         Flow flow = new Flow(name, descr, init, ends, nodes, Profile.defaultOf());
-        flow.plugins = InfraUtils.getContainer().getByCodesOfType(plugins, Plugin.class);
+        flow.plugins = InfraUtils.getByCodesOfType(plugins, Plugin.class);
         return flow;
     }
 

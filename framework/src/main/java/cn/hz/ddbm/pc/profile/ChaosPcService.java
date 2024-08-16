@@ -92,7 +92,7 @@ public class ChaosPcService extends PcService {
 
     @Override
     public Profile profile() {
-        return Profile.chaosOf(InfraUtils.getContainer());
+        return Profile.chaosOf();
     }
 
     public List<ChaosRule> chaosRules() {

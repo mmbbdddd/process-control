@@ -1,10 +1,11 @@
 package cn.hz.ddbm.pc.factory.dsl;
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.core.ActionAttrs;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
-import cn.hz.ddbm.pc.core.support.Container;
+import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.profile.PcService;
 import lombok.Getter;
 
@@ -35,11 +36,11 @@ public class StateMachineBuilder<S> {
             this.transitions = new Transitions<>();
         }
 
-        public Flow build(Container container) {
+        public Flow build() {
             String      init    = states.init.name();
             Set<String> ends    = states.ends.stream().map(Enum::name).collect(Collectors.toSet());
             Set<String> nodes   = states.states.stream().map(Enum::name).collect(Collectors.toSet());
-            Profile     profile = container.getBean(PcService.class).profile();
+            Profile     profile = InfraUtils.getBean(PcService.class).profile();
             this.routers.routers.forEach((rn, r) -> profile.addRouter(r));
             Flow flow = Flow.of(fsm.flowId(), fsm.describe(), init, ends, nodes, profile);
             this.transitions.transitions.forEach(transition -> {

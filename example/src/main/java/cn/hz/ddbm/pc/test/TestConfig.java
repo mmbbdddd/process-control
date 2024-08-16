@@ -9,7 +9,6 @@ import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.session.memory.MemorySessionManager;
 import cn.hz.ddbm.pc.status.memory.MemoryStatusManager;
-import cn.hz.ddbm.pc.test.support.ContainerMock;
 import cn.hz.ddbm.pc.test.support.DigestLogPluginMock;
 import cn.hz.ddbm.pc.test.support.ExpressionEngineMock;
 import cn.hz.ddbm.pc.test.support.MetricsTemplateMock;
@@ -19,13 +18,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TestConfig {
     @Bean
-    ExpressionEngine expressionEngine(ContainerMock container) {
+    ExpressionEngine expressionEngine() {
         return new ExpressionEngineMock();
     }
 
     @Bean
-    InfraUtils infraUtils(ContainerMock container) {
-        return new InfraUtils(container);
+    InfraUtils infraUtils() {
+        return new InfraUtils();
     }
 
     @Bean
@@ -38,10 +37,6 @@ public class TestConfig {
         return new ChaosPcService();
     }
 
-    @Bean
-    ContainerMock container() {
-        return new ContainerMock();
-    }
 
     @Bean
     Action testAction() {

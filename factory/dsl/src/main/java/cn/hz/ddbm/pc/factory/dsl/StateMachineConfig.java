@@ -4,7 +4,6 @@ import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.action.NoneAction;
-import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -18,7 +17,7 @@ public interface StateMachineConfig<S> {
 
     String describe();
 
-    Flow build(Container container) throws Exception;
+    Flow build() throws Exception;
 
     List<Plugin> plugins();
 
@@ -33,7 +32,7 @@ public interface StateMachineConfig<S> {
 
     @PostConstruct
     default void afterPropertiesSet() throws Exception {
-        InfraUtils.getContainer().getBean(PcService.class).addFlow(build(InfraUtils.getContainer()));
+        InfraUtils.getBean(PcService.class).addFlow(build());
     }
 
 }

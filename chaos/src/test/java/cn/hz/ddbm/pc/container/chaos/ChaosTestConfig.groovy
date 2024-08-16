@@ -1,8 +1,6 @@
 package cn.hz.ddbm.pc.container.chaos
 
 import cn.hz.ddbm.pc.container.ChaosAspect
-import cn.hz.ddbm.pc.container.SpringContainer
-import cn.hz.ddbm.pc.core.support.Container
 import cn.hz.ddbm.pc.profile.ChaosPcService
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule
 import org.springframework.context.annotation.Bean
@@ -10,10 +8,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 public class ChaosTestConfig {
-    @Bean
-    Container chaosContainer() {
-        return new SpringContainer();
-    }
 
 
     @Bean

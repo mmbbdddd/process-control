@@ -3,7 +3,6 @@ package cn.hz.ddbm.pc.core;
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
-import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -24,11 +23,8 @@ public class Profile {
     private Map<String, StepAttrs>        states;
     private Map<String, ActionAttrs>      actions;
     private Map<String, ExpressionRouter> routers;
-    private Container                     container;
 
-    public Profile(Container container, String sessionManager, String statusManager) {
-        Assert.notNull(container, "container is null");
-        this.container          = container;
+    public Profile(String sessionManager, String statusManager) {
         this.actions            = new HashMap<>();
         this.states             = new HashMap<>();
         this.routers            = new HashMap<>();
@@ -39,15 +35,15 @@ public class Profile {
     }
 
     public static Profile defaultOf() {
-        return new Profile(InfraUtils.getContainer(), Coasts.SESSION_MANAGER_REDIS, Coasts.STATUS_MANAGER_REDIS);
+        return new Profile(  Coasts.SESSION_MANAGER_REDIS, Coasts.STATUS_MANAGER_REDIS);
     }
 
-    public static Profile chaosOf(Container container) {
-        return new Profile(container, Coasts.SESSION_MANAGER_MEMORY, Coasts.STATUS_MANAGER_MEMORY);
+    public static Profile chaosOf() {
+        return new Profile(  Coasts.SESSION_MANAGER_MEMORY, Coasts.STATUS_MANAGER_MEMORY);
     }
 
     public static Profile devOf() {
-        return new Profile(InfraUtils.getContainer(), Coasts.SESSION_MANAGER_MEMORY, Coasts.STATUS_MANAGER_MEMORY);
+        return new Profile(  Coasts.SESSION_MANAGER_MEMORY, Coasts.STATUS_MANAGER_MEMORY);
     }
 
     public void setStepAttrs(String state, StepAttrs stepAttrs) {

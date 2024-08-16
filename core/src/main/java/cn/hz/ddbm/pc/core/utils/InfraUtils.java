@@ -1,29 +1,27 @@
 package cn.hz.ddbm.pc.core.utils;
 
 
+import cn.hutool.extra.spring.SpringUtil;
+import cn.hz.ddbm.pc.core.ValueObject;
 import cn.hz.ddbm.pc.core.support.*;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class InfraUtils {
-
-
-    @Getter
-    static Container                   container;
     static Map<String, SessionManager> sessionManagerMap;
     static Map<String, StatusManager>  statusManagerMap;
 
-    public InfraUtils(Container container) {
-        InfraUtils.container = container;
-        sessionManagerMap    = container.getBeansOfType(SessionManager.class).values().stream().collect(Collectors.toMap(
+    public InfraUtils() {
+        sessionManagerMap = SpringUtil.getBeansOfType(SessionManager.class).values().stream().collect(Collectors.toMap(
                 SessionManager::code,
                 t -> t
         ));
-        statusManagerMap     = container.getBeansOfType(StatusManager.class).values().stream().collect(Collectors.toMap(
+        statusManagerMap  = SpringUtil.getBeansOfType(StatusManager.class).values().stream().collect(Collectors.toMap(
                 StatusManager::code,
                 t -> t
         ));
@@ -38,7 +36,7 @@ public class InfraUtils {
     }
 
     public static StatisticsSupport getMetricsTemplate() {
-        return container.getBean(StatisticsSupport.class);
+        return SpringUtil.getBean(StatisticsSupport.class);
     }
 
     public static ExecutorService getPluginExecutorService() {
@@ -46,7 +44,7 @@ public class InfraUtils {
     }
 
     public static Locker getLocker() {
-        return container.getBean(Locker.class);
+        return SpringUtil.getBean(Locker.class);
     }
 
 
@@ -55,8 +53,33 @@ public class InfraUtils {
     }
 
     public static ExpressionEngine getExpressionEngine() {
-        return container.getBean(ExpressionEngine.class);
+        return SpringUtil.getBean(ExpressionEngine.class);
     }
 
+    public static Object getBean(String beanName) {
+        return SpringUtil.getBean(beanName);
+    }
+
+    public static <T> T getBean(Class<T> clazz) {
+        return SpringUtil.getBean(clazz);
+    }
+
+    public static <T> T getBean(String name, Class<T> clazz) {
+        return SpringUtil.getBean(name, clazz);
+    }
+
+    public static <T> Map<String, T> getBeansOfType(Class<T> type) {
+        return SpringUtil.getBeansOfType(type);
+    }
+
+    public static <T extends ValueObject> List<T> getByCodesOfType(List<String> codes, Class<T> type) {
+        Map<String, T> beans = SpringUtil.getBeansOfType(type);
+        return beans.values().stream().filter(t -> codes.contains(t.code())).collect(Collectors.toList());
+    }
+
+    public static <T extends ValueObject> T getByCodeOfType(String code, Class<T> type) {
+        Map<String, T> beans = SpringUtil.getBeansOfType(type);
+        return beans.values().stream().filter(t -> code.contains(t.code())).findFirst().get();
+    }
 
 }

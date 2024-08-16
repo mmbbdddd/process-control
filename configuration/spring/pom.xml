@@ -35,14 +35,11 @@
         </dependency>
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>container-spring</artifactId>
+            <artifactId>chaos</artifactId>
             <version>${pc.version}</version>
         </dependency>
-        <dependency>
-            <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>container-chaos</artifactId>
-            <version>${pc.version}</version>
-        </dependency>
+
+
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>factory-dsl</artifactId>

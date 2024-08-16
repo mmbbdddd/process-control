@@ -4,7 +4,6 @@ import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
-import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -30,7 +29,7 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
         }
     }
 
-    public Flow build(Container container) throws Exception {
+    public Flow build() throws Exception {
         StateMachineBuilder.Builder<PcState> builder = StateMachineBuilder.builder(this);
         logger.info("构建订单状态机");
 
@@ -71,7 +70,7 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
                 ))
         ;
 
-        return builder.build(container);
+        return builder.build();
     }
 
     @Override

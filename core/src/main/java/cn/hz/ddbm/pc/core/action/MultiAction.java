@@ -11,9 +11,14 @@ import java.util.List;
  **/
 
 
-public class CombAction implements Action {
+public class MultiAction implements Action {
     String       actionNames;
     List<Action> actions;
+
+    public MultiAction(String actionNames, List<Action> actions) {
+        this.actionNames = actionNames;
+        this.actions     = actions;
+    }
 
     @Override
     public String beanName() {

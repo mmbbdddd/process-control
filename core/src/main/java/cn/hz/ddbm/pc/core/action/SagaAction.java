@@ -19,16 +19,26 @@ import java.io.Serializable;
  **/
 
 
-public interface SagaAction extends Action {
+public class SagaAction implements Action {
+    String failover;
+    Action action;
 
-    String failover();
+    public SagaAction(String failover, Action action) {
+        this.failover = failover;
+        this.action   = action;
+    }
 
     @Override
-    default void execute(FlowContext<?> ctx) {
+    public String beanName() {
+        return action.beanName();
+    }
+
+    @Override
+    public void execute(FlowContext<?> ctx) throws Exception {
         Router       router       = ctx.getAtomExecutor().getActionRouter().getRouter();
         String       flow         = ctx.getFlow().getName();
         Serializable flowId       = ctx.getId();
-        String       failOverNode = failover();
+        String       failOverNode = failover;
         try {
             StatusManager statusManager = ctx.getFlow().getProfile().getStatusManagerBean();
             statusManager.setStatus(flow, flowId, FlowStatus.of(failOverNode), ctx.getProfile().getStatusTimeout(), ctx);
@@ -38,6 +48,9 @@ public interface SagaAction extends Action {
         executeTx(ctx);
     }
 
-    void executeTx(FlowContext<?> ctx);
-
+    public void executeTx(FlowContext<?> ctx) throws Exception {
+        action.execute(ctx);
+    }
 }
+
+

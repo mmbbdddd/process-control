@@ -16,8 +16,8 @@
         <module>factory</module>
         <module>plugin</module>
         <module>session</module>
+        <module>chaos</module>
         <module>status</module>
-        <module>container</module>
         <module>configuration</module>
         <module>locker</module>
         <module>statistics</module>

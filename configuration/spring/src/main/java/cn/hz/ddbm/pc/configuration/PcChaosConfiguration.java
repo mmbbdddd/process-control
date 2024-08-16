@@ -1,9 +1,8 @@
 package cn.hz.ddbm.pc.configuration;
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.container.ChaosAspect;
-import cn.hz.ddbm.pc.container.SpringContainer;
 import cn.hz.ddbm.pc.container.chaos.ChaosHandler;
-import cn.hz.ddbm.pc.core.support.Container;
 import cn.hz.ddbm.pc.core.support.ExpressionEngine;
 import cn.hz.ddbm.pc.core.support.Locker;
 import cn.hz.ddbm.pc.core.support.StatisticsSupport;
@@ -48,10 +47,6 @@ public class PcChaosConfiguration {
         return new ChaosAspect();
     }
 
-    @Bean
-    Container container() {
-        return new SpringContainer();
-    }
 
     @Bean
     Locker locker() {
@@ -64,8 +59,12 @@ public class PcChaosConfiguration {
     }
 
     @Bean
-    InfraUtils infraUtils(Container container) {
-        return new InfraUtils(container);
+    InfraUtils infraUtils() {
+        return new InfraUtils();
+    }
+    @Bean
+    SpringUtil springUtil() {
+        return new SpringUtil();
     }
 
     @Bean
