@@ -8,6 +8,7 @@ import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.SessionException;
 import cn.hz.ddbm.pc.core.exception.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
+import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
 
 import java.io.Serializable;
@@ -85,11 +86,32 @@ public class ChaosPcService extends PcService {
         Flow                     flow = getFlow(flowName);
         FlowContext<MockPayLoad> ctx  = new FlowContext<>(flow, payload, event, Profile.chaosOf());
         ctx.setMockBean(mock);
-        while (isCanContinue(ctx)) {
-            Logs.flow.info("xxxx{},{},{}", flow.getName(), ctx.getId(), ctx.getStatus());
+        while (chaosIsContine(ctx)) {
             execute(ctx);
         }
         return ctx;
+    }
+    public boolean chaosIsContine(FlowContext<?> ctx) {
+        Flow.STAUS flowStatus = ctx.getStatus().getFlow();
+        String     node       = ctx.getStatus().getNode();
+        String     flowName   = ctx.getFlow().getName();
+        State      nodeObj    = ctx.getFlow().getStep(node);
+        if (ctx.getFlow().isRouter(node)) {
+            return true;
+        }
+        if (ctx.getFlow().isEnd(node)) {
+            Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
+            return false;
+        }
+        String  windows   = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), node, Coasts.NODE_RETRY);
+        Long    exeRetry  = InfraUtils.getMetricsTemplate().get(windows);
+        Integer nodeRetry = nodeObj.getRetry();
+
+        if (exeRetry > nodeRetry) {
+            Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), node, exeRetry, nodeRetry);
+            return false;
+        }
+        return true;
     }
 
 
