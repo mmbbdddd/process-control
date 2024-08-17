@@ -24,6 +24,7 @@ public class PcDemo {
     @Test
     public void pc() throws Exception {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+        ctx.register(PcDemo.class);
         ctx.register(PcChaosConfiguration.class);
         ctx.refresh();
 //        PcService devPcService = ctx.getBean(DevPcService.class);
@@ -31,7 +32,7 @@ public class PcDemo {
         PcConfig pcConfig = new PcConfig();
         Flow     flow     = pcConfig.build();
         String   event    = Coasts.EVENT_DEFAULT;
-        chaosService.addFlow(flow);
+
         List<ChaosRule> rules = new ArrayList<ChaosRule>() {{
             add(new ChaosRule("true", 0.1, new ArrayList<Class<? extends Throwable>>() {{
                 add(RuntimeException.class);
@@ -46,8 +47,8 @@ public class PcDemo {
     }
 
     @Bean
-    ChaosPcService chaosPcService() {
-        return new ChaosPcService();
+    PcConfig chaosPcService() {
+        return new PcConfig();
     }
 
 

@@ -16,7 +16,7 @@ public class DevPcService extends PcService {
         Assert.notNull(payload, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = getFlow(flowName);
-        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, profile());
+        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, Profile.devOf());
         oneStep(ctx);
     }
 
@@ -28,8 +28,4 @@ public class DevPcService extends PcService {
         ctx.setFluent(rawFluent);
     }
 
-    @Override
-    public Profile profile() {
-        return Profile.defaultOf();
-    }
 }

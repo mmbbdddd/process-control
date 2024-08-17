@@ -3,6 +3,7 @@ package cn.hz.ddbm.pc.factory.dsl;
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.Flow;
 import cn.hz.ddbm.pc.core.Plugin;
+import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.action.NoneAction;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
@@ -21,9 +22,9 @@ public interface StateMachineConfig<S> {
 
     List<Plugin> plugins();
 
-    SessionManager sessionManager();
+    SessionManager.Type session();
 
-    StatusManager statusManager();
+    StatusManager.Type status();
 
 
     default Action getAction(String action) {
@@ -32,7 +33,9 @@ public interface StateMachineConfig<S> {
 
     @PostConstruct
     default void afterPropertiesSet() throws Exception {
-        InfraUtils.getBean(PcService.class).addFlow(build());
+        Flow flow = build();
+        flow.setPlugins(plugins());
+        InfraUtils.getBean(PcService.class).addFlow(flow);
     }
 
 }

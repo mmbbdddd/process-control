@@ -31,8 +31,8 @@ public class MemoryStatusManager implements StatusManager {
     }
 
     @Override
-    public String code() {
-        return Coasts.STATUS_MANAGER_MEMORY;
+    public Type code() {
+        return Type.memory;
     }
 
     @Override

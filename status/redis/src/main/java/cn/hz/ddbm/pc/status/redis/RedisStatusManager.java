@@ -15,8 +15,8 @@ public class RedisStatusManager implements StatusManager {
     RedisTemplate<String, FlowStatus> redisTemplate;
 
     @Override
-    public String code() {
-        return Coasts.STATUS_MANAGER_MEMORY;
+    public Type code() {
+        return Type.redis;
     }
 
     String keyTemplate = "%s:%s";

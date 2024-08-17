@@ -13,7 +13,7 @@ import cn.hz.ddbm.pc.core.exception.SessionException;
 
 
 public interface SessionManager {
-    String code();
+    Type code();
 
     void set(String flowName, String flowId, String key, Object value);
 
@@ -21,5 +21,8 @@ public interface SessionManager {
 
     default void flush(FlowContext<?> ctx) throws SessionException {
         //todo
+    }
+    enum Type{
+        memory,redis
     }
 }

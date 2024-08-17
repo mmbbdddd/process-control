@@ -9,6 +9,7 @@ import cn.hz.ddbm.pc.core.router.ToRouter;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.hamcrest.Condition;
 
 import java.util.*;
@@ -22,7 +23,7 @@ public class Flow {
     final Profile           profile;
     final Map<String, Node> ends;
     final Map<String, Node> nodes;
-    //    Map<String, ExpressionRouter> routers;
+    @Setter
     List<Plugin> plugins;
     FsmTable     fsmTable;
 
@@ -70,12 +71,6 @@ public class Flow {
     }
 
 
-//    /**
-//     * 定义流程的router
-//     */
-//    public void addRouter(ExpressionRouter router) {
-//        this.routers.put(router.routerName(), router);
-//    }
 
     /**
      * 定义流程事件绑定关系
@@ -103,7 +98,6 @@ public class Flow {
         Event  e        = Event.of(event);
         Router toRouter = new ToRouter(source, to);
         this.fsmTable.on(source, e, action, toRouter);
-//        addRouter(toRouter);
     }
 
 

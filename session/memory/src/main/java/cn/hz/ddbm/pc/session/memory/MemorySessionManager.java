@@ -30,8 +30,8 @@ public class MemorySessionManager implements SessionManager {
 
 
     @Override
-    public String code() {
-        return Coasts.SESSION_MANAGER_MEMORY;
+    public Type code() {
+        return Type.memory;
     }
 
     @Override

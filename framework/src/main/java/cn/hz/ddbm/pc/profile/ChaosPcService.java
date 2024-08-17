@@ -85,15 +85,11 @@ public class ChaosPcService extends PcService {
     private <T extends FlowPayload> FlowContext<T> standalone(String flowName, T payload, String event) throws StatusException, SessionException {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = getFlow(flowName);
-        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, profile());
+        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, Profile.chaosOf());
         execute(ctx);
         return ctx;
     }
 
-    @Override
-    public Profile profile() {
-        return Profile.chaosOf();
-    }
 
     public List<ChaosRule> chaosRules() {
         return chaosRules;

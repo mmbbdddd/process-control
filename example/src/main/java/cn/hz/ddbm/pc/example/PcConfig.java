@@ -9,12 +9,15 @@ import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.factory.dsl.StateMachineBuilder;
 import cn.hz.ddbm.pc.factory.dsl.StateMachineConfig;
+import cn.hz.ddbm.pc.test.support.DigestLogPluginMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
+
 
 public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
     Logger logger = LoggerFactory.getLogger(getClass());
@@ -70,22 +73,25 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
                 ))
         ;
 
-        return builder.build();
+        return builder.build(this);
     }
 
     @Override
     public List<Plugin> plugins() {
-        return new ArrayList<Plugin>();
+
+        List<Plugin> plugins =  new ArrayList<Plugin>();
+        plugins.add(new DigestLogPluginMock());
+        return plugins;
     }
 
     @Override
-    public SessionManager sessionManager() {
-        return InfraUtils.getSessionManager(Coasts.SESSION_MANAGER_MEMORY);
+    public SessionManager.Type session() {
+        return SessionManager.Type.memory;
     }
 
     @Override
-    public StatusManager statusManager() {
-        return InfraUtils.getStatusManager(Coasts.STATUS_MANAGER_MEMORY);
+    public StatusManager.Type status() {
+        return StatusManager.Type.memory;
     }
 
 

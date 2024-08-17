@@ -7,6 +7,7 @@ import cn.hz.ddbm.pc.core.FlowStatus;
 import cn.hz.ddbm.pc.core.Router;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
 import cn.hz.ddbm.pc.core.support.StatusManager;
+import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -40,7 +41,7 @@ public class SagaAction implements Action {
         Serializable flowId       = ctx.getId();
         String       failOverNode = failover;
         try {
-            StatusManager statusManager = ctx.getFlow().getProfile().getStatusManagerBean();
+            StatusManager statusManager = InfraUtils.getStatusManager(ctx.getProfile().getStatusManager());
             statusManager.setStatus(flow, flowId, FlowStatus.of(failOverNode), ctx.getProfile().getStatusTimeout(), ctx);
         } catch (IOException e) {
             throw new InterruptedFlowException(e);

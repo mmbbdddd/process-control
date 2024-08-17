@@ -18,8 +18,8 @@ public class DaoStatusManager implements StatusManager, InitializingBean, Applic
     private ApplicationContext         ctx;
 
     @Override
-    public String code() {
-        return null;
+    public Type code() {
+        return Type.dao;
     }
 
     @Override

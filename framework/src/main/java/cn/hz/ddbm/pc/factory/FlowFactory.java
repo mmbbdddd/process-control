@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 public class FlowFactory<R extends Resource> {
     @javax.annotation.Resource
     ResourceLoader<R> resourceLoader;
-    @javax.annotation.Resource
 
     @PostConstruct
     public List<Flow> loadFlowByResource() {

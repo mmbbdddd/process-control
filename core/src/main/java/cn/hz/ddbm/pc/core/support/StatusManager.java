@@ -17,7 +17,7 @@ import java.io.Serializable;
 
 
 public interface StatusManager {
-    String code();
+    Type code();
 
     void setStatus(String flow, Serializable flowId, FlowStatus flowStatus, Integer timeout, FlowContext<?> ctx) throws IOException;
 
@@ -29,5 +29,9 @@ public interface StatusManager {
         } catch (IOException e) {
             throw new StatusException(e);
         }
+    }
+
+    enum Type{
+        memory,redis,dao
     }
 }

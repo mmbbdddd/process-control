@@ -35,11 +35,13 @@ public class StateMachineBuilder<S> {
             this.transitions = new Transitions<>();
         }
 
-        public Flow build() {
+        public Flow build(StateMachineConfig<?> config) {
             String      init    = states.init.name();
             Set<String> ends    = states.ends.stream().map(Enum::name).collect(Collectors.toSet());
             Set<String> nodes   = states.states.stream().map(Enum::name).collect(Collectors.toSet());
-            Profile     profile = InfraUtils.getBean(PcService.class).profile();
+            Profile     profile = profile();
+            profile.setSessionManager(config.session());
+            profile.setStatusManager(config.status());
             this.routers.routers.forEach((rn, r) -> profile.addRouter(r));
             Flow flow = Flow.of(fsm.flowId(), fsm.describe(), init, ends, nodes, profile);
             this.transitions.transitions.forEach(transition -> {
@@ -50,6 +52,10 @@ public class StateMachineBuilder<S> {
                 }
             });
             return flow;
+        }
+
+        public Profile profile() {
+            return Profile.devOf();
         }
 
 

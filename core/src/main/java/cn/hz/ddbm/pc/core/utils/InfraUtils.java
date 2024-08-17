@@ -13,8 +13,8 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class InfraUtils {
-    static Map<String, SessionManager> sessionManagerMap;
-    static Map<String, StatusManager>  statusManagerMap;
+    static Map<SessionManager.Type, SessionManager> sessionManagerMap;
+    static Map<StatusManager.Type, StatusManager>   statusManagerMap;
 
     public InfraUtils() {
         sessionManagerMap = SpringUtil.getBeansOfType(SessionManager.class).values().stream().collect(Collectors.toMap(
@@ -27,11 +27,11 @@ public class InfraUtils {
         ));
     }
 
-    public static SessionManager getSessionManager(String code) {
+    public static SessionManager getSessionManager(SessionManager.Type code) {
         return sessionManagerMap.get(code);
     }
 
-    public static StatusManager getStatusManager(String code) {
+    public static StatusManager getStatusManager(StatusManager.Type code) {
         return statusManagerMap.get(code);
     }
 

@@ -16,34 +16,30 @@ public class Profile {
     private Integer                       retry         = Coasts.DEFAULT_RETRY;
     private Integer                       statusTimeout = Coasts.DEFAULT_STATUS_TIMEOUT;
     private Integer                       lockTimeout   = Coasts.DEFAULT_LOCK_TIMEOUT;
-    private SessionManager                sessionManagerBean;
-    private StatusManager                 statusManagerBean;
-    private String                        sessionManager;
-    private String                        statusManager;
+    private SessionManager.Type           sessionManager;
+    private StatusManager.Type            statusManager;
     private Map<String, StepAttrs>        states;
     private Map<String, ActionAttrs>      actions;
     private Map<String, ExpressionRouter> routers;
 
-    public Profile(String sessionManager, String statusManager) {
+    public Profile(SessionManager.Type sessionManager, StatusManager.Type statusManager) {
         this.actions            = new HashMap<>();
         this.states             = new HashMap<>();
         this.routers            = new HashMap<>();
-        this.sessionManager     = sessionManager == null ? Coasts.SESSION_MANAGER_REDIS : sessionManager;
-        this.statusManager      = statusManager == null ? Coasts.STATUS_MANAGER_REDIS : statusManager;
-        this.sessionManagerBean = InfraUtils.getSessionManager(sessionManager);
-        this.statusManagerBean  = InfraUtils.getStatusManager(statusManager);
+        this.sessionManager     = sessionManager == null ? SessionManager.Type.redis : sessionManager;
+        this.statusManager      = statusManager == null ? StatusManager.Type.redis : statusManager;
     }
 
     public static Profile defaultOf() {
-        return new Profile(  Coasts.SESSION_MANAGER_REDIS, Coasts.STATUS_MANAGER_REDIS);
+        return new Profile(SessionManager.Type.redis, StatusManager.Type.redis);
     }
 
     public static Profile chaosOf() {
-        return new Profile(  Coasts.SESSION_MANAGER_MEMORY, Coasts.STATUS_MANAGER_MEMORY);
+        return new Profile(SessionManager.Type.memory, StatusManager.Type.memory);
     }
 
     public static Profile devOf() {
-        return new Profile(  Coasts.SESSION_MANAGER_MEMORY, Coasts.STATUS_MANAGER_MEMORY);
+        return new Profile(SessionManager.Type.memory, StatusManager.Type.memory);
     }
 
     public void setStepAttrs(String state, StepAttrs stepAttrs) {

@@ -16,27 +16,26 @@ import java.util.Map;
 public abstract class PcService {
     Map<String, Flow> flows = new HashMap<>();
 
-    public abstract Profile profile();
 
-    public <T extends FlowPayload> void batchExecute(String flowName, List<T> payloads, String event) throws StatusException, SessionException {
+    public <T extends FlowPayload> void batchExecute(String flowName, List<T> payloads, String event,Profile profile) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payloads, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow flow = flows.get(flowName);
 
         for (T payload : payloads) {
-            FlowContext<T> ctx = new FlowContext<>(flow, payload, event, profile());
+            FlowContext<T> ctx = new FlowContext<>(flow, payload, event, profile);
             execute(ctx);
         }
     }
 
 
-    public <T extends FlowPayload> void execute(String flowName, T payload, String event) throws StatusException, SessionException {
+    public <T extends FlowPayload> void execute(String flowName, T payload, String event,Profile profile) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = flows.get(flowName);
-        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, profile());
+        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, profile);
         execute(ctx);
     }
 
@@ -125,8 +124,8 @@ public abstract class PcService {
      * 刷新状态到基础设施
      */
     private void flush(FlowContext<?> ctx) throws SessionException, StatusException {
-        ctx.getProfile().getSessionManagerBean().flush(ctx);
-        ctx.getProfile().getStatusManagerBean().flush(ctx);
+        InfraUtils.getSessionManager(ctx.getProfile().getSessionManager()).flush(ctx);
+        InfraUtils.getStatusManager(ctx.getProfile().getStatusManager()).flush(ctx);
     }
 
 
