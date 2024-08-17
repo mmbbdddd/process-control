@@ -28,16 +28,27 @@ public class ChaosRule {
     //触发后，跑出的异常类型（随便选一个）
     List<Class<? extends Throwable>> errorTypes;
 
+    Throwable exception = null;
+
     public ChaosRule(ChaosTarget target, String expression, String errorMessage, double probability, List<Class<? extends Throwable>> errorTypes) {
         this.target       = target;
         this.expression   = expression;
         this.errorMessage = errorMessage;
         this.probability  = probability;
         this.errorTypes   = errorTypes;
+        int choice = Double.valueOf(Math.random() * errorTypes.size()).intValue();
+
+        try {
+            this.exception = errorTypes.get(choice).newInstance();
+            ReflectUtil.setFieldValue(exception, "detailMessage", errorMessage + ":" + Math.random());
+            ReflectUtil.setFieldValue(exception, "stackTrace", null);
+            ReflectUtil.setFieldValue(exception, "cause", null);
+        } catch (Exception e) {
+        }
     }
 
     public boolean match(ChaosTarget target, Object proxy, Method method, Object[] args) {
-        if (!Objects.equals(target,this.target)) {
+        if (!Objects.equals(target, this.target)) {
             return false;
         }
         Map<String, Object> ctx = new HashMap<>();
@@ -50,10 +61,10 @@ public class ChaosRule {
     }
 
     public void raiseException() throws Throwable {
-        int       choice    = Double.valueOf(Math.random() * errorTypes.size()).intValue();
-        Throwable exception = errorTypes.get(choice).newInstance();
-        ReflectUtil.setFieldValue(exception, "detailMessage", errorMessage + ":" + Math.random());
-        throw exception;
+        if (null != exception) {
+//        stackTrace
+            throw exception;
+        }
     }
 
     public boolean probabilityIsTrue() {
