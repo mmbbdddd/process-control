@@ -138,6 +138,14 @@ public class Flow {
         return sts;
     }
 
+    public boolean isRouter(String node) {
+        if(!nodes.containsKey(node)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
     public enum STAUS {
         RUNNABLE, PAUSE, CANCEL, FINISH

@@ -32,7 +32,7 @@ public class AtomExecutor {
                 .getNode();
         try {
             preActionPlugin(flow, ctx);
-            InfraUtils.getBean(this.actionRouter.action,Action.class).execute(ctx);
+            this.actionRouter.action(ctx).execute(ctx);
             postActionPlugin(flow, ctx);
         } catch (Exception e) {
             ctx.setStatus(FlowStatus.of(this.actionRouter.router.failover(lastNode, ctx)));
