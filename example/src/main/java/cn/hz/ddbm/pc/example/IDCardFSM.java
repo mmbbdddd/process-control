@@ -9,7 +9,7 @@ import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.factory.dsl.FSM;
 import cn.hz.ddbm.pc.profile.PcService;
-import cn.hz.ddbm.pc.test.support.DigestLogPluginMock;
+import cn.hz.ddbm.pc.support.DigestLogPluginMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -45,7 +45,7 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     public void transitions(Transitions<IDCardState> t) {
         t.router(IDCardState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter")
          //发送异常，不明确是否发送
-         .router(IDCardState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
+//         .router(IDCardState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
          //已发送，对方处理中
          .router(IDCardState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
          //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
@@ -59,13 +59,19 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
         List<ExpressionRouter> routers = new ArrayList<>();
         routers.add(new ExpressionRouter("sendRouter",
                 new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.2"),
+                new ExpressionRouter.NodeExpression("sended", "Math.random() < 0.1"),
+                new ExpressionRouter.NodeExpression("miss_data", "Math.random() < 0.1"),
+                new ExpressionRouter.NodeExpression("miss_data_fulled", "Math.random() < 0.1"),
                 new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
-                new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
+                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6")
         ));
         routers.add(new ExpressionRouter("notifyRouter",
-                new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.2"),
+                new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.2"),
+                new ExpressionRouter.NodeExpression("sended", "Math.random() < 0.1"),
+                new ExpressionRouter.NodeExpression("miss_data", "Math.random() < 0.1"),
+                new ExpressionRouter.NodeExpression("miss_data_fulled", "Math.random() < 0.1"),
                 new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
-                new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
+                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6")
         ));
         return routers;
     }
@@ -84,7 +90,7 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     @Override
     public Profile profile() {
         Profile profile = new Profile(session(), status());
-        profile.setRetry(10);
+        profile.setRetry(1);
         return profile;
     }
 

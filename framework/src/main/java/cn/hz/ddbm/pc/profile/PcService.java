@@ -137,7 +137,8 @@ public abstract class PcService {
         try {
             InfraUtils.getLocker().releaseLock(key);
         } catch (Exception e) {
-            throw new LockException(e);
+            //todo
+            Logs.error.error("",e);
         }
     }
 

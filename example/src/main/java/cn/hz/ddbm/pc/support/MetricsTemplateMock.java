@@ -1,4 +1,4 @@
-package cn.hz.ddbm.pc.test.support;
+package cn.hz.ddbm.pc.support;
 
 import cn.hz.ddbm.pc.core.support.StatisticsSupport;
 

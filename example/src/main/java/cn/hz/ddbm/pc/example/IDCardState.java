@@ -6,7 +6,7 @@ import cn.hz.ddbm.pc.factory.dsl.FSM;
 public enum IDCardState implements FSM.State {
     init("初始化", Node.Type.START),
     sended("已发送", Node.Type.TASK),
-    send_failover("发送错误", Node.Type.TASK),
+//    send_failover("发送错误", Node.Type.TASK),
     miss_data("客户资料缺乏", Node.Type.TASK),
     miss_data_fulled("客户资料已补", Node.Type.TASK),
     su("成功", Node.Type.END),

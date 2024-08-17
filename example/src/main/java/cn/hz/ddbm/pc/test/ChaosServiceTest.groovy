@@ -40,16 +40,6 @@ public class ChaosServiceTest extends Specification {
 
         FlowPayload date = new ChaosPcService.MockPayLoad("init");
         String event = Coasts.EVENT_DEFAULT;
-        List<ChaosRule> rules = new ArrayList<ChaosRule>() {
-            {
-                add(new ChaosRule("true", 0.1, new ArrayList<Class<? extends Throwable>>() {
-                    {
-                        add(RuntimeException.class);
-                        add(Exception.class);
-                    }
-                }));
-            }
-        };
         chaosService.execute("test", date, event, 100, 10, rules, false)
 
         where:

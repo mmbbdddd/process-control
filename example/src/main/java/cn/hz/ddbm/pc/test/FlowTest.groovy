@@ -1,8 +1,6 @@
 package cn.hz.ddbm.pc.test
 
 import cn.hz.ddbm.pc.core.*
-import cn.hz.ddbm.pc.core.coast.Coasts
-import cn.hz.ddbm.pc.test.support.PayloadMock
 import org.junit.Assert
 import spock.lang.Specification
 
