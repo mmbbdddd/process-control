@@ -8,16 +8,25 @@ import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
 import cn.hz.ddbm.pc.test.support.PayloadMock;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @ComponentScan("cn.hz.ddbm.pc.actions")
+@SpringBootTest
+@Import({PcChaosConfiguration.class, PcDemo.DemoConfig.class})
+@RunWith(SpringRunner.class)
 public class PcDemo {
 
+    @Autowired
     ChaosPcService chaosService;
 
     /**
@@ -26,14 +35,8 @@ public class PcDemo {
 
     @Test
     public void pc() throws Exception {
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(PcDemo.class);
-        ctx.register(PcChaosConfiguration.class);
-        ctx.refresh();
-//        PcService devPcService = ctx.getBean(DevPcService.class);
-        chaosService = ctx.getBean(ChaosPcService.class);
 
-        String   event    = Coasts.EVENT_DEFAULT;
+        String event = Coasts.EVENT_DEFAULT;
 
         List<ChaosRule> rules = new ArrayList<ChaosRule>() {{
             add(new ChaosRule("true", 0.1, new ArrayList<Class<? extends Throwable>>() {{
@@ -42,17 +45,19 @@ public class PcDemo {
             }}));
         }};
         try {
-            chaosService.execute("test", new PayloadMock(PcState.init.name()), event, 1, 10, rules,true);
+            chaosService.execute("test", new PayloadMock(PcState.init.name()), event, 100, 10, rules, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Bean
-    PcConfig chaosPcService() {
-        return new PcConfig();
-    }
 
+    public static class DemoConfig {
+        @Bean
+        PcConfig pcConfig() {
+            return new PcConfig();
+        }
+    }
 
 
 }

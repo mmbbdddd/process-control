@@ -1,5 +1,6 @@
 package cn.hz.ddbm.pc.profile.chaos;
 
+import cn.hz.ddbm.pc.core.utils.ExpressionEngineUtils;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.lang.reflect.Method;
@@ -37,7 +38,7 @@ public class ChaosRule {
         for (int idx = 0; idx < args.length; idx++) {
             ctx.put("arg" + (idx + 1), args[idx]);
         }
-        return InfraUtils.getExpressionEngine().eval(expression, ctx, Boolean.class);
+        return ExpressionEngineUtils.eval(expression, ctx, Boolean.class);
     }
 
     public void raiseException() throws Throwable {

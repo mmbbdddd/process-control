@@ -17,7 +17,7 @@ public abstract class PcService {
     Map<String, Flow> flows = new HashMap<>();
 
 
-    public <T extends FlowPayload> void batchExecute(String flowName, List<T> payloads, String event,Profile profile) throws StatusException, SessionException {
+    public <T extends FlowPayload> void batchExecute(String flowName, List<T> payloads, String event, Profile profile) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payloads, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
@@ -30,7 +30,7 @@ public abstract class PcService {
     }
 
 
-    public <T extends FlowPayload> void execute(String flowName, T payload, String event,Profile profile) throws StatusException, SessionException {
+    public <T extends FlowPayload> void execute(String flowName, T payload, String event, Profile profile) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
@@ -96,12 +96,12 @@ public abstract class PcService {
      * @param ctx
      * @return
      */
-    private boolean isCanContinue(FlowContext<?> ctx) {
+    public boolean isCanContinue(FlowContext<?> ctx) {
         Flow.STAUS flowStatus = ctx.getStatus().getFlow();
         String     node       = ctx.getStatus().getNode();
         String     flowName   = ctx.getFlow().getName();
         State      nodeObj    = ctx.getFlow().getStep(node);
-        if(ctx.getFlow().isRouter(node)){
+        if (ctx.getFlow().isRouter(node)) {
             return true;
         }
         if (!flowStatus.equals(Flow.STAUS.RUNNABLE)) {
@@ -115,6 +115,7 @@ public abstract class PcService {
         String  windows   = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), node, Coasts.NODE_RETRY);
         Long    exeRetry  = InfraUtils.getMetricsTemplate().get(windows);
         Integer nodeRetry = nodeObj.getRetry();
+
         if (exeRetry > nodeRetry) {
             Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), node, exeRetry, nodeRetry);
             return false;

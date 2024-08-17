@@ -4,11 +4,9 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.container.ChaosAspect;
 import cn.hz.ddbm.pc.container.chaos.ChaosHandler;
 import cn.hz.ddbm.pc.core.action.ChaosAction;
-import cn.hz.ddbm.pc.core.support.ExpressionEngine;
 import cn.hz.ddbm.pc.core.support.Locker;
 import cn.hz.ddbm.pc.core.support.StatisticsSupport;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
-import cn.hz.ddbm.pc.factory.FlowFactory;
 import cn.hz.ddbm.pc.lock.JdkLocker;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.profile.PcService;
@@ -59,10 +57,7 @@ public class PcChaosConfiguration {
         return new JdkLocker();
     }
 
-    @Bean
-    ExpressionEngine expressionEngine() {
-        return new ExpressionEngine();
-    }
+
 
     @Bean
     InfraUtils infraUtils() {

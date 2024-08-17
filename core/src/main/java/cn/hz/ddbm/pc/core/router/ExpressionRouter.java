@@ -2,7 +2,7 @@ package cn.hz.ddbm.pc.core.router;
 
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.State;
-import cn.hz.ddbm.pc.core.support.ExpressionEngine;
+import cn.hz.ddbm.pc.core.utils.ExpressionEngineUtils;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.util.Arrays;
@@ -19,12 +19,10 @@ public class ExpressionRouter implements AnyRouter, State.Instant {
 
     Set<String> toNodes;
 
-    ExpressionEngine expressionEngine;
 
     public ExpressionRouter(String routerName, NodeExpression... nodeExpressionPairs) {
         this.routerName          = routerName;
         this.nodeExpressionPairs = nodeExpressionPairs;
-        this.expressionEngine    = InfraUtils.getExpressionEngine();
         this.toNodes             = Arrays.stream(this.nodeExpressionPairs).map(t -> t.to).collect(Collectors.toSet());
     }
 
@@ -39,7 +37,7 @@ public class ExpressionRouter implements AnyRouter, State.Instant {
         String              to      = null;
         for (NodeExpression ne : nodeExpressionPairs) {
             to = ne.to;
-            if (expressionEngine.eval(ne.expression, exprCtx, Boolean.class)) {
+            if (ExpressionEngineUtils.eval(ne.expression, exprCtx, Boolean.class)) {
                 return to;
             }
         }

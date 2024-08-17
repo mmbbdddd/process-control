@@ -3,20 +3,26 @@ package cn.hz.ddbm.pc.test
 import cn.hz.ddbm.pc.core.Flow
 import cn.hz.ddbm.pc.core.FlowContext
 import cn.hz.ddbm.pc.core.FlowPayload
+import cn.hz.ddbm.pc.core.Node
 import cn.hz.ddbm.pc.core.Profile
 import cn.hz.ddbm.pc.core.coast.Coasts
 import cn.hz.ddbm.pc.core.router.ExpressionRouter
 import cn.hz.ddbm.pc.test.support.PayloadMock
 import org.junit.Assert
+import spock.lang.Specification
 
-class FlowTest extends BaseSpec {
+class FlowTest extends Specification {
 
 
     void cleanup() {}
 
     def "Of"() {
         expect:
-        Flow f = Flow.devOf(name, "测试流程", "init", ["su", "fail"] as Set, ["pay", "pay_error"] as Set)
+        Flow f = Flow.devOf("test", "测试流程", [
+                new Node(Node.Type.START,"init",null,),
+                new Node(Node.Type.TASK,"pay",null,),
+                new Node(Node.Type.END,"pay_error",null,)
+        ] as Set, [])
         String.format("%s:%s:%s", f.name, f.profile.sessionManager, f.profile.statusManager) == result
         where:
         name | session | status | result
@@ -30,13 +36,12 @@ class FlowTest extends BaseSpec {
 
     def "AddRouter"() {
         when:
-        Flow f = Flow.devOf("test", "测试流程", "init", ["su", "fail"] as Set, ["pay", "pay_error"] as Set)
-        f.router("init", Coasts.EVENT_PAUSE, Coasts.NONE_ACTION, new ExpressionRouter("pay_router",
-                new ExpressionRouter.NodeExpression("pay_error", "Math.random() > 0.1"),
-                new ExpressionRouter.NodeExpression("su", "Math.random() > 0.6"),
-                new ExpressionRouter.NodeExpression("init", "Math.random() > 0.1"),
-                new ExpressionRouter.NodeExpression("fail", "Math.random() > 0.2"),
-        ))
+        Flow f = Flow.devOf("test", "测试流程", [
+                new Node(Node.Type.START,"init",null,),
+                new Node(Node.Type.TASK,"pay",null,),
+                new Node(Node.Type.END,"pay_error",null,)
+        ] as Set, [])
+
 
         then:
 //        System.out.println(JSON.toJSONString(f.getFsmTable().getRecords(), SerializerFeature.PrettyFormat))
@@ -82,8 +87,5 @@ class FlowTest extends BaseSpec {
         Assert.assertTrue(["init", "pay", "pay_error", "su", "fail"] as Set == names)
     }
 
-    @Override
-    void hook() {
 
-    }
 }

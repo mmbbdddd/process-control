@@ -52,9 +52,6 @@ public class InfraUtils {
         return "";
     }
 
-    public static ExpressionEngine getExpressionEngine() {
-        return SpringUtil.getBean(ExpressionEngine.class);
-    }
 
     public static Object getBean(String beanName) {
         return SpringUtil.getBean(beanName);

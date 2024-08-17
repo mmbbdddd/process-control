@@ -17,7 +17,7 @@ public class ChaosServiceTest extends Specification {
 
     public void setup() {
         AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext()
-        ctx.register(TestConfig.class)
+        ctx.register(PcChaosConfiguration.class)
         ctx.refresh()
 
         flow = Flow.devOf("test", "测试流程", [
