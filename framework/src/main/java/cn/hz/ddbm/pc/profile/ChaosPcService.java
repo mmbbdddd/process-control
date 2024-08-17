@@ -11,7 +11,6 @@ import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.SessionException;
 import cn.hz.ddbm.pc.core.exception.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
-import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
 
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class ChaosPcService extends PcService {
         this.chaosRules = new ArrayList<>();
     }
 
-    public <T extends FlowPayload> void execute(String flowName, T payload, String event, Integer times, Integer timeout, List<ChaosRule> rules) {
+    public <T extends FlowPayload> void execute(String flowName, T payload, String event, Integer times, Integer timeout, List<ChaosRule> rules,Boolean mock) {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         CountDownLatch cdl = new CountDownLatch(times);
@@ -46,7 +45,7 @@ public class ChaosPcService extends PcService {
                 Object result = null;
                 try {
 //                    独立事件执行
-                    FlowContext<T> ctx = standalone(flowName, payload, event);
+                    FlowContext<T> ctx = standalone(flowName, payload, event,mock);
                     result = ctx;
                 } catch (Throwable t) {
                     Logs.error.error("", t);
@@ -82,11 +81,11 @@ public class ChaosPcService extends PcService {
         statisticsLines.add(new StatisticsLine(i, requestInfo, result));
     }
 
-    private <T extends FlowPayload> FlowContext<T> standalone(String flowName, T payload, String event) throws StatusException, SessionException {
+    private <T extends FlowPayload> FlowContext<T> standalone(String flowName, T payload, String event,Boolean mock) throws StatusException, SessionException {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = getFlow(flowName);
         FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, Profile.chaosOf());
-        ctx.setIsChaos(true);
+        ctx.setMockBean(mock);
         execute(ctx);
         return ctx;
     }

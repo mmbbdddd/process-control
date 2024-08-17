@@ -36,12 +36,12 @@ public interface Action {
     String multi_regexp  = "(\\w+,)+\\w+";
     String saga_regexp   = "(\\w+,)_\\w+";
 
-    public static Action of(String actionDsl, Boolean isChaos) {
-        if (isChaos) {
+    public static Action of(String actionDsl, FlowContext<?> ctx) {
+        if (null != ctx && ctx.getMockBean()) {
             if (StrUtil.isBlank(actionDsl)) {
                 return Coasts.NONE_ACTION;
             } else {
-                return InfraUtils.getBean("chaosAction",Action.class);
+                return InfraUtils.getBean("chaosAction", Action.class);
             }
         }
         if (StrUtil.isBlank(actionDsl)) {
@@ -54,7 +54,7 @@ public interface Action {
             String[] splits       = actionDsl.split(",_");
             String   otherPartDsl = splits[0];
             String   failover     = splits[1];
-            return new SagaAction(failover, of(otherPartDsl,false));
+            return new SagaAction(failover, of(otherPartDsl, null));
         }
         if (actionDsl.matches(multi_regexp)) {
             String[] actionBeanNames = actionDsl.split(",");

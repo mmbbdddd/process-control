@@ -6,6 +6,7 @@ import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.TypeUtil;
 import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.action.NoneAction;
+import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
@@ -58,7 +59,7 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
         Class          genericsType = (Class) TypeUtil.getGenerics(this.getClass())[0].getActualTypeArguments()[0];
         Map<String, S> enums        = EnumUtil.getEnumMap(genericsType);
         Set<Node> nodes = enums.values().stream()
-                               .map(it -> new Node(it.type(), it.name(), stepAttrsMap.get(it.name()),profile))
+                               .map(it -> new Node(it.type(), it.name(), profile))
                                .collect(Collectors.toSet());
         Flow flow = Flow.of(flowId(), describe(), nodes, routers(), profile);
         flow.setPlugins(plugins());
@@ -79,6 +80,11 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
 
         public Transitions() {
             this.transitions = new ArrayList<>();
+        }
+
+        public Transitions<S> to(S from, String event, S to) {
+            to(from, event, Coasts.NONE, to);
+            return this;
         }
 
         public Transitions<S> to(S from, String event, String action, S to) {

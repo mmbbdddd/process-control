@@ -6,6 +6,7 @@ import cn.hz.ddbm.pc.core.support.ExpressionEngine;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
+import cn.hz.ddbm.pc.lock.JdkLocker;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.session.memory.MemorySessionManager;
 import cn.hz.ddbm.pc.status.memory.MemoryStatusManager;
@@ -27,6 +28,10 @@ public class TestConfig {
         return new InfraUtils();
     }
 
+    @Bean
+    JdkLocker jdkLocker() {
+        return new JdkLocker();
+    }
     @Bean
     SpringUtil springUtil() {
         return new SpringUtil();

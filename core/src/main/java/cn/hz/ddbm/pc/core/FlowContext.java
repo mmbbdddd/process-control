@@ -28,7 +28,7 @@ public class FlowContext<T extends FlowPayload> {
     @Setter
     private Profile      profile;
     @Setter
-    private Boolean      isChaos = false;
+    private Boolean      mockBean = false;
 
 
     public FlowContext(Flow flow, T data, String event, Profile profile) {

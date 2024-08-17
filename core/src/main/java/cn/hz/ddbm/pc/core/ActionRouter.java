@@ -31,7 +31,7 @@ public class ActionRouter implements State.Instant {
     }
 
     public  Action action(FlowContext<?> ctx){
-        return Action.of(action,ctx.getIsChaos());
+        return Action.of(action,ctx);
     }
 
     /**

@@ -19,7 +19,7 @@ class ActionTest extends Specification {
 //
     def "test of"() {
         expect:
-        Action.of(actionDsl,false).beanName() == result
+        Action.of(actionDsl,null).beanName() == result
         where:
         actionDsl               | result
         null                    | "none"

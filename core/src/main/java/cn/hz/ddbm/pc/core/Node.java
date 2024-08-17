@@ -11,10 +11,10 @@ public class Node implements State.Persist {
 
     Profile.StepAttrs attrs;
 
-    public Node(Type type, String name, Profile.StepAttrs attrs,Profile profile) {
+    public Node(Type type, String name, Profile profile) {
         this.name  = name;
         this.type  = type;
-        this.attrs = attrs==null?new Profile.StepAttrs(profile):attrs;
+        this.attrs = profile == null ? new Profile.StepAttrs(Profile.defaultOf()) : profile.getStepAttrsOrDefault(name);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class Node implements State.Persist {
         return attrs.getRetry();
     }
 
-   public enum Type {
+    public enum Type {
         START, TASK, END
     }
 

@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cn.hz.ddbm.pc.core.log.Logs.flow;
 
 public class PcDemo {
 
@@ -42,7 +41,7 @@ public class PcDemo {
             }}));
         }};
         try {
-            chaosService.execute("test", new PayloadMock(PcState.init.name()), event, 100, 10, rules);
+            chaosService.execute("test", new PayloadMock(PcState.init.name()), event, 100, 10, rules,true);
         } catch (Exception e) {
             e.printStackTrace();
         }
