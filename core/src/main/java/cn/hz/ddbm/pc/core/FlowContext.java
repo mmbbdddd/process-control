@@ -16,7 +16,7 @@ public class FlowContext<T extends FlowPayload> {
     //    入参
     private Serializable id;
     private T            data;
-    private Flow         flow;
+    private Fsm          flow;
     @Setter
     private Boolean      fluent;
     @Setter
@@ -31,7 +31,7 @@ public class FlowContext<T extends FlowPayload> {
     private Boolean      mockBean = false;
 
 
-    public FlowContext(Flow flow, T data, String event, Profile profile) {
+    public FlowContext(Fsm flow, T data, String event, Profile profile) {
         Assert.notNull(flow, "flow is null");
         Assert.notNull(data, "data is null");
         Assert.notNull(event, "event is null");

@@ -23,9 +23,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableAspectJAutoProxy
 public class PcChaosConfiguration {
     @Bean
-    ChaosAction chaosAction(){
+    ChaosAction chaosAction() {
         return new ChaosAction();
     }
+
     @Bean
     ChaosPcService pcService() {
         return new ChaosPcService();
@@ -58,11 +59,11 @@ public class PcChaosConfiguration {
     }
 
 
-
     @Bean
     InfraUtils infraUtils() {
         return new InfraUtils();
     }
+
     @Bean
     SpringUtil springUtil() {
         return new SpringUtil();
@@ -72,7 +73,6 @@ public class PcChaosConfiguration {
     StatisticsSupport statisticsSupport(PcProperties properties) {
         return new SimpleStatistics(properties.statistics.cacheSize, properties.getStatistics().hours);
     }
-
 
 
 }

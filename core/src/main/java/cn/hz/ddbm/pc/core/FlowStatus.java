@@ -14,14 +14,14 @@ import lombok.Data;
 
 @Data
 public class FlowStatus {
-    Flow.STAUS flow;
-    String     node;
+    Fsm.STAUS flow;
+    String    node;
 
     public static FlowStatus pause(String node) {
         Assert.notNull(node, "nodeStatus is null");
         FlowStatus status = new FlowStatus();
         status.node = node;
-        status.flow = Flow.STAUS.PAUSE;
+        status.flow = Fsm.STAUS.PAUSE;
         return status;
     }
 
@@ -29,7 +29,7 @@ public class FlowStatus {
         Assert.notNull(node, "nodeStatus is null");
         FlowStatus status = new FlowStatus();
         status.node = node;
-        status.flow = Flow.STAUS.RUNNABLE;
+        status.flow = Fsm.STAUS.RUNNABLE;
         return status;
     }
 
@@ -38,7 +38,7 @@ public class FlowStatus {
         Assert.notNull(nodeStatus, "nodeStatus is null");
         FlowStatus status = new FlowStatus();
         status.node = nodeStatus;
-        status.flow = Flow.STAUS.valueOf(flowStatus);
+        status.flow = Fsm.STAUS.valueOf(flowStatus);
         return status;
     }
 

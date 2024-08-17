@@ -26,10 +26,10 @@ public class AtomExecutor {
     ActionRouter actionRouter;
 
     public void execute(FlowContext<?> ctx) throws ActionException, RouterException {
-        Flow         flow = ctx.getFlow();
+        Fsm          flow = ctx.getFlow();
         Serializable id   = ctx.getId();
         String lastNode = ctx.getStatus()
-                .getNode();
+                             .getNode();
         try {
             preActionPlugin(flow, ctx);
             this.actionRouter.action(ctx).execute(ctx);
@@ -57,82 +57,82 @@ public class AtomExecutor {
     }
 
 
-    private void preActionPlugin(Flow flow, FlowContext<?> ctx) {
+    private void preActionPlugin(Fsm flow, FlowContext<?> ctx) {
 
         plugins.forEach((plugin) -> {
             InfraUtils.getPluginExecutorService()
-                    .submit(() -> {
-                        try {
-                            plugin.preAction(this.actionRouter.action(ctx).beanName(), ctx);
-                        } catch (Exception e) {
-                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-                        }
-                    });
+                      .submit(() -> {
+                          try {
+                              plugin.preAction(this.actionRouter.action(ctx).beanName(), ctx);
+                          } catch (Exception e) {
+                              Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+                          }
+                      });
         });
     }
 
-    private void postActionPlugin(Flow flow, FlowContext<?> ctx) {
+    private void postActionPlugin(Fsm flow, FlowContext<?> ctx) {
         plugins.forEach((plugin) -> {
             InfraUtils.getPluginExecutorService()
-                    .submit(() -> {
-                        try {
-                            plugin.postAction(this.actionRouter.action(ctx).beanName(), ctx);
-                        } catch (Exception e) {
-                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-                        }
-                    });
+                      .submit(() -> {
+                          try {
+                              plugin.postAction(this.actionRouter.action(ctx).beanName(), ctx);
+                          } catch (Exception e) {
+                              Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+                          }
+                      });
         });
     }
 
-    private void onActionExceptionPlugin(Flow flow, String preNode, Exception e, FlowContext<?> ctx) {
+    private void onActionExceptionPlugin(Fsm flow, String preNode, Exception e, FlowContext<?> ctx) {
         plugins.forEach((plugin) -> {
             InfraUtils.getPluginExecutorService()
-                    .submit(() -> {
-                        try {
-                            plugin.onActionException(this.actionRouter.action(ctx).beanName(), preNode, e, ctx);
-                        } catch (Exception e2) {
-                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e2);
-                        }
-                    });
+                      .submit(() -> {
+                          try {
+                              plugin.onActionException(this.actionRouter.action(ctx).beanName(), preNode, e, ctx);
+                          } catch (Exception e2) {
+                              Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e2);
+                          }
+                      });
         });
     }
 
-    private void onActionFinallyPlugin(Flow flow, FlowContext<?> ctx) {
+    private void onActionFinallyPlugin(Fsm flow, FlowContext<?> ctx) {
         plugins.forEach((plugin) -> {
             InfraUtils.getPluginExecutorService()
-                    .submit(() -> {
-                        try {
-                            plugin.onActionFinally(this.actionRouter.action(ctx).beanName(), ctx);
-                        } catch (Exception e) {
-                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-                        }
-                    });
+                      .submit(() -> {
+                          try {
+                              plugin.onActionFinally(this.actionRouter.action(ctx).beanName(), ctx);
+                          } catch (Exception e) {
+                              Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+                          }
+                      });
         });
     }
 
-    private void postRoutePlugin(Flow flow, String preNode, FlowContext<?> ctx) {
+    private void postRoutePlugin(Fsm flow, String preNode, FlowContext<?> ctx) {
         plugins.forEach((plugin) -> {
             InfraUtils.getPluginExecutorService()
-                    .submit(() -> {
-                        try {
-                            plugin.postRoute(this.actionRouter.router.routerName(), preNode, ctx);
-                        } catch (Exception e) {
-                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
-                        }
-                    });
+                      .submit(() -> {
+                          try {
+                              plugin.postRoute(this.actionRouter.router.routerName(), preNode, ctx);
+                          } catch (Exception e) {
+                              Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
+                          }
+                      });
         });
     }
 
-    private void onRouterExceptionPlugin(Flow flow, Exception e, FlowContext<?> ctx) {
+    private void onRouterExceptionPlugin(Fsm flow, Exception e, FlowContext<?> ctx) {
         plugins.forEach((plugin) -> {
             InfraUtils.getPluginExecutorService()
-                    .submit(() -> {
-                        try {
-                            plugin.onRouteExcetion(this.actionRouter.router.routerName(), e, ctx);
-                        } catch (Exception e2) {
-                            Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e2);
-                        }
-                    });
+                      .submit(() -> {
+                          try {
+                              plugin.onRouteExcetion(this.actionRouter.router.routerName(), e, ctx);
+                          } catch (Exception e2) {
+                              Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e2);
+                          }
+                      });
         });
     }
 

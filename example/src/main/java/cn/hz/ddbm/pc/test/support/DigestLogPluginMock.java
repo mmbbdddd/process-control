@@ -33,8 +33,8 @@ public class DigestLogPluginMock implements Plugin {
     @Override
     public void postRoute(String routerName, String preNode, FlowContext ctx) {
         Logs.digest.info("{},{},{},{}", ctx.getFlow()
-                .getName(), ctx.getId(), preNode, ctx.getStatus()
-                .getNode());
+                                           .getName(), ctx.getId(), preNode, ctx.getStatus()
+                                                                                .getNode());
     }
 
     @Override

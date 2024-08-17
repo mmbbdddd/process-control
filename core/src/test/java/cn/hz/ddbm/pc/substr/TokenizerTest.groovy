@@ -1,8 +1,5 @@
 package cn.hz.ddbm.pc.substr
 
-import cn.hutool.json.JSONUtil
-import org.junit.Test
-
 class TokenizerTest {
 
 //    Tokenizer tokenizer = new Tokenizer('aaaa${}bbbb')

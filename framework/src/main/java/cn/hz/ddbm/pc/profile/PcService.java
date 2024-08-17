@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class PcService {
-    Map<String, Flow> flows = new HashMap<>();
+    Map<String, Fsm> flows = new HashMap<>();
 
 
     public <T extends FlowPayload> void batchExecute(String flowName, List<T> payloads, String event, Profile profile) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payloads, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
-        Flow flow = flows.get(flowName);
+        Fsm flow = flows.get(flowName);
 
         for (T payload : payloads) {
             FlowContext<T> ctx = new FlowContext<>(flow, payload, event, profile);
@@ -34,7 +34,7 @@ public abstract class PcService {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
-        Flow           flow = flows.get(flowName);
+        Fsm            flow = flows.get(flowName);
         FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, profile);
         execute(ctx);
     }
@@ -79,11 +79,11 @@ public abstract class PcService {
 
     }
 
-    public void addFlow(Flow flow) {
+    public void addFlow(Fsm flow) {
         this.flows.put(flow.getName(), flow);
     }
 
-    protected Flow getFlow(String flowName) {
+    protected Fsm getFlow(String flowName) {
         return this.flows.get(flowName);
     }
 
@@ -97,14 +97,14 @@ public abstract class PcService {
      * @return
      */
     public boolean isCanContinue(FlowContext<?> ctx) {
-        Flow.STAUS flowStatus = ctx.getStatus().getFlow();
-        String     node       = ctx.getStatus().getNode();
-        String     flowName   = ctx.getFlow().getName();
-        State      nodeObj    = ctx.getFlow().getStep(node);
+        Fsm.STAUS flowStatus = ctx.getStatus().getFlow();
+        String    node       = ctx.getStatus().getNode();
+        String    flowName   = ctx.getFlow().getName();
+        State     nodeObj    = ctx.getFlow().getStep(node);
         if (ctx.getFlow().isRouter(node)) {
             return true;
         }
-        if (!flowStatus.equals(Flow.STAUS.RUNNABLE)) {
+        if (!flowStatus.equals(Fsm.STAUS.RUNNABLE)) {
             Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), flowStatus.name());
             return false;
         }

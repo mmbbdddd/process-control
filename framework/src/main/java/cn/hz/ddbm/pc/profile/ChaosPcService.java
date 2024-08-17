@@ -83,7 +83,7 @@ public class ChaosPcService extends PcService {
 
     private FlowContext<MockPayLoad> standalone(String flowName, MockPayLoad payload, String event, Boolean mock) throws StatusException, SessionException {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
-        Flow                     flow = getFlow(flowName);
+        Fsm                      flow = getFlow(flowName);
         FlowContext<MockPayLoad> ctx  = new FlowContext<>(flow, payload, event, Profile.chaosOf());
         ctx.setMockBean(mock);
         while (chaosIsContine(ctx)) {
@@ -91,11 +91,12 @@ public class ChaosPcService extends PcService {
         }
         return ctx;
     }
+
     public boolean chaosIsContine(FlowContext<?> ctx) {
-        Flow.STAUS flowStatus = ctx.getStatus().getFlow();
-        String     node       = ctx.getStatus().getNode();
-        String     flowName   = ctx.getFlow().getName();
-        State      nodeObj    = ctx.getFlow().getStep(node);
+        Fsm.STAUS flowStatus = ctx.getStatus().getFlow();
+        String    node       = ctx.getStatus().getNode();
+        String    flowName   = ctx.getFlow().getName();
+        State     nodeObj    = ctx.getFlow().getStep(node);
         if (ctx.getFlow().isRouter(node)) {
             return true;
         }
@@ -121,18 +122,22 @@ public class ChaosPcService extends PcService {
 
 
     public static class MockPayLoad implements FlowPayload {
-        Integer    id;
-        Flow.STAUS flowStatus;
-        String     nodeStatus;
+        Integer   id;
+        Fsm.STAUS flowStatus;
+        String    nodeStatus;
 
         public MockPayLoad(String init) {
-            this.flowStatus = Flow.STAUS.RUNNABLE;
+            this.flowStatus = Fsm.STAUS.RUNNABLE;
             this.nodeStatus = init;
         }
 
         @Override
         public Serializable getId() {
             return id;
+        }
+
+        public void setId(int i) {
+            this.id = i;
         }
 
         @Override
@@ -144,10 +149,6 @@ public class ChaosPcService extends PcService {
         public void setStatus(FlowStatus status) {
             this.flowStatus = status.getFlow();
             this.nodeStatus = status.getNode();
-        }
-
-        public void setId(int i) {
-            this.id = i;
         }
     }
 

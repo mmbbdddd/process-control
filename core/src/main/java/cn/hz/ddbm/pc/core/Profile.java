@@ -1,28 +1,22 @@
 package cn.hz.ddbm.pc.core;
 
-import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
-import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Data;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Data
 public class Profile {
-    private Integer                       retry         = Coasts.DEFAULT_RETRY;
-    private Integer                       statusTimeout = Coasts.DEFAULT_STATUS_TIMEOUT;
-    private Integer                       lockTimeout   = Coasts.DEFAULT_LOCK_TIMEOUT;
-    private SessionManager.Type           sessionManager;
-    private StatusManager.Type            statusManager;
-    private Map<String, StepAttrs>        states;
-    private Map<String, ActionAttrs>      actions;
+    private Integer                  retry         = Coasts.DEFAULT_RETRY;
+    private Integer                  statusTimeout = Coasts.DEFAULT_STATUS_TIMEOUT;
+    private Integer                  lockTimeout   = Coasts.DEFAULT_LOCK_TIMEOUT;
+    private SessionManager.Type      sessionManager;
+    private StatusManager.Type       statusManager;
+    private Map<String, StepAttrs>   states;
+    private Map<String, ActionAttrs> actions;
 
 
     public Profile(SessionManager.Type sessionManager, StatusManager.Type statusManager) {
@@ -40,7 +34,7 @@ public class Profile {
         return new Profile(SessionManager.Type.memory, StatusManager.Type.memory);
     }
 
-    public static Profile devOf( ) {
+    public static Profile devOf() {
         return new Profile(SessionManager.Type.memory, StatusManager.Type.memory);
     }
 

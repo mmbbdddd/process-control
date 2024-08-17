@@ -31,7 +31,7 @@ public interface StatusManager {
         }
     }
 
-    enum Type{
-        memory,redis,dao
+    enum Type {
+        memory, redis, dao
     }
 }

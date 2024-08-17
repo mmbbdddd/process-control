@@ -1,11 +1,8 @@
 package cn.hz.ddbm.pc.factory.dsl;
 
-import cn.hutool.core.annotation.AnnotationUtil;
-import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.TypeUtil;
 import cn.hz.ddbm.pc.core.*;
-import cn.hz.ddbm.pc.core.action.NoneAction;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.SessionManager;
@@ -15,17 +12,16 @@ import cn.hz.ddbm.pc.profile.PcService;
 import lombok.Getter;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-public interface StateMachineConfig<S extends StateMachineConfig.State> {
+public interface FSM<S extends FSM.State> {
     String flowId();
 
     String describe();
-
-
-//    Flow build() throws Exception;
 
     List<Plugin> plugins();
 
@@ -43,8 +39,8 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
 
     Profile profile();
 
-    @PostConstruct
-    default void afterPropertiesSet() throws Exception {
+
+    default Fsm build() throws Exception {
         Map<String, Profile.StepAttrs> stepAttrsMap = stateAttrs();
         Profile                        profile      = profile();
         profile.setStatusManager(status());
@@ -54,23 +50,30 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
 
         Class          genericsType = (Class) TypeUtil.getGenerics(this.getClass())[0].getActualTypeArguments()[0];
         Map<String, S> enums        = EnumUtil.getEnumMap(genericsType);
-        Set<Node> nodes = enums.values().stream().map(it -> new Node(it.type(), it.name(), profile)).collect(Collectors.toSet());
-        Flow flow = Flow.of(flowId(), describe(), nodes, routers(), profile);
-        flow.setPlugins(plugins());
+        Set<Node>      nodes        = enums.values().stream().map(it -> new Node(it.type(), it.name(), profile)).collect(Collectors.toSet());
+        Fsm            fsm          = Fsm.of(flowId(), describe(), nodes, routers(), profile);
+        fsm.setPlugins(plugins());
         Transitions<S> transitions = new Transitions<>();
         transitions(transitions);
         transitions.transitions.forEach(t -> {
             if (t.getTo() != null) {
-                flow.to(t.getFrom().name(), t.getEvent(), t.getAction(), t.getTo().name());
+                fsm.to(t.getFrom().name(), t.getEvent(), t.getAction(), t.getTo().name());
             } else {
-                flow.router(t.getFrom().name(), t.getEvent(), t.getAction(), t.getRouter());
+                fsm.router(t.getFrom().name(), t.getEvent(), t.getAction(), t.getRouter());
             }
         });
-        InfraUtils.getBean(PcService.class).addFlow(flow);
+//        InfraUtils.getBean(PcService.class).addFlow(flow);
+        return fsm;
+    }
+
+    interface State {
+        String name();
+
+        cn.hz.ddbm.pc.core.Node.Type type();
     }
 
     class Transitions<S> {
-        List<StateMachineConfig.Transition<S>> transitions;
+        List<FSM.Transition<S>> transitions;
 
         public Transitions() {
             this.transitions = new ArrayList<>();
@@ -82,7 +85,7 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
         }
 
         public Transitions<S> to(S from, String event, String action, S to) {
-            transitions.add(new StateMachineConfig.Transition<>(from, event, action, to));
+            transitions.add(new FSM.Transition<>(from, event, action, to));
             return this;
         }
 
@@ -94,7 +97,7 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
     }
 
     @Getter
-    static class Transition<S> {
+    class Transition<S> {
         S      from;
         String event;
         String action;
@@ -114,12 +117,6 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
             this.action = action;
             this.router = router;
         }
-    }
-
-    public interface State {
-        String name();
-
-        cn.hz.ddbm.pc.core.Node.Type type();
     }
 
 }

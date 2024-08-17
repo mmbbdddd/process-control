@@ -22,7 +22,8 @@ public interface SessionManager {
     default void flush(FlowContext<?> ctx) throws SessionException {
         //todo
     }
-    enum Type{
-        memory,redis
+
+    enum Type {
+        memory, redis
     }
 }

@@ -1,6 +1,6 @@
 package cn.hz.ddbm.pc.factory;
 
-import cn.hz.ddbm.pc.core.Flow;
+import cn.hz.ddbm.pc.core.Fsm;
 import cn.hz.ddbm.pc.core.log.Logs;
 
 import javax.annotation.PostConstruct;
@@ -16,7 +16,7 @@ public class FlowFactory<R extends Resource> {
     ResourceLoader<R> resourceLoader;
 
     @PostConstruct
-    public List<Flow> loadFlowByResource() {
+    public List<Fsm> loadFlowByResource() {
         return resourceLoader.loadResources().stream().map(t -> {
             try {
                 return t.resolve();

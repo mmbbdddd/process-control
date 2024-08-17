@@ -1,4 +1,4 @@
-package cn.hz.ddbm.pc.actions;
+package cn.hz.ddbm.pc.example.actions;
 
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;

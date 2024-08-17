@@ -5,6 +5,7 @@ import cn.hz.ddbm.pc.core.FlowContext;
 
 public class ChaosAction implements Action {
     String actionName;
+
     @Override
     public String beanName() {
         return actionName;

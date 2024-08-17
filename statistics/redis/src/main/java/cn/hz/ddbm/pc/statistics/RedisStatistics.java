@@ -9,6 +9,8 @@ public class RedisStatistics implements StatisticsSupport {
 
     Integer cacheSize;
     Integer hours;
+    @Autowired
+    RedisTemplate<String, Long> redisTemplate;
 
     public RedisStatistics(Integer cacheSize, Integer hours) {
         Assert.notNull(cacheSize, "cacheSize is null");
@@ -16,9 +18,6 @@ public class RedisStatistics implements StatisticsSupport {
         this.cacheSize = cacheSize;
         this.hours     = hours;
     }
-
-    @Autowired
-    RedisTemplate<String, Long> redisTemplate;
 
     @Override
     public void increment(String windows) {

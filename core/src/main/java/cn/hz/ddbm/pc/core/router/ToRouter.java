@@ -7,9 +7,6 @@ import cn.hz.ddbm.pc.core.Router;
 import cn.hz.ddbm.pc.core.State;
 import lombok.Getter;
 
-import java.util.HashSet;
-import java.util.Set;
-
 /**
  * @Description TODO
  * @Author wanglin
@@ -46,7 +43,6 @@ public class ToRouter implements Router, State {
     public String failover(String preNode, FlowContext<?> ctx) {
         return from;
     }
-
 
 
     @Override

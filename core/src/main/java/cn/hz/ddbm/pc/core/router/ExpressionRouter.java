@@ -3,7 +3,6 @@ package cn.hz.ddbm.pc.core.router;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.State;
 import cn.hz.ddbm.pc.core.utils.ExpressionEngineUtils;
-import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -45,10 +44,17 @@ public class ExpressionRouter implements AnyRouter, State.Instant {
     }
 
 
-
     @Override
     public String status() {
         return routerName;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "routerName:" + routerName() +
+                ",expr:" + Arrays.toString(nodeExpressionPairs) +
+                '}';
     }
 
     public static class NodeExpression {
@@ -67,13 +73,5 @@ public class ExpressionRouter implements AnyRouter, State.Instant {
                     ", expression='" + expression + '\'' +
                     '}';
         }
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-                "routerName:" + routerName() +
-                ",expr:" + Arrays.toString(nodeExpressionPairs) +
-                '}';
     }
 }

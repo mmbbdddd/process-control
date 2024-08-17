@@ -6,10 +6,13 @@ import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
-import cn.hz.ddbm.pc.factory.dsl.StateMachineConfig;
+import cn.hz.ddbm.pc.core.utils.InfraUtils;
+import cn.hz.ddbm.pc.factory.dsl.FSM;
+import cn.hz.ddbm.pc.profile.PcService;
 import cn.hz.ddbm.pc.test.support.DigestLogPluginMock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class PcConfig implements StateMachineConfig<PcState> {
+public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     Logger logger = LoggerFactory.getLogger(getClass());
 
 
@@ -37,17 +40,18 @@ public class PcConfig implements StateMachineConfig<PcState> {
     public StatusManager.Type status() {
         return StatusManager.Type.memory;
     }
+
     @Override
-    public void transitions(Transitions<PcState> t) {
-        t.router(PcState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter")
+    public void transitions(Transitions<IDCardState> t) {
+        t.router(IDCardState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter")
          //发送异常，不明确是否发送
-         .router(PcState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
+         .router(IDCardState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
          //已发送，对方处理中
-         .router(PcState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
+         .router(IDCardState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
          //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
-         .router(PcState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter")
+         .router(IDCardState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter")
 //                资料就绪状态，可重新发送
-         .to(PcState.miss_data_fulled, Coasts.EVENT_DEFAULT, PcState.init);
+         .to(IDCardState.miss_data_fulled, Coasts.EVENT_DEFAULT, IDCardState.init);
     }
 
     @Override
@@ -67,7 +71,6 @@ public class PcConfig implements StateMachineConfig<PcState> {
     }
 
 
-
     @Override
     public Map<String, Profile.StepAttrs> stateAttrs() {
         return new HashMap<>();
@@ -80,8 +83,8 @@ public class PcConfig implements StateMachineConfig<PcState> {
 
     @Override
     public Profile profile() {
-        Profile profile = new Profile(session(),status());
-        profile.setRetry(1);
+        Profile profile = new Profile(session(), status());
+        profile.setRetry(10);
         return profile;
     }
 
@@ -96,4 +99,8 @@ public class PcConfig implements StateMachineConfig<PcState> {
     }
 
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        InfraUtils.getBean(PcService.class).addFlow(build());
+    }
 }

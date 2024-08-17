@@ -2,7 +2,6 @@ package cn.hz.ddbm.pc.status.redis;
 
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowStatus;
-import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -13,14 +12,12 @@ import java.io.Serializable;
 public class RedisStatusManager implements StatusManager {
     @Autowired
     RedisTemplate<String, FlowStatus> redisTemplate;
+    String keyTemplate = "%s:%s";
 
     @Override
     public Type code() {
         return Type.redis;
     }
-
-    String keyTemplate = "%s:%s";
-
 
     @Override
     public void setStatus(String flow, Serializable flowId, FlowStatus flowStatus, Integer timeout, FlowContext<?> ctx) throws IOException {

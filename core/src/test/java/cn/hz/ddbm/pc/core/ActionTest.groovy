@@ -1,12 +1,11 @@
 package cn.hz.ddbm.pc.core
 
 import cn.hutool.extra.spring.SpringUtil
-import cn.hz.ddbm.pc.core.action.SagaAction
 import cn.hz.ddbm.pc.core.utils.InfraUtils
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
-import spock.lang.*
+import spock.lang.Specification
 
 
 class ActionTest extends Specification {
@@ -19,7 +18,7 @@ class ActionTest extends Specification {
 //
     def "test of"() {
         expect:
-        Action.of(actionDsl,null).beanName() == result
+        Action.of(actionDsl, null).beanName() == result
         where:
         actionDsl               | result
         null                    | "none"

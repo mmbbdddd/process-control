@@ -21,10 +21,10 @@ public class SimpleStatistics implements StatisticsSupport {
         this.cacheSize = cacheSize;
         this.hours     = hours;
         this.cache     = Caffeine.newBuilder()
-                .initialCapacity(cacheSize > 256 ? cacheSize / 8 : cacheSize)
-                .maximumSize(cacheSize)
-                .expireAfterWrite(Duration.ofHours(hours))
-                .build();
+                                 .initialCapacity(cacheSize > 256 ? cacheSize / 8 : cacheSize)
+                                 .maximumSize(cacheSize)
+                                 .expireAfterWrite(Duration.ofHours(hours))
+                                 .build();
     }
 
 

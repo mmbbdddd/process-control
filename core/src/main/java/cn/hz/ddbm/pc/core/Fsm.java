@@ -10,13 +10,12 @@ import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.hamcrest.Condition;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
-public class Flow {
+public class Fsm {
     final String                        name;
     final String                        descr;
     final Node                          init;
@@ -27,7 +26,7 @@ public class Flow {
     List<Plugin> plugins;
     FsmTable fsmTable;
 
-    public Flow(String name, String descr, Set<Node> nodes, List<ExpressionRouter> routers, Profile profile) {
+    public Fsm(String name, String descr, Set<Node> nodes, List<ExpressionRouter> routers, Profile profile) {
         Assert.notNull(name, "flow.name is null");
         Assert.notNull(routers, "routers is null");
         Assert.notNull(nodes, "nodes is null");
@@ -50,8 +49,8 @@ public class Flow {
      * @param profile
      * @return
      */
-    public static Flow of(String name, String descr, Set<Node> nodes, List<ExpressionRouter> routers, Profile profile) {
-        return new Flow(name, descr, nodes, routers, profile);
+    public static Fsm of(String name, String descr, Set<Node> nodes, List<ExpressionRouter> routers, Profile profile) {
+        return new Fsm(name, descr, nodes, routers, profile);
     }
 
     /**
@@ -60,11 +59,11 @@ public class Flow {
      * @param name
      * @return
      */
-    public static Flow devOf(String name, String descr, Set<Node> nodes, List<ExpressionRouter> routers) {
+    public static Fsm devOf(String name, String descr, Set<Node> nodes, List<ExpressionRouter> routers) {
         List<String> plugins = new ArrayList<>();
         plugins.add(Coasts.PLUGIN_DIGEST_LOG);
         plugins.add(Coasts.PLUGIN_ERROR_LOG);
-        Flow flow = new Flow(name, descr, nodes, routers, Profile.devOf());
+        Fsm flow = new Fsm(name, descr, nodes, routers, Profile.devOf());
         flow.plugins = InfraUtils.getByCodesOfType(plugins, Plugin.class);
         return flow;
     }
@@ -139,18 +138,22 @@ public class Flow {
     }
 
     public boolean isRouter(String node) {
-        if(!nodes.containsKey(node)){
+        if (!nodes.containsKey(node)) {
             return true;
-        }else{
+        } else {
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "{" + "name:'" + name + '\'' + ", descr:'" + descr + '\'' + ", init:" + init + ",nodes:" + nodes + ", fsmTable:" + Arrays.toString(fsmTable.records.toArray(new FsmRecord[fsmTable.records.size()])) + '}';
     }
 
 
     public enum STAUS {
         RUNNABLE, PAUSE, CANCEL, FINISH
     }
-
 
     @Data
     static class FsmTable {
@@ -220,13 +223,8 @@ public class Flow {
         @Override
         public String toString() {
             return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + state
-                    .getAction()+ '\'' + ", to:'" + to + '\'' + '}';
+                    .getAction() + '\'' + ", to:'" + to + '\'' + '}';
         }
 
-    }
-
-    @Override
-    public String toString() {
-        return "{" + "name:'" + name + '\'' + ", descr:'" + descr + '\'' + ", init:" + init + ",nodes:" + nodes + ", fsmTable:" + Arrays.toString(fsmTable.records.toArray(new FsmRecord[fsmTable.records.size()])) + '}';
     }
 }

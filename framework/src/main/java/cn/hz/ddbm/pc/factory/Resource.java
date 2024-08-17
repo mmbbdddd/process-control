@@ -1,9 +1,9 @@
 package cn.hz.ddbm.pc.factory;
 
-import cn.hz.ddbm.pc.core.Flow;
+import cn.hz.ddbm.pc.core.Fsm;
 
 public abstract class Resource {
-    public abstract Flow resolve();
+    public abstract Fsm resolve();
 
 
 }

@@ -30,8 +30,8 @@ public class ActionRouter implements State.Instant {
         return status;
     }
 
-    public  Action action(FlowContext<?> ctx){
-        return Action.of(action,ctx);
+    public Action action(FlowContext<?> ctx) {
+        return Action.of(action, ctx);
     }
 
     /**
@@ -39,16 +39,16 @@ public class ActionRouter implements State.Instant {
      *
      * @return
      */
-    public Set<Flow.FsmRecord> fsmRecords(String from,Event event) {
+    public Set<Fsm.FsmRecord> fsmRecords(String from, Event event) {
         ActionRouter self = this;
-        return new HashSet<Flow.FsmRecord>() {{
+        return new HashSet<Fsm.FsmRecord>() {{
             if (router instanceof ToRouter) {
-                add(new Flow.FsmRecord(from, event, self));
+                add(new Fsm.FsmRecord(from, event, self));
             }
             if (router instanceof ExpressionRouter) {
                 String status = ((ExpressionRouter) router).status();
-                add(new Flow.FsmRecord(from, event, self));
-                add(new Flow.FsmRecord(status, event, new ActionRouter( Coasts.NONE, router)));
+                add(new Fsm.FsmRecord(from, event, self));
+                add(new Fsm.FsmRecord(status, event, new ActionRouter(Coasts.NONE, router)));
             }
         }};
     }

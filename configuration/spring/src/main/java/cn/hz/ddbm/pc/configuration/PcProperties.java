@@ -11,6 +11,10 @@ public class PcProperties {
     SessionManager sessionManager = new SessionManager();
     Statistics     statistics     = new Statistics();
 
+    public enum DefineStyle {
+        dsl, json, xml
+    }
+
     @Data
     public static class StatusManager {
         Integer cacheSize = 256;
@@ -27,9 +31,5 @@ public class PcProperties {
     public static class SessionManager {
         Integer cacheSize = 256;
         Integer hours     = 2;
-    }
-
-    public enum DefineStyle {
-        dsl, json, xml
     }
 }
