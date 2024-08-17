@@ -10,11 +10,12 @@ import cn.hz.ddbm.pc.test.support.PayloadMock;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@ComponentScan("cn.hz.ddbm.pc.actions")
 public class PcDemo {
 
     ChaosPcService chaosService;
@@ -41,7 +42,7 @@ public class PcDemo {
             }}));
         }};
         try {
-            chaosService.execute("test", new PayloadMock(PcState.init.name()), event, 100, 10, rules,true);
+            chaosService.execute("test", new PayloadMock(PcState.init.name()), event, 1, 10, rules,true);
         } catch (Exception e) {
             e.printStackTrace();
         }

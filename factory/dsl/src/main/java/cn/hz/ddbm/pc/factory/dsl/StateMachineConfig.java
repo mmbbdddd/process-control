@@ -24,7 +24,6 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
 
     String describe();
 
-    Class<S> fsm();
 
 //    Flow build() throws Exception;
 
@@ -42,15 +41,12 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
 
     Map<String, Profile.ActionAttrs> actionAttrs();
 
-    default Action getAction(String action) {
-        return new NoneAction();
-    }
-
+    Profile profile();
 
     @PostConstruct
     default void afterPropertiesSet() throws Exception {
         Map<String, Profile.StepAttrs> stepAttrsMap = stateAttrs();
-        Profile                        profile      = Profile.defaultOf();
+        Profile                        profile      = profile();
         profile.setStatusManager(status());
         profile.setSessionManager(session());
         profile.setActions(actionAttrs());
@@ -58,9 +54,7 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
 
         Class          genericsType = (Class) TypeUtil.getGenerics(this.getClass())[0].getActualTypeArguments()[0];
         Map<String, S> enums        = EnumUtil.getEnumMap(genericsType);
-        Set<Node> nodes = enums.values().stream()
-                               .map(it -> new Node(it.type(), it.name(), profile))
-                               .collect(Collectors.toSet());
+        Set<Node> nodes = enums.values().stream().map(it -> new Node(it.type(), it.name(), profile)).collect(Collectors.toSet());
         Flow flow = Flow.of(flowId(), describe(), nodes, routers(), profile);
         flow.setPlugins(plugins());
         Transitions<S> transitions = new Transitions<>();

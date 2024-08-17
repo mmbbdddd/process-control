@@ -37,25 +37,6 @@ public class PcConfig implements StateMachineConfig<PcState> {
     public StatusManager.Type status() {
         return StatusManager.Type.memory;
     }
-
-    @Override
-    public List<ExpressionRouter> routers() {
-        List<ExpressionRouter> routers = new ArrayList<>();
-        routers.add(new ExpressionRouter("sendRouter",
-                new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.3"),
-                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.7"),
-                new ExpressionRouter.NodeExpression("init", "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
-        ));
-        routers.add(new ExpressionRouter("notifyRouter",
-                new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.3"),
-                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.7"),
-                new ExpressionRouter.NodeExpression("init", "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
-        ));
-        return routers;
-    }
-
     @Override
     public void transitions(Transitions<PcState> t) {
         t.router(PcState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter")
@@ -66,8 +47,27 @@ public class PcConfig implements StateMachineConfig<PcState> {
          //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
          .router(PcState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter")
 //                资料就绪状态，可重新发送
-         .to(PcState.miss_data_fulled, Coasts.EVENT_DEFAULT,  PcState.init);
+         .to(PcState.miss_data_fulled, Coasts.EVENT_DEFAULT, PcState.init);
     }
+
+    @Override
+    public List<ExpressionRouter> routers() {
+        List<ExpressionRouter> routers = new ArrayList<>();
+        routers.add(new ExpressionRouter("sendRouter",
+                new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.3"),
+                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.7"),
+                new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2"),
+                new ExpressionRouter.NodeExpression("error", "Math.random() < 0.1")
+        ));
+        routers.add(new ExpressionRouter("notifyRouter",
+                new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.3"),
+                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.7"),
+                new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2"),
+                new ExpressionRouter.NodeExpression("init", "Math.random() < 0.1")
+        ));
+        return routers;
+    }
+
 
 
     @Override
@@ -80,6 +80,13 @@ public class PcConfig implements StateMachineConfig<PcState> {
         return new HashMap<>();
     }
 
+    @Override
+    public Profile profile() {
+        Profile profile = new Profile(session(),status());
+        profile.setRetry(10);
+        return profile;
+    }
+
 
     public String flowId() {
         return "test";
@@ -90,9 +97,5 @@ public class PcConfig implements StateMachineConfig<PcState> {
         return "test";
     }
 
-    @Override
-    public Class<PcState> fsm() {
-        return PcState.class;
-    }
 
 }

@@ -102,7 +102,7 @@ public abstract class PcService {
         String     flowName   = ctx.getFlow().getName();
         State      nodeObj    = ctx.getFlow().getStep(node);
         if(ctx.getFlow().isRouter(node)){
-            return false;
+            return true;
         }
         if (!flowStatus.equals(Flow.STAUS.RUNNABLE)) {
             Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), flowStatus.name());
