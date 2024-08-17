@@ -54,14 +54,14 @@ public class PcConfig implements StateMachineConfig<PcState> {
     public List<ExpressionRouter> routers() {
         List<ExpressionRouter> routers = new ArrayList<>();
         routers.add(new ExpressionRouter("sendRouter",
-                new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.7"),
-                new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.1")
+                new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.2"),
+                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
+                new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
         ));
         routers.add(new ExpressionRouter("notifyRouter",
-                new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.1"),
-                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.7"),
-                new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.1")
+                new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.2"),
+                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
+                new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.2")
         ));
         return routers;
     }
@@ -81,7 +81,7 @@ public class PcConfig implements StateMachineConfig<PcState> {
     @Override
     public Profile profile() {
         Profile profile = new Profile(session(),status());
-        profile.setRetry(10);
+        profile.setRetry(1);
         return profile;
     }
 
