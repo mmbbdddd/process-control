@@ -58,7 +58,7 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
         Class          genericsType = (Class) TypeUtil.getGenerics(this.getClass())[0].getActualTypeArguments()[0];
         Map<String, S> enums        = EnumUtil.getEnumMap(genericsType);
         Set<Node> nodes = enums.values().stream()
-                               .map(it -> new Node(it.type(), it.name(), stepAttrsMap.get(it.name())))
+                               .map(it -> new Node(it.type(), it.name(), stepAttrsMap.get(it.name()),profile))
                                .collect(Collectors.toSet());
         Flow flow = Flow.of(flowId(), describe(), nodes, routers(), profile);
         flow.setPlugins(plugins());

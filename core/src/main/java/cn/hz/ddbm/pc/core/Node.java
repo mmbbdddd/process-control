@@ -11,10 +11,10 @@ public class Node implements State.Persist {
 
     Profile.StepAttrs attrs;
 
-    public Node(Type type, String name, Profile.StepAttrs attrs) {
+    public Node(Type type, String name, Profile.StepAttrs attrs,Profile profile) {
         this.name  = name;
         this.type  = type;
-        this.attrs = attrs;
+        this.attrs = attrs==null?new Profile.StepAttrs(profile):attrs;
     }
 
     @Override
