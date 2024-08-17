@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import static cn.hz.ddbm.pc.core.log.Logs.flow;
+
 public class PcDemo {
 
     ChaosPcService chaosService;
@@ -29,8 +31,7 @@ public class PcDemo {
         ctx.refresh();
 //        PcService devPcService = ctx.getBean(DevPcService.class);
         chaosService = ctx.getBean(ChaosPcService.class);
-        PcConfig pcConfig = new PcConfig();
-        Flow     flow     = pcConfig.build();
+
         String   event    = Coasts.EVENT_DEFAULT;
 
         List<ChaosRule> rules = new ArrayList<ChaosRule>() {{
@@ -40,7 +41,7 @@ public class PcDemo {
             }}));
         }};
         try {
-            chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10, rules);
+            chaosService.execute("test", new PayloadMock(PcState.init.name()), event, 100, 10, rules);
         } catch (Exception e) {
             e.printStackTrace();
         }

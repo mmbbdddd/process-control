@@ -17,29 +17,29 @@ import java.util.stream.Collectors;
 
 @Getter
 public class Flow {
-    final String            name;
-    final String            descr;
-    final Node              init;
-    final Profile           profile;
-    final Map<String, Node> ends;
-    final Map<String, Node> nodes;
+    final String                        name;
+    final String                        descr;
+    final Node                          init;
+    final Profile                       profile;
+    final Map<String, Node>             nodes;
+    final Map<String, ExpressionRouter> routers;
     @Setter
     List<Plugin> plugins;
-    FsmTable     fsmTable;
+    FsmTable fsmTable;
 
-    public Flow(String name, String descr, String init, Set<String> ends, Set<String> nodes, Profile profile) {
+    public Flow(String name, String descr, Set<Node> nodes, List<ExpressionRouter> routers, Profile profile) {
         Assert.notNull(name, "flow.name is null");
-        Assert.notNull(init, "start.node is null");
-        Assert.notNull(ends, "ends.node is null");
+        Assert.notNull(routers, "routers is null");
+        Assert.notNull(nodes, "nodes is null");
+        Assert.notNull(profile, "profile is null");
         this.name     = name;
         this.descr    = descr;
-        this.profile  = profile == null ? Profile.defaultOf() : profile;
-        this.init     = new Node(init, this.profile.getStepAttrsOrDefault(init));
-        this.ends     = ends.stream().map(e -> new Node(e, this.profile.getStepAttrsOrDefault(e))).collect(Collectors.toMap(Node::getName, t -> t));
-        this.nodes    = nodes.stream().map(e -> new Node(e, this.profile.getStepAttrsOrDefault(e))).collect(Collectors.toMap(Node::getName, t -> t));
+        this.profile  = profile;
+        this.init     = nodes.stream().filter(n -> n.getType().equals(Node.Type.START)).findFirst().get();
+        this.nodes    = nodes.stream().collect(Collectors.toMap(Node::getName, t -> t));
         this.fsmTable = new FsmTable();
-//        this.routers  = new HashMap<>();
-        this.plugins = new ArrayList<>();
+        this.routers  = routers.stream().collect(Collectors.toMap(t -> t.routerName(), t -> t));
+        this.plugins  = new ArrayList<>();
     }
 
 
@@ -50,9 +50,8 @@ public class Flow {
      * @param profile
      * @return
      */
-    public static Flow of(String name, String descr, String init, Set<String> ends, Set<String> nodes, Profile profile) {
-        Flow flow = new Flow(name, descr, init, ends, nodes, profile);
-        return flow;
+    public static Flow of(String name, String descr, Set<Node> nodes, List<ExpressionRouter> routers, Profile profile) {
+        return new Flow(name, descr, nodes, routers, profile);
     }
 
     /**
@@ -61,15 +60,14 @@ public class Flow {
      * @param name
      * @return
      */
-    public static Flow devOf(String name, String descr, String init, Set<String> ends, Set<String> nodes) {
+    public static Flow devOf(String name, String descr, Set<Node> nodes, List<ExpressionRouter> routers) {
         List<String> plugins = new ArrayList<>();
         plugins.add(Coasts.PLUGIN_DIGEST_LOG);
         plugins.add(Coasts.PLUGIN_ERROR_LOG);
-        Flow flow = new Flow(name, descr, init, ends, nodes, Profile.defaultOf());
+        Flow flow = new Flow(name, descr, nodes, routers, Profile.devOf());
         flow.plugins = InfraUtils.getByCodesOfType(plugins, Plugin.class);
         return flow;
     }
-
 
 
     /**
@@ -80,17 +78,12 @@ public class Flow {
      * @param from
      * @param event
      * @param action
-     * @param router
+     * @param routerName
      */
-    public void router(String from, String event, Action action, ExpressionRouter router) {
-        Event e = Event.of(event);
-        this.fsmTable.on(from, e, action, router);
-    }
-
     public void router(String from, String event, Action action, String routerName) {
-        ExpressionRouter router = profile.getRouter(routerName);
-        Assert.notNull(router, "router not define:" + routerName);
-        router(from, event, action, router);
+        ExpressionRouter router = routers.get(routerName);
+        Event            e      = Event.of(event);
+        this.fsmTable.on(from, e, action, router);
     }
 
 
@@ -102,27 +95,18 @@ public class Flow {
 
 
     public Node getNode(String stepName) {
-        Node node = nodes.get(stepName);
-        if (null == node) {
-            node = ends.get(stepName);
-        }
-        return node;
+        return nodes.get(stepName);
     }
 
 
     public <T> void execute(FlowContext<?> ctx) throws RouterException, ActionException {
         Assert.isTrue(true, "ctx is null");
 
-        String node = ctx.getStatus()
-                         .getNode();
+        String    node = ctx.getStatus().getNode();
         FsmRecord atom = fsmTable.find(node, ctx.getEvent());
         Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent().getCode(), ctx.getStatus().getNode()));
 
-        AtomExecutor atomExecutor = AtomExecutor.builder()
-                                                .event(atom.getEvent())
-                                                .plugins(plugins)
-                                                .actionRouter(atom.getState())
-                                                .build();
+        AtomExecutor atomExecutor = AtomExecutor.builder().event(atom.getEvent()).plugins(plugins).actionRouter(atom.getState()).build();
         ctx.setAtomExecutor(atomExecutor);
 
         atomExecutor.execute(ctx);
@@ -137,20 +121,19 @@ public class Flow {
 
     public Set<String> nodeNames() {
         return new HashSet<String>() {{
-            add(init.name);
-            addAll(ends.keySet());
+            add(init.getName());
             addAll(nodes.keySet());
         }};
     }
 
     public boolean isEnd(String state) {
-        return ends.keySet().contains(state);
+        return nodes.get(state).getType().equals(Node.Type.END);
     }
 
     public State getStep(String state) {
         State sts = nodes.get(state);
         if (null == sts) {
-            sts = profile.getRouter(state);
+            sts = routers.get(state);
         }
         return sts;
     }
@@ -170,10 +153,11 @@ public class Flow {
         }
 
         public FsmRecord find(String node, Event event) {
-            return records.stream()
-                          .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent().getCode(), event.getCode()))
-                          .findFirst()
-                          .orElse(null);
+            return records
+                    .stream()
+                    .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent().getCode(), event.getCode()))
+                    .findFirst()
+                    .orElse(null);
         }
 
         /**
@@ -184,12 +168,12 @@ public class Flow {
          * 参见onInner
          */
         public void on(String from, Event event, Action action, Router router) {
-            onInner(from, event, new ActionRouter( action, router));
+            onInner(from, event, new ActionRouter(action, router));
         }
 
         private void onInner(String from, Event event, ActionRouter actionRouter) {
             //增加外部event事件
-            this.records.addAll(actionRouter.fsmRecords(from,event));
+            this.records.addAll(actionRouter.fsmRecords(from, event));
         }
 
         @Override
@@ -227,21 +211,15 @@ public class Flow {
 
         @Override
         public String toString() {
-            return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + state.getAction()
-                                                                                                             .beanName() + '\'' + ", to:'" + to + '\'' + '}';
+            return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + state
+                    .getAction()
+                    .beanName() + '\'' + ", to:'" + to + '\'' + '}';
         }
 
     }
 
     @Override
     public String toString() {
-        return "{" +
-                "name:'" + name + '\'' +
-                ", descr:'" + descr + '\'' +
-                ", init:" + init +
-                ", ends:" + ends +
-                ", nodes:" + nodes +
-                ", fsmTable:" + Arrays.toString(fsmTable.records.toArray(new FsmRecord[fsmTable.records.size()])) +
-                '}';
+        return "{" + "name:'" + name + '\'' + ", descr:'" + descr + '\'' + ", init:" + init + ",nodes:" + nodes + ", fsmTable:" + Arrays.toString(fsmTable.records.toArray(new FsmRecord[fsmTable.records.size()])) + '}';
     }
 }

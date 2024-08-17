@@ -3,17 +3,18 @@ package cn.hz.ddbm.pc.core;
 import cn.hutool.core.lang.Assert;
 import lombok.Getter;
 
-
 @Getter
 public class Node implements State.Persist {
-    final String            name;
-    final Profile.StepAttrs attrs;
+    String name;
 
-    //初始化Node的配置属性
-    public Node(String name, Profile.StepAttrs attrs) {
-        Assert.notNull(name, "name is null");
-        this.attrs = attrs;
+    Type type;
+
+    Profile.StepAttrs attrs;
+
+    public Node(Type type, String name, Profile.StepAttrs attrs) {
         this.name  = name;
+        this.type  = type;
+        this.attrs = attrs;
     }
 
     @Override
@@ -26,8 +27,8 @@ public class Node implements State.Persist {
         return attrs.getRetry();
     }
 
-    @Override
-    public String toString() {
-        return name;
+   public enum Type {
+        START, TASK, END
     }
+
 }

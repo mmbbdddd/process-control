@@ -8,8 +8,11 @@ import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Data;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Data
 public class Profile {
@@ -20,14 +23,13 @@ public class Profile {
     private StatusManager.Type            statusManager;
     private Map<String, StepAttrs>        states;
     private Map<String, ActionAttrs>      actions;
-    private Map<String, ExpressionRouter> routers;
+
 
     public Profile(SessionManager.Type sessionManager, StatusManager.Type statusManager) {
-        this.actions            = new HashMap<>();
-        this.states             = new HashMap<>();
-        this.routers            = new HashMap<>();
-        this.sessionManager     = sessionManager == null ? SessionManager.Type.redis : sessionManager;
-        this.statusManager      = statusManager == null ? StatusManager.Type.redis : statusManager;
+        this.sessionManager = sessionManager == null ? SessionManager.Type.redis : sessionManager;
+        this.statusManager  = statusManager == null ? StatusManager.Type.redis : statusManager;
+        this.actions        = new HashMap<>();
+        this.states         = new HashMap<>();
     }
 
     public static Profile defaultOf() {
@@ -38,7 +40,7 @@ public class Profile {
         return new Profile(SessionManager.Type.memory, StatusManager.Type.memory);
     }
 
-    public static Profile devOf() {
+    public static Profile devOf( ) {
         return new Profile(SessionManager.Type.memory, StatusManager.Type.memory);
     }
 
@@ -49,14 +51,6 @@ public class Profile {
 
     public StepAttrs getStepAttrsOrDefault(String state) {
         return this.states.getOrDefault(state, new StepAttrs(this));
-    }
-
-    public void addRouter(ExpressionRouter router) {
-        this.routers.put(router.routerName(), router);
-    }
-
-    public ExpressionRouter getRouter(String routerName) {
-        return this.routers.get(routerName);
     }
 
 
