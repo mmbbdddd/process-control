@@ -63,7 +63,7 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
         Flow flow = Flow.of(flowId(), describe(), nodes, routers(), profile);
         flow.setPlugins(plugins());
         transitions().transitions.forEach(t -> {
-            Action action = null;
+            Action action = Action.of(t.getAction());
             if (t.getTo() != null) {
                 flow.to(t.getFrom().name(), t.getEvent(), action, t.getTo().name());
             } else {
