@@ -45,7 +45,7 @@ public class PcDemo {
             }}));
         }};
         try {
-            chaosService.execute("test", new PayloadMock(PcState.init.name()), event, 100, 10, rules, true);
+            chaosService.execute("test", new ChaosPcService.MockPayLoad(PcState.init.name()), event, 100, 10, rules, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

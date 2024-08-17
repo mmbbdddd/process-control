@@ -6,7 +6,6 @@ import cn.hz.ddbm.pc.core.Node
 import cn.hz.ddbm.pc.core.coast.Coasts
 import cn.hz.ddbm.pc.profile.ChaosPcService
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule
-import cn.hz.ddbm.pc.test.support.PayloadMock
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import spock.lang.Specification
 
@@ -38,7 +37,7 @@ public class ChaosServiceTest extends Specification {
     def "Execute"() {
         expect:
 
-        FlowPayload date = new PayloadMock("init");
+        FlowPayload date = new ChaosPcService.MockPayLoad("init");
         String event = Coasts.EVENT_DEFAULT;
         List<ChaosRule> rules = new ArrayList<ChaosRule>() {
             {

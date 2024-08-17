@@ -2,15 +2,10 @@ package cn.hz.ddbm.pc.example
 
 import cn.hutool.core.util.EnumUtil
 import cn.hutool.core.util.TypeUtil
-import cn.hz.ddbm.pc.core.Action
-import cn.hz.ddbm.pc.core.action.SagaAction
 import cn.hz.ddbm.pc.factory.dsl.StateMachineConfig
-import org.assertj.core.util.diff.Delta
 import org.junit.Test
-import spock.lang.*
 
 import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 
 class StateMachineConfigTest   {
     StateMachineConfig stateMachineConfig = null

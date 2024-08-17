@@ -3,16 +3,14 @@ package cn.hz.ddbm.pc.profile;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
-import cn.hz.ddbm.pc.core.Flow;
-import cn.hz.ddbm.pc.core.FlowContext;
-import cn.hz.ddbm.pc.core.FlowPayload;
-import cn.hz.ddbm.pc.core.Profile;
+import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.SessionException;
 import cn.hz.ddbm.pc.core.exception.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +31,7 @@ public class ChaosPcService extends PcService {
         this.chaosRules = new ArrayList<>();
     }
 
-    public <T extends FlowPayload> void execute(String flowName, T payload, String event, Integer times, Integer timeout, List<ChaosRule> rules,Boolean mock) {
+    public void execute(String flowName, MockPayLoad payload, String event, Integer times, Integer timeout, List<ChaosRule> rules, Boolean mock) {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         CountDownLatch cdl = new CountDownLatch(times);
@@ -45,7 +43,8 @@ public class ChaosPcService extends PcService {
                 Object result = null;
                 try {
 //                    独立事件执行
-                    FlowContext<T> ctx = standalone(flowName, payload, event,mock);
+                    payload.setId(finalI);
+                    FlowContext<MockPayLoad> ctx = standalone(flowName, payload, event, mock);
                     result = ctx;
                 } catch (Throwable t) {
                     Logs.error.error("", t);
@@ -68,7 +67,7 @@ public class ChaosPcService extends PcService {
 
     private void printStatisticsReport() {
         Map<Pair, List<StatisticsLine>> groups = statisticsLines.stream()
-                .collect(Collectors.groupingBy(t -> Pair.of(t.result.type, t.result.value)));
+                                                                .collect(Collectors.groupingBy(t -> Pair.of(t.result.type, t.result.value)));
         Logs.flow.info("混沌测试报告：\\n");
         groups.forEach((triple, list) -> {
             Logs.flow.info("{},{},{}", triple.getKey(), triple.getValue(), list.size());
@@ -81,13 +80,13 @@ public class ChaosPcService extends PcService {
         statisticsLines.add(new StatisticsLine(i, requestInfo, result));
     }
 
-    private <T extends FlowPayload> FlowContext<T> standalone(String flowName, T payload, String event,Boolean mock) throws StatusException, SessionException {
+    private FlowContext<MockPayLoad> standalone(String flowName, MockPayLoad payload, String event, Boolean mock) throws StatusException, SessionException {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
-        Flow           flow = getFlow(flowName);
-        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, Profile.chaosOf());
+        Flow                     flow = getFlow(flowName);
+        FlowContext<MockPayLoad> ctx  = new FlowContext<>(flow, payload, event, Profile.chaosOf());
         ctx.setMockBean(mock);
         while (isCanContinue(ctx)) {
-            Logs.flow.info("xxxx{},{},{}",flow.getName(),ctx.getId(),ctx.getStatus());
+            Logs.flow.info("xxxx{},{},{}", flow.getName(), ctx.getId(), ctx.getStatus());
             execute(ctx);
         }
         return ctx;
@@ -96,6 +95,38 @@ public class ChaosPcService extends PcService {
 
     public List<ChaosRule> chaosRules() {
         return chaosRules;
+    }
+
+
+    public static class MockPayLoad implements FlowPayload {
+        Integer    id;
+        Flow.STAUS flowStatus;
+        String     nodeStatus;
+
+        public MockPayLoad(String init) {
+            this.flowStatus = Flow.STAUS.RUNNABLE;
+            this.nodeStatus = init;
+        }
+
+        @Override
+        public Serializable getId() {
+            return id;
+        }
+
+        @Override
+        public FlowStatus getStatus() {
+            return FlowStatus.of(flowStatus.name(), nodeStatus);
+        }
+
+        @Override
+        public void setStatus(FlowStatus status) {
+            this.flowStatus = status.getFlow();
+            this.nodeStatus = status.getNode();
+        }
+
+        public void setId(int i) {
+            this.id = i;
+        }
     }
 
     static class StatisticsLine {
