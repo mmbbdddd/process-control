@@ -27,6 +27,8 @@ public class FlowContext<T extends FlowPayload> {
     private AtomExecutor atomExecutor;
     @Setter
     private Profile      profile;
+    @Setter
+    private Boolean      isChaos = false;
 
 
     public FlowContext(Flow flow, T data, String event, Profile profile) {

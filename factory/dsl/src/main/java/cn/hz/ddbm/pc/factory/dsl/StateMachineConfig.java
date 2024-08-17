@@ -35,7 +35,7 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
 
     List<ExpressionRouter> routers();
 
-    Transitions<S> transitions();
+    void transitions(Transitions<S> transitions);
 
     Map<String, Profile.StepAttrs> stateAttrs();
 
@@ -62,12 +62,13 @@ public interface StateMachineConfig<S extends StateMachineConfig.State> {
                                .collect(Collectors.toSet());
         Flow flow = Flow.of(flowId(), describe(), nodes, routers(), profile);
         flow.setPlugins(plugins());
-        transitions().transitions.forEach(t -> {
-            Action action = Action.of(t.getAction());
+        Transitions<S> transitions = new Transitions<>();
+        transitions(transitions);
+        transitions.transitions.forEach(t -> {
             if (t.getTo() != null) {
-                flow.to(t.getFrom().name(), t.getEvent(), action, t.getTo().name());
+                flow.to(t.getFrom().name(), t.getEvent(), t.getAction(), t.getTo().name());
             } else {
-                flow.router(t.getFrom().name(), t.getEvent(), action, t.getRouter());
+                flow.router(t.getFrom().name(), t.getEvent(), t.getAction(), t.getRouter());
             }
         });
         InfraUtils.getBean(PcService.class).addFlow(flow);

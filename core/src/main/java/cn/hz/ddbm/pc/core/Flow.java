@@ -80,14 +80,14 @@ public class Flow {
      * @param action
      * @param routerName
      */
-    public void router(String from, String event, Action action, String routerName) {
+    public void router(String from, String event, String action, String routerName) {
         ExpressionRouter router = routers.get(routerName);
         Event            e      = Event.of(event);
         this.fsmTable.on(from, e, action, router);
     }
 
 
-    public void to(String source, String event, Action action, String to) {
+    public void to(String source, String event, String action, String to) {
         Event  e        = Event.of(event);
         Router toRouter = new ToRouter(source, to);
         this.fsmTable.on(source, e, action, toRouter);
@@ -167,7 +167,7 @@ public class Flow {
          * 2,nodeOf(action,router)==>routerResultEvent==>routerResultNode
          * 参见onInner
          */
-        public void on(String from, Event event, Action action, Router router) {
+        public void on(String from, Event event, String action, Router router) {
             onInner(from, event, new ActionRouter(action, router));
         }
 
@@ -212,8 +212,7 @@ public class Flow {
         @Override
         public String toString() {
             return "{" + "from:'" + from + '\'' + ", event:'" + event.getCode() + '\'' + ", action:'" + state
-                    .getAction()
-                    .beanName() + '\'' + ", to:'" + to + '\'' + '}';
+                    .getAction()+ '\'' + ", to:'" + to + '\'' + '}';
         }
 
     }

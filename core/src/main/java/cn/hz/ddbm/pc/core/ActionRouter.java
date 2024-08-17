@@ -11,10 +11,10 @@ import java.util.Set;
 @Getter
 public class ActionRouter implements State.Instant {
     String status;
-    Action action;
+    String action;
     Router router;
 
-    public ActionRouter(Action action, Router router) {
+    public ActionRouter(String action, Router router) {
         this.action = action;
         this.router = router;
         this.status = null;
@@ -28,6 +28,10 @@ public class ActionRouter implements State.Instant {
     @Override
     public String status() {
         return status;
+    }
+
+    public  Action action(FlowContext<?> ctx){
+        return Action.of(action,ctx.getIsChaos());
     }
 
     /**
@@ -44,7 +48,7 @@ public class ActionRouter implements State.Instant {
             if (router instanceof ExpressionRouter) {
                 String status = ((ExpressionRouter) router).status();
                 add(new Flow.FsmRecord(from, event, self));
-                add(new Flow.FsmRecord(status, event, new ActionRouter( Coasts.NONE_ACTION, router)));
+                add(new Flow.FsmRecord(status, event, new ActionRouter( Coasts.NONE, router)));
             }
         }};
     }

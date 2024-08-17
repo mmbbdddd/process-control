@@ -86,6 +86,7 @@ public class ChaosPcService extends PcService {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Flow           flow = getFlow(flowName);
         FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, Profile.chaosOf());
+        ctx.setIsChaos(true);
         execute(ctx);
         return ctx;
     }

@@ -32,7 +32,7 @@ public class AtomExecutor {
                 .getNode();
         try {
             preActionPlugin(flow, ctx);
-            this.actionRouter.action.execute(ctx);
+            InfraUtils.getBean(this.actionRouter.action,Action.class).execute(ctx);
             postActionPlugin(flow, ctx);
         } catch (Exception e) {
             ctx.setStatus(FlowStatus.of(this.actionRouter.router.failover(lastNode, ctx)));
@@ -63,7 +63,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.preAction(this.actionRouter.action.beanName(), ctx);
+                            plugin.preAction(this.actionRouter.action(ctx).beanName(), ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
                         }
@@ -76,7 +76,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.postAction(this.actionRouter.action.beanName(), ctx);
+                            plugin.postAction(this.actionRouter.action(ctx).beanName(), ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
                         }
@@ -89,7 +89,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.onActionException(this.actionRouter.action.beanName(), preNode, e, ctx);
+                            plugin.onActionException(this.actionRouter.action(ctx).beanName(), preNode, e, ctx);
                         } catch (Exception e2) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e2);
                         }
@@ -102,7 +102,7 @@ public class AtomExecutor {
             InfraUtils.getPluginExecutorService()
                     .submit(() -> {
                         try {
-                            plugin.onActionFinally(this.actionRouter.action.beanName(), ctx);
+                            plugin.onActionFinally(this.actionRouter.action(ctx).beanName(), ctx);
                         } catch (Exception e) {
                             Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
                         }

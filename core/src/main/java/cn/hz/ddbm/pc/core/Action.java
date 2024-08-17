@@ -3,6 +3,7 @@ package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
+import cn.hz.ddbm.pc.core.action.ChaosAction;
 import cn.hz.ddbm.pc.core.action.MultiAction;
 import cn.hz.ddbm.pc.core.action.NoneAction;
 import cn.hz.ddbm.pc.core.action.SagaAction;
@@ -35,7 +36,14 @@ public interface Action {
     String multi_regexp  = "(\\w+,)+\\w+";
     String saga_regexp   = "(\\w+,)_\\w+";
 
-    public static Action of(String actionDsl) {
+    public static Action of(String actionDsl, Boolean isChaos) {
+        if (isChaos) {
+            if (StrUtil.isBlank(actionDsl)) {
+                return Coasts.NONE_ACTION;
+            } else {
+                return InfraUtils.getBean("chaosAction",Action.class);
+            }
+        }
         if (StrUtil.isBlank(actionDsl)) {
             return Coasts.NONE_ACTION;
         }
@@ -46,7 +54,7 @@ public interface Action {
             String[] splits       = actionDsl.split(",_");
             String   otherPartDsl = splits[0];
             String   failover     = splits[1];
-            return new SagaAction(failover, of(otherPartDsl));
+            return new SagaAction(failover, of(otherPartDsl,false));
         }
         if (actionDsl.matches(multi_regexp)) {
             String[] actionBeanNames = actionDsl.split(",");

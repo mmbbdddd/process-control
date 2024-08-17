@@ -3,6 +3,7 @@ package cn.hz.ddbm.pc.configuration;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.container.ChaosAspect;
 import cn.hz.ddbm.pc.container.chaos.ChaosHandler;
+import cn.hz.ddbm.pc.core.action.ChaosAction;
 import cn.hz.ddbm.pc.core.support.ExpressionEngine;
 import cn.hz.ddbm.pc.core.support.Locker;
 import cn.hz.ddbm.pc.core.support.StatisticsSupport;
@@ -23,6 +24,10 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableConfigurationProperties({PcProperties.class})
 @EnableAspectJAutoProxy
 public class PcChaosConfiguration {
+    @Bean
+    ChaosAction chaosAction(){
+        return new ChaosAction();
+    }
     @Bean
     ChaosPcService pcService() {
         return new ChaosPcService();
