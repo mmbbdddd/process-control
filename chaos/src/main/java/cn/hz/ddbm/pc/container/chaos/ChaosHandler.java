@@ -7,11 +7,13 @@ import cn.hz.ddbm.pc.core.SimpleAction;
 import cn.hz.ddbm.pc.core.support.Locker;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
+import cn.hz.ddbm.pc.core.utils.RandomUitl;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
 import cn.hz.ddbm.pc.profile.chaos.ChaosTarget;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -50,9 +52,8 @@ public class ChaosHandler {
         if (proxy instanceof SimpleAction) {
             FlowContext ctx        = (FlowContext) args[0];
             ActionBase  actionBase = ctx.getExecutor();
-            Set<Enum>   results    = actionBase.maybeResult();
-            Integer     idx        = Double.valueOf(Math.ceil(Math.random() * results.size())).intValue();
-            ctx.setNextNode(results.stream().collect(Collectors.toList()).get(idx));
+            List<Enum> results    = new ArrayList(actionBase.maybeResult());
+            ctx.setNextNode( RandomUitl.random(results));
         }
     }
 

@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RunWith(SpringRunner.class)
 public class IDCardDemo {
 
-    public static AtomicInteger money;
+
     @Autowired
     ChaosPcService chaosService;
 
@@ -56,10 +56,12 @@ public class IDCardDemo {
             e.printStackTrace();
         }
     }
-
+    public static AtomicInteger account;
+    public static AtomicInteger freezed;
     @Test
     public void acid() throws Exception {
-        money = new AtomicInteger(100);
+        account = new AtomicInteger(100);
+        freezed = new AtomicInteger(0);
 
         String event = Coasts.EVENT_DEFAULT;
         try {
@@ -68,7 +70,8 @@ public class IDCardDemo {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("money:" + money.get());
+        System.out.println("account:" + account.get());
+        System.out.println("freezed:" + freezed.get());
     }
 
 

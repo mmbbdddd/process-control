@@ -2,6 +2,7 @@ package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hz.ddbm.pc.core.action.dsl.MultiSimpleAction;
+import cn.hz.ddbm.pc.core.action.dsl.NoneSimpleAction;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.util.Arrays;
@@ -28,17 +29,16 @@ public interface SimpleAction<S extends Enum<S>> {
     String single_regexp = "\\w{1,20}";
     String multi_regexp  = "(\\w+,)+\\w+";
 
-
     public static <S extends Enum<S>> SimpleAction<S> of(String actionDsl, FlowContext<S, ?> ctx) {
         if (null != ctx && ctx.getMockBean()) {
             if (StrUtil.isBlank(actionDsl)) {
-                return null;
+                return new NoneSimpleAction("");
             } else {
                 return InfraUtils.getBean("chaosAction", SimpleAction.class);
             }
         }
         if (StrUtil.isBlank(actionDsl)) {
-            return null;
+            return new NoneSimpleAction("");
         }
         if (actionDsl.matches(single_regexp)) {
             return InfraUtils.getBean(actionDsl, SimpleAction.class);
@@ -46,11 +46,12 @@ public interface SimpleAction<S extends Enum<S>> {
         if (actionDsl.matches(multi_regexp)) {
             String[] actionBeanNames = actionDsl.split(",");
             List<SimpleAction> actions = Arrays.stream(actionBeanNames)
-                                         .map(name -> InfraUtils.getBean(name, SimpleAction.class))
-                                         .collect(Collectors.toList());
+                                               .map(name -> InfraUtils.getBean(name, SimpleAction.class))
+                                               .collect(Collectors.toList());
             return new MultiSimpleAction(actionDsl, actions);
         }
-        return null;
+        return new NoneSimpleAction("");
     }
+
 
 }

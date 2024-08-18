@@ -43,8 +43,9 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     public Map<IDCardState, Node.Type> nodes() {
         Map<IDCardState, Node.Type> map = new HashMap<>();
         map.put(IDCardState.init, Node.Type.START);
-        map.put(IDCardState.sended, Node.Type.TASK);
         map.put(IDCardState.send_failover, Node.Type.TASK);
+        map.put(IDCardState.sended_ing, Node.Type.TASK);
+        map.put(IDCardState.none_sended, Node.Type.TASK);
         map.put(IDCardState.miss_data, Node.Type.TASK);
         map.put(IDCardState.miss_data_fulled, Node.Type.TASK);
         map.put(IDCardState.su, Node.Type.END);
@@ -55,7 +56,7 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
 
     @Override
     public Map<String, Set<IDCardState>> maybeResults(Map<String, Set<IDCardState>> map) {
-        map.put("sendRouter", Sets.newSet(IDCardState.init, IDCardState.sended, IDCardState.miss_data, IDCardState.su, IDCardState.fail));
+        map.put("sendRouter", Sets.newSet(IDCardState.sended_ing, IDCardState.none_sended, IDCardState.miss_data, IDCardState.su, IDCardState.fail));
         map.put("notifyRouter", Sets.newSet(IDCardState.init, IDCardState.miss_data, IDCardState.miss_data_fulled));
         return map;
     }
@@ -66,9 +67,11 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
          //发送异常，不明确是否发送
          .router(IDCardState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
          //已发送，对方处理中
-         .router(IDCardState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
+         .router(IDCardState.sended_ing, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
+
+         .router(IDCardState.none_sended, Coasts.EVENT_DEFAULT, "sendBackAction", "backRouter")
          //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
-         .router(IDCardState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter")
+         .to(IDCardState.miss_data, Coasts.EVENT_DEFAULT, "toCustomerAction", IDCardState.miss_data)
 //                资料就绪状态，可重新发送
          .to(IDCardState.miss_data_fulled, Coasts.EVENT_DEFAULT, IDCardState.init);
     }
