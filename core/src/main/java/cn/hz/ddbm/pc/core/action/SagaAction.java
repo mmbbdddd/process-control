@@ -49,7 +49,7 @@ public class SagaAction<S extends Enum<S>> extends ActionBase<S>   {
         S            failOverNode = getFailover();
         try {
             StatusManager statusManager = InfraUtils.getStatusManager(ctx.getProfile().getStatusManager());
-            statusManager.setStatus(flow, flowId, FlowStatus.of(failOverNode), ctx.getProfile().getStatusTimeout(), ctx);
+            statusManager.setStatus(flow, flowId, StatusPair.of(failOverNode), ctx.getProfile().getStatusTimeout(), ctx);
             ctx.setNextNode(null);
             super.execute(ctx);
         } catch (IOException e) {

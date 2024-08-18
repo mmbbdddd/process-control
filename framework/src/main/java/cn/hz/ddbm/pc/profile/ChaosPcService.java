@@ -106,7 +106,7 @@ public class ChaosPcService extends PcService {
         }
         if (Objects.equals(nodeObj.getType(),Node.Type.END)) {
             Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
-            ctx.setStatus(FlowStatus.finish(node));
+            ctx.setStatus(StatusPair.finish(node));
             return false;
         }
 
@@ -147,12 +147,12 @@ public class ChaosPcService extends PcService {
         }
 
         @Override
-        public FlowStatus<S> getStatus() {
-            return FlowStatus.of(flowStatus.name(), nodeStatus);
+        public StatusPair<S> getStatus() {
+            return StatusPair.of(flowStatus.name(), nodeStatus);
         }
 
         @Override
-        public void setStatus(FlowStatus<S> status) {
+        public void setStatus(StatusPair<S> status) {
             this.flowStatus = status.getFlow();
             this.nodeStatus = status.getNode();
         }

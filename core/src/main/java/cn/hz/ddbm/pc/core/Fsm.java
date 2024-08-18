@@ -5,6 +5,7 @@ import cn.hz.ddbm.pc.core.action.RouterAction;
 import cn.hz.ddbm.pc.core.action.SagaAction;
 import cn.hz.ddbm.pc.core.action.ToAction;
 import cn.hz.ddbm.pc.core.coast.Coasts;
+import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import cn.hz.ddbm.pc.core.exception.wrap.ActionException;
 import cn.hz.ddbm.pc.core.exception.wrap.RouterException;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -26,14 +27,14 @@ public class Fsm<S extends Enum<S>> {
     List<Plugin> plugins;
     FsmTable<S> fsmTable;
 
-    public Fsm(String name, String descr, Map<S, Node.Type> nodes, Profile<S> profile) {
+    public Fsm(String name, String descr, Map<S, FlowStatus> nodes, Profile<S> profile) {
         Assert.notNull(name, "flow.name is null");
         Assert.notNull(nodes, "nodes is null");
         Assert.notNull(profile, "profile is null");
         this.name     = name;
         this.descr    = descr;
         this.profile  = profile;
-        this.init     = nodes.entrySet().stream().filter(e -> e.getValue().equals(Node.Type.START)).findFirst().get().getKey();
+        this.init     = nodes.entrySet().stream().filter(e -> e.getValue().equals(FlowStatus.INIT)).findFirst().get().getKey();
         this.nodes    = nodes.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> new Node<>(e.getValue(), e.getKey(), profile)));
         this.fsmTable = new FsmTable<>();
         this.plugins  = new ArrayList<>();
@@ -47,7 +48,7 @@ public class Fsm<S extends Enum<S>> {
      * @param profile
      * @return
      */
-    public static <S extends Enum<S>> Fsm<S> of(String name, String descr, Map<S, Node.Type> nodes, Profile profile) {
+    public static <S extends Enum<S>> Fsm<S> of(String name, String descr, Map<S, FlowStatus> nodes, Profile profile) {
         return new Fsm<>(name, descr, nodes, profile);
     }
 
@@ -57,7 +58,7 @@ public class Fsm<S extends Enum<S>> {
      * @param name
      * @return
      */
-    public static <S extends Enum<S>> Fsm<S> devOf(String name, String descr, Map<S, Node.Type> nodes) {
+    public static <S extends Enum<S>> Fsm<S> devOf(String name, String descr, Map<S, FlowStatus> nodes) {
         List<String> plugins = new ArrayList<>();
         plugins.add(Coasts.PLUGIN_DIGEST_LOG);
         plugins.add(Coasts.PLUGIN_ERROR_LOG);
@@ -69,13 +70,12 @@ public class Fsm<S extends Enum<S>> {
 
     public <T> void execute(FlowContext<S, ?> ctx) throws RouterException, ActionException, FsmEndException {
         Assert.isTrue(true, "ctx is null");
-        S            node    = ctx.getStatus().getNode();
-        Node<S>      nodeObj = ctx.getFlow().getNode(node);
-        if(!nodeObj.isRunnable(ctx.getStatus())){
+        Node<S> node = ctx.getStatus();
+        if (!node.isRunnable()) {
             throw new FsmEndException();
         }
-        FsmRecord<S> atom    = fsmTable.find(node, ctx.getEvent());
-        Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent().getCode(), ctx.getStatus().getNode()));
+        FsmRecord<S> atom = fsmTable.find(node.name, ctx.getEvent());
+        Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent().getCode(), ctx.getStatus().name));
         ctx.setExecutor(atom.initExecutor(ctx));
         atom.execute(ctx);
     }
@@ -90,9 +90,6 @@ public class Fsm<S extends Enum<S>> {
         return nodes.keySet().stream().map(Enum::name).collect(Collectors.toSet());
     }
 
-    public boolean isEnd(S state) {
-        return nodes.get(state).getType().equals(Node.Type.END);
-    }
 
     public Node<S> getNode(S state) {
         return nodes.get(state);
@@ -112,10 +109,6 @@ public class Fsm<S extends Enum<S>> {
                 new FsmRecord[fsmTable.records.size()])) + '}';
     }
 
-
-    public enum STAUS {
-        INIT, RUNNABLE, PAUSE, BLOCKED, CANCEL, FINISH
-    }
 
     @Data
     public static class FsmTable<S extends Enum<S>> {

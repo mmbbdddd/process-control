@@ -22,7 +22,7 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     @Setter
     private Event         event;
     @Setter
-    private FlowStatus<S> status;
+    private Node<S>       status;
     @Setter
     private ActionBase<S> executor;
     @Setter
@@ -39,8 +39,6 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
         Assert.notNull(event, "event is null");
         Assert.notNull(data.getId(), "date.id is null");
         Assert.notNull(data.getStatus(), "date.status is null");
-        Assert.notNull(data.getStatus().getFlow(), "date.status.flow is null");
-        Assert.notNull(data.getStatus().getNode(), "date.status.node is null");
         this.event  = Event.of(event);
         this.data   = data;
         this.id     = data.getId();
@@ -50,7 +48,7 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
         //todo需要从应用中同步
         if (flow.getProfile() != null) {
             this.profile = flow.getProfile();
-        }else{
+        } else {
             this.profile = profile;
 //            flow.profile = profile;
         }
@@ -58,7 +56,7 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
 
 
     public void metricsNode(FlowContext<S, ?> ctx) {
-        String            windows        = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getNode(), Coasts.NODE_RETRY);
+        String            windows        = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getName(), Coasts.NODE_RETRY);
         StatisticsSupport metricsWindows = InfraUtils.getMetricsTemplate();
         metricsWindows.increment(windows);
     }

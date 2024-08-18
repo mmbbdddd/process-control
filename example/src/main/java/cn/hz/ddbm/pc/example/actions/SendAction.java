@@ -39,9 +39,7 @@ public class SendAction implements ActionPluginAdapter<IDCardState> {
                 IDCardDemo.freezed.decrementAndGet();
                 break;
             }
-            case sended:{
 
-            }
             case miss_data:{
 
             }

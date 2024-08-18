@@ -14,7 +14,7 @@ import java.io.Serializable;
 public interface FlowPayload<S extends Enum<S>> {
     Serializable getId();
 
-    FlowStatus<S> getStatus();
+    Node<S> getStatus();
 
-    void setStatus(FlowStatus<S> status);
+    void setStatus(Node<S> status);
 }

@@ -57,24 +57,24 @@ public abstract class ActionBase<S extends Enum<S>> implements Action<S> {
     public void execute(FlowContext<S, ?> ctx) throws ActionException, RouterException {
         Fsm<S>       flow     = ctx.getFlow();
         Serializable id       = ctx.getId();
-        S            lastNode = ctx.getStatus().getNode();
+        Node<S>            lastNode = ctx.getStatus();
         try {
             preActionPlugin(flow, ctx);
             action(ctx).execute(ctx);
-            S nextNode = nextNode(lastNode, ctx);
-            ctx.setStatus(FlowStatus.of(nextNode == null ? failover() : nextNode));
-            postActionPlugin(flow, lastNode, ctx);
+            S nextNode = nextNode(lastNode.name, ctx);
+            ctx.setStatus(Node.of(nextNode == null ? failover() : nextNode));
+            postActionPlugin(flow, lastNode.name, ctx);
         } catch (RouterException e) {
-            ctx.setStatus(FlowStatus.of(failover()));
-            onActionExceptionPlugin(flow, lastNode, e, ctx);
+            ctx.setStatus(Node.of(failover()));
+            onActionExceptionPlugin(flow, lastNode.name, e, ctx);
             throw e;
         } catch (ActionException e) {
-            ctx.setStatus(FlowStatus.of(failover()));
-            onActionExceptionPlugin(flow, lastNode, e, ctx);
+            ctx.setStatus(Node.of(failover()));
+            onActionExceptionPlugin(flow, lastNode.name, e, ctx);
             throw e;
         } catch (Exception e) {
-            ctx.setStatus(FlowStatus.of(failover()));
-            onActionExceptionPlugin(flow, lastNode, e, ctx);
+            ctx.setStatus(Node.of(failover()));
+            onActionExceptionPlugin(flow, lastNode.name, e, ctx);
             throw new ActionException(e);
         } finally {
             onActionFinallyPlugin(flow, ctx);
@@ -89,7 +89,7 @@ public abstract class ActionBase<S extends Enum<S>> implements Action<S> {
             postRoutePlugin(ctx.getFlow(), lastNode, ctx);
             return nextNode;
         } catch (Exception e) {
-            ctx.setStatus(FlowStatus.of(failover));
+            ctx.setStatus(Node.of(failover));
             onRouterExceptionPlugin(ctx.getFlow(), e, ctx);
             throw new RouterException(e);
         }

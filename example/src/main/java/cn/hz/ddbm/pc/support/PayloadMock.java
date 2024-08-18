@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.support;
 
 import cn.hz.ddbm.pc.core.FlowPayload;
-import cn.hz.ddbm.pc.core.FlowStatus;
+import cn.hz.ddbm.pc.core.StatusPair;
 import cn.hz.ddbm.pc.core.Fsm;
 
 import java.io.Serializable;
@@ -24,12 +24,12 @@ public class PayloadMock<S extends Enum<S>> implements FlowPayload<S> {
     }
 
     @Override
-    public FlowStatus<S> getStatus() {
-        return FlowStatus.of(flowStatus, nodeStatus);
+    public StatusPair<S> getStatus() {
+        return StatusPair.of(flowStatus, nodeStatus);
     }
 
     @Override
-    public void setStatus(FlowStatus<S> status) {
+    public void setStatus(StatusPair<S> status) {
 
     }
 }

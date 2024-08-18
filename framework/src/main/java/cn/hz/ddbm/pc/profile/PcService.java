@@ -119,7 +119,7 @@ public abstract class PcService {
         }
         if (Objects.equals(nodeObj.getType(),Node.Type.END)) {
             Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
-            ctx.setStatus(FlowStatus.finish(node));
+            ctx.setStatus(StatusPair.finish(node));
             return false;
         }
 
