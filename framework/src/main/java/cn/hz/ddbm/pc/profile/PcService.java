@@ -106,26 +106,19 @@ public abstract class PcService {
      * @return
      */
     public <S extends Enum<S>, T extends FlowPayload<S>> boolean isCanContinue(FlowContext<S, T> ctx) {
-        Fsm.STAUS flowStatus = ctx.getStatus().getFlow();
-        S         node       = ctx.getStatus().getNode();
+        Node<S>         node       = ctx.getStatus();
         String    flowName   = ctx.getFlow().getName();
-        Node<S>   nodeObj    = ctx.getFlow().getNode(node);
-        if (ctx.getFlow().isRouter(node)) {
+        if (ctx.getFlow().isRouter(node.getName())) {
             return true;
         }
-        if (!Objects.equals(flowStatus,Fsm.STAUS.RUNNABLE)) {
+        if (!node.isRunnable()) {
             Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), node);
-            return false;
-        }
-        if (Objects.equals(nodeObj.getType(),Node.Type.END)) {
-            Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
-            ctx.setStatus(StatusPair.finish(node));
             return false;
         }
 
         String  windows   = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), node, Coasts.NODE_RETRY);
         Long    exeRetry  = InfraUtils.getMetricsTemplate().get(windows);
-        Integer nodeRetry = nodeObj.getRetry();
+        Integer nodeRetry = node.getRetry();
 
         if (exeRetry > nodeRetry) {
             Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), node, exeRetry, nodeRetry);

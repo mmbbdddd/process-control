@@ -1,10 +1,8 @@
 package cn.hz.ddbm.pc.factory.dsl;
 
-import cn.hz.ddbm.pc.core.Fsm;
-import cn.hz.ddbm.pc.core.Node;
-import cn.hz.ddbm.pc.core.Plugin;
-import cn.hz.ddbm.pc.core.Profile;
+import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.coast.Coasts;
+import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import lombok.Getter;
@@ -22,7 +20,7 @@ public interface FSM<S extends Enum<S>> {
 
     StatusManager.Type status();
 
-    Map<S, Node.Type> nodes();
+    Map<S, FlowStatus> nodes();
 
     Map<String, Set<S>> maybeResults(Map<String, Set<S>> map);
 

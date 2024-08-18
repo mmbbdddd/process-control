@@ -62,18 +62,18 @@ public abstract class ActionBase<S extends Enum<S>> implements Action<S> {
             preActionPlugin(flow, ctx);
             action(ctx).execute(ctx);
             S nextNode = nextNode(lastNode.name, ctx);
-            ctx.setStatus(Node.of(nextNode == null ? failover() : nextNode));
+            ctx.getStatus().flush(nextNode == null ? failover() : nextNode);
             postActionPlugin(flow, lastNode.name, ctx);
         } catch (RouterException e) {
-            ctx.setStatus(Node.of(failover()));
+            ctx.getStatus().flush(failover());
             onActionExceptionPlugin(flow, lastNode.name, e, ctx);
             throw e;
         } catch (ActionException e) {
-            ctx.setStatus(Node.of(failover()));
+            ctx.getStatus().flush(failover());
             onActionExceptionPlugin(flow, lastNode.name, e, ctx);
             throw e;
         } catch (Exception e) {
-            ctx.setStatus(Node.of(failover()));
+            ctx.getStatus().flush(failover());
             onActionExceptionPlugin(flow, lastNode.name, e, ctx);
             throw new ActionException(e);
         } finally {
@@ -89,7 +89,7 @@ public abstract class ActionBase<S extends Enum<S>> implements Action<S> {
             postRoutePlugin(ctx.getFlow(), lastNode, ctx);
             return nextNode;
         } catch (Exception e) {
-            ctx.setStatus(Node.of(failover));
+            ctx.getStatus().flush(failover());
             onRouterExceptionPlugin(ctx.getFlow(), e, ctx);
             throw new RouterException(e);
         }

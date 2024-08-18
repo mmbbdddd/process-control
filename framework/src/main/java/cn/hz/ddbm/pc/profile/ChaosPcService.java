@@ -5,6 +5,7 @@ import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
 import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.coast.Coasts;
+import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import cn.hz.ddbm.pc.core.exception.SessionException;
 import cn.hz.ddbm.pc.core.exception.wrap.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
@@ -93,26 +94,20 @@ public class ChaosPcService extends PcService {
     }
 
     public <S extends Enum<S>> boolean chaosIsContine(FlowContext<S, MockPayLoad<S>> ctx) {
-        Fsm.STAUS flowStatus = ctx.getStatus().getFlow();
-        S         node       = ctx.getStatus().getNode();
-        String    flowName   = ctx.getFlow().getName();
-        Node<S>      nodeObj    = ctx.getFlow().getNode(node);
-        if (ctx.getFlow().isRouter(node)) {
+
+        String  flowName = ctx.getFlow().getName();
+        Node<S> node     = ctx.getStatus();
+        if (ctx.getFlow().isRouter(node.getName())) {
             return true;
         }
-        if (!Objects.equals(flowStatus,Fsm.STAUS.RUNNABLE)) {
+        if (!node.isRunnable()) {
             Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), node);
-            return false;
-        }
-        if (Objects.equals(nodeObj.getType(),Node.Type.END)) {
-            Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
-            ctx.setStatus(StatusPair.finish(node));
             return false;
         }
 
         String  windows   = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), node, Coasts.NODE_RETRY);
         Long    exeRetry  = InfraUtils.getMetricsTemplate().get(windows);
-        Integer nodeRetry = nodeObj.getRetry();
+        Integer nodeRetry = node.getRetry();
 
         if (exeRetry > nodeRetry) {
             Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), node, exeRetry, nodeRetry);
@@ -128,13 +123,11 @@ public class ChaosPcService extends PcService {
 
 
     public static class MockPayLoad<S extends Enum<S>> implements FlowPayload<S> {
-        Integer   id;
-        Fsm.STAUS flowStatus;
-        S         nodeStatus;
+        Integer id;
+        Node<S> status;
 
         public MockPayLoad(S init) {
-            this.flowStatus = Fsm.STAUS.RUNNABLE;
-            this.nodeStatus = init;
+            this.status = new Node<>(init, FlowStatus.INIT,Profile.chaosOf());
         }
 
         @Override
@@ -147,14 +140,13 @@ public class ChaosPcService extends PcService {
         }
 
         @Override
-        public StatusPair<S> getStatus() {
-            return StatusPair.of(flowStatus.name(), nodeStatus);
+        public Node<S> getStatus() {
+            return status;
         }
 
         @Override
-        public void setStatus(StatusPair<S> status) {
-            this.flowStatus = status.getFlow();
-            this.nodeStatus = status.getNode();
+        public void setStatus(Node<S> status) {
+            this.status     = status;
         }
     }
 
@@ -187,7 +179,7 @@ public class ChaosPcService extends PcService {
 
         public TypeValue(FlowContext<?, ?> ctx) {
             this.type  = ctx.getClass().getSimpleName();
-            this.value = String.format("%s:%s", ctx.getStatus().getFlow().name(), ctx.getStatus().getNode());
+            this.value = String.format("%s:%s", ctx.getStatus().getName(), ctx.getStatus().getType());
         }
 
         @Override

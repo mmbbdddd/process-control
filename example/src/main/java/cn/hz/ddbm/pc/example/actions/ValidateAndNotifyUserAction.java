@@ -24,7 +24,7 @@ public class ValidateAndNotifyUserAction implements ActionPluginAdapter<IDCardSt
 
     @Override
     public void postAction(String name, IDCardState lastNode, FlowContext<IDCardState, ?> ctx) {
-        IDCardState state = ctx.getStatus().getNode();
+        IDCardState state = ctx.getStatus().getName();
 //        map.put("sendRouter", Sets.newSet(IDCardState.init, IDCardState.sended, IDCardState.miss_data, IDCardState.su, IDCardState.fail));
 //        map.put("notifyRouter", Sets.newSet(IDCardState.init, IDCardState.miss_data, IDCardState.miss_data_fulled));
 

@@ -4,6 +4,7 @@ import cn.hz.ddbm.pc.core.Node;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.coast.Coasts;
+import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -40,17 +41,17 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     }
 
     @Override
-    public Map<IDCardState, Node.Type> nodes() {
-        Map<IDCardState, Node.Type> map = new HashMap<>();
-        map.put(IDCardState.init, Node.Type.START);
-        map.put(IDCardState.send_failover, Node.Type.TASK);
-        map.put(IDCardState.sended_ing, Node.Type.TASK);
-        map.put(IDCardState.none_sended, Node.Type.TASK);
-        map.put(IDCardState.miss_data, Node.Type.TASK);
-        map.put(IDCardState.miss_data_fulled, Node.Type.TASK);
-        map.put(IDCardState.su, Node.Type.END);
-        map.put(IDCardState.fail, Node.Type.END);
-        map.put(IDCardState.error, Node.Type.END);
+    public Map<IDCardState, FlowStatus> nodes() {
+        Map<IDCardState, FlowStatus> map = new HashMap<>();
+        map.put(IDCardState.init, FlowStatus.INIT);
+        map.put(IDCardState.send_failover, FlowStatus.RUNNABLE);
+        map.put(IDCardState.sended_ing, FlowStatus.RUNNABLE);
+        map.put(IDCardState.none_sended, FlowStatus.RUNNABLE);
+        map.put(IDCardState.miss_data, FlowStatus.RUNNABLE);
+        map.put(IDCardState.miss_data_fulled, FlowStatus.RUNNABLE);
+        map.put(IDCardState.su, FlowStatus.FINISH);
+        map.put(IDCardState.fail, FlowStatus.FINISH);
+        map.put(IDCardState.error, FlowStatus.FINISH);
         return map;
     }
 

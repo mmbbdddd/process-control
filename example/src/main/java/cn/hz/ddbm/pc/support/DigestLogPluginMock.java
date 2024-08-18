@@ -31,7 +31,7 @@ public class DigestLogPluginMock implements Plugin {
     public void postAction(String name, Enum lastNode,FlowContext ctx) {
         Logs.digest.info("{},{},{},{}", ctx.getFlow()
                                            .getName(), ctx.getId(), lastNode, ctx.getStatus()
-                                                                                .getNode());
+                                                                                .getName());
     }
 
     @Override
@@ -44,7 +44,7 @@ public class DigestLogPluginMock implements Plugin {
     public void postRoute(String routerName, Enum preNode, FlowContext ctx) {
         Logs.digest.info("{},{},{},{}", ctx.getFlow()
                                            .getName(), ctx.getId(), preNode, ctx.getStatus()
-                                                                                .getNode());
+                                                                                .getName());
     }
 
 }

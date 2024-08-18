@@ -1,6 +1,7 @@
 package cn.hz.ddbm.pc.core;
 
 import cn.hz.ddbm.pc.core.coast.Coasts;
+import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import lombok.Data;
@@ -16,8 +17,9 @@ public class Profile<S extends Enum<S>> {
     private Integer                  lockTimeout   = Coasts.DEFAULT_LOCK_TIMEOUT;
     private SessionManager.Type      sessionManager;
     private StatusManager.Type       statusManager;
-    private Map<S, StepAttrs>        states;
+    private Map<S, Set<FlowStatus>>  stateTypes;
     private Map<String, Set<S>>      maybeResults;
+    private Map<S, StepAttrs>        states;
     private Map<String, ActionAttrs> actions;
 
 

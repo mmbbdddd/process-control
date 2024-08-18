@@ -27,15 +27,15 @@ public class Fsm<S extends Enum<S>> {
     List<Plugin> plugins;
     FsmTable<S> fsmTable;
 
-    public Fsm(String name, String descr, Map<S, FlowStatus> nodes, Profile<S> profile) {
+    public Fsm(String name, String descr, Map<S, FlowStatus> nodesType, Profile<S> profile) {
         Assert.notNull(name, "flow.name is null");
-        Assert.notNull(nodes, "nodes is null");
+        Assert.notNull(nodesType, "nodesType is null");
         Assert.notNull(profile, "profile is null");
         this.name     = name;
         this.descr    = descr;
         this.profile  = profile;
-        this.init     = nodes.entrySet().stream().filter(e -> e.getValue().equals(FlowStatus.INIT)).findFirst().get().getKey();
-        this.nodes    = nodes.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> new Node<>(e.getValue(), e.getKey(), profile)));
+        this.nodes    = nodesType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, t -> new Node<>(t.getKey(),t.getValue(), profile)));
+        this.init     = this.nodes.values().stream().filter(t -> t.type.equals(FlowStatus.INIT)).findFirst().get().name;
         this.fsmTable = new FsmTable<>();
         this.plugins  = new ArrayList<>();
     }
@@ -48,8 +48,8 @@ public class Fsm<S extends Enum<S>> {
      * @param profile
      * @return
      */
-    public static <S extends Enum<S>> Fsm<S> of(String name, String descr, Map<S, FlowStatus> nodes, Profile profile) {
-        return new Fsm<>(name, descr, nodes, profile);
+    public static <S extends Enum<S>> Fsm<S> of(String name, String descr, Map<S, FlowStatus> nodesType, Profile profile) {
+        return new Fsm<>(name, descr, nodesType, profile);
     }
 
     /**
@@ -58,11 +58,11 @@ public class Fsm<S extends Enum<S>> {
      * @param name
      * @return
      */
-    public static <S extends Enum<S>> Fsm<S> devOf(String name, String descr, Map<S, FlowStatus> nodes) {
+    public static <S extends Enum<S>> Fsm<S> devOf(String name, String descr, Map<S, FlowStatus> nodesType) {
         List<String> plugins = new ArrayList<>();
         plugins.add(Coasts.PLUGIN_DIGEST_LOG);
         plugins.add(Coasts.PLUGIN_ERROR_LOG);
-        Fsm<S> flow = new Fsm<>(name, descr, nodes, Profile.devOf());
+        Fsm<S> flow = new Fsm<>(name, descr, nodesType, Profile.devOf());
         flow.plugins = InfraUtils.getByCodesOfType(plugins, Plugin.class);
         return flow;
     }

@@ -23,7 +23,7 @@ public class SendQueryAction implements ActionPluginAdapter<IDCardState> {
     }
     @Override
     public void postAction(String name, IDCardState lastNode, FlowContext<IDCardState, ?> ctx) {
-        IDCardState state = ctx.getStatus().getNode();
+        IDCardState state = ctx.getStatus().getName();
         switch (state){
             case init:{
                 IDCardDemo.account.incrementAndGet();

@@ -19,7 +19,7 @@ import java.io.Serializable;
 public interface StatusManager {
     Type code();
 
-    void setStatus(String flow, Serializable flowId, Node<?> flowStatus, Integer timeout, FlowContext<?,?> ctx) throws IOException;
+    void setStatus(String flow, Serializable flowId, Node<?> status, Integer timeout, FlowContext<?,?> ctx) throws IOException;
 
     Node<?> getStatus(String flow, Serializable flowId) throws IOException;
 
