@@ -1,8 +1,8 @@
 package cn.hz.ddbm.pc.core.action;
 
 
+import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.*;
-import cn.hz.ddbm.pc.core.action.dsl.SimpleAction;
 import cn.hz.ddbm.pc.core.exception.ActionException;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
 import cn.hz.ddbm.pc.core.exception.RouterException;
@@ -23,8 +23,7 @@ import java.util.Set;
 
 
 public class SagaAction<S extends Enum<S>> extends ActionBase<S> implements Action<S> {
-    Action<S> action;
-    Set<S>    maybe;
+    Set<S>    maybeResult;
 
 
     public SagaAction(Fsm.FsmRecord<S> f , List<Plugin> plugins) {
@@ -39,7 +38,7 @@ public class SagaAction<S extends Enum<S>> extends ActionBase<S> implements Acti
 
     @Override
     public String beanName() {
-        return action.beanName();
+        return getAction().beanName();
     }
 
     @Override
@@ -50,6 +49,7 @@ public class SagaAction<S extends Enum<S>> extends ActionBase<S> implements Acti
         try {
             StatusManager statusManager = InfraUtils.getStatusManager(ctx.getProfile().getStatusManager());
             statusManager.setStatus(flow, flowId, FlowStatus.of(failOverNode), ctx.getProfile().getStatusTimeout(), ctx);
+            ctx.setNextNode(null);
             super.execute(ctx);
         } catch (IOException e) {
             throw new InterruptedFlowException(e);
@@ -59,10 +59,11 @@ public class SagaAction<S extends Enum<S>> extends ActionBase<S> implements Acti
 
     @Override
     public Set<S> maybeResult() {
-        return maybe;
+        return maybeResult;
     }
 
     public S route(FlowContext<S, ?> ctx) {
+        Assert.notNull(ctx.getNextNode(),"sagaAction 必须设置ctx.setNextNode()");
         return ctx.getNextNode();
     }
 }

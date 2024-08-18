@@ -2,6 +2,7 @@ package cn.hz.ddbm.pc.core.action.dsl;
 
 
 import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.SimpleAction;
 
 import java.util.List;
 
@@ -10,11 +11,11 @@ import java.util.List;
  **/
 
 
-public class MultiAction implements SimpleAction{
+public class MultiSimpleAction implements SimpleAction {
     String              actionNames;
     List<SimpleAction> actions;
 
-    public MultiAction(String actionNames, List<SimpleAction> actions) {
+    public MultiSimpleAction(String actionNames, List<SimpleAction> actions) {
         this.actionNames = actionNames;
         this.actions     = actions;
     }

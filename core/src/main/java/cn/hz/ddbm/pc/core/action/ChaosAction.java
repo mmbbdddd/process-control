@@ -1,9 +1,7 @@
-package cn.hz.ddbm.pc.core.action.dsl;
+package cn.hz.ddbm.pc.core.action;
 
-import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;
-
-import java.util.Set;
+import cn.hz.ddbm.pc.core.SimpleAction;
 
 public class ChaosAction implements SimpleAction {
     String actionName;

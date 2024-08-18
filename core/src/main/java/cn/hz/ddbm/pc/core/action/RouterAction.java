@@ -1,39 +1,44 @@
 package cn.hz.ddbm.pc.core.action;
 
+import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.*;
-import cn.hz.ddbm.pc.core.action.dsl.SimpleAction;
+import cn.hz.ddbm.pc.core.exception.ActionException;
+import cn.hz.ddbm.pc.core.exception.RouterException;
 
 import java.util.List;
 import java.util.Set;
 
-public class RouterAction<S extends Enum<S>> extends ActionBase<S> implements Action<S>{
-    Action<S> action;
+public class RouterAction<S extends Enum<S>> extends ActionBase<S> implements Action<S> {
     Set<S>    maybeResult;
 
-    public RouterAction(Fsm.FsmRecord<S> f , List<Plugin> plugins) {
-        super(f.getType(),f.getFrom(),f.getEvent(),f.getActionDsl(),f.getFailover(),f.getTo(),plugins);
+    public RouterAction(Fsm.FsmRecord<S> f, List<Plugin> plugins) {
+        super(f.getType(), f.getFrom(), f.getEvent(), f.getActionDsl(), f.getFailover(), f.getTo(), plugins);
     }
 
 
     @Override
     public String beanName() {
-        return action.beanName();
+        return getAction().beanName();
     }
 
     @Override
     protected S failover() {
-        return null;
+        return getFrom();
+    }
+
+    public void execute(FlowContext<S, ?> ctx) throws ActionException, RouterException {
+        ctx.setNextNode(null);
+        super.execute(ctx);
     }
 
 
-
+    public S route(FlowContext<S, ?> ctx) {
+        Assert.notNull(ctx.getNextNode(), "routerAction 必须设置ctx.setNextNode()");
+        return ctx.getNextNode();
+    }
 
     @Override
     public Set<S> maybeResult() {
         return maybeResult;
-    }
-
-    public S route(FlowContext<S, ?> ctx) {
-        return ctx.getStatus().getNode();
     }
 }

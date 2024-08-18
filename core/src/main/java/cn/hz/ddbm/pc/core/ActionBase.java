@@ -1,10 +1,6 @@
 package cn.hz.ddbm.pc.core;
 
 
-import cn.hz.ddbm.pc.core.action.RouterAction;
-import cn.hz.ddbm.pc.core.action.SagaAction;
-import cn.hz.ddbm.pc.core.action.ToAction;
-import cn.hz.ddbm.pc.core.action.dsl.SimpleAction;
 import cn.hz.ddbm.pc.core.exception.ActionException;
 import cn.hz.ddbm.pc.core.exception.RouterException;
 import cn.hz.ddbm.pc.core.log.Logs;
@@ -24,6 +20,7 @@ import java.util.List;
 @Getter
 public abstract class ActionBase<S extends Enum<S>> {
     final Fsm.FsmRecordType type;
+    final S                 from;
     final Event             event;
     final List<Plugin>      plugins;
     final String            actionDsl;
@@ -33,11 +30,12 @@ public abstract class ActionBase<S extends Enum<S>> {
 
     public ActionBase(Fsm.FsmRecordType type, S from, Event event, String actionDsl, S failover, S to, List<Plugin> plugins) {
         this.event     = event;
+        this.from      = from;
         this.actionDsl = actionDsl;
         this.plugins   = plugins;
         this.to        = to;
         this.type      = type;
-        this.failover  = failover();
+        this.failover  = failover;
     }
 
     protected abstract S failover();
@@ -52,8 +50,8 @@ public abstract class ActionBase<S extends Enum<S>> {
         return this.action;
     }
 
-    protected  SimpleAction<S> initAction(FlowContext<S, ?> ctx){
-        return SimpleAction.of(actionDsl,ctx);
+    protected SimpleAction<S> initAction(FlowContext<S, ?> ctx) {
+        return SimpleAction.of(actionDsl, ctx);
     }
 
     public void execute(FlowContext<S, ?> ctx) throws ActionException, RouterException {

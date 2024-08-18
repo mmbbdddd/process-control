@@ -1,7 +1,7 @@
-package cn.hz.ddbm.pc.core.action.dsl;
+package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.action.dsl.MultiSimpleAction;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.util.Arrays;
@@ -27,7 +27,6 @@ public interface SimpleAction<S extends Enum<S>> {
      */
     String single_regexp = "\\w{1,20}";
     String multi_regexp  = "(\\w+,)+\\w+";
-    String saga_regexp   = "(\\w+,)_\\w+";
 
 
     public static <S extends Enum<S>> SimpleAction<S> of(String actionDsl, FlowContext<S, ?> ctx) {
@@ -49,7 +48,7 @@ public interface SimpleAction<S extends Enum<S>> {
             List<SimpleAction> actions = Arrays.stream(actionBeanNames)
                                          .map(name -> InfraUtils.getBean(name, SimpleAction.class))
                                          .collect(Collectors.toList());
-            return new MultiAction(actionDsl, actions);
+            return new MultiSimpleAction(actionDsl, actions);
         }
         return null;
     }
