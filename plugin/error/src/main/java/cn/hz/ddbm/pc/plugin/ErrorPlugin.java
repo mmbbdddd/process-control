@@ -33,7 +33,7 @@ public class ErrorPlugin implements Plugin {
     }
 
     @Override
-    public void postAction(String name, FlowContext ctx) {
+    public void postAction(String name, Enum lastNode,FlowContext ctx) {
 
     }
 

@@ -18,7 +18,7 @@ public class DigestLogPlugin<S extends Enum<S>> implements Plugin<S> {
     }
 
     @Override
-    public void postAction(String name, FlowContext<S, ?> ctx) {
+    public void postAction(String name,S lastNode, FlowContext<S, ?> ctx) {
     }
 
     @Override

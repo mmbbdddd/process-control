@@ -20,9 +20,10 @@ public class RedisStatusManager implements StatusManager {
     }
 
     @Override
-    public void setStatus(String flow, Serializable flowId, FlowStatus flowStatus, Integer timeout, FlowContext<?> ctx) throws IOException {
+    public void setStatus(String flow, Serializable flowId, FlowStatus<?> flowStatus, Integer timeout, FlowContext<?, ?> ctx) throws IOException {
         redisTemplate.opsForValue().set(String.format(keyTemplate, flow, flowId), flowStatus, timeout);
     }
+
 
     @Override
     public FlowStatus getStatus(String flow, Serializable flowId) throws IOException {

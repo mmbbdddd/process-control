@@ -198,8 +198,8 @@ public class Fsm<S extends Enum<S>> {
             }
         }
 
-        public void execute(FlowContext<S, ?> ctx) {
-
+        public void execute(FlowContext<S, ?> ctx) throws RouterException, ActionException {
+            actionRouter.execute(ctx);
         }
     }
 

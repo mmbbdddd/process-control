@@ -39,15 +39,15 @@ public class IDCardDemo {
 
         List<ChaosRule> rules = new ArrayList<ChaosRule>() {{
             //注入业务逻辑异常，概率20%
-            add(new ChaosRule(ChaosTarget.ACTION, "true", "action异常", 0.2, new ArrayList<Class<? extends Throwable>>() {{
-                add(RuntimeException.class);
-                add(Exception.class);
-            }}));
-            //互殴去锁错误
-            add(new ChaosRule(ChaosTarget.LOCK, "true", "action异常", 0.9, new ArrayList<Class<? extends Throwable>>() {{
-                add(RuntimeException.class);
-                add(Exception.class);
-            }}));
+//            add(new ChaosRule(ChaosTarget.ACTION, "true", "action异常", 0.1, new ArrayList<Class<? extends Throwable>>() {{
+//                add(RuntimeException.class);
+//                add(Exception.class);
+//            }}));
+//            //互殴去锁错误
+//            add(new ChaosRule(ChaosTarget.LOCK, "true", "action异常", 0.1, new ArrayList<Class<? extends Throwable>>() {{
+//                add(RuntimeException.class);
+//                add(Exception.class);
+//            }}));
         }};
         try {
             //执行100此，查看流程中断概率

@@ -23,9 +23,11 @@ public class DaoStatusManager implements StatusManager, InitializingBean, Applic
     }
 
     @Override
-    public void setStatus(String flow, Serializable flowId, FlowStatus flowStatus, Integer timeout, FlowContext<?> ctx) throws IOException {
+    public void setStatus(String flow, Serializable flowId, FlowStatus<?> flowStatus, Integer timeout, FlowContext<?, ?> ctx) throws IOException {
         flowDaoMap.get(flow).save(ctx.getData());
     }
+
+
 
     @Override
     public FlowStatus getStatus(String flow, Serializable flowId) throws IOException {

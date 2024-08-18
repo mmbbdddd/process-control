@@ -28,8 +28,10 @@ public class DigestLogPluginMock implements Plugin {
     }
 
     @Override
-    public void postAction(String name, FlowContext ctx) {
-
+    public void postAction(String name, Enum lastNode,FlowContext ctx) {
+        Logs.digest.info("{},{},{},{}", ctx.getFlow()
+                                           .getName(), ctx.getId(), lastNode, ctx.getStatus()
+                                                                                .getNode());
     }
 
     @Override

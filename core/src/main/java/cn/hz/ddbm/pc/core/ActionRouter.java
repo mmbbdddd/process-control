@@ -60,7 +60,7 @@ public class ActionRouter<S extends Enum<S>> {
             preActionPlugin(flow, ctx);
             S nextNode = action(ctx).execute(ctx);
             ctx.setStatus(FlowStatus.of(nextNode));
-            postActionPlugin(flow, ctx);
+            postActionPlugin(flow,lastNode, ctx);
         } catch (Exception e) {
             ctx.setStatus(FlowStatus.of(failover));
             onActionExceptionPlugin(flow, lastNode, e, ctx);
@@ -97,11 +97,11 @@ public class ActionRouter<S extends Enum<S>> {
         });
     }
 
-    private void postActionPlugin(Fsm<S> flow, FlowContext<S, ?> ctx) {
+    private void postActionPlugin(Fsm<S> flow,S lastNode, FlowContext<S, ?> ctx) {
         plugins.forEach((plugin) -> {
             InfraUtils.getPluginExecutorService().submit(() -> {
                 try {
-                    plugin.postAction(this.action(ctx).beanName(), ctx);
+                    plugin.postAction(this.action(ctx).beanName(), lastNode,ctx);
                 } catch (Exception e) {
                     Logs.error.error("{},{}", ctx.getFlow().name, ctx.getId(), e);
                 }
