@@ -1,8 +1,5 @@
 package cn.hz.ddbm.pc.core.coast;
 
-import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.action.NoneAction;
-
 public class Coasts {
     public static final String  NODE_RETRY             = "retry";
     public static final String  PLUGIN_DIGEST_LOG      = "digest";

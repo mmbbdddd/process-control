@@ -1,11 +1,12 @@
 package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.lang.Assert;
+import cn.hz.ddbm.pc.core.action.RouterAction;
+import cn.hz.ddbm.pc.core.action.SagaAction;
+import cn.hz.ddbm.pc.core.action.ToAction;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.ActionException;
 import cn.hz.ddbm.pc.core.exception.RouterException;
-import cn.hz.ddbm.pc.core.router.ExpressionRouter;
-import cn.hz.ddbm.pc.core.router.ToRouter;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Data;
 import lombok.Getter;
@@ -16,19 +17,17 @@ import java.util.stream.Collectors;
 
 @Getter
 public class Fsm<S extends Enum<S>> {
-    final String                           name;
-    final String                           descr;
-    final S                                init;
-    final Profile                          profile;
-    final Map<S, Node<S>>                  nodes;
-    final Map<String, ExpressionRouter<S>> routers;
+    final String          name;
+    final String          descr;
+    final S               init;
+    final Profile         profile;
+    final Map<S, Node<S>> nodes;
     @Setter
     List<Plugin> plugins;
     FsmTable<S> fsmTable;
 
-    public Fsm(String name, String descr, Map<S, Node.Type> nodes, List<ExpressionRouter<S>> routers, Profile profile) {
+    public Fsm(String name, String descr, Map<S, Node.Type> nodes, Profile profile) {
         Assert.notNull(name, "flow.name is null");
-        Assert.notNull(routers, "routers is null");
         Assert.notNull(nodes, "nodes is null");
         Assert.notNull(profile, "profile is null");
         this.name     = name;
@@ -36,8 +35,7 @@ public class Fsm<S extends Enum<S>> {
         this.profile  = profile;
         this.init     = nodes.entrySet().stream().filter(e -> e.getValue().equals(Node.Type.START)).findFirst().get().getKey();
         this.nodes    = nodes.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> new Node<>(e.getValue(), e.getKey(), profile)));
-        this.fsmTable = new FsmTable<>(this);
-        this.routers  = routers.stream().collect(Collectors.toMap(ExpressionRouter::routerName, t -> t));
+        this.fsmTable = new FsmTable<>();
         this.plugins  = new ArrayList<>();
     }
 
@@ -49,8 +47,8 @@ public class Fsm<S extends Enum<S>> {
      * @param profile
      * @return
      */
-    public static <S extends Enum<S>> Fsm<S> of(String name, String descr, Map<S, Node.Type> nodes, List<ExpressionRouter<S>> routers, Profile profile) {
-        return new Fsm<>(name, descr, nodes, routers, profile);
+    public static <S extends Enum<S>> Fsm<S> of(String name, String descr, Map<S, Node.Type> nodes, Profile profile) {
+        return new Fsm<>(name, descr, nodes, profile);
     }
 
     /**
@@ -59,11 +57,11 @@ public class Fsm<S extends Enum<S>> {
      * @param name
      * @return
      */
-    public static <S extends Enum<S>> Fsm<S> devOf(String name, String descr, Map<S, Node.Type> nodes, List<ExpressionRouter<S>> routers) {
+    public static <S extends Enum<S>> Fsm<S> devOf(String name, String descr, Map<S, Node.Type> nodes) {
         List<String> plugins = new ArrayList<>();
         plugins.add(Coasts.PLUGIN_DIGEST_LOG);
         plugins.add(Coasts.PLUGIN_ERROR_LOG);
-        Fsm<S> flow = new Fsm<>(name, descr, nodes, routers, Profile.devOf());
+        Fsm<S> flow = new Fsm<>(name, descr, nodes, Profile.devOf());
         flow.plugins = InfraUtils.getByCodesOfType(plugins, Plugin.class);
         return flow;
     }
@@ -75,15 +73,15 @@ public class Fsm<S extends Enum<S>> {
         FsmRecord<S> atom = fsmTable.find(node, ctx.getEvent());
         Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent().getCode(), ctx.getStatus().getNode()));
 
-        ActionRouter<S> executor = new ActionRouter<>(atom.getType(),
-                atom.getFrom(),
-                atom.getEvent(),
-                atom.getAction(),
-                atom.getFailover(),
-                atom.getRouter(),
-                ctx.getFlow().getPlugins());
+        ActionBase<S> executor = atom.of(ctx);
+//                new ActionBase<>(atom.getType(),
+//                atom.getFrom(),
+//                atom.getEvent(),
+//                atom.getActionDsl(),
+//                atom.getFailover(),
+//                atom.getTo(),
+//                ctx.getFlow().getPlugins());
         ctx.setExecutor(executor);
-        atom.init(ctx);
         atom.execute(ctx);
     }
 
@@ -121,17 +119,15 @@ public class Fsm<S extends Enum<S>> {
 
 
     public enum STAUS {
-        RUNNABLE, PAUSE, CANCEL, FINISH
+        INIT, RUNNABLE, PAUSE, CANCEL, FINISH
     }
 
     @Data
     public static class FsmTable<S extends Enum<S>> {
         private Set<FsmRecord<S>> records;
-        private Fsm<S>            fsm;
 
-        public FsmTable(Fsm<S> fsm) {
+        public FsmTable() {
             this.records = new HashSet<>();
-            this.fsm     = fsm;
         }
 
         public FsmRecord<S> find(S node, Event event) {
@@ -149,18 +145,16 @@ public class Fsm<S extends Enum<S>> {
          * 2,nodeOf(action,router)==>routerResultEvent==>routerResultNode
          * 参见onInner
          */
-        public void to(S from, String e, String action, S to) {
-            this.records.add(new FsmRecord<>(FsmRecordType.TO, from, Event.of(e), action, null, new ToRouter<>(from, to)));
+        public void to(S from, String e, String toAction, S to) {
+            this.records.add(new FsmRecord<>(FsmRecordType.TO, from, Event.of(e), toAction, null, to));
         }
 
-        public void router(S from, String e, String action, String routerName) {
-            ExpressionRouter<S> router = fsm.routers.get(routerName);
-            this.records.add(new FsmRecord<>(FsmRecordType.ROUTER, from, Event.of(e), action, null, router));
+        public void router(S from, String e, String routeAction) {
+            this.records.add(new FsmRecord<>(FsmRecordType.ROUTER, from, Event.of(e), routeAction, null, null));
         }
 
-        public void saga(S from, String e, S failover, String action, String routerName) {
-            ExpressionRouter<S> router = fsm.routers.get(routerName);
-            this.records.add(new FsmRecord<>(FsmRecordType.SAGA, from, Event.of(e), action, failover, router));
+        public void saga(S from, String e, S failover, String sagaAction) {
+            this.records.add(new FsmRecord<>(FsmRecordType.SAGA, from, Event.of(e), sagaAction, failover, null));
         }
 
 
@@ -172,34 +166,49 @@ public class Fsm<S extends Enum<S>> {
 
     @Data
     public static class FsmRecord<S extends Enum<S>> {
-        FsmRecordType   type;
-        S               from;
-        Event           event;
-        String          action;
-        S               failover;
-        Router<S>       router;
-        ActionRouter<S> actionRouter;
+        FsmRecordType type;
+        S             from;
+        Event         event;
+        String        actionDsl;
+        S             to;
+        S             failover;
+        ActionBase<S> action;
 
-        public FsmRecord(FsmRecordType type, S from, Event event, String action, S failover, Router<S> router) {
-            this.type     = type;
-            this.from     = from;
-            this.event    = event;
-            this.action   = action;
-            this.failover = failover;
-            this.router   = router;
+        public FsmRecord(FsmRecordType type, S from, Event event, String action, S failover, S to) {
+            this.type      = type;
+            this.from      = from;
+            this.event     = event;
+            this.actionDsl = action;
+            this.failover  = failover;
+            this.to        = to;
         }
 
 
-        public void init(FlowContext<S, ?> ctx) {
-            if (null == actionRouter) {
-                synchronized (this) {
-                    actionRouter = new ActionRouter<>(type, from, event, action, failover, router, ctx.getFlow().getPlugins());
-                }
-            }
-        }
 
         public void execute(FlowContext<S, ?> ctx) throws RouterException, ActionException {
-            actionRouter.execute(ctx);
+            action.execute(ctx);
+        }
+
+        public ActionBase<S> of(FlowContext<S, ?> ctx) {
+            if (null == action) {
+                synchronized (this) {
+                    switch (type){
+                        case TO:{
+                            this.action = new ToAction<S>(this,ctx.getFlow().getPlugins());
+                            break;
+                        }
+                        case SAGA:{
+                            this.action = new SagaAction<>(this,ctx.getFlow().getPlugins());
+                            break;
+                        }
+                        default:{
+                            this.action = new RouterAction<>(this,ctx.getFlow().getPlugins());
+                            break;
+                        }
+                    }
+                }
+            }
+            return this.action;
         }
     }
 

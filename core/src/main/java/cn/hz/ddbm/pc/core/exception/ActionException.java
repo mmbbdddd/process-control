@@ -4,4 +4,6 @@ public class ActionException extends WrapedException {
     public ActionException(Exception e) {
         super(e);
     }
+
+
 }

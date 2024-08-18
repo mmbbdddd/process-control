@@ -2,63 +2,22 @@ package cn.hz.ddbm.pc.core;
 
 
 import cn.hutool.core.util.StrUtil;
-import cn.hz.ddbm.pc.core.action.MultiAction;
-import cn.hz.ddbm.pc.core.action.SagaAction;
-import cn.hz.ddbm.pc.core.coast.Coasts;
+import cn.hz.ddbm.pc.core.action.dsl.MultiAction;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public interface Action<S extends Enum<S>> {
-    /**
-     * 将各种action配置语法转换为特定的Action实现
-     * <p>
-     * 1，单action配置                     ：xxxAction
-     * 2，多action配置，逗号分隔             ：xxxAction，yyyAction，zzzAction
-     * 3，sagaAction配置                   ：xxxAction,（failover）  or  xxxAction,yyyyAction,zzzAction,(failover)
-     * 4，noneAction配置                   ：“”   or “none”
-     *
-     * @param actionDsl
-     * @return
-     */
-    String single_regexp = "\\w{1,20}";
-    String multi_regexp  = "(\\w+,)+\\w+";
-    String saga_regexp   = "(\\w+,)_\\w+";
-
-    public static <S extends Enum<S>> Action<S> of(String actionDsl, FlowContext<S, ?> ctx) {
-        if (null != ctx && ctx.getMockBean()) {
-            if (StrUtil.isBlank(actionDsl)) {
-                return null;
-            } else {
-                return InfraUtils.getBean("chaosAction", Action.class);
-            }
-        }
-        if (StrUtil.isBlank(actionDsl)) {
-            return null;
-        }
-        if (actionDsl.matches(single_regexp)) {
-            return InfraUtils.getBean(actionDsl, Action.class);
-        }
-        if (actionDsl.matches(saga_regexp)) {
-            String[] splits       = actionDsl.split(",_");
-            String   otherPartDsl = splits[0];
-            S        failover     = S.valueOf(null, splits[1]);
-            return new SagaAction<>(failover, of(otherPartDsl, null));
-        }
-        if (actionDsl.matches(multi_regexp)) {
-            String[] actionBeanNames = actionDsl.split(",");
-            List<Action> actions = Arrays.stream(actionBeanNames)
-                                            .map(name -> InfraUtils.getBean(name, Action.class))
-                                            .collect(Collectors.toList());
-            return new MultiAction<>(actionDsl, actions);
-        }
-        return null;
-    }
 
     String beanName();
 
-    S execute(FlowContext<S, ?> ctx) throws Exception;
+    void execute(FlowContext<S, ?> ctx) throws Exception;
+
+    Set<S> maybeResult();
+
+
 
 }

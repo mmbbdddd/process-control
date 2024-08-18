@@ -31,7 +31,7 @@ public class DigestLogPlugin<S extends Enum<S>> implements Plugin<S> {
     }
 
     @Override
-    public void postRoute(String routerName, String preNode, FlowContext<S, ?> ctx) {
+    public void postRoute(String routerName, S preNode, FlowContext<S, ?> ctx) {
         log.info("{},{},{},{}", ctx.getFlow()
                                    .getName(), ctx.getId(), preNode, ctx.getStatus()
                                                                         .getNode());

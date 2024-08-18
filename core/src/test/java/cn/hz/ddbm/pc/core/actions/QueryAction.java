@@ -4,6 +4,8 @@ import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class QueryAction implements Action {
 
@@ -13,8 +15,12 @@ public class QueryAction implements Action {
     }
 
     @Override
-    public Enum execute(FlowContext ctx) throws Exception {
+    public Set maybeResult() {
         return null;
+    }
+
+    @Override
+    public void execute(FlowContext ctx) throws Exception {
     }
 
 }

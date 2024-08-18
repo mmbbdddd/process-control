@@ -5,6 +5,8 @@ import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.example.IDCardDemo;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+
 @Component
 public class SendAction implements Action {
 
@@ -17,8 +19,13 @@ public class SendAction implements Action {
     }
 
     @Override
-    public Enum execute(FlowContext ctx) throws Exception {
+    public Set maybeResult() {
         return null;
+    }
+
+    @Override
+    public void execute(FlowContext ctx) throws Exception {
+
     }
 
 }

@@ -4,7 +4,6 @@ import cn.hz.ddbm.pc.core.Node;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -70,23 +69,23 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
          .to(IDCardState.miss_data_fulled, Coasts.EVENT_DEFAULT, IDCardState.init);
     }
 
-    @Override
-    public List<ExpressionRouter<IDCardState>> routers() {
-        List<ExpressionRouter<IDCardState>> routers = new ArrayList<>();
-        routers.add(new ExpressionRouter<IDCardState>("sendRouter",
-                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.init, "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.send_failover, "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.miss_data, "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.su, "Math.random() < 0.6"),
-                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.fail, "Math.random() < 0.6")));
-        routers.add(new ExpressionRouter<IDCardState>("notifyRouter",
-                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.init, "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.send_failover, "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.miss_data, "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.su, "Math.random() < 0.6"),
-                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.fail, "Math.random() < 0.6")));
-        return routers;
-    }
+//    @Override
+//    public List<ExpressionRouter<IDCardState>> routers() {
+//        List<ExpressionRouter<IDCardState>> routers = new ArrayList<>();
+//        routers.add(new ExpressionRouter<IDCardState>("sendRouter",
+//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.init, "Math.random() < 0.1"),
+//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.send_failover, "Math.random() < 0.1"),
+//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.miss_data, "Math.random() < 0.1"),
+//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.su, "Math.random() < 0.6"),
+//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.fail, "Math.random() < 0.6")));
+//        routers.add(new ExpressionRouter<IDCardState>("notifyRouter",
+//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.init, "Math.random() < 0.1"),
+//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.send_failover, "Math.random() < 0.1"),
+//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.miss_data, "Math.random() < 0.1"),
+//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.su, "Math.random() < 0.6"),
+//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.fail, "Math.random() < 0.6")));
+//        return routers;
+//    }
 
 
     @Override

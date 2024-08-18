@@ -14,21 +14,23 @@ import java.util.Map;
 @Getter
 public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     //    入参
-    private Serializable         id;
-    private T                    data;
-    private Fsm<S>               flow;
+    private Serializable   id;
+    private T              data;
+    private Fsm<S>         flow;
     @Setter
-    private Boolean              fluent;
+    private Boolean        fluent;
     @Setter
-    private Event                event;
+    private Event          event;
     @Setter
-    private FlowStatus<S>   status;
+    private FlowStatus<S> status;
     @Setter
-    private ActionRouter<S> executor;
+    private ActionBase<S> executor;
     @Setter
-    private Profile         profile;
+    private Profile       profile;
     @Setter
-    private Boolean              mockBean = false;
+    private Boolean        mockBean = false;
+    @Setter
+    private S              nextNode;
 
 
     public FlowContext(Fsm<S> flow, T data, String event, Profile profile) {

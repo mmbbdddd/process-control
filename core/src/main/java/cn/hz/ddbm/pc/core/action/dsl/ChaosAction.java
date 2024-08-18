@@ -1,9 +1,11 @@
-package cn.hz.ddbm.pc.core.action;
+package cn.hz.ddbm.pc.core.action.dsl;
 
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;
 
-public class ChaosAction implements Action {
+import java.util.Set;
+
+public class ChaosAction implements SimpleAction {
     String actionName;
 
     @Override
@@ -11,9 +13,10 @@ public class ChaosAction implements Action {
         return actionName;
     }
 
+
     @Override
-    public Enum execute(FlowContext ctx) throws Exception {
-        return null;
+    public void execute(FlowContext ctx) throws Exception {
+
     }
 
 

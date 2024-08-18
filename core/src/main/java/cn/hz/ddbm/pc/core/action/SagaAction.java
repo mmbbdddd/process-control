@@ -1,15 +1,18 @@
 package cn.hz.ddbm.pc.core.action;
 
 
-import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.FlowContext;
-import cn.hz.ddbm.pc.core.FlowStatus;
+import cn.hz.ddbm.pc.core.*;
+import cn.hz.ddbm.pc.core.action.dsl.SimpleAction;
+import cn.hz.ddbm.pc.core.exception.ActionException;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
+import cn.hz.ddbm.pc.core.exception.RouterException;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @Description TODO
@@ -19,14 +22,20 @@ import java.io.Serializable;
  **/
 
 
-public class SagaAction<S extends Enum<S>> implements Action<S> {
-    S         failover;
+public class SagaAction<S extends Enum<S>> extends ActionBase<S> implements Action<S> {
     Action<S> action;
+    Set<S>    maybe;
 
-    public SagaAction(S failover, Action<S> action) {
-        this.failover = failover;
-        this.action   = action;
+
+    public SagaAction(Fsm.FsmRecord<S> f , List<Plugin> plugins) {
+        super(f.getType(),f.getFrom(),f.getEvent(),f.getActionDsl(),f.getFailover(),f.getTo(),plugins);
     }
+
+    @Override
+    protected S failover() {
+        return getFailover();
+    }
+
 
     @Override
     public String beanName() {
@@ -34,22 +43,27 @@ public class SagaAction<S extends Enum<S>> implements Action<S> {
     }
 
     @Override
-    public S execute(FlowContext<S, ?> ctx) throws Exception {
+    public void execute(FlowContext<S, ?> ctx) throws ActionException, RouterException {
         String       flow         = ctx.getFlow().getName();
         Serializable flowId       = ctx.getId();
-        S            failOverNode = failover;
+        S            failOverNode = getFailover();
         try {
             StatusManager statusManager = InfraUtils.getStatusManager(ctx.getProfile().getStatusManager());
             statusManager.setStatus(flow, flowId, FlowStatus.of(failOverNode), ctx.getProfile().getStatusTimeout(), ctx);
+            super.execute(ctx);
         } catch (IOException e) {
             throw new InterruptedFlowException(e);
         }
-        executeTx(ctx);
-        return null;
     }
 
-    public void executeTx(FlowContext<S, ?> ctx) throws Exception {
-        action.execute(ctx);
+
+    @Override
+    public Set<S> maybeResult() {
+        return maybe;
+    }
+
+    public S route(FlowContext<S, ?> ctx) {
+        return ctx.getNextNode();
     }
 }
 

@@ -17,7 +17,9 @@ public interface Plugin<S extends Enum<S>> extends ValueObject {
 
     void onActionFinally(String name, FlowContext<S, ?> ctx);
 
-    void postRoute(String routerName, String preNode, FlowContext<S, ?> ctx);
+    void postRoute(String routerName, S preNode, FlowContext<S, ?> ctx);
 
     void onRouteExcetion(String routerName, Exception e, FlowContext<S, ?> ctx);
+
+
 }

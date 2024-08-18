@@ -5,7 +5,6 @@ import cn.hz.ddbm.pc.core.Node;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import lombok.Getter;
@@ -27,8 +26,6 @@ public interface FSM<S extends Enum<S>> {
 
     Map<S, Node.Type> nodes();
 
-    List<ExpressionRouter<S>> routers();
-
     void transitions(Transitions<S> transitions);
 
     Map<String, Profile.StepAttrs> stateAttrs();
@@ -45,16 +42,16 @@ public interface FSM<S extends Enum<S>> {
         profile.setSessionManager(session());
         profile.setActions(actionAttrs());
         profile.setStates(stepAttrsMap);
-        Fsm<S> fsm = Fsm.of(flowId(), describe(), nodes(), routers(), profile);
+        Fsm<S> fsm = Fsm.of(flowId(), describe(), nodes(), profile);
         fsm.setPlugins(plugins());
         Transitions<S> transitions = new Transitions<>();
         transitions(transitions);
         transitions.transitions.forEach(t -> {
             if (t.getType().equals(Fsm.FsmRecordType.SAGA)) {
-                fsm.getFsmTable().saga(t.getFrom(), t.event, t.failover, t.action, t.router);
+                fsm.getFsmTable().saga(t.getFrom(), t.event, t.failover, t.action);
             }
             if (t.getType().equals(Fsm.FsmRecordType.ROUTER)) {
-                fsm.getFsmTable().router(t.getFrom(), t.getEvent(), t.getAction(), t.getRouter());
+                fsm.getFsmTable().router(t.getFrom(), t.getEvent(), t.getAction());
             }
             if (t.getType().equals(Fsm.FsmRecordType.TO)) {
                 fsm.getFsmTable().to(t.getFrom(), t.getEvent(), t.getAction(), t.to);

@@ -18,7 +18,7 @@ public class ErrorPlugin implements Plugin {
     }
 
     @Override
-    public void postRoute(String routerName, String preNode, FlowContext ctx) {
+    public void postRoute(String routerName, Enum preNode, FlowContext ctx) {
 
     }
 

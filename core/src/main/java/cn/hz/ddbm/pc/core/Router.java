@@ -18,11 +18,7 @@ public interface Router<S extends Enum<S>> {
      * @param ctx
      * @return String : event
      */
-    S route(FlowContext<S, FlowPayload<S>> ctx);
-
-    default S failover(S beforeNode, FlowContext<S, FlowPayload<S>> ctx) {
-        return beforeNode;
-    }
+    S route(FlowContext<S, ?> ctx);
 
 
 }
