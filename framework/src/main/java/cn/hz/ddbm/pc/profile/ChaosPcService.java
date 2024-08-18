@@ -100,10 +100,16 @@ public class ChaosPcService extends PcService {
         if (ctx.getFlow().isRouter(node)) {
             return true;
         }
-        if (ctx.getFlow().isEnd(node)) {
-            Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
+        if (!Objects.equals(flowStatus,Fsm.STAUS.RUNNABLE)) {
+            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), node);
             return false;
         }
+        if (Objects.equals(nodeObj.getType(),Node.Type.END)) {
+            Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
+            ctx.setStatus(FlowStatus.finish(node));
+            return false;
+        }
+
         String  windows   = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), node, Coasts.NODE_RETRY);
         Long    exeRetry  = InfraUtils.getMetricsTemplate().get(windows);
         Integer nodeRetry = nodeObj.getRetry();

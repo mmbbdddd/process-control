@@ -2,6 +2,8 @@ package cn.hz.ddbm.pc.core;
 
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 public class Node<S extends Enum<S>> {
     S name;
@@ -19,6 +21,11 @@ public class Node<S extends Enum<S>> {
     public Integer getRetry() {
         return attrs.getRetry();
     }
+
+    public boolean isRunnable(FlowStatus<S> status) {
+        return !Objects.equals(type, Type.END) && Objects.equals(Fsm.STAUS.RUNNABLE,status.flow);
+    }
+
 
     public enum Type {
         START, TASK, END

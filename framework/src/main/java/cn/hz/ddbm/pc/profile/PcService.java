@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class PcService {
     Map<String, Fsm> flows = new HashMap<>();
@@ -56,6 +57,10 @@ public abstract class PcService {
                 ctx.setEvent(Event.of(Coasts.EVENT_DEFAULT));
                 ctx.getFlow().execute(ctx);
             }
+        } catch (FsmEndException e) {
+            //即PauseFlowException
+            Logs.error.error("xx{},{},{}", ctx.getFlow().getName(), ctx.getId(), e.getMessage());
+            flush(ctx);
         } catch (ActionException e) {
             //io异常 = 可重试
             if (e.getRaw() instanceof IOException) {
@@ -108,15 +113,16 @@ public abstract class PcService {
         if (ctx.getFlow().isRouter(node)) {
             return true;
         }
-        if (!flowStatus.equals(Fsm.STAUS.RUNNABLE)) {
-            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), flowStatus.name());
+        if (!Objects.equals(flowStatus,Fsm.STAUS.RUNNABLE)) {
+            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), node);
             return false;
         }
-        if (ctx.getFlow().isEnd(node)) {
+        if (Objects.equals(nodeObj.getType(),Node.Type.END)) {
             Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
             ctx.setStatus(FlowStatus.finish(node));
             return false;
         }
+
         String  windows   = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), node, Coasts.NODE_RETRY);
         Long    exeRetry  = InfraUtils.getMetricsTemplate().get(windows);
         Integer nodeRetry = nodeObj.getRetry();
