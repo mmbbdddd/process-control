@@ -1,6 +1,8 @@
 package cn.hz.ddbm.pc.test
 
-import cn.hz.ddbm.pc.core.*
+
+import cn.hz.ddbm.pc.core.Fsm
+import cn.hz.ddbm.pc.core.Node
 import org.junit.Assert
 import spock.lang.Specification
 

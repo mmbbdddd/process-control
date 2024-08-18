@@ -3,6 +3,7 @@ package cn.hz.ddbm.pc.core.router;
 
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.FlowPayload;
 import cn.hz.ddbm.pc.core.Router;
 import cn.hz.ddbm.pc.core.State;
 import lombok.Getter;
@@ -15,13 +16,14 @@ import lombok.Getter;
  **/
 
 
-public class ToRouter implements Router, State {
-    String from;
+public class ToRouter<S extends Enum<S>> implements Router<S>, State {
+   @Getter
+    S from;
     @Getter
-    String to;
+    S to;
     String routerName;
 
-    public ToRouter(String from, String to) {
+    public ToRouter(S from, S to) {
         Assert.notNull(from, "from is null");
         Assert.notNull(to, "to is null");
         this.to         = to;
@@ -35,12 +37,12 @@ public class ToRouter implements Router, State {
     }
 
     @Override
-    public String route(FlowContext<?> ctx) {
+    public S route(FlowContext<S, FlowPayload<S>> ctx) {
         return to;
     }
 
     @Override
-    public String failover(String preNode, FlowContext<?> ctx) {
+    public S failover(S preNode, FlowContext<S, FlowPayload<S>> ctx) {
         return from;
     }
 
@@ -54,7 +56,7 @@ public class ToRouter implements Router, State {
     }
 
     @Override
-    public String status() {
+    public S status() {
         return to;
     }
 

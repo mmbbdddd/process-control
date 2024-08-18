@@ -4,7 +4,6 @@ package cn.hz.ddbm.pc.core.action;
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowStatus;
-import cn.hz.ddbm.pc.core.Router;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -20,11 +19,11 @@ import java.io.Serializable;
  **/
 
 
-public class SagaAction implements Action {
-    String failover;
-    Action action;
+public class SagaAction<S extends Enum<S>> implements Action<S> {
+    S         failover;
+    Action<S> action;
 
-    public SagaAction(String failover, Action action) {
+    public SagaAction(S failover, Action<S> action) {
         this.failover = failover;
         this.action   = action;
     }
@@ -35,11 +34,10 @@ public class SagaAction implements Action {
     }
 
     @Override
-    public void execute(FlowContext<?> ctx) throws Exception {
-        Router       router       = ctx.getAtomExecutor().getActionRouter().getRouter();
+    public S execute(FlowContext<S, ?> ctx) throws Exception {
         String       flow         = ctx.getFlow().getName();
         Serializable flowId       = ctx.getId();
-        String       failOverNode = failover;
+        S            failOverNode = failover;
         try {
             StatusManager statusManager = InfraUtils.getStatusManager(ctx.getProfile().getStatusManager());
             statusManager.setStatus(flow, flowId, FlowStatus.of(failOverNode), ctx.getProfile().getStatusTimeout(), ctx);
@@ -47,9 +45,10 @@ public class SagaAction implements Action {
             throw new InterruptedFlowException(e);
         }
         executeTx(ctx);
+        return null;
     }
 
-    public void executeTx(FlowContext<?> ctx) throws Exception {
+    public void executeTx(FlowContext<S, ?> ctx) throws Exception {
         action.execute(ctx);
     }
 }

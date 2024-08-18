@@ -13,16 +13,8 @@ public class DigestLogPluginMock implements Plugin {
     }
 
     @Override
-    public void preAction(String name, FlowContext ctx) {
+    public void onRouteExcetion(String routerName, Exception e, FlowContext ctx) {
 
-    }
-
-    @Override
-    public void postAction(String name, FlowContext ctx) {
-    }
-
-    @Override
-    public void onActionException(String actionName, String preNode, Exception e, FlowContext ctx) {
     }
 
     @Override
@@ -31,14 +23,26 @@ public class DigestLogPluginMock implements Plugin {
     }
 
     @Override
+    public void onActionException(String actionName, Enum preNode, Exception e, FlowContext ctx) {
+
+    }
+
+    @Override
+    public void postAction(String name, FlowContext ctx) {
+
+    }
+
+    @Override
+    public void preAction(String name, FlowContext ctx) {
+
+    }
+
+
+    @Override
     public void postRoute(String routerName, String preNode, FlowContext ctx) {
         Logs.digest.info("{},{},{},{}", ctx.getFlow()
                                            .getName(), ctx.getId(), preNode, ctx.getStatus()
                                                                                 .getNode());
     }
 
-    @Override
-    public void onRouteExcetion(String routerName, Exception e, FlowContext ctx) {
-
-    }
 }

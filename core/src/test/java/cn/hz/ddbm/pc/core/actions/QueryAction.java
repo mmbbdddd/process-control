@@ -13,7 +13,8 @@ public class QueryAction implements Action {
     }
 
     @Override
-    public void execute(FlowContext<?> ctx) throws Exception {
-
+    public Enum execute(FlowContext ctx) throws Exception {
+        return null;
     }
+
 }

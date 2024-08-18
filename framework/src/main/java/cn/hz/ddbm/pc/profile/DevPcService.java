@@ -11,16 +11,16 @@ import cn.hz.ddbm.pc.core.exception.ActionException;
 import cn.hz.ddbm.pc.core.exception.RouterException;
 
 public class DevPcService extends PcService {
-    public <T extends FlowPayload> void oneStep(String flowName, T payload, String event) throws ActionException, RouterException {
+    public <S extends Enum<S>,T extends FlowPayload<S>> void oneStep(String flowName, T payload, String event) throws ActionException, RouterException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
-        Fsm            flow = getFlow(flowName);
-        FlowContext<T> ctx  = new FlowContext<>(flow, payload, event, Profile.devOf());
+        Fsm<S>            flow = getFlow(flowName);
+        FlowContext<S,T> ctx  = new FlowContext<>(flow, payload, event, Profile.devOf());
         oneStep(ctx);
     }
 
-    public void oneStep(FlowContext<?> ctx) throws RouterException, ActionException {
+    public void oneStep(FlowContext<?,?> ctx) throws RouterException, ActionException {
         Fsm     flow      = ctx.getFlow();
         Boolean rawFluent = ctx.getFluent();
         ctx.setFluent(false);

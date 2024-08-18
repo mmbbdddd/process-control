@@ -6,18 +6,18 @@ package cn.hz.ddbm.pc.core;
  * ___2,如果业务和插件之间需要信息交互，通过上下文完成。
  */
 
-public interface Plugin extends ValueObject {
+public interface Plugin<S extends Enum<S>> extends ValueObject {
     String code();
 
-    void preAction(String name, FlowContext<?> ctx);
+    void preAction(String name, FlowContext<S, ?> ctx);
 
-    void postAction(String name, FlowContext<?> ctx);
+    void postAction(String name, FlowContext<S, ?> ctx);
 
-    void onActionException(String actionName, String preNode, Exception e, FlowContext<?> ctx);
+    void onActionException(String actionName, S preNode, Exception e, FlowContext<S, ?> ctx);
 
-    void onActionFinally(String name, FlowContext<?> ctx);
+    void onActionFinally(String name, FlowContext<S, ?> ctx);
 
-    void postRoute(String routerName, String preNode, FlowContext<?> ctx);
+    void postRoute(String routerName, String preNode, FlowContext<S, ?> ctx);
 
-    void onRouteExcetion(String routerName, Exception e, FlowContext<?> ctx);
+    void onRouteExcetion(String routerName, Exception e, FlowContext<S, ?> ctx);
 }

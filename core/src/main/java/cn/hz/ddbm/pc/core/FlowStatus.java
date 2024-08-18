@@ -13,30 +13,30 @@ import lombok.Data;
 
 
 @Data
-public class FlowStatus {
+public class FlowStatus<S extends Enum<S>> {
     Fsm.STAUS flow;
-    String    node;
+    S         node;
 
-    public static FlowStatus pause(String node) {
+    public static <S extends Enum<S>> FlowStatus<S> pause(S node) {
         Assert.notNull(node, "nodeStatus is null");
-        FlowStatus status = new FlowStatus();
+        FlowStatus<S> status = new FlowStatus<>();
         status.node = node;
         status.flow = Fsm.STAUS.PAUSE;
         return status;
     }
 
-    public static FlowStatus of(String node) {
+    public static <S extends Enum<S>> FlowStatus<S> of(S node) {
         Assert.notNull(node, "nodeStatus is null");
-        FlowStatus status = new FlowStatus();
+        FlowStatus<S> status = new FlowStatus<>();
         status.node = node;
         status.flow = Fsm.STAUS.RUNNABLE;
         return status;
     }
 
-    public static FlowStatus of(String flowStatus, String nodeStatus) {
+    public static <S extends Enum<S>> FlowStatus<S> of(String flowStatus, S nodeStatus) {
         Assert.notNull(flowStatus, "flowStatus is null");
         Assert.notNull(nodeStatus, "nodeStatus is null");
-        FlowStatus status = new FlowStatus();
+        FlowStatus<S> status = new FlowStatus<>();
         status.node = nodeStatus;
         status.flow = Fsm.STAUS.valueOf(flowStatus);
         return status;

@@ -35,13 +35,13 @@ public class MemoryStatusManager implements StatusManager {
     }
 
     @Override
-    public void setStatus(String flow, Serializable flowId, FlowStatus flowStatus, Integer timeout, FlowContext<?> ctx) throws IOException {
+    public void setStatus(String flow, Serializable flowId, FlowStatus<?> flowStatus, Integer timeout, FlowContext<?,?> ctx) throws IOException {
         cache.put(String.format(keyTemplate, flow, flowId), flowStatus);
     }
 
 
     @Override
-    public FlowStatus getStatus(String flow, Serializable flowId) throws IOException {
+    public FlowStatus<?> getStatus(String flow, Serializable flowId) throws IOException {
         return cache.getIfPresent(String.format(keyTemplate, flow, flowId));
     }
 }

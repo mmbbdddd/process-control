@@ -11,16 +11,16 @@ package cn.hz.ddbm.pc.core;
  * ___fork://routerName
  * ___join://conditionExpression:flowstatus
  */
-public interface Router {
+public interface Router<S extends Enum<S>> {
     String routerName();
 
     /**
      * @param ctx
      * @return String : event
      */
-    String route(FlowContext<?> ctx);
+    S route(FlowContext<S, FlowPayload<S>> ctx);
 
-    default String failover(String beforeNode, FlowContext<?> ctx) {
+    default S failover(S beforeNode, FlowContext<S, FlowPayload<S>> ctx) {
         return beforeNode;
     }
 

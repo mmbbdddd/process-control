@@ -1,24 +1,20 @@
 package cn.hz.ddbm.pc.factory.dsl;
 
-import cn.hutool.core.util.EnumUtil;
-import cn.hutool.core.util.TypeUtil;
-import cn.hz.ddbm.pc.core.*;
+import cn.hz.ddbm.pc.core.Fsm;
+import cn.hz.ddbm.pc.core.Node;
+import cn.hz.ddbm.pc.core.Plugin;
+import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.router.ExpressionRouter;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
-import cn.hz.ddbm.pc.core.utils.InfraUtils;
-import cn.hz.ddbm.pc.profile.PcService;
 import lombok.Getter;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
-public interface FSM<S extends FSM.State> {
+public interface FSM<S extends Enum<S>> {
     String flowId();
 
     String describe();
@@ -29,7 +25,9 @@ public interface FSM<S extends FSM.State> {
 
     StatusManager.Type status();
 
-    List<ExpressionRouter> routers();
+    Map<S, Node.Type> nodes();
+
+    List<ExpressionRouter<S>> routers();
 
     void transitions(Transitions<S> transitions);
 
@@ -40,37 +38,32 @@ public interface FSM<S extends FSM.State> {
     Profile profile();
 
 
-    default Fsm build() throws Exception {
+    default Fsm<S> build() throws Exception {
         Map<String, Profile.StepAttrs> stepAttrsMap = stateAttrs();
         Profile                        profile      = profile();
         profile.setStatusManager(status());
         profile.setSessionManager(session());
         profile.setActions(actionAttrs());
         profile.setStates(stepAttrsMap);
-
-        Class          genericsType = (Class) TypeUtil.getGenerics(this.getClass())[0].getActualTypeArguments()[0];
-        Map<String, S> enums        = EnumUtil.getEnumMap(genericsType);
-        Set<Node>      nodes        = enums.values().stream().map(it -> new Node(it.type(), it.name(), profile)).collect(Collectors.toSet());
-        Fsm            fsm          = Fsm.of(flowId(), describe(), nodes, routers(), profile);
+        Fsm<S> fsm = Fsm.of(flowId(), describe(), nodes(), routers(), profile);
         fsm.setPlugins(plugins());
         Transitions<S> transitions = new Transitions<>();
         transitions(transitions);
         transitions.transitions.forEach(t -> {
-            if (t.getTo() != null) {
-                fsm.to(t.getFrom().name(), t.getEvent(), t.getAction(), t.getTo().name());
-            } else {
-                fsm.router(t.getFrom().name(), t.getEvent(), t.getAction(), t.getRouter());
+            if (t.getType().equals(Fsm.FsmRecordType.SAGA)) {
+                fsm.getFsmTable().saga(t.getFrom(), t.event, t.failover, t.action, t.router);
+            }
+            if (t.getType().equals(Fsm.FsmRecordType.ROUTER)) {
+                fsm.getFsmTable().router(t.getFrom(), t.getEvent(), t.getAction(), t.getRouter());
+            }
+            if (t.getType().equals(Fsm.FsmRecordType.TO)) {
+                fsm.getFsmTable().to(t.getFrom(), t.getEvent(), t.getAction(), t.to);
             }
         });
 //        InfraUtils.getBean(PcService.class).addFlow(flow);
         return fsm;
     }
 
-    interface State {
-        String name();
-
-        cn.hz.ddbm.pc.core.Node.Type type();
-    }
 
     class Transitions<S> {
         List<FSM.Transition<S>> transitions;
@@ -79,43 +72,68 @@ public interface FSM<S extends FSM.State> {
             this.transitions = new ArrayList<>();
         }
 
+
         public Transitions<S> to(S from, String event, S to) {
-            to(from, event, Coasts.NONE, to);
+            transitions.add(Transition.toOf(from, event, Coasts.NONE_ACTION, to));
             return this;
         }
 
         public Transitions<S> to(S from, String event, String action, S to) {
-            transitions.add(new FSM.Transition<>(from, event, action, to));
+            transitions.add(Transition.toOf(from, event, action, to));
             return this;
         }
 
         public Transitions<S> router(S node, String event, String action, String router) {
-            transitions.add(new Transition<>(node, event, action, router));
+            transitions.add(Transition.routerOf(node, event, action, router));
             return this;
         }
 
+        public Transitions<S> saga(S node, String event, S failover, String action, String router) {
+            transitions.add(Transition.sagaOf(node, event, failover, action, router));
+            return this;
+        }
     }
 
     @Getter
     class Transition<S> {
-        S      from;
-        String event;
-        String action;
-        S      to;
-        String router;
+        Fsm.FsmRecordType type;
+        S                 from;
+        String            event;
+        S                 failover;
+        String            action;
+        S                 to;
+        String            router;
 
-        public Transition(S from, String event, String action, S to) {
-            this.from   = from;
-            this.event  = event;
-            this.action = action;
-            this.to     = to;
+
+        public static <S> Transition<S> routerOf(S node, String event, String action, String router) {
+            Transition<S> t = new Transition<S>();
+            t.type   = Fsm.FsmRecordType.ROUTER;
+            t.from   = node;
+            t.event  = event;
+            t.action = action;
+            t.router = router;
+            return t;
         }
 
-        public Transition(S from, String event, String action, String router) {
-            this.from   = from;
-            this.event  = event;
-            this.action = action;
-            this.router = router;
+        public static <S> Transition<S> toOf(S from, String event, String action, S to) {
+            Transition<S> t = new Transition<S>();
+            t.type   = Fsm.FsmRecordType.TO;
+            t.from   = from;
+            t.event  = event;
+            t.action = action;
+            t.to     = to;
+            return t;
+        }
+
+        public static <S> Transition<S> sagaOf(S node, String event, S failover, String action, String router) {
+            Transition<S> t = new Transition<S>();
+            t.type     = Fsm.FsmRecordType.SAGA;
+            t.from     = node;
+            t.event    = event;
+            t.action   = action;
+            t.failover = failover;
+            t.router   = router;
+            return t;
         }
     }
 

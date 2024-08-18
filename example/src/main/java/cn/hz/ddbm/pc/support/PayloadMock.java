@@ -7,12 +7,12 @@ import cn.hz.ddbm.pc.core.Fsm;
 import java.io.Serializable;
 import java.util.UUID;
 
-public class PayloadMock implements FlowPayload {
+public class PayloadMock<S extends Enum<S>> implements FlowPayload<S> {
     String id;
-    String nodeStatus;
+    S nodeStatus;
     String flowStatus;
 
-    public PayloadMock(String init) {
+    public PayloadMock(S init) {
         this.id         = UUID.randomUUID().toString();
         this.flowStatus = Fsm.STAUS.RUNNABLE.name();
         this.nodeStatus = init;
@@ -24,12 +24,12 @@ public class PayloadMock implements FlowPayload {
     }
 
     @Override
-    public FlowStatus getStatus() {
+    public FlowStatus<S> getStatus() {
         return FlowStatus.of(flowStatus, nodeStatus);
     }
 
     @Override
-    public void setStatus(FlowStatus status) {
+    public void setStatus(FlowStatus<S> status) {
 
     }
 }

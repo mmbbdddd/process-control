@@ -11,8 +11,8 @@ import java.util.List;
  **/
 
 
-public class MultiAction implements Action {
-    String       actionNames;
+public class MultiAction<S extends Enum<S>> implements Action<S> {
+    String          actionNames;
     List<Action> actions;
 
     public MultiAction(String actionNames, List<Action> actions) {
@@ -26,9 +26,10 @@ public class MultiAction implements Action {
     }
 
     @Override
-    public void execute(FlowContext<?> ctx) throws Exception {
-        for (Action action : this.actions) {
+    public S execute(FlowContext<S, ?> ctx) throws Exception {
+        for (Action<S> action : this.actions) {
             action.execute(ctx);
         }
+        return null;
     }
 }

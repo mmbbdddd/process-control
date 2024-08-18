@@ -13,32 +13,40 @@ public class ErrorPlugin implements Plugin {
     }
 
     @Override
-    public void preAction(String name, FlowContext<?> ctx) {
+    public void onRouteExcetion(String routerName, Exception e, FlowContext ctx) {
 
     }
 
     @Override
-    public void postAction(String name, FlowContext<?> ctx) {
+    public void postRoute(String routerName, String preNode, FlowContext ctx) {
 
     }
 
     @Override
-    public void onActionException(String actionName, String preNode, Exception e, FlowContext<?> ctx) {
-        log.error("Action错误{}:", actionName, e);
-    }
-
-    @Override
-    public void onActionFinally(String name, FlowContext<?> ctx) {
+    public void onActionFinally(String name, FlowContext ctx) {
 
     }
 
     @Override
-    public void postRoute(String routerName, String preNode, FlowContext<?> ctx) {
+    public void onActionException(String actionName, Enum preNode, Exception e, FlowContext ctx) {
 
     }
 
     @Override
-    public void onRouteExcetion(String routerName, Exception e, FlowContext<?> ctx) {
-        log.error("路由错误{}:", routerName, e);
+    public void postAction(String name, FlowContext ctx) {
+
     }
+
+    @Override
+    public void preAction(String name, FlowContext ctx) {
+
+    }
+
+
+//    @Override
+//    public void onActionException(String actionName,S preNode, Exception e, FlowContext ctx) {
+//        log.error("Action错误{}:", actionName, e);
+//    }
+
+
 }

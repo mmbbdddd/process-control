@@ -67,7 +67,8 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     public enum PcState {
-        init("初始化"), sended("已发送"), send_failover("发送错误"), miss_data("客户资料缺乏"), miss_data_fulled("客户资料已补"), su("成功"), fail("失败"), error("异常");
+        init("初始化"), sended("已发送"), send_failover("发送错误"), miss_data("客户资料缺乏"), miss_data_fulled("客户资料已补"), su("成功"), fail("失败"), error(
+                "异常");
 
         private final String descr;
 

@@ -32,7 +32,7 @@ public class ChaosPcService extends PcService {
         this.chaosRules = new ArrayList<>();
     }
 
-    public void execute(String flowName, MockPayLoad payload, String event, Integer times, Integer timeout, List<ChaosRule> rules, Boolean mock) {
+    public <S extends Enum<S>> void execute(String flowName, MockPayLoad<S> payload, String event, Integer times, Integer timeout, List<ChaosRule> rules, Boolean mock) {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         CountDownLatch cdl = new CountDownLatch(times);
@@ -45,7 +45,7 @@ public class ChaosPcService extends PcService {
                 try {
 //                    独立事件执行
                     payload.setId(finalI);
-                    FlowContext<MockPayLoad> ctx = standalone(flowName, payload, event, mock);
+                    FlowContext<S, MockPayLoad<S>> ctx = standalone(flowName, payload, event, mock);
                     result = ctx;
                 } catch (Throwable t) {
                     Logs.error.error("", t);
@@ -81,10 +81,10 @@ public class ChaosPcService extends PcService {
         statisticsLines.add(new StatisticsLine(i, requestInfo, result));
     }
 
-    private FlowContext<MockPayLoad> standalone(String flowName, MockPayLoad payload, String event, Boolean mock) throws StatusException, SessionException {
+    private <S extends Enum<S>> FlowContext<S, MockPayLoad<S>> standalone(String flowName, MockPayLoad<S> payload, String event, Boolean mock) throws StatusException, SessionException {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
-        Fsm                      flow = getFlow(flowName);
-        FlowContext<MockPayLoad> ctx  = new FlowContext<>(flow, payload, event, Profile.chaosOf());
+        Fsm                            flow = getFlow(flowName);
+        FlowContext<S, MockPayLoad<S>> ctx  = new FlowContext<S, MockPayLoad<S>>(flow, payload, event, Profile.chaosOf());
         ctx.setMockBean(mock);
         while (chaosIsContine(ctx)) {
             execute(ctx);
@@ -92,11 +92,11 @@ public class ChaosPcService extends PcService {
         return ctx;
     }
 
-    public boolean chaosIsContine(FlowContext<?> ctx) {
+    public <S extends Enum<S>> boolean chaosIsContine(FlowContext<S, MockPayLoad<S>> ctx) {
         Fsm.STAUS flowStatus = ctx.getStatus().getFlow();
-        String    node       = ctx.getStatus().getNode();
+        S         node       = ctx.getStatus().getNode();
         String    flowName   = ctx.getFlow().getName();
-        State     nodeObj    = ctx.getFlow().getStep(node);
+        Node<S>      nodeObj    = ctx.getFlow().getNode(node);
         if (ctx.getFlow().isRouter(node)) {
             return true;
         }
@@ -121,12 +121,12 @@ public class ChaosPcService extends PcService {
     }
 
 
-    public static class MockPayLoad implements FlowPayload {
+    public static class MockPayLoad<S extends Enum<S>> implements FlowPayload<S> {
         Integer   id;
         Fsm.STAUS flowStatus;
-        String    nodeStatus;
+        S         nodeStatus;
 
-        public MockPayLoad(String init) {
+        public MockPayLoad(S init) {
             this.flowStatus = Fsm.STAUS.RUNNABLE;
             this.nodeStatus = init;
         }
@@ -141,12 +141,12 @@ public class ChaosPcService extends PcService {
         }
 
         @Override
-        public FlowStatus getStatus() {
+        public FlowStatus<S> getStatus() {
             return FlowStatus.of(flowStatus.name(), nodeStatus);
         }
 
         @Override
-        public void setStatus(FlowStatus status) {
+        public void setStatus(FlowStatus<S> status) {
             this.flowStatus = status.getFlow();
             this.nodeStatus = status.getNode();
         }
@@ -179,7 +179,7 @@ public class ChaosPcService extends PcService {
             this.value = t.getMessage();
         }
 
-        public TypeValue(FlowContext<?> ctx) {
+        public TypeValue(FlowContext<?, ?> ctx) {
             this.type  = ctx.getClass().getSimpleName();
             this.value = String.format("%s:%s", ctx.getStatus().getFlow().name(), ctx.getStatus().getNode());
         }

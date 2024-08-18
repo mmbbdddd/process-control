@@ -11,10 +11,10 @@ import java.io.Serializable;
  **/
 
 
-public interface FlowPayload {
+public interface FlowPayload<S extends Enum<S>> {
     Serializable getId();
 
-    FlowStatus getStatus();
+    FlowStatus<S> getStatus();
 
-    void setStatus(FlowStatus status);
+    void setStatus(FlowStatus<S> status);
 }

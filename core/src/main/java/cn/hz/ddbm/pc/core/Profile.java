@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
-public class Profile {
+public class Profile<S extends Enum<S>> {
     private Integer                  retry         = Coasts.DEFAULT_RETRY;
     private Integer                  statusTimeout = Coasts.DEFAULT_STATUS_TIMEOUT;
     private Integer                  lockTimeout   = Coasts.DEFAULT_LOCK_TIMEOUT;
     private SessionManager.Type      sessionManager;
     private StatusManager.Type       statusManager;
-    private Map<String, StepAttrs>   states;
+    private Map<S, StepAttrs>        states;
     private Map<String, ActionAttrs> actions;
 
 
@@ -38,12 +38,12 @@ public class Profile {
         return new Profile(SessionManager.Type.memory, StatusManager.Type.memory);
     }
 
-    public void setStepAttrs(String state, StepAttrs stepAttrs) {
+    public void setStepAttrs(S state, StepAttrs stepAttrs) {
         stepAttrs.profile = this;
         this.states.put(state, stepAttrs);
     }
 
-    public StepAttrs getStepAttrsOrDefault(String state) {
+    public StepAttrs getStepAttrsOrDefault(S state) {
         return this.states.getOrDefault(state, new StepAttrs(this));
     }
 

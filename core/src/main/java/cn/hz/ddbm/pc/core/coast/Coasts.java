@@ -10,8 +10,7 @@ public class Coasts {
     public static final String  EVENT_DEFAULT          = "push";
     public static final String  EVENT_CANCEL           = "cancel";
     public static final String  EVENT_PAUSE            = "pause";
-    public static final String  NONE                   = "none";
-    public static final Action  NONE_ACTION            = new NoneAction();
+    public static final String  NONE_ACTION            = "noneAction";
     public static final Integer DEFAULT_RETRY          = 1;
     public static final Integer DEFAULT_STATUS_TIMEOUT = 3000;
     public static final Integer DEFAULT_LOCK_TIMEOUT   = 3000;

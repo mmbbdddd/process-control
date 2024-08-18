@@ -1,5 +1,6 @@
 package cn.hz.ddbm.pc.example;
 
+import cn.hz.ddbm.pc.core.Node;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.coast.Coasts;
@@ -42,10 +43,25 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     }
 
     @Override
+    public Map<IDCardState, Node.Type> nodes() {
+        Map<IDCardState, Node.Type> map = new HashMap<>();
+        map.put(IDCardState.init, Node.Type.START);
+        map.put(IDCardState.sended, Node.Type.TASK);
+        map.put(IDCardState.send_failover, Node.Type.TASK);
+        map.put(IDCardState.miss_data, Node.Type.TASK);
+        map.put(IDCardState.miss_data_fulled, Node.Type.TASK);
+        map.put(IDCardState.su, Node.Type.END);
+        map.put(IDCardState.fail, Node.Type.END);
+        map.put(IDCardState.error, Node.Type.END);
+        return map;
+    }
+
+    @Override
     public void transitions(Transitions<IDCardState> t) {
-        t.router(IDCardState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter")
+        t.saga(IDCardState.init, Coasts.EVENT_DEFAULT, IDCardState.send_failover, "sendAction", "sendRouter")
          //发送异常，不明确是否发送
-//         .router(IDCardState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
+         .router(IDCardState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
+         .router(null, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
          //已发送，对方处理中
          .router(IDCardState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
          //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
@@ -55,24 +71,20 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     }
 
     @Override
-    public List<ExpressionRouter> routers() {
-        List<ExpressionRouter> routers = new ArrayList<>();
-        routers.add(new ExpressionRouter("sendRouter",
-                new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.2"),
-                new ExpressionRouter.NodeExpression("sended", "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression("miss_data", "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression("miss_data_fulled", "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
-                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6")
-        ));
-        routers.add(new ExpressionRouter("notifyRouter",
-                new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.2"),
-                new ExpressionRouter.NodeExpression("sended", "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression("miss_data", "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression("miss_data_fulled", "Math.random() < 0.1"),
-                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
-                new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6")
-        ));
+    public List<ExpressionRouter<IDCardState>> routers() {
+        List<ExpressionRouter<IDCardState>> routers = new ArrayList<>();
+        routers.add(new ExpressionRouter<IDCardState>("sendRouter",
+                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.init, "Math.random() < 0.1"),
+                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.send_failover, "Math.random() < 0.1"),
+                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.miss_data, "Math.random() < 0.1"),
+                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.su, "Math.random() < 0.6"),
+                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.fail, "Math.random() < 0.6")));
+        routers.add(new ExpressionRouter<IDCardState>("notifyRouter",
+                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.init, "Math.random() < 0.1"),
+                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.send_failover, "Math.random() < 0.1"),
+                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.miss_data, "Math.random() < 0.1"),
+                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.su, "Math.random() < 0.6"),
+                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.fail, "Math.random() < 0.6")));
         return routers;
     }
 

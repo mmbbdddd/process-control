@@ -12,26 +12,26 @@ import java.io.Serializable;
 import java.util.Map;
 
 @Getter
-public class FlowContext<T extends FlowPayload> {
+public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     //    入参
-    private Serializable id;
-    private T            data;
-    private Fsm          flow;
+    private Serializable         id;
+    private T                    data;
+    private Fsm<S>               flow;
     @Setter
-    private Boolean      fluent;
+    private Boolean              fluent;
     @Setter
-    private Event        event;
+    private Event                event;
     @Setter
-    private FlowStatus   status;
+    private FlowStatus<S>   status;
     @Setter
-    private AtomExecutor atomExecutor;
+    private ActionRouter<S> executor;
     @Setter
-    private Profile      profile;
+    private Profile         profile;
     @Setter
-    private Boolean      mockBean = false;
+    private Boolean              mockBean = false;
 
 
-    public FlowContext(Fsm flow, T data, String event, Profile profile) {
+    public FlowContext(Fsm<S> flow, T data, String event, Profile profile) {
         Assert.notNull(flow, "flow is null");
         Assert.notNull(data, "data is null");
         Assert.notNull(event, "event is null");
@@ -49,7 +49,7 @@ public class FlowContext<T extends FlowPayload> {
     }
 
 
-    public void metricsNode(FlowContext<?> ctx) {
+    public void metricsNode(FlowContext<S, ?> ctx) {
         String            windows        = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getNode(), Coasts.NODE_RETRY);
         StatisticsSupport metricsWindows = InfraUtils.getMetricsTemplate();
         metricsWindows.increment(windows);

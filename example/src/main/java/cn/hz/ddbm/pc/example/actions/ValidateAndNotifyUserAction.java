@@ -2,7 +2,9 @@ package cn.hz.ddbm.pc.example.actions;
 
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ValidateAndNotifyUserAction implements Action {
     @Override
     public String beanName() {
@@ -10,7 +12,9 @@ public class ValidateAndNotifyUserAction implements Action {
     }
 
     @Override
-    public void execute(FlowContext<?> ctx) throws Exception {
-
+    public Enum execute(FlowContext ctx) throws Exception {
+        return null;
     }
+
+
 }

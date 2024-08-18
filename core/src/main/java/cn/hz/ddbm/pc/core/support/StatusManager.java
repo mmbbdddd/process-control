@@ -19,11 +19,11 @@ import java.io.Serializable;
 public interface StatusManager {
     Type code();
 
-    void setStatus(String flow, Serializable flowId, FlowStatus flowStatus, Integer timeout, FlowContext<?> ctx) throws IOException;
+    void setStatus(String flow, Serializable flowId, FlowStatus<?> flowStatus, Integer timeout, FlowContext<?,?> ctx) throws IOException;
 
-    FlowStatus getStatus(String flow, Serializable flowId) throws IOException;
+    FlowStatus<?> getStatus(String flow, Serializable flowId) throws IOException;
 
-    default void flush(FlowContext<?> ctx) throws StatusException {
+    default void flush(FlowContext<?,?> ctx) throws StatusException {
         try {
             setStatus(ctx.getFlow().getName(), ctx.getId(), ctx.getStatus(), ctx.getProfile().getStatusTimeout(), ctx);
         } catch (IOException e) {

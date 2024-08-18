@@ -1,6 +1,5 @@
 package cn.hz.ddbm.pc.session.redis;
 
-import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -12,8 +11,8 @@ public class RedisSessionManager implements SessionManager {
     String keyTemplate = "%s:%s;%s";
 
     @Override
-    public String code() {
-        return Coasts.SESSION_MANAGER_MEMORY;
+    public SessionManager.Type code() {
+        return Type.memory;
     }
 
     @Override
