@@ -1,6 +1,9 @@
 package cn.hz.ddbm.pc.container.chaos;
 
 import cn.hz.ddbm.pc.core.Action;
+import cn.hz.ddbm.pc.core.ActionBase;
+import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.SimpleAction;
 import cn.hz.ddbm.pc.core.support.Locker;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
@@ -10,6 +13,8 @@ import cn.hz.ddbm.pc.profile.chaos.ChaosTarget;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 混沌发生器。具体发生规则参见ChaosRule
@@ -40,6 +45,14 @@ public class ChaosHandler {
                     rule.raiseException();
                 }
             }
+        }
+
+        if (proxy instanceof SimpleAction) {
+            FlowContext ctx        = (FlowContext) args[0];
+            ActionBase  actionBase = ctx.getExecutor();
+            Set<Enum>   results    = actionBase.maybeResult();
+            Integer     idx        = Double.valueOf(Math.ceil(Math.random() * results.size())).intValue();
+            ctx.setNextNode(results.stream().collect(Collectors.toList()).get(idx));
         }
     }
 

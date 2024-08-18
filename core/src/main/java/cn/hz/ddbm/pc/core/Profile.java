@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Data
 public class Profile<S extends Enum<S>> {
@@ -16,6 +17,7 @@ public class Profile<S extends Enum<S>> {
     private SessionManager.Type      sessionManager;
     private StatusManager.Type       statusManager;
     private Map<S, StepAttrs>        states;
+    private Map<String, Set<S>>      maybeResults;
     private Map<String, ActionAttrs> actions;
 
 
@@ -24,6 +26,7 @@ public class Profile<S extends Enum<S>> {
         this.statusManager  = statusManager == null ? StatusManager.Type.redis : statusManager;
         this.actions        = new HashMap<>();
         this.states         = new HashMap<>();
+        this.maybeResults   = new HashMap<>();
     }
 
     public static Profile defaultOf() {

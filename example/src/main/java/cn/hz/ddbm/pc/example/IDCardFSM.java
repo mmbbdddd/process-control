@@ -10,14 +10,12 @@ import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.factory.dsl.FSM;
 import cn.hz.ddbm.pc.profile.PcService;
 import cn.hz.ddbm.pc.support.DigestLogPluginMock;
+import org.mockito.internal.util.collections.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
@@ -56,11 +54,17 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     }
 
     @Override
+    public Map<String, Set<IDCardState>> maybeResults(Map<String, Set<IDCardState>> map) {
+        map.put("sendRouter", Sets.newSet(IDCardState.init, IDCardState.sended, IDCardState.miss_data, IDCardState.su, IDCardState.fail));
+        map.put("notifyRouter", Sets.newSet(IDCardState.init, IDCardState.miss_data, IDCardState.miss_data_fulled));
+        return map;
+    }
+
+    @Override
     public void transitions(Transitions<IDCardState> t) {
         t.saga(IDCardState.init, Coasts.EVENT_DEFAULT, IDCardState.send_failover, "sendAction", "sendRouter")
          //发送异常，不明确是否发送
          .router(IDCardState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
-         .router(null, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
          //已发送，对方处理中
          .router(IDCardState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
          //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
@@ -69,27 +73,9 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
          .to(IDCardState.miss_data_fulled, Coasts.EVENT_DEFAULT, IDCardState.init);
     }
 
-//    @Override
-//    public List<ExpressionRouter<IDCardState>> routers() {
-//        List<ExpressionRouter<IDCardState>> routers = new ArrayList<>();
-//        routers.add(new ExpressionRouter<IDCardState>("sendRouter",
-//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.init, "Math.random() < 0.1"),
-//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.send_failover, "Math.random() < 0.1"),
-//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.miss_data, "Math.random() < 0.1"),
-//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.su, "Math.random() < 0.6"),
-//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.fail, "Math.random() < 0.6")));
-//        routers.add(new ExpressionRouter<IDCardState>("notifyRouter",
-//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.init, "Math.random() < 0.1"),
-//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.send_failover, "Math.random() < 0.1"),
-//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.miss_data, "Math.random() < 0.1"),
-//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.su, "Math.random() < 0.6"),
-//                new ExpressionRouter.NodeExpression<IDCardState>(IDCardState.fail, "Math.random() < 0.6")));
-//        return routers;
-//    }
-
 
     @Override
-    public Map<String, Profile.StepAttrs> stateAttrs() {
+    public Map<IDCardState, Profile.StepAttrs> stateAttrs() {
         return new HashMap<>();
     }
 
@@ -99,8 +85,8 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     }
 
     @Override
-    public Profile profile() {
-        Profile profile = new Profile(session(), status());
+    public Profile<IDCardState> profile() {
+        Profile<IDCardState> profile = new Profile(session(), status());
         profile.setRetry(1);
         return profile;
     }

@@ -14,23 +14,23 @@ import java.util.Map;
 @Getter
 public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     //    入参
-    private Serializable   id;
-    private T              data;
-    private Fsm<S>         flow;
+    private Serializable  id;
+    private T             data;
+    private Fsm<S>        flow;
     @Setter
-    private Boolean        fluent;
+    private Boolean       fluent;
     @Setter
-    private Event          event;
+    private Event         event;
     @Setter
     private FlowStatus<S> status;
     @Setter
     private ActionBase<S> executor;
     @Setter
-    private Profile       profile;
+    private Profile<S>    profile;
     @Setter
-    private Boolean        mockBean = false;
+    private Boolean       mockBean = false;
     @Setter
-    private S              nextNode;
+    private S             nextNode;
 
 
     public FlowContext(Fsm<S> flow, T data, String event, Profile profile) {
@@ -41,13 +41,19 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
         Assert.notNull(data.getStatus(), "date.status is null");
         Assert.notNull(data.getStatus().getFlow(), "date.status.flow is null");
         Assert.notNull(data.getStatus().getNode(), "date.status.node is null");
-        this.event   = Event.of(event);
-        this.data    = data;
-        this.id      = data.getId();
-        this.flow    = flow;
-        this.status  = data.getStatus();
-        this.fluent  = true;
-        this.profile = profile;
+        this.event  = Event.of(event);
+        this.data   = data;
+        this.id     = data.getId();
+        this.flow   = flow;
+        this.status = data.getStatus();
+        this.fluent = true;
+        //todo需要从应用中同步
+        if (flow.getProfile() != null) {
+            this.profile = flow.getProfile();
+        }else{
+            this.profile = profile;
+//            flow.profile = profile;
+        }
     }
 
 

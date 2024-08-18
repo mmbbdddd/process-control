@@ -3,9 +3,9 @@ package cn.hz.ddbm.pc.core.action;
 
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.*;
-import cn.hz.ddbm.pc.core.exception.ActionException;
+import cn.hz.ddbm.pc.core.exception.wrap.ActionException;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
-import cn.hz.ddbm.pc.core.exception.RouterException;
+import cn.hz.ddbm.pc.core.exception.wrap.RouterException;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
@@ -22,12 +22,13 @@ import java.util.Set;
  **/
 
 
-public class SagaAction<S extends Enum<S>> extends ActionBase<S> implements Action<S> {
+public class SagaAction<S extends Enum<S>> extends ActionBase<S>   {
     Set<S>    maybeResult;
 
 
-    public SagaAction(Fsm.FsmRecord<S> f , List<Plugin> plugins) {
+    public SagaAction(Fsm.FsmRecord<S> f ,Set<S>    maybeResult, List<Plugin> plugins) {
         super(f.getType(),f.getFrom(),f.getEvent(),f.getActionDsl(),f.getFailover(),f.getTo(),plugins);
+        this.maybeResult = maybeResult;
     }
 
     @Override

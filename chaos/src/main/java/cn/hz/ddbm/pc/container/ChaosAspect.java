@@ -14,7 +14,7 @@ public class ChaosAspect {
     @Resource
     ChaosHandler chaosHandler;
 
-    @Around(" execution(* cn.hz.ddbm.pc.core.Action.*(*))")
+    @Around(" execution(* cn.hz.ddbm.pc.core.SimpleAction.execute(*))")
     public Object action(ProceedingJoinPoint pjp) throws Throwable {
         Object   target = pjp.getTarget();
         Method   method = ((MethodSignature) pjp.getSignature()).getMethod();
@@ -23,7 +23,7 @@ public class ChaosAspect {
         return pjp.proceed();
     }
 
-    @Around("execution(* cn.hz.ddbm.pc.core.Router.route(*))")
+    @Around("execution(* cn.hz.ddbm.pc.core.SimpleAction.route(*))")
     public Object router(ProceedingJoinPoint pjp) throws Throwable {
         Object   target = pjp.getTarget();
         Method   method = ((MethodSignature) pjp.getSignature()).getMethod();

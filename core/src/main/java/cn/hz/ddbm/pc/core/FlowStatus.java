@@ -2,6 +2,8 @@ package cn.hz.ddbm.pc.core;
 
 
 import cn.hutool.core.lang.Assert;
+import cn.hz.ddbm.pc.core.exception.BlockedFlowException;
+import cn.hz.ddbm.pc.core.exception.wrap.PauseFlowException;
 import lombok.Data;
 
 /**
@@ -17,20 +19,24 @@ public class FlowStatus<S extends Enum<S>> {
     Fsm.STAUS flow;
     S         node;
 
-    public static <S extends Enum<S>> FlowStatus<S> pause(S node) {
-        Assert.notNull(node, "nodeStatus is null");
-        FlowStatus<S> status = new FlowStatus<>();
-        status.node = node;
-        status.flow = Fsm.STAUS.PAUSE;
-        return status;
+    public static <S extends Enum<S>> FlowStatus<S> cancel(S node) {
+        return of(Fsm.STAUS.FINISH.name(), node);
+    }
+
+    public static <S extends Enum<S>> FlowStatus<S> finish(S node) {
+        return of(Fsm.STAUS.FINISH.name(), node);
+    }
+
+    public static <S extends Enum<S>> FlowStatus<S> blocked(BlockedFlowException e, S node) {
+        return of(Fsm.STAUS.BLOCKED.name(), node);
+    }
+
+    public static <S extends Enum<S>> FlowStatus<S> pause(PauseFlowException e, S node) {
+        return of(Fsm.STAUS.PAUSE.name(), node);
     }
 
     public static <S extends Enum<S>> FlowStatus<S> of(S node) {
-        Assert.notNull(node, "nodeStatus is null");
-        FlowStatus<S> status = new FlowStatus<>();
-        status.node = node;
-        status.flow = Fsm.STAUS.RUNNABLE;
-        return status;
+        return of(Fsm.STAUS.RUNNABLE.name(), node);
     }
 
     public static <S extends Enum<S>> FlowStatus<S> of(String flowStatus, S nodeStatus) {

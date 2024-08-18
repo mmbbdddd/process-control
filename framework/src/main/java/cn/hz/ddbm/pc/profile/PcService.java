@@ -5,6 +5,10 @@ import cn.hutool.core.util.StrUtil;
 import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.exception.*;
+import cn.hz.ddbm.pc.core.exception.wrap.ActionException;
+import cn.hz.ddbm.pc.core.exception.wrap.PauseFlowException;
+import cn.hz.ddbm.pc.core.exception.wrap.RouterException;
+import cn.hz.ddbm.pc.core.exception.wrap.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
@@ -110,6 +114,7 @@ public abstract class PcService {
         }
         if (ctx.getFlow().isEnd(node)) {
             Logs.flow.info("流程已结束：{},{},{}", flowName, ctx.getId(), node);
+            ctx.setStatus(FlowStatus.finish(node));
             return false;
         }
         String  windows   = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), node, Coasts.NODE_RETRY);

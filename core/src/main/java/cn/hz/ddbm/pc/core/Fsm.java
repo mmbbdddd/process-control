@@ -5,8 +5,8 @@ import cn.hz.ddbm.pc.core.action.RouterAction;
 import cn.hz.ddbm.pc.core.action.SagaAction;
 import cn.hz.ddbm.pc.core.action.ToAction;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.exception.ActionException;
-import cn.hz.ddbm.pc.core.exception.RouterException;
+import cn.hz.ddbm.pc.core.exception.wrap.ActionException;
+import cn.hz.ddbm.pc.core.exception.wrap.RouterException;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Data;
 import lombok.Getter;
@@ -20,13 +20,13 @@ public class Fsm<S extends Enum<S>> {
     final String          name;
     final String          descr;
     final S               init;
-    final Profile         profile;
+    final Profile<S>         profile;
     final Map<S, Node<S>> nodes;
     @Setter
     List<Plugin> plugins;
     FsmTable<S> fsmTable;
 
-    public Fsm(String name, String descr, Map<S, Node.Type> nodes, Profile profile) {
+    public Fsm(String name, String descr, Map<S, Node.Type> nodes, Profile<S> profile) {
         Assert.notNull(name, "flow.name is null");
         Assert.notNull(nodes, "nodes is null");
         Assert.notNull(profile, "profile is null");
@@ -73,15 +73,7 @@ public class Fsm<S extends Enum<S>> {
         FsmRecord<S> atom = fsmTable.find(node, ctx.getEvent());
         Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent().getCode(), ctx.getStatus().getNode()));
 
-        ActionBase<S> executor = atom.of(ctx);
-//                new ActionBase<>(atom.getType(),
-//                atom.getFrom(),
-//                atom.getEvent(),
-//                atom.getActionDsl(),
-//                atom.getFailover(),
-//                atom.getTo(),
-//                ctx.getFlow().getPlugins());
-        ctx.setExecutor(executor);
+        ctx.setExecutor(atom.initExecutor(ctx));
         atom.execute(ctx);
     }
 
@@ -119,7 +111,7 @@ public class Fsm<S extends Enum<S>> {
 
 
     public enum STAUS {
-        INIT, RUNNABLE, PAUSE, CANCEL, FINISH
+        INIT, RUNNABLE, PAUSE, BLOCKED, CANCEL, FINISH
     }
 
     @Data
@@ -146,15 +138,15 @@ public class Fsm<S extends Enum<S>> {
          * 参见onInner
          */
         public void to(S from, String e, String toAction, S to) {
-            this.records.add(new FsmRecord<>(FsmRecordType.TO, from, Event.of(e), toAction, null, to));
+            this.records.add(new FsmRecord<>(FsmRecordType.TO, from, Event.of(e), toAction, null, null,to));
         }
 
-        public void router(S from, String e, String routeAction) {
-            this.records.add(new FsmRecord<>(FsmRecordType.ROUTER, from, Event.of(e), routeAction, null, null));
+        public void router(S from, String e, String actionDsl,String router) {
+            this.records.add(new FsmRecord<>(FsmRecordType.ROUTER, from, Event.of(e), actionDsl, null, router,null));
         }
 
-        public void saga(S from, String e, S failover, String sagaAction) {
-            this.records.add(new FsmRecord<>(FsmRecordType.SAGA, from, Event.of(e), sagaAction, failover, null));
+        public void saga(S from, String e, S failover, String actionDsl,String router) {
+            this.records.add(new FsmRecord<>(FsmRecordType.SAGA, from, Event.of(e), actionDsl, failover, router,null));
         }
 
 
@@ -170,39 +162,41 @@ public class Fsm<S extends Enum<S>> {
         S             from;
         Event         event;
         String        actionDsl;
+        String        router;
         S             to;
         S             failover;
         ActionBase<S> action;
 
-        public FsmRecord(FsmRecordType type, S from, Event event, String action, S failover, S to) {
+        public FsmRecord(FsmRecordType type, S from, Event event, String action, S failover, String router, S to) {
             this.type      = type;
             this.from      = from;
             this.event     = event;
             this.actionDsl = action;
             this.failover  = failover;
             this.to        = to;
+            this.router    = router;
         }
-
 
 
         public void execute(FlowContext<S, ?> ctx) throws RouterException, ActionException {
             action.execute(ctx);
         }
 
-        public ActionBase<S> of(FlowContext<S, ?> ctx) {
+        public ActionBase<S> initExecutor(FlowContext<S, ?> ctx) {
             if (null == action) {
+                Set<S> maybeResults = ctx.getProfile().getMaybeResults().get(router);
                 synchronized (this) {
-                    switch (type){
-                        case TO:{
-                            this.action = new ToAction<S>(this,ctx.getFlow().getPlugins());
+                    switch (type) {
+                        case TO: {
+                            this.action = new ToAction<S>(this, ctx.getFlow().getPlugins());
                             break;
                         }
-                        case SAGA:{
-                            this.action = new SagaAction<>(this,ctx.getFlow().getPlugins());
+                        case SAGA: {
+                            this.action = new SagaAction<>(this, maybeResults, ctx.getFlow().getPlugins());
                             break;
                         }
-                        default:{
-                            this.action = new RouterAction<>(this,ctx.getFlow().getPlugins());
+                        default: {
+                            this.action = new RouterAction<>(this, maybeResults, ctx.getFlow().getPlugins());
                             break;
                         }
                     }

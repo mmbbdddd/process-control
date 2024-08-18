@@ -3,7 +3,7 @@ package cn.hz.ddbm.pc.core.support;
 
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.FlowStatus;
-import cn.hz.ddbm.pc.core.exception.StatusException;
+import cn.hz.ddbm.pc.core.exception.wrap.StatusException;
 
 import java.io.IOException;
 import java.io.Serializable;

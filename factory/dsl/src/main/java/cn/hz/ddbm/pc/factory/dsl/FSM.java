@@ -9,9 +9,7 @@ import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public interface FSM<S extends Enum<S>> {
     String flowId();
@@ -26,32 +24,37 @@ public interface FSM<S extends Enum<S>> {
 
     Map<S, Node.Type> nodes();
 
+    Map<String, Set<S>> maybeResults(Map<String, Set<S>> map);
+
     void transitions(Transitions<S> transitions);
 
-    Map<String, Profile.StepAttrs> stateAttrs();
+    Map<S, Profile.StepAttrs> stateAttrs();
 
     Map<String, Profile.ActionAttrs> actionAttrs();
 
-    Profile profile();
+    Profile<S> profile();
 
 
     default Fsm<S> build() throws Exception {
-        Map<String, Profile.StepAttrs> stepAttrsMap = stateAttrs();
-        Profile                        profile      = profile();
+        Map<S, Profile.StepAttrs> stepAttrsMap = stateAttrs();
+        Profile<S>                profile      = profile();
         profile.setStatusManager(status());
         profile.setSessionManager(session());
         profile.setActions(actionAttrs());
         profile.setStates(stepAttrsMap);
+        Map<String, Set<S>> maybeResults = new HashMap<String, Set<S>>();
+        ;
+        profile.setMaybeResults(maybeResults(maybeResults));
         Fsm<S> fsm = Fsm.of(flowId(), describe(), nodes(), profile);
         fsm.setPlugins(plugins());
         Transitions<S> transitions = new Transitions<>();
         transitions(transitions);
         transitions.transitions.forEach(t -> {
             if (t.getType().equals(Fsm.FsmRecordType.SAGA)) {
-                fsm.getFsmTable().saga(t.getFrom(), t.event, t.failover, t.action);
+                fsm.getFsmTable().saga(t.getFrom(), t.event, t.failover, t.action,t.router);
             }
             if (t.getType().equals(Fsm.FsmRecordType.ROUTER)) {
-                fsm.getFsmTable().router(t.getFrom(), t.getEvent(), t.getAction());
+                fsm.getFsmTable().router(t.getFrom(), t.getEvent(), t.getAction(),t.router);
             }
             if (t.getType().equals(Fsm.FsmRecordType.TO)) {
                 fsm.getFsmTable().to(t.getFrom(), t.getEvent(), t.getAction(), t.to);

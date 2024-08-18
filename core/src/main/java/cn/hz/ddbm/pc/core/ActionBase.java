@@ -1,8 +1,8 @@
 package cn.hz.ddbm.pc.core;
 
 
-import cn.hz.ddbm.pc.core.exception.ActionException;
-import cn.hz.ddbm.pc.core.exception.RouterException;
+import cn.hz.ddbm.pc.core.exception.wrap.ActionException;
+import cn.hz.ddbm.pc.core.exception.wrap.RouterException;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.util.List;
  **/
 
 @Getter
-public abstract class ActionBase<S extends Enum<S>> {
+public abstract class ActionBase<S extends Enum<S>> implements Action<S> {
     final Fsm.FsmRecordType type;
     final S                 from;
     final Event             event;
@@ -62,18 +62,18 @@ public abstract class ActionBase<S extends Enum<S>> {
             preActionPlugin(flow, ctx);
             action(ctx).execute(ctx);
             S nextNode = nextNode(lastNode, ctx);
-            ctx.setStatus(FlowStatus.of(nextNode == null ? failover : nextNode));
+            ctx.setStatus(FlowStatus.of(nextNode == null ? failover() : nextNode));
             postActionPlugin(flow, lastNode, ctx);
         } catch (RouterException e) {
-            ctx.setStatus(FlowStatus.of(failover));
+            ctx.setStatus(FlowStatus.of(failover()));
             onActionExceptionPlugin(flow, lastNode, e, ctx);
             throw e;
         } catch (ActionException e) {
-            ctx.setStatus(FlowStatus.of(failover));
+            ctx.setStatus(FlowStatus.of(failover()));
             onActionExceptionPlugin(flow, lastNode, e, ctx);
             throw e;
         } catch (Exception e) {
-            ctx.setStatus(FlowStatus.of(failover));
+            ctx.setStatus(FlowStatus.of(failover()));
             onActionExceptionPlugin(flow, lastNode, e, ctx);
             throw new ActionException(e);
         } finally {
