@@ -56,8 +56,11 @@ public class IDCardDemo {
             e.printStackTrace();
         }
     }
+    //模拟支付账号
     public static AtomicInteger account;
+//    模拟冻结字段
     public static AtomicInteger freezed;
+//    模拟收款账号
     public static AtomicInteger bank;
     @Test
     public void acid() throws Exception {
@@ -67,7 +70,7 @@ public class IDCardDemo {
 
         String event = Coasts.EVENT_DEFAULT;
         try {
-            //执行100此，查看流程中断概率
+            //执行10000次，查看流程中断概率
             chaosService.execute("test", new ChaosPcService.MockPayLoad(IDCardState.init), event, 10000, 10, new ArrayList(), false);
         } catch (Exception e) {
             e.printStackTrace();
