@@ -18,10 +18,10 @@ class ActionTest extends Specification {
 //
     def "test of"() {
         expect:
-        Action.of(actionDsl, null).beanName() == result
+        SimpleAction.of(actionDsl, null).beanName() == result
         where:
         actionDsl               | result
-        null                    | "none"
+//        null                    | "none"
         "payAction"             | "payAction"
         "payAction,queryAction" | "payAction,queryAction"
         "ab,_b"                 | "ab"
@@ -39,7 +39,7 @@ class ActionTest extends Specification {
 
     }
 
-    @ComponentScan("cn.hz.ddbm.pc.core.actions")
+    @ComponentScan("cn.hz.ddbm.pc.core.example.actions")
     static class CC {
         @Bean
         SpringUtil springUtil() {

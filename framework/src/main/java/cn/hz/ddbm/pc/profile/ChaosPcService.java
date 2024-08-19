@@ -3,6 +3,7 @@ package cn.hz.ddbm.pc.profile;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.enums.FlowStatus;
@@ -11,6 +12,7 @@ import cn.hz.ddbm.pc.core.exception.wrap.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
+import org.mockito.Mock;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,13 +42,12 @@ public class ChaosPcService extends PcService {
         this.chaosRules = rules;
         statisticsLines = new ArrayList<>(times);
         for (int i = 0; i < times; i++) {
-            int finalI = i;
+            MockPayLoad<S> mockPayLoad = payload.copy(i);
+            mockPayLoad.setId(i);
             threadPool.submit(() -> {
                 Object result = null;
                 try {
-//                    独立事件执行
-                    payload.setId(finalI);
-                    FlowContext<S, MockPayLoad<S>> ctx = standalone(flowName, payload, event, mock);
+                    FlowContext<S, MockPayLoad<S>> ctx = standalone(flowName, mockPayLoad, event, mock);
                     result = ctx;
                 } catch (Throwable t) {
                     Logs.error.error("", t);
@@ -54,7 +55,7 @@ public class ChaosPcService extends PcService {
                 } finally {
                     cdl.countDown();
 //                    统计执行结果
-                    statistics(finalI, new Object[]{flowName, payload, event}, result);
+                    statistics(mockPayLoad.getId(), new Object[]{flowName, mockPayLoad, event}, result);
                 }
             });
         }
@@ -78,7 +79,7 @@ public class ChaosPcService extends PcService {
         statisticsLines.clear();
     }
 
-    private void statistics(int i, Object requestInfo, Object result) {
+    private void statistics(Serializable i, Object requestInfo, Object result) {
         statisticsLines.add(new StatisticsLine(i, requestInfo, result));
     }
 
@@ -95,22 +96,21 @@ public class ChaosPcService extends PcService {
 
     public <S extends Enum<S>> boolean chaosIsContine(FlowContext<S, MockPayLoad<S>> ctx) {
 
-        String  flowName = ctx.getFlow().getName();
-        Node<S> node     = ctx.getStatus();
-        if (ctx.getFlow().isRouter(node.getName())) {
+        String   flowName = ctx.getFlow().getName();
+        State<S> state    = ctx.getStatus();
+        if (ctx.getFlow().isRouter(state.getName())) {
             return true;
         }
-        if (!node.isRunnable()) {
-            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), node);
+        if (!state.isRunnable()) {
+            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), state.getName());
             return false;
         }
 
-        String  windows   = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), node, Coasts.NODE_RETRY);
-        Long    exeRetry  = InfraUtils.getMetricsTemplate().get(windows);
-        Integer nodeRetry = node.getRetry();
+        Long    executeCount = InfraUtils.getMetricsTemplate().get(ctx.getFlow().getName(),ctx.getId(), state.getName(),Coasts.EXECUTE_COUNT);
+        Integer nodeRetry    = ctx.getFlow().getNode(state.getName()).getRetry();
 
-        if (exeRetry > nodeRetry) {
-            Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), node, exeRetry, nodeRetry);
+        if (executeCount > nodeRetry) {
+            Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), state.getName(), executeCount, nodeRetry);
             return false;
         }
         return true;
@@ -124,10 +124,10 @@ public class ChaosPcService extends PcService {
 
     public static class MockPayLoad<S extends Enum<S>> implements FlowPayload<S> {
         Integer id;
-        Node<S> status;
+        State<S> status;
 
         public MockPayLoad(S init) {
-            this.status = new Node<>(init, FlowStatus.INIT,Profile.chaosOf());
+            this.status = new State<S>(init, FlowStatus.INIT);
         }
 
         @Override
@@ -140,22 +140,28 @@ public class ChaosPcService extends PcService {
         }
 
         @Override
-        public Node<S> getStatus() {
+        public State<S> getStatus() {
             return status;
         }
 
         @Override
-        public void setStatus(Node<S> status) {
+        public void setStatus(State<S> status) {
             this.status     = status;
+        }
+
+        public MockPayLoad<S> copy(Integer id) {
+            MockPayLoad<S> copy = new MockPayLoad<>(this.status.getName());
+            copy.setId(id);
+            return copy;
         }
     }
 
     static class StatisticsLine {
-        int       index;
+        Serializable       index;
         Object    requestInfo;
         TypeValue result;
 
-        public StatisticsLine(int i, Object o, Object result) {
+        public StatisticsLine(Serializable i, Object o, Object result) {
             this.index       = i;
             this.requestInfo = o;
             if (result instanceof Throwable) {

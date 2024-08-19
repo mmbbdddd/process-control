@@ -3,6 +3,7 @@ package cn.hz.ddbm.pc.core.support;
 
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.Node;
+import cn.hz.ddbm.pc.core.State;
 import cn.hz.ddbm.pc.core.exception.wrap.StatusException;
 
 import java.io.IOException;
@@ -19,9 +20,9 @@ import java.io.Serializable;
 public interface StatusManager {
     Type code();
 
-    void setStatus(String flow, Serializable flowId, Node<?> status, Integer timeout, FlowContext<?,?> ctx) throws IOException;
+    void setStatus(String flow, Serializable flowId, State<?> status, Integer timeout, FlowContext<?,?> ctx) throws IOException;
 
-    Node<?> getStatus(String flow, Serializable flowId) throws IOException;
+    State<?> getStatus(String flow, Serializable flowId) throws IOException;
 
     default void flush(FlowContext<?,?> ctx) throws StatusException {
         try {

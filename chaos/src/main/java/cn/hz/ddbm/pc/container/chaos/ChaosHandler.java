@@ -15,8 +15,6 @@ import cn.hz.ddbm.pc.profile.chaos.ChaosTarget;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 混沌发生器。具体发生规则参见ChaosRule
@@ -51,9 +49,12 @@ public class ChaosHandler {
 
         if (proxy instanceof SimpleAction) {
             FlowContext ctx        = (FlowContext) args[0];
-            ActionBase  actionBase = ctx.getExecutor();
-            List<Enum> results    = new ArrayList(actionBase.maybeResult());
-            ctx.setNextNode( RandomUitl.random(results));
+            if(ctx.getIsChaos()) {
+                ActionBase actionBase = ctx.getExecutor();
+                List<Enum> results    = new ArrayList(actionBase.maybeResult());
+                Enum       nextNode   = RandomUitl.random(results);
+                ctx.setNextNode(nextNode);
+            }
         }
     }
 

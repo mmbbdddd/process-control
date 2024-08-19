@@ -41,7 +41,6 @@ public interface FSM<S extends Enum<S>> {
         profile.setActions(actionAttrs());
         profile.setStates(stepAttrsMap);
         Map<String, Set<S>> maybeResults = new HashMap<String, Set<S>>();
-        ;
         profile.setMaybeResults(maybeResults(maybeResults));
         Fsm<S> fsm = Fsm.of(flowId(), describe(), nodes(), profile);
         fsm.setPlugins(plugins());

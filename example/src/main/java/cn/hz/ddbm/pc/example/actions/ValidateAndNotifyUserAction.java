@@ -28,16 +28,6 @@ public class ValidateAndNotifyUserAction implements ActionPluginAdapter<IDCardSt
 //        map.put("sendRouter", Sets.newSet(IDCardState.init, IDCardState.sended, IDCardState.miss_data, IDCardState.su, IDCardState.fail));
 //        map.put("notifyRouter", Sets.newSet(IDCardState.init, IDCardState.miss_data, IDCardState.miss_data_fulled));
 
-        switch (state){
-            case init:{
-                break;
-            }
-            case miss_data_fulled:{
 
-            }
-            case miss_data:{
-
-            }
-        }
     }
 }

@@ -39,6 +39,15 @@ public enum FlowStatus {
     }
 
     public enum Event {
-        PUSH, ROLLBACK, PAUSE, CANCEL, WAKEUP
+        PUSH, ROLLBACK, PAUSE, CANCEL, WAKEUP;
+
+        public static boolean isFlowEvent(String event) {
+            try {
+                Event.valueOf(event.toUpperCase());
+                return true;
+            }catch (Exception e){
+                return false;
+            }
+        }
     }
 }

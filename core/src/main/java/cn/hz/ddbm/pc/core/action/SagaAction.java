@@ -22,12 +22,12 @@ import java.util.Set;
  **/
 
 
-public class SagaAction<S extends Enum<S>> extends ActionBase<S>   {
-    Set<S>    maybeResult;
+public class SagaAction<S extends Enum<S>> extends ActionBase<S> {
+    Set<S> maybeResult;
 
 
-    public SagaAction(Fsm.FsmRecord<S> f ,Set<S>    maybeResult, List<Plugin> plugins) {
-        super(f.getType(),f.getFrom(),f.getEvent(),f.getActionDsl(),f.getFailover(),f.getTo(),plugins);
+    public SagaAction(Fsm.FsmRecord<S> f, Set<S> maybeResult, List<Plugin> plugins) {
+        super(f.getType(), f.getFrom(), f.getEvent(), f.getActionDsl(), f.getFailover(), f.getTo(), plugins);
         this.maybeResult = maybeResult;
     }
 
@@ -44,17 +44,19 @@ public class SagaAction<S extends Enum<S>> extends ActionBase<S>   {
 
     @Override
     public void execute(FlowContext<S, ?> ctx) throws ActionException, RouterException {
-        String       flow         = ctx.getFlow().getName();
-        Serializable flowId       = ctx.getId();
-        S            failOverNode = getFailover();
+        String       flow   = ctx.getFlow().getName();
+        Serializable flowId = ctx.getId();
+        //首先将状态设置为容错状态
+        ctx.getStatus().update(failover());
         try {
             StatusManager statusManager = InfraUtils.getStatusManager(ctx.getProfile().getStatusManager());
             statusManager.setStatus(flow, flowId, ctx.getStatus(), ctx.getProfile().getStatusTimeout(), ctx);
-            ctx.setNextNode(null);
-            super.execute(ctx);
         } catch (IOException e) {
+            //容错设置失败，则终止本次执行
             throw new InterruptedFlowException(e);
         }
+        ctx.setNextNode(null);
+        super.execute(ctx);
     }
 
 
@@ -64,7 +66,7 @@ public class SagaAction<S extends Enum<S>> extends ActionBase<S>   {
     }
 
     public S route(FlowContext<S, ?> ctx) {
-        Assert.notNull(ctx.getNextNode(),"sagaAction 必须设置ctx.setNextNode()");
+        Assert.notNull(ctx.getNextNode(), "sagaAction 必须设置ctx.setNextNode()");
         return ctx.getNextNode();
     }
 }

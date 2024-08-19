@@ -20,15 +20,17 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     @Setter
     private Boolean       fluent;
     @Setter
-    private Event         event;
+    private String        event;
     @Setter
-    private Node<S>       status;
+    private State<S>       status;
     @Setter
     private ActionBase<S> executor;
     @Setter
     private Profile<S>    profile;
     @Setter
     private Boolean       mockBean = false;
+    @Setter
+    private Boolean       isChaos = false;
     @Setter
     private S             nextNode;
 
@@ -39,7 +41,7 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
         Assert.notNull(event, "event is null");
         Assert.notNull(data.getId(), "date.id is null");
         Assert.notNull(data.getStatus(), "date.status is null");
-        this.event  = Event.of(event);
+        this.event  = event;
         this.data   = data;
         this.id     = data.getId();
         this.flow   = flow;
@@ -56,9 +58,8 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
 
 
     public void metricsNode(FlowContext<S, ?> ctx) {
-        String            windows        = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getName(), Coasts.NODE_RETRY);
         StatisticsSupport metricsWindows = InfraUtils.getMetricsTemplate();
-        metricsWindows.increment(windows);
+        metricsWindows.increment(ctx.getFlow().getName(),ctx.getId(),ctx.getStatus().getName(),Coasts.EXECUTE_COUNT);
     }
 
     /**

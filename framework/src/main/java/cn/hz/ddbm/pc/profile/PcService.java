@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public abstract class PcService {
     Map<String, Fsm> flows = new HashMap<>();
@@ -54,12 +53,12 @@ public abstract class PcService {
             Boolean fluent = ctx.getFluent();
             ctx.getFlow().execute(ctx);
             if (fluent && isCanContinue(ctx)) {
-                ctx.setEvent(Event.of(Coasts.EVENT_DEFAULT));
+                ctx.setEvent(Coasts.EVENT_DEFAULT);
                 ctx.getFlow().execute(ctx);
             }
         } catch (FsmEndException e) {
             //即PauseFlowException
-            Logs.error.error("xx{},{},{}", ctx.getFlow().getName(), ctx.getId(), e.getMessage());
+            Logs.error.error("{},{},{}", ctx.getFlow().getName(), ctx.getId(), e.getMessage());
             flush(ctx);
         } catch (ActionException e) {
             //io异常 = 可重试
@@ -106,22 +105,21 @@ public abstract class PcService {
      * @return
      */
     public <S extends Enum<S>, T extends FlowPayload<S>> boolean isCanContinue(FlowContext<S, T> ctx) {
-        Node<S>         node       = ctx.getStatus();
-        String    flowName   = ctx.getFlow().getName();
-        if (ctx.getFlow().isRouter(node.getName())) {
+        State<S> state    = ctx.getStatus();
+        String   flowName = ctx.getFlow().getName();
+        if (ctx.getFlow().isRouter(state.getName())) {
             return true;
         }
-        if (!node.isRunnable()) {
-            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), node);
+        if (!state.isRunnable()) {
+            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), state.getName());
             return false;
         }
 
-        String  windows   = String.format("%s:%s:%s:%s", ctx.getFlow().getName(), ctx.getId(), node, Coasts.NODE_RETRY);
-        Long    exeRetry  = InfraUtils.getMetricsTemplate().get(windows);
-        Integer nodeRetry = node.getRetry();
+        Long    exeRetry  = InfraUtils.getMetricsTemplate().get(ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getName(), Coasts.EXECUTE_COUNT);
+        Integer nodeRetry = ctx.getFlow().getNode(state.getName()).getRetry();
 
         if (exeRetry > nodeRetry) {
-            Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), node, exeRetry, nodeRetry);
+            Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), state.getName(), exeRetry, nodeRetry);
             return false;
         }
         return true;
@@ -131,6 +129,7 @@ public abstract class PcService {
      * 刷新状态到基础设施
      */
     private void flush(FlowContext<?, ?> ctx) throws SessionException, StatusException {
+        ctx.syncPayLoad();
         InfraUtils.getSessionManager(ctx.getProfile().getSessionManager()).flush(ctx);
         InfraUtils.getStatusManager(ctx.getProfile().getStatusManager()).flush(ctx);
     }

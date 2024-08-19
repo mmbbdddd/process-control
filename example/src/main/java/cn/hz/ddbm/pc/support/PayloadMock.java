@@ -1,21 +1,18 @@
 package cn.hz.ddbm.pc.support;
 
-import cn.hz.ddbm.pc.core.FlowPayload;
-import cn.hz.ddbm.pc.core.Node;
-import cn.hz.ddbm.pc.core.Profile;
-import cn.hz.ddbm.pc.core.Fsm;
+import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.enums.FlowStatus;
 
 import java.io.Serializable;
 import java.util.UUID;
 
 public class PayloadMock<S extends Enum<S>> implements FlowPayload<S> {
-    String  id;
-    Node<S> nodeStatus;
+    String   id;
+    State<S> nodeStatus;
 
     public PayloadMock(S init) {
         this.id         = UUID.randomUUID().toString();
-        this.nodeStatus = new Node<>(init, FlowStatus.INIT,Profile.chaosOf());
+        this.nodeStatus = new State<>(init, FlowStatus.INIT);
     }
 
     @Override
@@ -24,12 +21,12 @@ public class PayloadMock<S extends Enum<S>> implements FlowPayload<S> {
     }
 
     @Override
-    public Node<S> getStatus() {
+    public State<S> getStatus() {
         return nodeStatus;
     }
 
     @Override
-    public void setStatus(Node<S> status) {
+    public void setStatus(State<S> status) {
 
     }
 }

@@ -1,6 +1,10 @@
 package cn.hz.ddbm.pc.core.support;
 
 
+import cn.hz.ddbm.pc.core.Fsm;
+
+import java.io.Serializable;
+
 /**
  * @Description TODO
  * @Author wanglin
@@ -10,7 +14,7 @@ package cn.hz.ddbm.pc.core.support;
 
 
 public interface StatisticsSupport {
-    void increment(String windows);
+    void increment(String flowName, Serializable flowId,Enum node,String key);
 
-    Long get(String windows);
+    Long get(String flowName, Serializable flowId,Enum node,String key);
 }

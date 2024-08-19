@@ -8,6 +8,10 @@ import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
+import cn.hz.ddbm.pc.example.actions.PayAction;
+import cn.hz.ddbm.pc.example.actions.PayQueryAction;
+import cn.hz.ddbm.pc.example.actions.SendAction;
+import cn.hz.ddbm.pc.example.actions.SendQueryAction;
 import cn.hz.ddbm.pc.factory.dsl.FSM;
 import cn.hz.ddbm.pc.profile.PcService;
 import cn.hz.ddbm.pc.support.DigestLogPluginMock;
@@ -26,7 +30,11 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     @Override
     public List<Plugin> plugins() {
         List<Plugin> plugins = new ArrayList<Plugin>();
-        plugins.add(new DigestLogPluginMock());
+//        plugins.add(new DigestLogPluginMock());
+//        plugins.add(new PayAction());
+//        plugins.add(new PayQueryAction());
+//        plugins.add(new SendAction());
+//        plugins.add(new SendQueryAction());
         return plugins;
     }
 
@@ -44,11 +52,10 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     public Map<IDCardState, FlowStatus> nodes() {
         Map<IDCardState, FlowStatus> map = new HashMap<>();
         map.put(IDCardState.init, FlowStatus.INIT);
-        map.put(IDCardState.send_failover, FlowStatus.RUNNABLE);
-        map.put(IDCardState.sended_ing, FlowStatus.RUNNABLE);
-        map.put(IDCardState.none_sended, FlowStatus.RUNNABLE);
-        map.put(IDCardState.miss_data, FlowStatus.RUNNABLE);
-        map.put(IDCardState.miss_data_fulled, FlowStatus.RUNNABLE);
+        map.put(IDCardState.payed, FlowStatus.RUNNABLE);
+        map.put(IDCardState.sended, FlowStatus.RUNNABLE);
+        map.put(IDCardState.payed_failover, FlowStatus.RUNNABLE);
+        map.put(IDCardState.sended_failover, FlowStatus.RUNNABLE);
         map.put(IDCardState.su, FlowStatus.FINISH);
         map.put(IDCardState.fail, FlowStatus.FINISH);
         map.put(IDCardState.error, FlowStatus.FINISH);
@@ -57,24 +64,22 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
 
     @Override
     public Map<String, Set<IDCardState>> maybeResults(Map<String, Set<IDCardState>> map) {
-        map.put("sendRouter", Sets.newSet(IDCardState.sended_ing, IDCardState.none_sended, IDCardState.miss_data, IDCardState.su, IDCardState.fail));
-        map.put("notifyRouter", Sets.newSet(IDCardState.init, IDCardState.miss_data, IDCardState.miss_data_fulled));
+        map.put("payRouter", Sets.newSet(IDCardState.payed_failover,IDCardState.init, IDCardState.payed));
+        map.put("sendRouter", Sets.newSet(IDCardState.sended_failover,IDCardState.init,IDCardState.sended, IDCardState.su, IDCardState.fail));
         return map;
     }
 
     @Override
     public void transitions(Transitions<IDCardState> t) {
-        t.saga(IDCardState.init, Coasts.EVENT_DEFAULT, IDCardState.send_failover, "sendAction", "sendRouter")
-         //发送异常，不明确是否发送
-         .router(IDCardState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
-         //已发送，对方处理中
-         .router(IDCardState.sended_ing, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
-
-         .router(IDCardState.none_sended, Coasts.EVENT_DEFAULT, "sendBackAction", "backRouter")
-         //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
-         .to(IDCardState.miss_data, Coasts.EVENT_DEFAULT, "toCustomerAction", IDCardState.miss_data)
-//                资料就绪状态，可重新发送
-         .to(IDCardState.miss_data_fulled, Coasts.EVENT_DEFAULT, IDCardState.init);
+//        payAction:执行本地扣款
+        t.saga(IDCardState.init, Coasts.EVENT_DEFAULT, IDCardState.payed_failover, "payAction", "payRouter")
+                //本地扣款容错payQueryAction 扣款结果查询
+                .router(IDCardState.payed_failover, Coasts.EVENT_DEFAULT, "payQueryAction", "payRouter")
+                //发送异常，不明确是否发送
+                .saga(IDCardState.payed, Coasts.EVENT_DEFAULT, IDCardState.sended_failover, "sendAction", "sendRouter")
+                .router(IDCardState.sended_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
+                //sendAction，执行远程发生&sendQueryAction。
+                .router(IDCardState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter");
     }
 
 
@@ -91,7 +96,7 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     @Override
     public Profile<IDCardState> profile() {
         Profile<IDCardState> profile = new Profile(session(), status());
-        profile.setRetry(5);
+        profile.setRetry(1000);
         return profile;
     }
 

@@ -5,6 +5,8 @@ import cn.hz.ddbm.pc.core.support.StatisticsSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.io.Serializable;
+
 public class RedisStatistics implements StatisticsSupport {
 
     Integer cacheSize;
@@ -20,12 +22,14 @@ public class RedisStatistics implements StatisticsSupport {
     }
 
     @Override
-    public void increment(String windows) {
-        redisTemplate.opsForValue().increment(windows);
+    public void increment(String flowName, Serializable flowId, Enum node, String key) {
+        String realKey = String.format("%s:%s:%s:%s",flowName,flowId,node.name(),key);
+        redisTemplate.opsForValue().increment(realKey);
     }
 
     @Override
-    public Long get(String windows) {
-        return redisTemplate.opsForValue().get(windows);
+    public Long get(String flowName, Serializable flowId,Enum node,String key) {
+        String realKey = String.format("%s:%s:%s:%s",flowName,flowId,node.name(),key);
+        return redisTemplate.opsForValue().get(realKey);
     }
 }

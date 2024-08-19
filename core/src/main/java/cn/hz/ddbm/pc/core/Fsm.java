@@ -34,7 +34,7 @@ public class Fsm<S extends Enum<S>> {
         this.name     = name;
         this.descr    = descr;
         this.profile  = profile;
-        this.nodes    = nodesType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, t -> new Node<>(t.getKey(),t.getValue(), profile)));
+        this.nodes    = nodesType.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, t -> new Node<>(t.getKey(), t.getValue(), profile)));
         this.init     = this.nodes.values().stream().filter(t -> t.type.equals(FlowStatus.INIT)).findFirst().get().name;
         this.fsmTable = new FsmTable<>();
         this.plugins  = new ArrayList<>();
@@ -70,12 +70,12 @@ public class Fsm<S extends Enum<S>> {
 
     public <T> void execute(FlowContext<S, ?> ctx) throws RouterException, ActionException, FsmEndException {
         Assert.isTrue(true, "ctx is null");
-        Node<S> node = ctx.getStatus();
+        State<S> node = ctx.getStatus();
         if (!node.isRunnable()) {
             throw new FsmEndException();
         }
         FsmRecord<S> atom = fsmTable.find(node.name, ctx.getEvent());
-        Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent().getCode(), ctx.getStatus().name));
+        Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent(), ctx.getStatus().name));
         ctx.setExecutor(atom.initExecutor(ctx));
         atom.execute(ctx);
     }
@@ -118,10 +118,10 @@ public class Fsm<S extends Enum<S>> {
             this.records = new HashSet<>();
         }
 
-        public FsmRecord<S> find(S node, Event event) {
+        public FsmRecord<S> find(S node, String event) {
             return records
                     .stream()
-                    .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent().getCode(), event.getCode()))
+                    .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent(), event))
                     .findFirst()
                     .orElse(null);
         }
@@ -134,16 +134,16 @@ public class Fsm<S extends Enum<S>> {
          * 2,nodeOf(action,router)==>routerResultEvent==>routerResultNode
          * 参见onInner
          */
-        public void to(S from, String e, String toAction, S to) {
-            this.records.add(new FsmRecord<>(FsmRecordType.TO, from, Event.of(e), toAction, null, null, to));
+        public void to(S from, String event, String toAction, S to) {
+            this.records.add(new FsmRecord<>(FsmRecordType.TO, from, event, toAction, null, null, to));
         }
 
-        public void router(S from, String e, String actionDsl, String router) {
-            this.records.add(new FsmRecord<>(FsmRecordType.ROUTER, from, Event.of(e), actionDsl, null, router, null));
+        public void router(S from, String event, String actionDsl, String router) {
+            this.records.add(new FsmRecord<>(FsmRecordType.ROUTER, from, event, actionDsl, null, router, null));
         }
 
-        public void saga(S from, String e, S failover, String actionDsl, String router) {
-            this.records.add(new FsmRecord<>(FsmRecordType.SAGA, from, Event.of(e), actionDsl, failover, router, null));
+        public void saga(S from, String event, S failover, String actionDsl, String router) {
+            this.records.add(new FsmRecord<>(FsmRecordType.SAGA, from, event, actionDsl, failover, router, null));
         }
 
 
@@ -157,14 +157,14 @@ public class Fsm<S extends Enum<S>> {
     public static class FsmRecord<S extends Enum<S>> {
         FsmRecordType type;
         S             from;
-        Event         event;
+        String         event;
         String        actionDsl;
         String        router;
         S             to;
         S             failover;
         ActionBase<S> action;
 
-        public FsmRecord(FsmRecordType type, S from, Event event, String action, S failover, String router, S to) {
+        public FsmRecord(FsmRecordType type, S from, String event, String action, S failover, String router, S to) {
             this.type      = type;
             this.from      = from;
             this.event     = event;

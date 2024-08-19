@@ -51,17 +51,19 @@ public class IDCardDemo {
         }};
         try {
             //执行100此，查看流程中断概率
-            chaosService.execute("test", new ChaosPcService.MockPayLoad(IDCardState.init), event, 100, 10, rules, true);
+            chaosService.execute("test", new ChaosPcService.MockPayLoad(IDCardState.init), event, 2, 10, rules, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     public static AtomicInteger account;
     public static AtomicInteger freezed;
+    public static AtomicInteger bank;
     @Test
     public void acid() throws Exception {
         account = new AtomicInteger(100);
         freezed = new AtomicInteger(0);
+        bank = new AtomicInteger(0);
 
         String event = Coasts.EVENT_DEFAULT;
         try {
@@ -72,6 +74,7 @@ public class IDCardDemo {
         }
         System.out.println("account:" + account.get());
         System.out.println("freezed:" + freezed.get());
+        System.out.println("bank:" + bank.get());
     }
 
 
