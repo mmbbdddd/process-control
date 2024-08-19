@@ -225,6 +225,10 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
     * 大数据关注点：埋点、ab
     * 数字化运营关注点：指标，ROI，步骤环节、动态运营
 
+
+[详细说明](doc/架构作用.md)
+
+
 # 架构介绍
 
 ![img.png](doc/img13.png)
@@ -241,7 +245,7 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
 # 相关文档
 
 
-[架构作用](doc/架构作用.md)
+
 
 
  
