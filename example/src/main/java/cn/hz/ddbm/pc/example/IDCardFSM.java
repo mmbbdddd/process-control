@@ -1,5 +1,7 @@
 package cn.hz.ddbm.pc.example;
 
+import cn.hutool.core.lang.Pair;
+import cn.hutool.core.map.multi.Table;
 import cn.hz.ddbm.pc.core.Node;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.Profile;
@@ -63,11 +65,42 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     }
 
     @Override
-    public Map<String, Set<IDCardState>> maybeResults(Map<String, Set<IDCardState>> map) {
-        map.put("payRouter", Sets.newSet(IDCardState.payed_failover,IDCardState.init, IDCardState.payed));
-        map.put("sendRouter", Sets.newSet(IDCardState.sended_failover,IDCardState.init,IDCardState.sended, IDCardState.su, IDCardState.fail));
-        return map;
+    public Table<IDCardState, String, Set<Pair<IDCardState, Double>>> maybeResults(Table<IDCardState, String, Set<Pair<IDCardState, Double>>> table) {
+        table.put(IDCardState.init, Coasts.EVENT_DEFAULT, Sets.newSet(
+                Pair.of(IDCardState.payed_failover, 0.1),
+                Pair.of(IDCardState.payed_failover, 0.9)));
+        table.put(IDCardState.payed_failover, Coasts.EVENT_DEFAULT, Sets.newSet(
+                Pair.of(IDCardState.payed_failover, 0.1),
+                Pair.of(IDCardState.init, 0.1),
+                Pair.of(IDCardState.payed, 0.8)
+        ));
+        table.put(IDCardState.payed, Coasts.EVENT_DEFAULT, Sets.newSet(
+                Pair.of(IDCardState.sended_failover, 0.1),
+                Pair.of(IDCardState.su, 0.7),
+                Pair.of(IDCardState.fail, 0.1),
+                Pair.of(IDCardState.sended, 0.1)
+        ));
+        table.put(IDCardState.sended_failover, Coasts.EVENT_DEFAULT, Sets.newSet(
+                Pair.of(IDCardState.sended_failover, 0.1),
+                Pair.of(IDCardState.su, 0.7),
+                Pair.of(IDCardState.fail, 0.1),
+                Pair.of(IDCardState.sended, 0.1)
+        ));
+        table.put(IDCardState.sended, Coasts.EVENT_DEFAULT, Sets.newSet(
+                Pair.of(IDCardState.sended_failover, 0.1),
+                Pair.of(IDCardState.su, 0.7),
+                Pair.of(IDCardState.fail, 0.1),
+                Pair.of(IDCardState.sended, 0.1)
+        ));
+        return table;
     }
+
+//    @Override
+//    public Map<String, Set<IDCardState>> maybeResults(Map<String, Set<IDCardState>> map) {
+//        map.put("payRouter", Sets.newSet(IDCardState.payed_failover,IDCardState.init, IDCardState.payed));
+//        map.put("sendRouter", Sets.newSet(IDCardState.sended_failover,IDCardState.init,IDCardState.sended, IDCardState.su, IDCardState.fail));
+//        return map;
+//    }
 
     @Override
     public void transitions(Transitions<IDCardState> t) {

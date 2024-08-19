@@ -1,9 +1,7 @@
 package cn.hz.ddbm.pc.container.chaos;
 
-import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.ActionBase;
-import cn.hz.ddbm.pc.core.FlowContext;
-import cn.hz.ddbm.pc.core.SimpleAction;
+import cn.hutool.core.lang.Pair;
+import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.support.Locker;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
@@ -15,6 +13,7 @@ import cn.hz.ddbm.pc.profile.chaos.ChaosTarget;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 混沌发生器。具体发生规则参见ChaosRule
@@ -48,11 +47,19 @@ public class ChaosHandler {
         }
 
         if (proxy instanceof SimpleAction) {
-            FlowContext ctx        = (FlowContext) args[0];
-            if(ctx.getIsChaos()) {
+            FlowContext ctx     = (FlowContext) args[0];
+            Profile     profile = ctx.getProfile();
+            if (ctx.getIsChaos()) {
                 ActionBase actionBase = ctx.getExecutor();
-                List<Enum> results    = new ArrayList(actionBase.maybeResult());
-                Enum       nextNode   = RandomUitl.random(results);
+                String     router     = actionBase.getRouter();
+                Enum       nextNode   = null;
+                if (actionBase.getType().equals(Fsm.FsmRecordType.TO)) {
+                    nextNode = actionBase.getTo();
+                } else {
+                    Set<Pair<Enum, Double>> statusRadio = (Set<Pair<Enum, Double>>) profile.getMaybeResults().get(actionBase.getFrom(), actionBase.getEvent());
+                    String                  key         = String.format("%s_%s", actionBase.getFrom(), actionBase.getEvent());
+                    nextNode = RandomUitl.selectByWeight(key, statusRadio);
+                }
                 ctx.setNextNode(nextNode);
             }
         }

@@ -88,6 +88,7 @@ public class ChaosPcService extends PcService {
         Fsm                            flow = getFlow(flowName);
         FlowContext<S, MockPayLoad<S>> ctx  = new FlowContext<S, MockPayLoad<S>>(flow, payload, event, Profile.chaosOf());
         ctx.setMockBean(mock);
+        ctx.setIsChaos(true);
         while (chaosIsContine(ctx)) {
             execute(ctx);
         }

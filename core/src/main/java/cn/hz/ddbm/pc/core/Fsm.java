@@ -181,7 +181,6 @@ public class Fsm<S extends Enum<S>> {
 
         public ActionBase<S> initExecutor(FlowContext<S, ?> ctx) {
             if (null == action) {
-                Set<S> maybeResults = ctx.getProfile().getMaybeResults().get(router);
                 synchronized (this) {
                     switch (type) {
                         case TO: {
@@ -189,11 +188,11 @@ public class Fsm<S extends Enum<S>> {
                             break;
                         }
                         case SAGA: {
-                            this.action = new SagaAction<>(this, maybeResults, ctx.getFlow().getPlugins());
+                            this.action = new SagaAction<>(this, ctx.getFlow().getPlugins());
                             break;
                         }
                         default: {
-                            this.action = new RouterAction<>(this, maybeResults, ctx.getFlow().getPlugins());
+                            this.action = new RouterAction<>(this, ctx.getFlow().getPlugins());
                             break;
                         }
                     }

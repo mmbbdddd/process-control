@@ -9,8 +9,5 @@ public interface Action<S extends Enum<S>> {
 
     void execute(FlowContext<S, ?> ctx) throws Exception;
 
-    Set<S> maybeResult();
-
-
 
 }

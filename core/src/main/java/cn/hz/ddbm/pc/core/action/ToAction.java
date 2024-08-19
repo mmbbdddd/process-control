@@ -10,7 +10,7 @@ public class ToAction<S extends Enum<S>> extends ActionBase<S>   {
 
 
     public ToAction(Fsm.FsmRecord<S> f , List<Plugin> plugins) {
-        super(f.getType(),f.getFrom(),f.getEvent(),f.getActionDsl(),f.getFailover(),f.getTo(),plugins);
+        super(f.getType(),f.getFrom(),f.getEvent(),f.getActionDsl(),f.getFailover(),f.getTo(),f.getRouter(),plugins);
     }
 
     @Override
@@ -28,10 +28,5 @@ public class ToAction<S extends Enum<S>> extends ActionBase<S>   {
     @Override
     protected S route(FlowContext<S, ?> ctx) {
         return getTo();
-    }
-
-    @Override
-    public Set<S> maybeResult() {
-        return Sets.set(getTo());
     }
 }

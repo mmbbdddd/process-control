@@ -26,9 +26,8 @@ public class SagaAction<S extends Enum<S>> extends ActionBase<S> {
     Set<S> maybeResult;
 
 
-    public SagaAction(Fsm.FsmRecord<S> f, Set<S> maybeResult, List<Plugin> plugins) {
-        super(f.getType(), f.getFrom(), f.getEvent(), f.getActionDsl(), f.getFailover(), f.getTo(), plugins);
-        this.maybeResult = maybeResult;
+    public SagaAction(Fsm.FsmRecord<S> f, List<Plugin> plugins) {
+        super(f.getType(), f.getFrom(), f.getEvent(), f.getActionDsl(), f.getFailover(), f.getTo(), f.getRouter(),plugins);
     }
 
     @Override
@@ -60,13 +59,11 @@ public class SagaAction<S extends Enum<S>> extends ActionBase<S> {
     }
 
 
-    @Override
-    public Set<S> maybeResult() {
-        return maybeResult;
-    }
 
     public S route(FlowContext<S, ?> ctx) {
-        Assert.notNull(ctx.getNextNode(), "sagaAction 必须设置ctx.setNextNode()");
+        if(!ctx.getIsChaos()) {
+            Assert.notNull(ctx.getNextNode(), "sagaAction 必须设置ctx.setNextNode()");
+        }
         return ctx.getNextNode();
     }
 }

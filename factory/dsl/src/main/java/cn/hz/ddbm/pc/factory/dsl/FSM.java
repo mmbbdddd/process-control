@@ -1,5 +1,8 @@
 package cn.hz.ddbm.pc.factory.dsl;
 
+import cn.hutool.core.lang.Pair;
+import cn.hutool.core.map.multi.RowKeyTable;
+import cn.hutool.core.map.multi.Table;
 import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.enums.FlowStatus;
@@ -22,7 +25,7 @@ public interface FSM<S extends Enum<S>> {
 
     Map<S, FlowStatus> nodes();
 
-    Map<String, Set<S>> maybeResults(Map<String, Set<S>> map);
+    Table<S, String, Set<Pair<S, Double>>> maybeResults(Table<S, String, Set<Pair<S, Double>>> table);
 
     void transitions(Transitions<S> transitions);
 
@@ -40,7 +43,7 @@ public interface FSM<S extends Enum<S>> {
         profile.setSessionManager(session());
         profile.setActions(actionAttrs());
         profile.setStates(stepAttrsMap);
-        Map<String, Set<S>> maybeResults = new HashMap<String, Set<S>>();
+        Table<S, String, Set<Pair<S, Double>>> maybeResults = new RowKeyTable<>();
         profile.setMaybeResults(maybeResults(maybeResults));
         Fsm<S> fsm = Fsm.of(flowId(), describe(), nodes(), profile);
         fsm.setPlugins(plugins());
@@ -48,10 +51,10 @@ public interface FSM<S extends Enum<S>> {
         transitions(transitions);
         transitions.transitions.forEach(t -> {
             if (t.getType().equals(Fsm.FsmRecordType.SAGA)) {
-                fsm.getFsmTable().saga(t.getFrom(), t.event, t.failover, t.action,t.router);
+                fsm.getFsmTable().saga(t.getFrom(), t.event, t.failover, t.action, t.router);
             }
             if (t.getType().equals(Fsm.FsmRecordType.ROUTER)) {
-                fsm.getFsmTable().router(t.getFrom(), t.getEvent(), t.getAction(),t.router);
+                fsm.getFsmTable().router(t.getFrom(), t.getEvent(), t.getAction(), t.router);
             }
             if (t.getType().equals(Fsm.FsmRecordType.TO)) {
                 fsm.getFsmTable().to(t.getFrom(), t.getEvent(), t.getAction(), t.to);

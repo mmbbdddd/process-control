@@ -1,5 +1,8 @@
 package cn.hz.ddbm.pc.core;
 
+import cn.hutool.core.lang.Pair;
+import cn.hutool.core.map.multi.RowKeyTable;
+import cn.hutool.core.map.multi.Table;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import cn.hz.ddbm.pc.core.support.SessionManager;
@@ -12,15 +15,15 @@ import java.util.Set;
 
 @Data
 public class Profile<S extends Enum<S>> {
-    private Integer                  retry         = Coasts.DEFAULT_RETRY;
-    private Integer                  statusTimeout = Coasts.DEFAULT_STATUS_TIMEOUT;
-    private Integer                  lockTimeout   = Coasts.DEFAULT_LOCK_TIMEOUT;
-    private SessionManager.Type      sessionManager;
-    private StatusManager.Type       statusManager;
-    private Map<S, Set<FlowStatus>>  stateTypes;
-    private Map<String, Set<S>>      maybeResults;
-    private Map<S, StepAttrs>        states;
-    private Map<String, ActionAttrs> actions;
+    private Integer                                retry         = Coasts.DEFAULT_RETRY;
+    private Integer                                statusTimeout = Coasts.DEFAULT_STATUS_TIMEOUT;
+    private Integer                                lockTimeout   = Coasts.DEFAULT_LOCK_TIMEOUT;
+    private SessionManager.Type                    sessionManager;
+    private StatusManager.Type                     statusManager;
+    private Map<S, Set<FlowStatus>>                stateTypes;
+    private Table<S, String, Set<Pair<S, Double>>> maybeResults;
+    private Map<S, StepAttrs>                      states;
+    private Map<String, ActionAttrs>               actions;
 
 
     public Profile(SessionManager.Type sessionManager, StatusManager.Type statusManager) {
@@ -28,7 +31,7 @@ public class Profile<S extends Enum<S>> {
         this.statusManager  = statusManager == null ? StatusManager.Type.redis : statusManager;
         this.actions        = new HashMap<>();
         this.states         = new HashMap<>();
-        this.maybeResults   = new HashMap<>();
+        this.maybeResults   = new RowKeyTable<>();
     }
 
     public static Profile defaultOf() {
