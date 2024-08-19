@@ -238,7 +238,10 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
  
 
  
+# 相关文档
 
+
+[架构作用](doc/架构作用.md)
 
 
  
