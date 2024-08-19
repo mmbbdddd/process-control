@@ -135,15 +135,15 @@ public class Fsm<S extends Enum<S>> {
          * 参见onInner
          */
         public void to(S from, String event, String toAction, S to) {
-            this.records.add(new FsmRecord<>(FsmRecordType.TO, from, event, toAction, null, null, to));
+            this.records.add(new FsmRecord<>(FsmRecordType.TO, from, event, toAction, null, null, to,null,null));
         }
 
         public void router(S from, String event, String actionDsl, String router) {
-            this.records.add(new FsmRecord<>(FsmRecordType.ROUTER, from, event, actionDsl, null, router, null));
+            this.records.add(new FsmRecord<>(FsmRecordType.ROUTER, from, event, actionDsl, null, router, null,null,null));
         }
 
-        public void saga(S from, String event, S failover, String actionDsl, String router) {
-            this.records.add(new FsmRecord<>(FsmRecordType.SAGA, from, event, actionDsl, failover, router, null));
+        public void saga(S from, String event, S failover,Set<S> conditions,String conditionAction, String actionDsl, String router) {
+            this.records.add(new FsmRecord<>(FsmRecordType.SAGA, from, event, actionDsl, failover, router, null,conditionAction,conditions));
         }
 
 
@@ -157,21 +157,25 @@ public class Fsm<S extends Enum<S>> {
     public static class FsmRecord<S extends Enum<S>> {
         FsmRecordType type;
         S             from;
-        String         event;
+        String        event;
         String        actionDsl;
         String        router;
         S             to;
         S             failover;
         ActionBase<S> action;
+        Set<S>        conditions;
+        String        conditionAction;
 
-        public FsmRecord(FsmRecordType type, S from, String event, String action, S failover, String router, S to) {
-            this.type      = type;
-            this.from      = from;
-            this.event     = event;
-            this.actionDsl = action;
-            this.failover  = failover;
-            this.to        = to;
-            this.router    = router;
+        public FsmRecord(FsmRecordType type, S from, String event, String action, S failover, String router, S to, String conditionAction, Set<S> conditions) {
+            this.type            = type;
+            this.from            = from;
+            this.event           = event;
+            this.actionDsl       = action;
+            this.failover        = failover;
+            this.to              = to;
+            this.router          = router;
+            this.conditions      = conditions;
+            this.conditionAction = conditionAction;
         }
 
 
@@ -189,7 +193,7 @@ public class Fsm<S extends Enum<S>> {
                             break;
                         }
                         case SAGA: {
-                            this.action = new SagaAction<>(this, maybeResults, ctx.getFlow().getPlugins());
+                            this.action = new SagaAction<>(this, ctx.getFlow().getPlugins());
                             break;
                         }
                         default: {

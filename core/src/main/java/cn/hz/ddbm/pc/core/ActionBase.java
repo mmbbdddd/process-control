@@ -20,23 +20,14 @@ import java.util.List;
 
 @Getter
 public abstract class ActionBase<S extends Enum<S>> implements Action<S> {
-    final Fsm.FsmRecordType type;
-    final S                 from;
-    final String             event;
-    final List<Plugin>      plugins;
-    final String            actionDsl;
-    final S                 failover;
-    final S                 to;
+    final Fsm.FsmRecord<S> fr;
+    final List<Plugin>     plugins;
+
     SimpleAction<S> action;
 
-    public ActionBase(Fsm.FsmRecordType type, S from, String event, String actionDsl, S failover, S to, List<Plugin> plugins) {
-        this.event     = event;
-        this.from      = from;
-        this.actionDsl = actionDsl;
-        this.plugins   = plugins;
-        this.to        = to;
-        this.type      = type;
-        this.failover  = failover;
+    public ActionBase(Fsm.FsmRecord<S> fr, List<Plugin> plugins) {
+        this.fr      = fr;
+        this.plugins = plugins;
     }
 
     protected abstract S failover();
@@ -52,30 +43,30 @@ public abstract class ActionBase<S extends Enum<S>> implements Action<S> {
     }
 
     protected SimpleAction<S> initAction(FlowContext<S, ?> ctx) {
-        return SimpleAction.of(actionDsl, ctx);
+        return SimpleAction.of(fr.getActionDsl(), ctx);
     }
 
     public void execute(FlowContext<S, ?> ctx) throws ActionException, RouterException {
         Fsm<S>       flow     = ctx.getFlow();
         Serializable id       = ctx.getId();
-        String event  = ctx.getEvent();
-        State<S>            lastNode = ctx.getStatus();
+        String       event    = ctx.getEvent();
+        State<S>     lastNode = ctx.getStatus();
         try {
             preActionPlugin(flow, ctx);
             action(ctx).execute(ctx);
             S nextNode = nextNode(lastNode.name, ctx);
-            ctx.getStatus().flush(event,nextNode == null ? failover() : nextNode,flow);
+            ctx.getStatus().flush(event, nextNode == null ? failover() : nextNode, flow);
             postActionPlugin(flow, lastNode.name, ctx);
         } catch (RouterException e) {
-            ctx.getStatus().flush(event,failover(),flow);
+            ctx.getStatus().flush(event, failover(), flow);
             onActionExceptionPlugin(flow, lastNode.name, e, ctx);
             throw e;
         } catch (ActionException e) {
-            ctx.getStatus().flush(event,failover(),flow);
+            ctx.getStatus().flush(event, failover(), flow);
             onActionExceptionPlugin(flow, lastNode.name, e, ctx);
             throw e;
         } catch (Exception e) {
-            ctx.getStatus().flush(event,failover(),flow);
+            ctx.getStatus().flush(event, failover(), flow);
             onActionExceptionPlugin(flow, lastNode.name, e, ctx);
             throw new ActionException(e);
         } finally {
@@ -91,7 +82,7 @@ public abstract class ActionBase<S extends Enum<S>> implements Action<S> {
             postRoutePlugin(ctx.getFlow(), lastNode, ctx);
             return nextNode;
         } catch (Exception e) {
-            ctx.getStatus().flush(Coasts.EVENT_DEFAULT,failover(),ctx.getFlow());
+            ctx.getStatus().flush(Coasts.EVENT_DEFAULT, failover(), ctx.getFlow());
             onRouterExceptionPlugin(ctx.getFlow(), e, ctx);
             throw new RouterException(e);
         }

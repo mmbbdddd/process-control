@@ -13,6 +13,7 @@ public class Coasts {
     public static final Integer DEFAULT_LOCK_TIMEOUT   = 3000;
     public static final String  PC_SERVICE_CHAOS       = "chaosPcService";
     public static final String  EXECUTE_COUNT          = "execute_count";
+    public static final String  STATUS                 = "current_status";
     public static       String  SESSION_MANAGER        = "session_manager";
     public static       String  STATUS_MANAGER         = "status_manager";
     public static       String  SESSION_MANAGER_MEMORY = "memory";

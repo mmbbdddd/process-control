@@ -22,7 +22,7 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     @Setter
     private String        event;
     @Setter
-    private State<S>       status;
+    private State<S>      status;
     @Setter
     private ActionBase<S> executor;
     @Setter
@@ -30,7 +30,7 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     @Setter
     private Boolean       mockBean = false;
     @Setter
-    private Boolean       isChaos = false;
+    private Boolean       isChaos  = false;
     @Setter
     private S             nextNode;
 
@@ -59,7 +59,7 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
 
     public void metricsNode(FlowContext<S, ?> ctx) {
         StatisticsSupport metricsWindows = InfraUtils.getMetricsTemplate();
-        metricsWindows.increment(ctx.getFlow().getName(),ctx.getId(),ctx.getStatus().getName(),Coasts.EXECUTE_COUNT);
+        metricsWindows.increment(ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getName(), Coasts.EXECUTE_COUNT);
     }
 
     /**
@@ -71,6 +71,14 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     }
 
     public Map<String, Object> buildExpressionContext() {
+        return null;
+    }
+
+    public <P> void setSession(String status, P value) {
+
+    }
+
+    public <P> P getSession(String status) {
         return null;
     }
 }

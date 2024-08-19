@@ -3,9 +3,11 @@ package cn.hz.ddbm.pc.core.action;
 
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.core.*;
+import cn.hz.ddbm.pc.core.action.saga.SagaQueryAction;
 import cn.hz.ddbm.pc.core.exception.wrap.ActionException;
 import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
 import cn.hz.ddbm.pc.core.exception.wrap.RouterException;
+import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
@@ -23,17 +25,16 @@ import java.util.Set;
 
 
 public class SagaAction<S extends Enum<S>> extends ActionBase<S> {
-    Set<S> maybeResult;
 
 
-    public SagaAction(Fsm.FsmRecord<S> f, Set<S> maybeResult, List<Plugin> plugins) {
-        super(f.getType(), f.getFrom(), f.getEvent(), f.getActionDsl(), f.getFailover(), f.getTo(), plugins);
-        this.maybeResult = maybeResult;
+    public SagaAction(Fsm.FsmRecord<S> f, List<Plugin> plugins) {
+        super(f, plugins);
+
     }
 
     @Override
     protected S failover() {
-        return getFailover();
+        return getFr().getFailover();
     }
 
 
@@ -55,14 +56,26 @@ public class SagaAction<S extends Enum<S>> extends ActionBase<S> {
             //容错设置失败，则终止本次执行
             throw new InterruptedFlowException(e);
         }
-        ctx.setNextNode(null);
-        super.execute(ctx);
+        if (conditionIsTrue(ctx)) {
+            ctx.setNextNode(null);
+            super.execute(ctx);
+        }
+    }
+
+    private boolean conditionIsTrue(FlowContext<S, ?> ctx) {
+        try {
+            SagaQueryAction<S> queryAction = InfraUtils.getBean(getFr().getConditionAction(), SagaQueryAction.class);
+            return getFr().getConditions().contains(queryAction.queryCurrentStatus(ctx));
+        }catch (Exception e){
+            Logs.error.error("",e);
+            return false;
+        }
     }
 
 
     @Override
     public Set<S> maybeResult() {
-        return maybeResult;
+        return null;
     }
 
     public S route(FlowContext<S, ?> ctx) {
