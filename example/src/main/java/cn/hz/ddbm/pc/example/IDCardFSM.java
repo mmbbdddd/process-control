@@ -96,7 +96,7 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     @Override
     public Profile<IDCardState> profile() {
         Profile<IDCardState> profile = new Profile(session(), status());
-        profile.setRetry(1000);
+        profile.setRetry(2);
         return profile;
     }
 

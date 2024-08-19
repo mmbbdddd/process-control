@@ -61,14 +61,14 @@ public class IDCardDemo {
     public static AtomicInteger bank;
     @Test
     public void acid() throws Exception {
-        account = new AtomicInteger(100);
+        account = new AtomicInteger(10000);
         freezed = new AtomicInteger(0);
         bank = new AtomicInteger(0);
 
         String event = Coasts.EVENT_DEFAULT;
         try {
             //执行100此，查看流程中断概率
-            chaosService.execute("test", new ChaosPcService.MockPayLoad(IDCardState.init), event, 100, 10, new ArrayList(), false);
+            chaosService.execute("test", new ChaosPcService.MockPayLoad(IDCardState.init), event, 10000, 10, new ArrayList(), false);
         } catch (Exception e) {
             e.printStackTrace();
         }
