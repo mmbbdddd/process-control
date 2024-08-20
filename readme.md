@@ -8,6 +8,38 @@
 
 
 
+``` java 
+    @Override
+    public Map<PayState, FlowStatus> nodes() {
+        Map<PayState, FlowStatus> map = new HashMap<>();
+        map.put(PayState.init, FlowStatus.INIT);
+        map.put(PayState.payed, FlowStatus.RUNNABLE);
+        map.put(PayState.sended, FlowStatus.RUNNABLE);
+        map.put(PayState.payed_failover, FlowStatus.RUNNABLE);
+        map.put(PayState.sended_failover, FlowStatus.RUNNABLE);
+        map.put(PayState.su, FlowStatus.FINISH);
+        map.put(PayState.fail, FlowStatus.FINISH);
+        map.put(PayState.error, FlowStatus.FINISH);
+        return map;
+    }
+    @Override
+    public void transitions(Transitions<PayState> t) {
+//        payAction:执行本地扣款
+        t.saga(PayState.init, Coasts.EVENT_DEFAULT, Sets.newSet(PayState.init), PayState.payed_failover, "payAction", "payRouter")
+                //本地扣款容错payQueryAction 扣款结果查询
+                .router(PayState.payed_failover, Coasts.EVENT_DEFAULT, "payQueryAction", "payRouter")
+                //发送异常，不明确是否发送
+                .saga(PayState.payed, Coasts.EVENT_DEFAULT, Sets.newSet(PayState.payed), PayState.sended_failover, "sendAction", "sendRouter")
+                .router(PayState.sended_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
+                //sendAction，执行远程发生&sendQueryAction。
+                .router(PayState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter");
+    }
+
+```
+
+
+详细  [编排代码](example/src/main/java/cn/hz/ddbm/pc/example/PayFsm.java)
+
 ## 2 混沌验证
 
 ## 3 逻辑实现

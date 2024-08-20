@@ -44,12 +44,10 @@ public abstract class PcService {
     }
 
     public <S extends Enum<S>, T extends FlowPayload<S>> void execute(FlowContext<S, T> ctx) throws StatusException, SessionException {
-
-        try {
-            if (Boolean.FALSE.equals(tryLock(ctx))) {
-                return;
-            }
-
+        if (Boolean.FALSE.equals(tryLock(ctx))) {
+            return;
+        }
+        try { 
             Boolean fluent = ctx.getFluent();
             ctx.getFlow().execute(ctx);
             if (fluent && isCanContinue(ctx)) {
