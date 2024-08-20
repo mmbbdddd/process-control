@@ -14,11 +14,11 @@ public class ToProcessor<S extends Enum<S>> extends BaseProcessor<Action<S>, S> 
     }
 
     @Override
-    public Action<S> action(FlowContext<S, ?> ctx) {
+    public Action<S> action(FsmContext<S, ?> ctx) {
         return Action.of(getFsmRecord().getActionDsl(), Action.class, ctx);
     }
 
-    public void execute(FlowContext<S, ?> ctx) throws ActionException {
+    public void execute(FsmContext<S, ?> ctx) throws ActionException {
         Fsm<S>       flow     = ctx.getFlow();
         Serializable id       = ctx.getId();
         String       event    = ctx.getEvent();

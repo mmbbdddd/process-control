@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.example.actions;
 
 import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.FsmContext;
 import cn.hz.ddbm.pc.core.utils.RandomUitl;
 import cn.hz.ddbm.pc.example.PayState;
 import org.assertj.core.util.Lists;
@@ -19,18 +19,18 @@ public class SendAction implements Action.SagaAction<PayState> {
     }
 
     @Override
-    public void execute(FlowContext<PayState, ?> ctx) throws Exception {
+    public void execute(FsmContext<PayState, ?> ctx) throws Exception {
 
     }
 
 
     @Override
-    public PayState query(FlowContext<PayState, ?> ctx) throws Exception {
+    public PayState query(FsmContext<PayState, ?> ctx) throws Exception {
         return RandomUitl.random(Lists.newArrayList(PayState.sended_failover, PayState.sended));
     }
 
     @Override
-    public PayState getExecuteResult(FlowContext<PayState, ?> ctx) {
+    public PayState getExecuteResult(FsmContext<PayState, ?> ctx) {
         return RandomUitl.random(Lists.newArrayList(PayState.sended_failover, PayState.sended));
     }
 }

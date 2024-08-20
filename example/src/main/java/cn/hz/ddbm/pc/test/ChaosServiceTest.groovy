@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.test
 
 import cn.hz.ddbm.pc.configuration.PcChaosConfiguration
-import cn.hz.ddbm.pc.core.FlowPayload
+import cn.hz.ddbm.pc.core.FsmPayload
 import cn.hz.ddbm.pc.core.Fsm
 import cn.hz.ddbm.pc.core.Node
 import cn.hz.ddbm.pc.core.coast.Coasts
@@ -37,7 +37,7 @@ public class ChaosServiceTest extends Specification {
     def "Execute"() {
         expect:
 
-        FlowPayload date = new ChaosPcService.MockPayLoad("init");
+        FsmPayload date = new ChaosPcService.MockPayLoad("init");
         String event = Coasts.EVENT_DEFAULT;
         chaosService.execute("test", date, event, 100, 10, rules, false)
 

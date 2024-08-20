@@ -21,33 +21,33 @@ public abstract class PcService {
     Map<String, Fsm> flows = new HashMap<>();
 
 
-    public <S extends Enum<S>, T extends FlowPayload<S>> void batchExecute(String flowName, List<T> payloads, String event, Profile profile) throws StatusException, SessionException {
+    public <S extends Enum<S>, T extends FsmPayload<S>> void batchExecute(String flowName, List<T> payloads, String event, Profile profile) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payloads, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Fsm<S> flow = flows.get(flowName);
 
         for (T payload : payloads) {
-            FlowContext<S, T> ctx = new FlowContext<>(flow, payload, event, profile);
+            FsmContext<S, T> ctx = new FsmContext<>(flow, payload, event, profile);
             execute(ctx);
         }
     }
 
 
-    public <S extends Enum<S>, T extends FlowPayload<S>> void execute(String flowName, T payload, String event, Profile profile) throws StatusException, SessionException {
+    public <S extends Enum<S>, T extends FsmPayload<S>> void execute(String flowName, T payload, String event, Profile profile) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
-        Fsm<S>            flow = flows.get(flowName);
-        FlowContext<?, ?> ctx  = new FlowContext<>(flow, payload, event, profile);
+        Fsm<S>           flow = flows.get(flowName);
+        FsmContext<?, ?> ctx  = new FsmContext<>(flow, payload, event, profile);
         execute(ctx);
     }
 
-    public <S extends Enum<S>, T extends FlowPayload<S>> void execute(FlowContext<S, T> ctx) throws StatusException, SessionException {
+    public <S extends Enum<S>, T extends FsmPayload<S>> void execute(FsmContext<S, T> ctx) throws StatusException, SessionException {
         if (Boolean.FALSE.equals(tryLock(ctx))) {
             return;
         }
-        try { 
+        try {
             Boolean fluent = ctx.getFluent();
             ctx.getFlow().execute(ctx);
             if (fluent && isCanContinue(ctx)) {
@@ -103,7 +103,7 @@ public abstract class PcService {
      * @param ctx
      * @return
      */
-    public <S extends Enum<S>, T extends FlowPayload<S>> boolean isCanContinue(FlowContext<S, T> ctx) {
+    public <S extends Enum<S>, T extends FsmPayload<S>> boolean isCanContinue(FsmContext<S, T> ctx) {
         State<S> state    = ctx.getStatus();
         String   flowName = ctx.getFlow().getName();
         if (ctx.getFlow().isRouter(state.getName())) {
@@ -127,14 +127,14 @@ public abstract class PcService {
     /**
      * 刷新状态到基础设施
      */
-    private void flush(FlowContext<?, ?> ctx) throws SessionException, StatusException {
+    private void flush(FsmContext<?, ?> ctx) throws SessionException, StatusException {
         ctx.syncPayLoad();
         InfraUtils.getSessionManager(ctx.getProfile().getSessionManager()).flush(ctx);
         InfraUtils.getStatusManager(ctx.getProfile().getStatusManager()).flush(ctx);
     }
 
 
-    private void releaseLock(FlowContext<?, ?> ctx) {
+    private void releaseLock(FsmContext<?, ?> ctx) {
         String key = String.format("%s:%s:%s", InfraUtils.getDomain(), ctx.getFlow().getName(), ctx.getId());
         try {
             InfraUtils.getLocker().releaseLock(key);
@@ -144,7 +144,7 @@ public abstract class PcService {
         }
     }
 
-    private Boolean tryLock(FlowContext<?, ?> ctx) {
+    private Boolean tryLock(FsmContext<?, ?> ctx) {
         String key = String.format("%s:%s:%s", InfraUtils.getDomain(), ctx.getFlow().getName(), ctx.getId());
         try {
             InfraUtils.getLocker().tryLock(key, ctx.getProfile().getLockTimeout());

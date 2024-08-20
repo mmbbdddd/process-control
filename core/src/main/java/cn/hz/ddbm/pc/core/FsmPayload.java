@@ -11,7 +11,7 @@ import java.io.Serializable;
  **/
 
 
-public interface FlowPayload<S extends Enum<S>> {
+public interface FsmPayload<S extends Enum<S>> {
     Serializable getId();
 
     State<S> getStatus();

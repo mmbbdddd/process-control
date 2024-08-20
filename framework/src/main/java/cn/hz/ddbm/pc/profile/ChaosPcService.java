@@ -45,7 +45,7 @@ public class ChaosPcService extends PcService {
             threadPool.submit(() -> {
                 Object result = null;
                 try {
-                    FlowContext<S, MockPayLoad<S>> ctx = standalone(flowName, mockPayLoad, event, mock);
+                    FsmContext<S, MockPayLoad<S>> ctx = standalone(flowName, mockPayLoad, event, mock);
                     result = ctx;
                 } catch (Throwable t) {
                     Logs.error.error("", t);
@@ -81,10 +81,10 @@ public class ChaosPcService extends PcService {
         statisticsLines.add(new StatisticsLine(i, requestInfo, result));
     }
 
-    private <S extends Enum<S>> FlowContext<S, MockPayLoad<S>> standalone(String flowName, MockPayLoad<S> payload, String event, Boolean mock) throws StatusException, SessionException {
+    private <S extends Enum<S>> FsmContext<S, MockPayLoad<S>> standalone(String flowName, MockPayLoad<S> payload, String event, Boolean mock) throws StatusException, SessionException {
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
-        Fsm                            flow = getFlow(flowName);
-        FlowContext<S, MockPayLoad<S>> ctx  = new FlowContext<S, MockPayLoad<S>>(flow, payload, event, Profile.chaosOf());
+        Fsm                           flow = getFlow(flowName);
+        FsmContext<S, MockPayLoad<S>> ctx  = new FsmContext<S, MockPayLoad<S>>(flow, payload, event, Profile.chaosOf());
         ctx.setMockBean(mock);
         ctx.setIsChaos(true);
         while (chaosIsContine(ctx)) {
@@ -93,7 +93,7 @@ public class ChaosPcService extends PcService {
         return ctx;
     }
 
-    public <S extends Enum<S>> boolean chaosIsContine(FlowContext<S, MockPayLoad<S>> ctx) {
+    public <S extends Enum<S>> boolean chaosIsContine(FsmContext<S, MockPayLoad<S>> ctx) {
 
         String   flowName = ctx.getFlow().getName();
         State<S> state    = ctx.getStatus();
@@ -121,7 +121,7 @@ public class ChaosPcService extends PcService {
     }
 
 
-    public static class MockPayLoad<S extends Enum<S>> implements FlowPayload<S> {
+    public static class MockPayLoad<S extends Enum<S>> implements FsmPayload<S> {
         Integer  id;
         State<S> status;
 
@@ -165,8 +165,8 @@ public class ChaosPcService extends PcService {
             this.requestInfo = o;
             if (result instanceof Throwable) {
                 this.result = new TypeValue((Throwable) result);
-            } else if (result instanceof FlowContext) {
-                this.result = new TypeValue((FlowContext) result);
+            } else if (result instanceof FsmContext) {
+                this.result = new TypeValue((FsmContext) result);
             } else {
                 this.result = null;
             }
@@ -182,7 +182,7 @@ public class ChaosPcService extends PcService {
             this.value = t.getMessage();
         }
 
-        public TypeValue(FlowContext<?, ?> ctx) {
+        public TypeValue(FsmContext<?, ?> ctx) {
             this.type  = ctx.getClass().getSimpleName();
             this.value = String.format("%s:%s", ctx.getStatus().getName(), ctx.getStatus().getType());
         }

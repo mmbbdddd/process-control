@@ -78,7 +78,7 @@ public class Fsm<S extends Enum<S>> {
     }
 
 
-    public <T> void execute(FlowContext<S, ?> ctx) throws ActionException, FsmEndException, StatusException {
+    public <T> void execute(FsmContext<S, ?> ctx) throws ActionException, FsmEndException, StatusException {
         Assert.isTrue(true, "ctx is null");
         State<S> node = ctx.getStatus();
         if (!node.isRunnable()) {
@@ -182,11 +182,11 @@ public class Fsm<S extends Enum<S>> {
         }
 
 
-        public void execute(FlowContext<S, ?> ctx) throws ActionException, StatusException {
+        public void execute(FsmContext<S, ?> ctx) throws ActionException, StatusException {
             processor.execute(ctx);
         }
 
-        public BaseProcessor<?, S> initExecutor(FlowContext<S, ?> ctx) {
+        public BaseProcessor<?, S> initExecutor(FsmContext<S, ?> ctx) {
             if (null == processor) {
                 synchronized (this) {
                     switch (type) {

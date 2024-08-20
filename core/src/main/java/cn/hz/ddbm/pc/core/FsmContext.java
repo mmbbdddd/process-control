@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 @Getter
-public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
+public class FsmContext<S extends Enum<S>, T extends FsmPayload<S>> {
     //    入参
     private Serializable        id;
     private T                   data;
@@ -35,7 +35,7 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     private S                   nextNode;
 
 
-    public FlowContext(Fsm<S> flow, T data, String event, Profile profile) {
+    public FsmContext(Fsm<S> flow, T data, String event, Profile profile) {
         Assert.notNull(flow, "flow is null");
         Assert.notNull(data, "data is null");
         Assert.notNull(event, "event is null");
@@ -57,7 +57,7 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     }
 
 
-    public void metricsNode(FlowContext<S, ?> ctx) {
+    public void metricsNode(FsmContext<S, ?> ctx) {
         StatisticsSupport metricsWindows = InfraUtils.getMetricsTemplate();
         metricsWindows.increment(ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getName(), Coasts.EXECUTE_COUNT);
     }

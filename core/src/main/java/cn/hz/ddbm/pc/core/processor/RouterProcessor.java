@@ -14,12 +14,12 @@ public class RouterProcessor<S extends Enum<S>> extends BaseProcessor<Action.Que
 
 
     @Override
-    public Action.QueryAction<S> action(FlowContext<S, ?> ctx) {
+    public Action.QueryAction<S> action(FsmContext<S, ?> ctx) {
         return Action.of(getFsmRecord().getActionDsl(), Action.QueryAction.class, ctx);
     }
 
 
-    public void execute(FlowContext<S, ?> ctx) throws ActionException {
+    public void execute(FsmContext<S, ?> ctx) throws ActionException {
         Fsm<S>       flow     = ctx.getFlow();
         Serializable id       = ctx.getId();
         String       event    = ctx.getEvent();

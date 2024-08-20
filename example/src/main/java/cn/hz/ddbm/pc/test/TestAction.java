@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.test;
 
 import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.FsmContext;
 
 public class TestAction implements Action {
     @Override
@@ -11,7 +11,7 @@ public class TestAction implements Action {
 
 
     @Override
-    public void execute(FlowContext ctx) throws Exception {
+    public void execute(FsmContext ctx) throws Exception {
 
     }
 

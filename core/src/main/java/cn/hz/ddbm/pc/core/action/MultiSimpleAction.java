@@ -2,7 +2,7 @@ package cn.hz.ddbm.pc.core.action;
 
 
 import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.FsmContext;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class MultiSimpleAction implements Action, Action.QueryAction, Action.Sag
     }
 
     @Override
-    public void execute(FlowContext ctx) throws Exception {
+    public void execute(FsmContext ctx) throws Exception {
         for (Action action : this.actions) {
             action.execute(ctx);
         }
@@ -34,12 +34,12 @@ public class MultiSimpleAction implements Action, Action.QueryAction, Action.Sag
 
 
     @Override
-    public Enum query(FlowContext ctx) throws Exception {
+    public Enum query(FsmContext ctx) throws Exception {
         return null;
     }
 
     @Override
-    public Enum getExecuteResult(FlowContext ctx) {
+    public Enum getExecuteResult(FsmContext ctx) {
         return null;
     }
 }

@@ -16,14 +16,14 @@ public class ChaosAction<S extends Enum<S>> implements Action<S>, Action.QueryAc
     }
 
     @Override
-    public void execute(FlowContext<S, ?> ctx) throws Exception {
+    public void execute(FsmContext<S, ?> ctx) throws Exception {
 
 
     }
 
 
     @Override
-    public S query(FlowContext<S, ?> ctx) throws Exception {
+    public S query(FsmContext<S, ?> ctx) throws Exception {
         Profile<S>          profile    = ctx.getProfile();
         BaseProcessor<?, S> actionBase = ctx.getExecutor();
         if (actionBase.getFsmRecord().getType().equals(Fsm.TransitionType.TO)) {
@@ -38,7 +38,7 @@ public class ChaosAction<S extends Enum<S>> implements Action<S>, Action.QueryAc
     }
 
     @Override
-    public S getExecuteResult(FlowContext<S, ?> ctx) {
+    public S getExecuteResult(FsmContext<S, ?> ctx) {
         Profile<S>          profile    = ctx.getProfile();
         BaseProcessor<?, S> actionBase = ctx.getExecutor();
         if (actionBase.getFsmRecord().getType().equals(Fsm.TransitionType.TO)) {

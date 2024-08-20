@@ -46,8 +46,8 @@ public class ChaosHandler {
         }
 
         if (proxy instanceof Action) {
-            FlowContext<S, ?> ctx     = (FlowContext<S, ?>) args[0];
-            Profile<S>        profile = ctx.getProfile();
+            FsmContext<S, ?> ctx     = (FsmContext<S, ?>) args[0];
+            Profile<S>       profile = ctx.getProfile();
             if (ctx.getIsChaos()) {
                 BaseProcessor<?, S> actionBase = ctx.getExecutor();
                 S                   nextNode   = null;

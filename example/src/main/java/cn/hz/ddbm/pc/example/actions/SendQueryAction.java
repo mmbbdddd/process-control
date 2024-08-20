@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.example.actions;
 
 import cn.hz.ddbm.pc.core.Action;
-import cn.hz.ddbm.pc.core.FlowContext;
+import cn.hz.ddbm.pc.core.FsmContext;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.utils.RandomUitl;
 import cn.hz.ddbm.pc.example.PayTest;
@@ -17,13 +17,13 @@ public class SendQueryAction implements Action.QueryAction<PayState> {
     }
 
     @Override
-    public void execute(FlowContext<PayState, ?> ctx) throws Exception {
+    public void execute(FsmContext<PayState, ?> ctx) throws Exception {
 
     }
 
 
     @Override
-    public PayState query(FlowContext<PayState, ?> ctx) throws Exception {
+    public PayState query(FsmContext<PayState, ?> ctx) throws Exception {
         PayState queryState = RandomUitl.random(Lists.newArrayList(PayState.sended_failover, PayState.payed, PayState.sended, PayState.su, PayState.fail));
         switch (queryState) {
             case sended_failover: {

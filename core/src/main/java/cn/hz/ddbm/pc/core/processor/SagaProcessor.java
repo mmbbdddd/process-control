@@ -28,11 +28,11 @@ public class SagaProcessor<S extends Enum<S>> extends BaseProcessor<Action.SagaA
     }
 
     @Override
-    public Action.SagaAction<S> action(FlowContext<S, ?> ctx) {
+    public Action.SagaAction<S> action(FsmContext<S, ?> ctx) {
         return Action.of(getFsmRecord().getActionDsl(), Action.SagaAction.class, ctx);
     }
 
-    public void execute(FlowContext<S, ?> ctx) throws ActionException, StatusException {
+    public void execute(FsmContext<S, ?> ctx) throws ActionException, StatusException {
         Fsm<S>       flow     = ctx.getFlow();
         Serializable id       = ctx.getId();
         String       event    = ctx.getEvent();
@@ -72,7 +72,7 @@ public class SagaProcessor<S extends Enum<S>> extends BaseProcessor<Action.SagaA
         }
     }
 
-    private StatusManager getStatusManager(FlowContext<S, ?> ctx) {
+    private StatusManager getStatusManager(FsmContext<S, ?> ctx) {
         return InfraUtils.getStatusManager(ctx.getProfile().getStatusManager());
     }
 
