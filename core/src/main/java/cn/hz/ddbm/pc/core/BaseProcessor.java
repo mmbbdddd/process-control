@@ -18,11 +18,11 @@ import java.util.List;
 
 @Getter
 public abstract class BaseProcessor<A extends Action<S>, S extends Enum<S>> {
-    final Fsm.FsmRecord<S> fsmRecord;
-    final List<Plugin>     plugins;
+    final Fsm.Transition<S> fsmRecord;
+    final List<Plugin>      plugins;
 
 
-    public BaseProcessor(Fsm.FsmRecord<S> fsmRecord, List<Plugin> plugins) {
+    public BaseProcessor(Fsm.Transition<S> fsmRecord, List<Plugin> plugins) {
         this.plugins   = plugins;
         this.fsmRecord = fsmRecord;
     }

@@ -26,7 +26,7 @@ public class ChaosAction<S extends Enum<S>> implements Action<S>, Action.QueryAc
     public S query(FlowContext<S, ?> ctx) throws Exception {
         Profile<S>          profile    = ctx.getProfile();
         BaseProcessor<?, S> actionBase = ctx.getExecutor();
-        if (actionBase.getFsmRecord().getType().equals(Fsm.FsmRecordType.TO)) {
+        if (actionBase.getFsmRecord().getType().equals(Fsm.TransitionType.TO)) {
             return actionBase.getFsmRecord().getTo();
         } else {
             S                    from        = actionBase.getFsmRecord().getFrom();
@@ -41,7 +41,7 @@ public class ChaosAction<S extends Enum<S>> implements Action<S>, Action.QueryAc
     public S getExecuteResult(FlowContext<S, ?> ctx) {
         Profile<S>          profile    = ctx.getProfile();
         BaseProcessor<?, S> actionBase = ctx.getExecutor();
-        if (actionBase.getFsmRecord().getType().equals(Fsm.FsmRecordType.TO)) {
+        if (actionBase.getFsmRecord().getType().equals(Fsm.TransitionType.TO)) {
             return actionBase.getFsmRecord().getTo();
         } else {
             S                    from        = actionBase.getFsmRecord().getFrom();

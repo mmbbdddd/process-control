@@ -9,7 +9,7 @@ import java.util.List;
 public class ToProcessor<S extends Enum<S>> extends BaseProcessor<Action<S>, S> {
 
 
-    public ToProcessor(Fsm.FsmRecord<S> f, List<Plugin> plugins) {
+    public ToProcessor(Fsm.Transition<S> f, List<Plugin> plugins) {
         super(f, plugins);
     }
 

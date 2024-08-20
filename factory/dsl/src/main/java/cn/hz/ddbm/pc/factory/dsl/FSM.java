@@ -111,14 +111,14 @@ public interface FSM<S extends Enum<S>> {
         Transitions<S> transitions = new Transitions<>();
         transitions(transitions);
         transitions.transitions.forEach(t -> {
-            if (t.getType().equals(Fsm.FsmRecordType.SAGA)) {
-                fsm.getFsmTable().saga(t.getFrom(), t.event, t.conditions, t.failover, t.action, t.router);
+            if (t.getType().equals(Fsm.TransitionType.SAGA)) {
+                fsm.getEventTable().saga(t.getFrom(), t.event, t.conditions, t.failover, t.action, t.router);
             }
-            if (t.getType().equals(Fsm.FsmRecordType.ROUTER)) {
-                fsm.getFsmTable().router(t.getFrom(), t.getEvent(), t.getAction(), t.router);
+            if (t.getType().equals(Fsm.TransitionType.ROUTER)) {
+                fsm.getEventTable().router(t.getFrom(), t.getEvent(), t.getAction(), t.router);
             }
-            if (t.getType().equals(Fsm.FsmRecordType.TO)) {
-                fsm.getFsmTable().to(t.getFrom(), t.getEvent(), t.getAction(), t.to);
+            if (t.getType().equals(Fsm.TransitionType.TO)) {
+                fsm.getEventTable().to(t.getFrom(), t.getEvent(), t.getAction(), t.to);
             }
         });
 //        InfraUtils.getBean(PcService.class).addFlow(flow);
@@ -157,8 +157,8 @@ public interface FSM<S extends Enum<S>> {
 
     @Getter
     class Transition<S> {
-        Fsm.FsmRecordType type;
-        S                 from;
+        Fsm.TransitionType type;
+        S                  from;
         String            event;
         Set<S>            conditions;
         S                 failover;
@@ -169,7 +169,7 @@ public interface FSM<S extends Enum<S>> {
 
         public static <S> Transition<S> routerOf(S node, String event, String action, String router) {
             Transition<S> t = new Transition<S>();
-            t.type   = Fsm.FsmRecordType.ROUTER;
+            t.type   = Fsm.TransitionType.ROUTER;
             t.from   = node;
             t.event  = event;
             t.action = action;
@@ -179,7 +179,7 @@ public interface FSM<S extends Enum<S>> {
 
         public static <S> Transition<S> toOf(S from, String event, String action, S to) {
             Transition<S> t = new Transition<S>();
-            t.type   = Fsm.FsmRecordType.TO;
+            t.type   = Fsm.TransitionType.TO;
             t.from   = from;
             t.event  = event;
             t.action = action;
@@ -189,7 +189,7 @@ public interface FSM<S extends Enum<S>> {
 
         public static <S> Transition<S> sagaOf(S node, String event, Set<S> conditions, S failover, String action, String router) {
             Transition<S> t = new Transition<S>();
-            t.type       = Fsm.FsmRecordType.SAGA;
+            t.type       = Fsm.TransitionType.SAGA;
             t.from       = node;
             t.event      = event;
             t.action     = action;

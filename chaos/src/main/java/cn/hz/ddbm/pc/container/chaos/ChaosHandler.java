@@ -51,7 +51,7 @@ public class ChaosHandler {
             if (ctx.getIsChaos()) {
                 BaseProcessor<?, S> actionBase = ctx.getExecutor();
                 S                   nextNode   = null;
-                if (actionBase.getFsmRecord().getType().equals(Fsm.FsmRecordType.TO)) {
+                if (actionBase.getFsmRecord().getType().equals(Fsm.TransitionType.TO)) {
                     nextNode = actionBase.getFsmRecord().getTo();
                 } else {
                     S                    from        = actionBase.getFsmRecord().getFrom();
