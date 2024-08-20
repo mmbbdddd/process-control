@@ -6,15 +6,16 @@
 通过spring-cron定时产生特定工作流的事件数据。
 
 写法：
-XXXFlowFsm{
-@Schedule(type="cron",cronExpression="? * * * * * ")
-public void schedule();
-}
+
+    XXXFlowFsm{
+    @Schedule(type="cron",cronExpression="? * * * * * ")
+    public void schedule();
+    }
 
 ## xxl-job
 
-@Schedule('xxxxx，type=“xxl-job”)
-public void schedule();
+    @Schedule('xxxxx，type=“xxl-job”)
+    public void schedule();
 
 
 ## 第三方回调
