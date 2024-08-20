@@ -19,9 +19,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @ComponentScan("cn.hz.ddbm.pc.example.actions")
 @SpringBootTest
-@Import({PcChaosConfiguration.class, IDCardDemo.DemoConfig.class})
+@Import({PcChaosConfiguration.class, PayTest.DemoConfig.class})
 @RunWith(SpringRunner.class)
-public class IDCardDemo {
+public class PayTest {
 
 
     @Autowired
@@ -50,7 +50,7 @@ public class IDCardDemo {
         }};
         try {
             //执行100此，查看流程中断概率
-            chaosService.execute("test", new ChaosPcService.MockPayLoad(IDCardState.init), event, 1000, 10, rules, true);
+            chaosService.execute("test", new ChaosPcService.MockPayLoad(PayState.init), event, 1000, 10, rules, true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,7 +72,7 @@ public class IDCardDemo {
         String event = Coasts.EVENT_DEFAULT;
         try {
             //执行10000次，查看流程中断概率
-            chaosService.execute("test", new ChaosPcService.MockPayLoad(IDCardState.init), event, 10000, 10, new ArrayList(), false);
+            chaosService.execute("test", new ChaosPcService.MockPayLoad(PayState.init), event, 10000, 10, new ArrayList(), false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,8 +84,8 @@ public class IDCardDemo {
 
     public static class DemoConfig {
         @Bean
-        IDCardFSM pcConfig() {
-            return new IDCardFSM();
+        PayFsm pcConfig() {
+            return new PayFsm();
         }
     }
 

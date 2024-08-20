@@ -1,6 +1,6 @@
 package cn.hz.ddbm.pc.example;
 
-public enum IDCardState {
+public enum PayState {
     init("初始化"),
     payed("已扣款（local）"),
     sended("已发送（remote）"),
@@ -12,7 +12,7 @@ public enum IDCardState {
 
     private final String descr;
 
-    IDCardState(String descr) {
+    PayState(String descr) {
         this.descr = descr;
     }
 

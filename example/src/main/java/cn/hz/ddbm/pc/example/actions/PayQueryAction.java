@@ -3,13 +3,13 @@ package cn.hz.ddbm.pc.example.actions;
 import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.utils.RandomUitl;
-import cn.hz.ddbm.pc.example.IDCardDemo;
-import cn.hz.ddbm.pc.example.IDCardState;
+import cn.hz.ddbm.pc.example.PayTest;
+import cn.hz.ddbm.pc.example.PayState;
 import org.assertj.core.util.Lists;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PayQueryAction implements Action.QueryAction<IDCardState> {
+public class PayQueryAction implements Action.QueryAction<PayState> {
 
     public PayQueryAction() {
     }
@@ -20,22 +20,22 @@ public class PayQueryAction implements Action.QueryAction<IDCardState> {
     }
 
     @Override
-    public void execute(FlowContext<IDCardState, ?> ctx) throws Exception {
+    public void execute(FlowContext<PayState, ?> ctx) throws Exception {
 
     }
 
 
     @Override
-    public IDCardState query(FlowContext<IDCardState, ?> ctx) throws Exception {
+    public PayState query(FlowContext<PayState, ?> ctx) throws Exception {
 
-        IDCardState queryState = RandomUitl.random(Lists.newArrayList(IDCardState.payed_failover, IDCardState.init, IDCardState.payed));
+        PayState queryState = RandomUitl.random(Lists.newArrayList(PayState.payed_failover, PayState.init, PayState.payed));
         switch (queryState) {
             case payed_failover: {
                 break;
             }
             case init: {
-                IDCardDemo.account.incrementAndGet();
-                IDCardDemo.freezed.decrementAndGet();
+                PayTest.account.incrementAndGet();
+                PayTest.freezed.decrementAndGet();
                 break;
             }
         }
