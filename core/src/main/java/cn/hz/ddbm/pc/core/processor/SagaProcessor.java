@@ -57,14 +57,14 @@ public class SagaProcessor<S extends Enum<S>> extends BaseProcessor<Action.SagaA
                 }
                 ctx.getStatus().flush(event, nextNode, flow);
             }
-            postActionPlugin(flow, lastNode.getName(), ctx);
+            postActionPlugin(flow, lastNode.getState(), ctx);
         } catch (ActionException e) {
             ctx.getStatus().flush(event, getFsmRecord().getFailover(), flow);
-            onActionExceptionPlugin(flow, lastNode.getName(), e, ctx);
+            onActionExceptionPlugin(flow, lastNode.getState(), e, ctx);
             throw e;
         } catch (Exception e) {
             ctx.getStatus().flush(event, getFsmRecord().getFailover(), flow);
-            onActionExceptionPlugin(flow, lastNode.getName(), e, ctx);
+            onActionExceptionPlugin(flow, lastNode.getState(), e, ctx);
             throw new ActionException(e);
         } finally {
             onActionFinallyPlugin(flow, ctx);

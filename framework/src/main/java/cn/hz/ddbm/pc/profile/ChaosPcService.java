@@ -97,19 +97,19 @@ public class ChaosPcService extends PcService {
 
         String   flowName = ctx.getFlow().getName();
         State<S> state    = ctx.getStatus();
-        if (ctx.getFlow().isRouter(state.getName())) {
+        if (ctx.getFlow().isRouter(state.getState())) {
             return true;
         }
         if (!state.isRunnable()) {
-            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), state.getName());
+            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), state.getState());
             return false;
         }
 
-        Long    executeCount = InfraUtils.getMetricsTemplate().get(ctx.getFlow().getName(), ctx.getId(), state.getName(), Coasts.EXECUTE_COUNT);
-        Integer nodeRetry    = ctx.getFlow().getNode(state.getName()).getRetry();
+        Long    executeCount = InfraUtils.getMetricsTemplate().get(ctx.getFlow().getName(), ctx.getId(), state.getState(), Coasts.EXECUTE_COUNT);
+        Integer nodeRetry    = ctx.getFlow().getNode(state.getState()).getRetry();
 
         if (executeCount > nodeRetry) {
-            Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), state.getName(), executeCount, nodeRetry);
+            Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), state.getState(), executeCount, nodeRetry);
             return false;
         }
         return true;
@@ -149,7 +149,7 @@ public class ChaosPcService extends PcService {
         }
 
         public MockPayLoad<S> copy(Integer id) {
-            MockPayLoad<S> copy = new MockPayLoad<>(this.status.getName());
+            MockPayLoad<S> copy = new MockPayLoad<>(this.status.getState());
             copy.setId(id);
             return copy;
         }
@@ -184,7 +184,7 @@ public class ChaosPcService extends PcService {
 
         public TypeValue(FsmContext<?, ?> ctx) {
             this.type  = ctx.getClass().getSimpleName();
-            this.value = String.format("%s:%s", ctx.getStatus().getName(), ctx.getStatus().getType());
+            this.value = String.format("%s:%s", ctx.getStatus().getState(), ctx.getStatus().getStatus());
         }
 
         @Override

@@ -21,25 +21,25 @@ public abstract class PcService {
     Map<String, Fsm> flows = new HashMap<>();
 
 
-    public <S extends Enum<S>, T extends FsmPayload<S>> void batchExecute(String flowName, List<T> payloads, String event, Profile profile) throws StatusException, SessionException {
+    public <S extends Enum<S>, T extends FsmPayload<S>> void batchExecute(String flowName, List<T> payloads, String event) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payloads, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Fsm<S> flow = flows.get(flowName);
 
         for (T payload : payloads) {
-            FsmContext<S, T> ctx = new FsmContext<>(flow, payload, event, profile);
+            FsmContext<S, T> ctx = new FsmContext<>(flow, payload, event,flow.getProfile());
             execute(ctx);
         }
     }
 
 
-    public <S extends Enum<S>, T extends FsmPayload<S>> void execute(String flowName, T payload, String event, Profile profile) throws StatusException, SessionException {
+    public <S extends Enum<S>, T extends FsmPayload<S>> void execute(String flowName, T payload, String event) throws StatusException, SessionException {
         Assert.notNull(flowName, "flowName is null");
         Assert.notNull(payload, "FlowPayload is null");
         event = StrUtil.isBlank(event) ? Coasts.EVENT_DEFAULT : event;
         Fsm<S>           flow = flows.get(flowName);
-        FsmContext<?, ?> ctx  = new FsmContext<>(flow, payload, event, profile);
+        FsmContext<?, ?> ctx  = new FsmContext<>(flow, payload, event, flow.getProfile());
         execute(ctx);
     }
 
@@ -106,19 +106,19 @@ public abstract class PcService {
     public <S extends Enum<S>, T extends FsmPayload<S>> boolean isCanContinue(FsmContext<S, T> ctx) {
         State<S> state    = ctx.getStatus();
         String   flowName = ctx.getFlow().getName();
-        if (ctx.getFlow().isRouter(state.getName())) {
+        if (ctx.getFlow().isRouter(state.getState())) {
             return true;
         }
         if (!state.isRunnable()) {
-            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), state.getName());
+            Logs.flow.info("流程不可运行：{},{},{}", flowName, ctx.getId(), state.getState());
             return false;
         }
 
-        Long    exeRetry  = InfraUtils.getMetricsTemplate().get(ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getName(), Coasts.EXECUTE_COUNT);
-        Integer nodeRetry = ctx.getFlow().getNode(state.getName()).getRetry();
+        Long    exeRetry  = InfraUtils.getMetricsTemplate().get(ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getState(), Coasts.EXECUTE_COUNT);
+        Integer nodeRetry = ctx.getFlow().getNode(state.getState()).getRetry();
 
         if (exeRetry > nodeRetry) {
-            Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), state.getName(), exeRetry, nodeRetry);
+            Logs.flow.info("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), state.getState(), exeRetry, nodeRetry);
             return false;
         }
         return true;

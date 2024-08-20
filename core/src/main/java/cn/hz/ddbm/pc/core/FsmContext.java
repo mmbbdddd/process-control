@@ -59,7 +59,7 @@ public class FsmContext<S extends Enum<S>, T extends FsmPayload<S>> {
 
     public void metricsNode(FsmContext<S, ?> ctx) {
         StatisticsSupport metricsWindows = InfraUtils.getMetricsTemplate();
-        metricsWindows.increment(ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getName(), Coasts.EXECUTE_COUNT);
+        metricsWindows.increment(ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getState(), Coasts.EXECUTE_COUNT);
     }
 
     /**

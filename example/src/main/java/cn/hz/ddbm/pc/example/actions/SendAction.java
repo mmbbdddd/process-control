@@ -29,8 +29,4 @@ public class SendAction implements Action.SagaAction<PayState> {
         return RandomUitl.random(Lists.newArrayList(PayState.sended_failover, PayState.sended));
     }
 
-    @Override
-    public PayState getExecuteResult(FsmContext<PayState, ?> ctx) {
-        return RandomUitl.random(Lists.newArrayList(PayState.sended_failover, PayState.sended));
-    }
 }

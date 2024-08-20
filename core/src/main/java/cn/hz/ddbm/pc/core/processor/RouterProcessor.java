@@ -31,10 +31,10 @@ public class RouterProcessor<S extends Enum<S>> extends BaseProcessor<Action.Que
                 nextNode = getFsmRecord().getFrom();
             }
             ctx.getStatus().flush(event, nextNode, flow);
-            postActionPlugin(flow, lastNode.getName(), ctx);
+            postActionPlugin(flow, lastNode.getState(), ctx);
         } catch (Exception e) {
             ctx.getStatus().flush(event, getFsmRecord().getFrom(), flow);
-            onActionExceptionPlugin(flow, lastNode.getName(), e, ctx);
+            onActionExceptionPlugin(flow, lastNode.getState(), e, ctx);
             throw new ActionException(e);
         } finally {
             onActionFinallyPlugin(flow, ctx);

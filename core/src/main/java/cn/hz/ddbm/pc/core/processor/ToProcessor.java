@@ -27,10 +27,10 @@ public class ToProcessor<S extends Enum<S>> extends BaseProcessor<Action<S>, S> 
             preActionPlugin(flow, ctx);
             action(ctx).execute(ctx);
             ctx.getStatus().flush(event, getFsmRecord().getTo(), flow);
-            postActionPlugin(flow, lastNode.getName(), ctx);
+            postActionPlugin(flow, lastNode.getState(), ctx);
         } catch (Exception e) {
             ctx.getStatus().flush(event, getFsmRecord().getFrom(), flow);
-            onActionExceptionPlugin(flow, lastNode.getName(), e, ctx);
+            onActionExceptionPlugin(flow, lastNode.getState(), e, ctx);
             throw new ActionException(e);
         } finally {
             onActionFinallyPlugin(flow, ctx);

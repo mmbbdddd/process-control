@@ -84,8 +84,8 @@ public class Fsm<S extends Enum<S>> {
         if (!node.isRunnable()) {
             throw new FsmEndException();
         }
-        Transition<S> atom = eventTable.find(node.name, ctx.getEvent());
-        Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent(), ctx.getStatus().name));
+        Transition<S> atom = eventTable.find(node.state, ctx.getEvent());
+        Assert.notNull(atom, String.format("找不到事件处理器%s@%s", ctx.getEvent(), ctx.getStatus().state));
         ctx.setExecutor(atom.initExecutor(ctx));
         atom.execute(ctx);
     }

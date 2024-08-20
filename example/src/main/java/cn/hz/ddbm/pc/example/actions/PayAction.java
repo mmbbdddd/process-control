@@ -33,8 +33,4 @@ public class PayAction implements Action.SagaAction<PayState> {
         return RandomUitl.random(Lists.newArrayList(PayState.init, PayState.payed));
     }
 
-    @Override
-    public PayState getExecuteResult(FsmContext<PayState, ?> ctx) {
-        return RandomUitl.random(Lists.newArrayList(PayState.payed_failover, PayState.payed));
-    }
 }
