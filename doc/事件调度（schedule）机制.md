@@ -51,6 +51,6 @@
 # 特性比较
 
 
-![img_30.png](img_30.png)
+ ![img_31.png](img_31.png)
 
 
