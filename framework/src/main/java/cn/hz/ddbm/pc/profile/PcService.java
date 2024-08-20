@@ -4,10 +4,10 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.StrUtil;
 import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.coast.Coasts;
-import cn.hz.ddbm.pc.core.exception.*;
+import cn.hz.ddbm.pc.core.exception.InterruptedFlowException;
+import cn.hz.ddbm.pc.core.exception.SessionException;
 import cn.hz.ddbm.pc.core.exception.wrap.ActionException;
 import cn.hz.ddbm.pc.core.exception.wrap.PauseFlowException;
-import cn.hz.ddbm.pc.core.exception.wrap.RouterException;
 import cn.hz.ddbm.pc.core.exception.wrap.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
@@ -77,7 +77,8 @@ public abstract class PcService {
                 Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
                 flush(ctx);
             }
-        } catch (RouterException e) {
+        } catch (StatusException e) {
+            //todo
             //即PauseFlowException
             Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e.getRaw());
             flush(ctx);

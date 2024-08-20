@@ -1,7 +1,6 @@
 package cn.hz.ddbm.pc.status.redis;
 
 import cn.hz.ddbm.pc.core.FlowContext;
-import cn.hz.ddbm.pc.core.Node;
 import cn.hz.ddbm.pc.core.State;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import org.springframework.beans.factory.annotation.Autowired;

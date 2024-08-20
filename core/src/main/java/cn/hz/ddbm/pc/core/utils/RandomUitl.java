@@ -4,12 +4,11 @@ import cn.hutool.cache.Cache;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.lang.func.Func0;
-import org.assertj.core.util.Sets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-import java.util.*;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class RandomUitl {
     public static <S> S random(List<S> list) {
@@ -20,8 +19,8 @@ public class RandomUitl {
 
     static Cache<String, WeightRandom<?>> weightRandomCache = CacheUtil.newLRUCache(1000);
 
-    public static <T> T selectByWeight(String key,Set<Pair<T, Double>> sets) {
-        return (T)weightRandomCache.get(key, (Func0<WeightRandom<?>>) () -> new WeightRandom<>(sets)).random();
+    public static <T> T selectByWeight(String key, Set<Pair<T, Double>> sets) {
+        return (T) weightRandomCache.get(key, (Func0<WeightRandom<?>>) () -> new WeightRandom<>(sets)).random();
     }
 
 

@@ -4,7 +4,6 @@ import cn.hz.ddbm.pc.configuration.PcChaosConfiguration;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.profile.ChaosPcService;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
-import cn.hz.ddbm.pc.profile.chaos.ChaosTarget;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,17 +55,19 @@ public class IDCardDemo {
             e.printStackTrace();
         }
     }
+
     //模拟支付账号
     public static AtomicInteger account;
-//    模拟冻结字段
+    //    模拟冻结字段
     public static AtomicInteger freezed;
-//    模拟收款账号
+    //    模拟收款账号
     public static AtomicInteger bank;
+
     @Test
     public void acid() throws Exception {
         account = new AtomicInteger(10000);
         freezed = new AtomicInteger(0);
-        bank = new AtomicInteger(0);
+        bank    = new AtomicInteger(0);
 
         String event = Coasts.EVENT_DEFAULT;
         try {

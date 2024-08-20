@@ -18,7 +18,7 @@ public class DigestLogPlugin<S extends Enum<S>> implements Plugin<S> {
     }
 
     @Override
-    public void postAction(String name,S lastNode, FlowContext<S, ?> ctx) {
+    public void postAction(String name, S lastNode, FlowContext<S, ?> ctx) {
     }
 
     @Override
@@ -33,7 +33,7 @@ public class DigestLogPlugin<S extends Enum<S>> implements Plugin<S> {
     @Override
     public void postRoute(String routerName, S preNode, FlowContext<S, ?> ctx) {
         log.info("{},{},{},{}", ctx.getFlow()
-                                   .getName(), ctx.getId(), preNode, ctx.getStatus());
+                .getName(), ctx.getId(), preNode, ctx.getStatus());
     }
 
     @Override

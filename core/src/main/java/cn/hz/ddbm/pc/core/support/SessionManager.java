@@ -19,7 +19,7 @@ public interface SessionManager {
 
     Object get(String flowName, String flowId, String key);
 
-    default void flush(FlowContext<?,?> ctx) throws SessionException {
+    default void flush(FlowContext<?, ?> ctx) throws SessionException {
         //todo
     }
 

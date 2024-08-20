@@ -1,7 +1,6 @@
 package cn.hz.ddbm.pc.status.dao;
 
 import cn.hz.ddbm.pc.core.FlowContext;
-import cn.hz.ddbm.pc.core.Node;
 import cn.hz.ddbm.pc.core.State;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import org.springframework.beans.BeansException;
@@ -27,7 +26,6 @@ public class DaoStatusManager implements StatusManager, InitializingBean, Applic
     public void setStatus(String flow, Serializable flowId, State<?> flowStatus, Integer timeout, FlowContext<?, ?> ctx) throws IOException {
         flowDaoMap.get(flow).save(ctx.getData());
     }
-
 
 
     @Override

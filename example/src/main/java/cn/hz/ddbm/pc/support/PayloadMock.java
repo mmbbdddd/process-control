@@ -1,6 +1,7 @@
 package cn.hz.ddbm.pc.support;
 
-import cn.hz.ddbm.pc.core.*;
+import cn.hz.ddbm.pc.core.FlowPayload;
+import cn.hz.ddbm.pc.core.State;
 import cn.hz.ddbm.pc.core.enums.FlowStatus;
 
 import java.io.Serializable;

@@ -23,13 +23,13 @@ public class RedisStatistics implements StatisticsSupport {
 
     @Override
     public void increment(String flowName, Serializable flowId, Enum node, String key) {
-        String realKey = String.format("%s:%s:%s:%s",flowName,flowId,node.name(),key);
+        String realKey = String.format("%s:%s:%s:%s", flowName, flowId, node.name(), key);
         redisTemplate.opsForValue().increment(realKey);
     }
 
     @Override
-    public Long get(String flowName, Serializable flowId,Enum node,String key) {
-        String realKey = String.format("%s:%s:%s:%s",flowName,flowId,node.name(),key);
+    public Long get(String flowName, Serializable flowId, Enum node, String key) {
+        String realKey = String.format("%s:%s:%s:%s", flowName, flowId, node.name(), key);
         return redisTemplate.opsForValue().get(realKey);
     }
 }

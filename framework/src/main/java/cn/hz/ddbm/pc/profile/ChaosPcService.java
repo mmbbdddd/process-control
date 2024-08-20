@@ -3,7 +3,6 @@ package cn.hz.ddbm.pc.profile;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import cn.hz.ddbm.pc.core.*;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.enums.FlowStatus;
@@ -12,7 +11,6 @@ import cn.hz.ddbm.pc.core.exception.wrap.StatusException;
 import cn.hz.ddbm.pc.core.log.Logs;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import cn.hz.ddbm.pc.profile.chaos.ChaosRule;
-import org.mockito.Mock;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -70,7 +68,7 @@ public class ChaosPcService extends PcService {
 
     private void printStatisticsReport() {
         Map<Pair, List<StatisticsLine>> groups = statisticsLines.stream()
-                                                                .collect(Collectors.groupingBy(t -> Pair.of(t.result.type, t.result.value)));
+                .collect(Collectors.groupingBy(t -> Pair.of(t.result.type, t.result.value)));
         Logs.flow.info("混沌测试报告：\\n");
         groups.forEach((triple, list) -> {
             Logs.flow.info("{},{},{}", triple.getKey(), triple.getValue(), list.size());
@@ -107,7 +105,7 @@ public class ChaosPcService extends PcService {
             return false;
         }
 
-        Long    executeCount = InfraUtils.getMetricsTemplate().get(ctx.getFlow().getName(),ctx.getId(), state.getName(),Coasts.EXECUTE_COUNT);
+        Long    executeCount = InfraUtils.getMetricsTemplate().get(ctx.getFlow().getName(), ctx.getId(), state.getName(), Coasts.EXECUTE_COUNT);
         Integer nodeRetry    = ctx.getFlow().getNode(state.getName()).getRetry();
 
         if (executeCount > nodeRetry) {
@@ -124,7 +122,7 @@ public class ChaosPcService extends PcService {
 
 
     public static class MockPayLoad<S extends Enum<S>> implements FlowPayload<S> {
-        Integer id;
+        Integer  id;
         State<S> status;
 
         public MockPayLoad(S init) {
@@ -147,7 +145,7 @@ public class ChaosPcService extends PcService {
 
         @Override
         public void setStatus(State<S> status) {
-            this.status     = status;
+            this.status = status;
         }
 
         public MockPayLoad<S> copy(Integer id) {
@@ -158,9 +156,9 @@ public class ChaosPcService extends PcService {
     }
 
     static class StatisticsLine {
-        Serializable       index;
-        Object    requestInfo;
-        TypeValue result;
+        Serializable index;
+        Object       requestInfo;
+        TypeValue    result;
 
         public StatisticsLine(Serializable i, Object o, Object result) {
             this.index       = i;

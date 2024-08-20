@@ -2,7 +2,6 @@ package cn.hz.ddbm.pc.example;
 
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.map.multi.Table;
-import cn.hz.ddbm.pc.core.Node;
 import cn.hz.ddbm.pc.core.Plugin;
 import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.coast.Coasts;
@@ -10,13 +9,8 @@ import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
-import cn.hz.ddbm.pc.example.actions.PayAction;
-import cn.hz.ddbm.pc.example.actions.PayQueryAction;
-import cn.hz.ddbm.pc.example.actions.SendAction;
-import cn.hz.ddbm.pc.example.actions.SendQueryAction;
 import cn.hz.ddbm.pc.factory.dsl.FSM;
 import cn.hz.ddbm.pc.profile.PcService;
-import cn.hz.ddbm.pc.support.DigestLogPluginMock;
 import org.mockito.internal.util.collections.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,11 +99,11 @@ public class IDCardFSM implements FSM<IDCardState>, InitializingBean {
     @Override
     public void transitions(Transitions<IDCardState> t) {
 //        payAction:执行本地扣款
-        t.saga(IDCardState.init, Coasts.EVENT_DEFAULT, IDCardState.payed_failover, "payAction", "payRouter")
+        t.saga(IDCardState.init, Coasts.EVENT_DEFAULT, Sets.newSet(IDCardState.init), IDCardState.payed_failover, "payAction", "payRouter")
                 //本地扣款容错payQueryAction 扣款结果查询
                 .router(IDCardState.payed_failover, Coasts.EVENT_DEFAULT, "payQueryAction", "payRouter")
                 //发送异常，不明确是否发送
-                .saga(IDCardState.payed, Coasts.EVENT_DEFAULT, IDCardState.sended_failover, "sendAction", "sendRouter")
+                .saga(IDCardState.payed, Coasts.EVENT_DEFAULT, Sets.newSet(IDCardState.payed), IDCardState.sended_failover, "sendAction", "sendRouter")
                 .router(IDCardState.sended_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
                 //sendAction，执行远程发生&sendQueryAction。
                 .router(IDCardState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter");

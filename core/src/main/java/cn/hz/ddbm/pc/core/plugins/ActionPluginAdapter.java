@@ -1,10 +1,10 @@
 package cn.hz.ddbm.pc.core.plugins;
 
+import cn.hz.ddbm.pc.core.Action;
 import cn.hz.ddbm.pc.core.FlowContext;
 import cn.hz.ddbm.pc.core.Plugin;
-import cn.hz.ddbm.pc.core.SimpleAction;
 
-public interface ActionPluginAdapter<S extends Enum<S>> extends Plugin<S> , SimpleAction<S> {
+public interface ActionPluginAdapter<S extends Enum<S>> extends Plugin<S>, Action<S> {
 
     @Override
     default String code() {

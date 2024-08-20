@@ -3,14 +3,19 @@ package cn.hz.ddbm.pc.factory.dsl;
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.map.multi.RowKeyTable;
 import cn.hutool.core.map.multi.Table;
-import cn.hz.ddbm.pc.core.*;
+import cn.hz.ddbm.pc.core.Fsm;
+import cn.hz.ddbm.pc.core.Plugin;
+import cn.hz.ddbm.pc.core.Profile;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import cn.hz.ddbm.pc.core.support.SessionManager;
 import cn.hz.ddbm.pc.core.support.StatusManager;
 import lombok.Getter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface FSM<S extends Enum<S>> {
     String flowId();
@@ -51,7 +56,7 @@ public interface FSM<S extends Enum<S>> {
         transitions(transitions);
         transitions.transitions.forEach(t -> {
             if (t.getType().equals(Fsm.FsmRecordType.SAGA)) {
-                fsm.getFsmTable().saga(t.getFrom(), t.event, t.failover, t.action, t.router);
+                fsm.getFsmTable().saga(t.getFrom(), t.event, t.conditions, t.failover, t.action, t.router);
             }
             if (t.getType().equals(Fsm.FsmRecordType.ROUTER)) {
                 fsm.getFsmTable().router(t.getFrom(), t.getEvent(), t.getAction(), t.router);
@@ -88,8 +93,8 @@ public interface FSM<S extends Enum<S>> {
             return this;
         }
 
-        public Transitions<S> saga(S node, String event, S failover, String action, String router) {
-            transitions.add(Transition.sagaOf(node, event, failover, action, router));
+        public Transitions<S> saga(S node, String event, Set<S> conditions, S failover, String action, String router) {
+            transitions.add(Transition.sagaOf(node, event, conditions, failover, action, router));
             return this;
         }
     }
@@ -99,6 +104,7 @@ public interface FSM<S extends Enum<S>> {
         Fsm.FsmRecordType type;
         S                 from;
         String            event;
+        Set<S>            conditions;
         S                 failover;
         String            action;
         S                 to;
@@ -125,14 +131,15 @@ public interface FSM<S extends Enum<S>> {
             return t;
         }
 
-        public static <S> Transition<S> sagaOf(S node, String event, S failover, String action, String router) {
+        public static <S> Transition<S> sagaOf(S node, String event, Set<S> conditions, S failover, String action, String router) {
             Transition<S> t = new Transition<S>();
-            t.type     = Fsm.FsmRecordType.SAGA;
-            t.from     = node;
-            t.event    = event;
-            t.action   = action;
-            t.failover = failover;
-            t.router   = router;
+            t.type       = Fsm.FsmRecordType.SAGA;
+            t.from       = node;
+            t.event      = event;
+            t.action     = action;
+            t.conditions = conditions;
+            t.failover   = failover;
+            t.router     = router;
             return t;
         }
     }

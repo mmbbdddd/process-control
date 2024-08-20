@@ -1,8 +1,5 @@
 package cn.hz.ddbm.pc.example;
 
-import cn.hz.ddbm.pc.core.Node;
-import cn.hz.ddbm.pc.factory.dsl.FSM;
-
 public enum IDCardState {
     init("初始化"),
     payed("已扣款（local）"),

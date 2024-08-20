@@ -11,7 +11,7 @@ public interface Plugin<S extends Enum<S>> extends ValueObject {
 
     void preAction(String name, FlowContext<S, ?> ctx);
 
-    void postAction(String name, S lastNode,FlowContext<S, ?> ctx);
+    void postAction(String name, S lastNode, FlowContext<S, ?> ctx);
 
     void onActionException(String actionName, S preNode, Exception e, FlowContext<S, ?> ctx);
 

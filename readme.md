@@ -82,43 +82,43 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
         logger.info("构建订单状态机");
 
         builder.withStates()
-               .initial(PcState.init)
-               .ends(PcState.su, PcState.fail, PcState.error)
-               .states(EnumSet.allOf(PcState.class))
+                .initial(PcState.init)
+                .ends(PcState.su, PcState.fail, PcState.error)
+                .states(EnumSet.allOf(PcState.class))
         ;
 
         builder.withTransitions()
-               .router(PcState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter", null)
-               //发送异常，不明确是否发送
-               .router(PcState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
-               //已发送，对方处理中
-               .router(PcState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
-               //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
-               .router(PcState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter", null)
+                .router(PcState.init, Coasts.EVENT_DEFAULT, "sendAction", "sendRouter", null)
+                //发送异常，不明确是否发送
+                .router(PcState.send_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
+                //已发送，对方处理中
+                .router(PcState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter", null)
+                //校验资料是否缺失&提醒用户  & ==》依然缺，已经补充
+                .router(PcState.miss_data, Coasts.EVENT_DEFAULT, "validateAndNotifyUserAction", "notifyRouter", null)
 //                资料就绪状态，可重新发送
-               .to(PcState.miss_data_fulled, Coasts.EVENT_DEFAULT, "", PcState.init)
+                .to(PcState.miss_data_fulled, Coasts.EVENT_DEFAULT, "", PcState.init)
         //用户上传资料  && 更新资料状态
 //                .to(PcState.miss_data, "uploade", "", "miss_data")
         ;
 
         builder.withRouters()
 //                .register("simpleRouter", new ExpressionRouter(new HashMap<>()))
-               .register(new ExpressionRouter("sendRouter",
-                       //sendRouter 有1/10的机会命中
-                       new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.1"),
-                       //su 有6/10的机会命中
-                       new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
-                       //fail 有1/10的机会命中
-                       new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.1"),
-                       //error 有2/10的机会命中
-                       new ExpressionRouter.NodeExpression("error", "Math.random() < 0.2")
-               ))
-               .register(new ExpressionRouter("notifyRouter",
-                       new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.1"),
-                       new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
-                       new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.1"),
-                       new ExpressionRouter.NodeExpression("error", "Math.random() < 0.2")
-               ))
+                .register(new ExpressionRouter("sendRouter",
+                        //sendRouter 有1/10的机会命中
+                        new ExpressionRouter.NodeExpression("sendRouter", "Math.random() < 0.1"),
+                        //su 有6/10的机会命中
+                        new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
+                        //fail 有1/10的机会命中
+                        new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.1"),
+                        //error 有2/10的机会命中
+                        new ExpressionRouter.NodeExpression("error", "Math.random() < 0.2")
+                ))
+                .register(new ExpressionRouter("notifyRouter",
+                        new ExpressionRouter.NodeExpression("notifyRouter", "Math.random() <0.1"),
+                        new ExpressionRouter.NodeExpression("su", "Math.random() < 0.6"),
+                        new ExpressionRouter.NodeExpression("fail", "Math.random() < 0.1"),
+                        new ExpressionRouter.NodeExpression("error", "Math.random() < 0.2")
+                ))
         ;
 
         return builder.build();
@@ -157,23 +157,23 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
 }
 
 
-    @Test
-    public void pc() throws Exception {
-        AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
-        ctx.register(PcDemo.class);
-        ctx.refresh();
-        PcConfig pcConfig = new PcConfig();
-        Flow     flow     = pcConfig.build(null);
-        String   event    = Coasts.EVENT_DEFAULT;
-        chaosService.addFlow(flow);
+@Test
+public void pc() throws Exception {
+    AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+    ctx.register(PcDemo.class);
+    ctx.refresh();
+    PcConfig pcConfig = new PcConfig();
+    Flow     flow     = pcConfig.build(null);
+    String   event    = Coasts.EVENT_DEFAULT;
+    chaosService.addFlow(flow);
 
-        try {
-            //验证100次，统计流程健壮性报表
-            chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    try {
+        //验证100次，统计流程健壮性报表
+        chaosService.execute("test", new PayloadMock(flow.getInit().getName()), event, 100, 10);
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
  ```
 
@@ -225,9 +225,7 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
     * 大数据关注点：埋点、ab
     * 数字化运营关注点：指标，ROI，步骤环节、动态运营
 
-
 [详细说明](doc/架构作用.md)
-
 
 # 架构介绍
 
@@ -237,11 +235,6 @@ public class PcConfig implements StateMachineConfig<PcConfig.PcState> {
 
 ![img.png](doc/img.png)
 
-
-
- 
-
- 
 # 相关文档
 
 

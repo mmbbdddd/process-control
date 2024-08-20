@@ -1,13 +1,13 @@
 package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.lang.Assert;
-import cn.hz.ddbm.pc.core.action.RouterAction;
-import cn.hz.ddbm.pc.core.action.SagaAction;
-import cn.hz.ddbm.pc.core.action.ToAction;
 import cn.hz.ddbm.pc.core.coast.Coasts;
 import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import cn.hz.ddbm.pc.core.exception.wrap.ActionException;
-import cn.hz.ddbm.pc.core.exception.wrap.RouterException;
+import cn.hz.ddbm.pc.core.exception.wrap.StatusException;
+import cn.hz.ddbm.pc.core.processor.RouterProcessor;
+import cn.hz.ddbm.pc.core.processor.SagaProcessor;
+import cn.hz.ddbm.pc.core.processor.ToProcessor;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 import lombok.Data;
 import lombok.Getter;
@@ -68,7 +68,7 @@ public class Fsm<S extends Enum<S>> {
     }
 
 
-    public <T> void execute(FlowContext<S, ?> ctx) throws RouterException, ActionException, FsmEndException {
+    public <T> void execute(FlowContext<S, ?> ctx) throws ActionException, FsmEndException, StatusException {
         Assert.isTrue(true, "ctx is null");
         State<S> node = ctx.getStatus();
         if (!node.isRunnable()) {
@@ -105,8 +105,7 @@ public class Fsm<S extends Enum<S>> {
 
     @Override
     public String toString() {
-        return "{" + "name:'" + name + '\'' + ", descr:'" + descr + '\'' + ", init:" + init + ",nodes:" + nodes + ", fsmTable:" + Arrays.toString(fsmTable.records.toArray(
-                new FsmRecord[fsmTable.records.size()])) + '}';
+        return "{" + "name:'" + name + '\'' + ", descr:'" + descr + '\'' + ", init:" + init + ",nodes:" + nodes + ", fsmTable:" + Arrays.toString(fsmTable.records.toArray(new FsmRecord[fsmTable.records.size()])) + '}';
     }
 
 
@@ -119,11 +118,7 @@ public class Fsm<S extends Enum<S>> {
         }
 
         public FsmRecord<S> find(S node, String event) {
-            return records
-                    .stream()
-                    .filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent(), event))
-                    .findFirst()
-                    .orElse(null);
+            return records.stream().filter(r -> Objects.equals(r.getFrom(), node) && Objects.equals(r.getEvent(), event)).findFirst().orElse(null);
         }
 
 
@@ -135,15 +130,15 @@ public class Fsm<S extends Enum<S>> {
          * 参见onInner
          */
         public void to(S from, String event, String toAction, S to) {
-            this.records.add(new FsmRecord<>(FsmRecordType.TO, from, event, toAction, null, null, to));
+            this.records.add(new FsmRecord<>(FsmRecordType.TO, from, event, toAction, null, null, to, null));
         }
 
         public void router(S from, String event, String actionDsl, String router) {
-            this.records.add(new FsmRecord<>(FsmRecordType.ROUTER, from, event, actionDsl, null, router, null));
+            this.records.add(new FsmRecord<>(FsmRecordType.ROUTER, from, event, actionDsl, null, router, null, null));
         }
 
-        public void saga(S from, String event, S failover, String actionDsl, String router) {
-            this.records.add(new FsmRecord<>(FsmRecordType.SAGA, from, event, actionDsl, failover, router, null));
+        public void saga(S from, String event, Set<S> conditions, S failover, String actionDsl, String router) {
+            this.records.add(new FsmRecord<>(FsmRecordType.SAGA, from, event, actionDsl, failover, router, null, conditions));
         }
 
 
@@ -155,44 +150,46 @@ public class Fsm<S extends Enum<S>> {
 
     @Data
     public static class FsmRecord<S extends Enum<S>> {
-        FsmRecordType type;
-        S             from;
-        String         event;
-        String        actionDsl;
-        String        router;
-        S             to;
-        S             failover;
-        ActionBase<S> action;
+        FsmRecordType       type;
+        S                   from;
+        String              event;
+        String              actionDsl;
+        String              router;
+        S                   to;
+        S                   failover;
+        Set<S>              conditions;
+        BaseProcessor<?, S> action;
 
-        public FsmRecord(FsmRecordType type, S from, String event, String action, S failover, String router, S to) {
-            this.type      = type;
-            this.from      = from;
-            this.event     = event;
-            this.actionDsl = action;
-            this.failover  = failover;
-            this.to        = to;
-            this.router    = router;
+        public FsmRecord(FsmRecordType type, S from, String event, String action, S failover, String router, S to, Set<S> conditions) {
+            this.type       = type;
+            this.from       = from;
+            this.event      = event;
+            this.actionDsl  = action;
+            this.failover   = failover;
+            this.conditions = conditions;
+            this.to         = to;
+            this.router     = router;
         }
 
 
-        public void execute(FlowContext<S, ?> ctx) throws RouterException, ActionException {
+        public void execute(FlowContext<S, ?> ctx) throws ActionException, StatusException {
             action.execute(ctx);
         }
 
-        public ActionBase<S> initExecutor(FlowContext<S, ?> ctx) {
+        public BaseProcessor<?, S> initExecutor(FlowContext<S, ?> ctx) {
             if (null == action) {
                 synchronized (this) {
                     switch (type) {
                         case TO: {
-                            this.action = new ToAction<S>(this, ctx.getFlow().getPlugins());
+                            this.action = new ToProcessor<S>(this, ctx.getFlow().getPlugins());
                             break;
                         }
                         case SAGA: {
-                            this.action = new SagaAction<>(this, ctx.getFlow().getPlugins());
+                            this.action = new SagaProcessor<S>(this, ctx.getFlow().getPlugins());
                             break;
                         }
                         default: {
-                            this.action = new RouterAction<>(this, ctx.getFlow().getPlugins());
+                            this.action = new RouterProcessor<S>(this, ctx.getFlow().getPlugins());
                             break;
                         }
                     }

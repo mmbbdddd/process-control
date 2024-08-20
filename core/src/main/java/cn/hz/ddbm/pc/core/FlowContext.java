@@ -14,25 +14,25 @@ import java.util.Map;
 @Getter
 public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
     //    入参
-    private Serializable  id;
-    private T             data;
-    private Fsm<S>        flow;
+    private Serializable        id;
+    private T                   data;
+    private Fsm<S>              flow;
     @Setter
-    private Boolean       fluent;
+    private Boolean             fluent;
     @Setter
-    private String        event;
+    private String              event;
     @Setter
-    private State<S>       status;
+    private State<S>            status;
     @Setter
-    private ActionBase<S> executor;
+    private BaseProcessor<?, S> executor;
     @Setter
-    private Profile<S>    profile;
+    private Profile<S>          profile;
     @Setter
-    private Boolean       mockBean = false;
+    private Boolean             mockBean = false;
     @Setter
-    private Boolean       isChaos = false;
+    private Boolean             isChaos  = false;
     @Setter
-    private S             nextNode;
+    private S                   nextNode;
 
 
     public FlowContext(Fsm<S> flow, T data, String event, Profile profile) {
@@ -59,7 +59,7 @@ public class FlowContext<S extends Enum<S>, T extends FlowPayload<S>> {
 
     public void metricsNode(FlowContext<S, ?> ctx) {
         StatisticsSupport metricsWindows = InfraUtils.getMetricsTemplate();
-        metricsWindows.increment(ctx.getFlow().getName(),ctx.getId(),ctx.getStatus().getName(),Coasts.EXECUTE_COUNT);
+        metricsWindows.increment(ctx.getFlow().getName(), ctx.getId(), ctx.getStatus().getName(), Coasts.EXECUTE_COUNT);
     }
 
     /**

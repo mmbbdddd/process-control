@@ -3,8 +3,6 @@ package cn.hz.ddbm.pc.core;
 import cn.hz.ddbm.pc.core.enums.FlowStatus;
 import lombok.Getter;
 
-import java.util.Objects;
-
 @Getter
 public class Node<S extends Enum<S>> {
     S                 name;

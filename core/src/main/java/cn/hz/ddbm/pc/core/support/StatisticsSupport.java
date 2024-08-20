@@ -1,8 +1,6 @@
 package cn.hz.ddbm.pc.core.support;
 
 
-import cn.hz.ddbm.pc.core.Fsm;
-
 import java.io.Serializable;
 
 /**
@@ -14,7 +12,7 @@ import java.io.Serializable;
 
 
 public interface StatisticsSupport {
-    void increment(String flowName, Serializable flowId,Enum node,String key);
+    void increment(String flowName, Serializable flowId, Enum node, String key);
 
-    Long get(String flowName, Serializable flowId,Enum node,String key);
+    Long get(String flowName, Serializable flowId, Enum node, String key);
 }
