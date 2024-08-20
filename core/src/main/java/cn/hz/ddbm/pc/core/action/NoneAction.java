@@ -25,8 +25,4 @@ public class NoneAction implements Action, Action.QueryAction, Action.SagaAction
         return null;
     }
 
-    @Override
-    public Enum getExecuteResult(FsmContext ctx) {
-        return null;
-    }
 }

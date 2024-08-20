@@ -51,7 +51,7 @@ public class SagaProcessor<S extends Enum<S>> extends BaseProcessor<Action.SagaA
             Set<S> conditions   = getFsmRecord().getConditions();
             if (conditions.contains(currentState)) {
                 action(ctx).execute(ctx);
-                S nextNode = action(ctx).getExecuteResult(ctx);
+                S nextNode = action(ctx).query(ctx);
                 if (null == nextNode) {
                     nextNode = getFsmRecord().getFailover();
                 }

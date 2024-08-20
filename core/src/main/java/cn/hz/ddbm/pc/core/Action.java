@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.core;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hz.ddbm.pc.core.action.MultiSimpleAction;
+import cn.hz.ddbm.pc.core.action.MultiAction;
 import cn.hz.ddbm.pc.core.action.NoneAction;
 import cn.hz.ddbm.pc.core.utils.InfraUtils;
 
@@ -21,7 +21,6 @@ public interface Action<S extends Enum<S>> {
 
     interface SagaAction<S extends Enum<S>> extends Action<S>, QueryAction<S> {
 
-        S getExecuteResult(FsmContext<S, ?> ctx);
     }
 
     /**
@@ -57,7 +56,7 @@ public interface Action<S extends Enum<S>> {
             List<Action> actions = Arrays.stream(actionBeanNames)
                     .map(name -> InfraUtils.getBean(name, Action.class))
                     .collect(Collectors.toList());
-            return (T) new MultiSimpleAction(actionDsl, actions);
+            return (T) new MultiAction(actionDsl, actions);
         }
         return (T) new NoneAction("");
     }
