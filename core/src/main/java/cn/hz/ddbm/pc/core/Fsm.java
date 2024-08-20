@@ -140,15 +140,15 @@ public class Fsm<S extends Enum<S>> {
          * 参见onInner
          */
         public void to(S from, String event, String toAction, S to) {
-            this.records.add(new Transition<>(TransitionType.TO, from, event, toAction, null, null, to, null));
+            this.records.add(new Transition<>(TransitionType.TO, from, event, toAction, null, to, null));
         }
 
-        public void router(S from, String event, String actionDsl, String router) {
-            this.records.add(new Transition<>(TransitionType.ROUTER, from, event, actionDsl, null, router, null, null));
+        public void router(S from, String event, String actionDsl) {
+            this.records.add(new Transition<>(TransitionType.ROUTER, from, event, actionDsl, null, null, null));
         }
 
-        public void saga(S from, String event, Set<S> conditions, S failover, String actionDsl, String router) {
-            this.records.add(new Transition<>(TransitionType.SAGA, from, event, actionDsl, failover, router, null, conditions));
+        public void saga(S from, String event, Set<S> conditions, S failover, String actionDsl) {
+            this.records.add(new Transition<>(TransitionType.SAGA, from, event, actionDsl, failover, null, conditions));
         }
 
 
@@ -164,13 +164,12 @@ public class Fsm<S extends Enum<S>> {
         S                   from;
         String              event;
         String              actionDsl;
-        String              router;
         S                   to;
         S                   failover;
         Set<S>              conditions;
         BaseProcessor<?, S> processor;
 
-        public Transition(TransitionType type, S from, String event, String action, S failover, String router, S to, Set<S> conditions) {
+        public Transition(TransitionType type, S from, String event, String action, S failover, S to, Set<S> conditions) {
             this.type       = type;
             this.from       = from;
             this.event      = event;
@@ -178,7 +177,6 @@ public class Fsm<S extends Enum<S>> {
             this.failover   = failover;
             this.conditions = conditions;
             this.to         = to;
-            this.router     = router;
         }
 
 

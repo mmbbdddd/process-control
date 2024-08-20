@@ -112,10 +112,10 @@ public interface FSM<S extends Enum<S>> {
         transitions(transitions);
         transitions.transitions.forEach(t -> {
             if (t.getType().equals(Fsm.TransitionType.SAGA)) {
-                fsm.getEventTable().saga(t.getFrom(), t.event, t.conditions, t.failover, t.action, t.router);
+                fsm.getEventTable().saga(t.getFrom(), t.event, t.conditions, t.failover, t.action);
             }
             if (t.getType().equals(Fsm.TransitionType.ROUTER)) {
-                fsm.getEventTable().router(t.getFrom(), t.getEvent(), t.getAction(), t.router);
+                fsm.getEventTable().router(t.getFrom(), t.getEvent(), t.getAction());
             }
             if (t.getType().equals(Fsm.TransitionType.TO)) {
                 fsm.getEventTable().to(t.getFrom(), t.getEvent(), t.getAction(), t.to);
@@ -144,13 +144,13 @@ public interface FSM<S extends Enum<S>> {
             return this;
         }
 
-        public Transitions<S> router(S node, String event, String action, String router) {
-            transitions.add(Transition.routerOf(node, event, action, router));
+        public Transitions<S> router(S node, String event, String action) {
+            transitions.add(Transition.routerOf(node, event, action));
             return this;
         }
 
-        public Transitions<S> saga(S node, String event, Set<S> conditions, S failover, String action, String router) {
-            transitions.add(Transition.sagaOf(node, event, conditions, failover, action, router));
+        public Transitions<S> saga(S node, String event, Set<S> conditions, S failover, String action) {
+            transitions.add(Transition.sagaOf(node, event, conditions, failover, action));
             return this;
         }
     }
@@ -164,16 +164,14 @@ public interface FSM<S extends Enum<S>> {
         S                 failover;
         String            action;
         S                 to;
-        String            router;
 
 
-        public static <S> Transition<S> routerOf(S node, String event, String action, String router) {
+        public static <S> Transition<S> routerOf(S node, String event, String action) {
             Transition<S> t = new Transition<S>();
             t.type   = Fsm.TransitionType.ROUTER;
             t.from   = node;
             t.event  = event;
             t.action = action;
-            t.router = router;
             return t;
         }
 
@@ -187,7 +185,7 @@ public interface FSM<S extends Enum<S>> {
             return t;
         }
 
-        public static <S> Transition<S> sagaOf(S node, String event, Set<S> conditions, S failover, String action, String router) {
+        public static <S> Transition<S> sagaOf(S node, String event, Set<S> conditions, S failover, String action) {
             Transition<S> t = new Transition<S>();
             t.type       = Fsm.TransitionType.SAGA;
             t.from       = node;
@@ -195,7 +193,6 @@ public interface FSM<S extends Enum<S>> {
             t.action     = action;
             t.conditions = conditions;
             t.failover   = failover;
-            t.router     = router;
             return t;
         }
     }
