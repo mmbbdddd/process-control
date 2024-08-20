@@ -22,6 +22,7 @@
         <module>locker</module>
         <module>statistics</module>
         <module>example</module>
+        <module>scheudule</module>
         <module>build-all</module>
     </modules>
 
