@@ -41,8 +41,81 @@
 详细  [编排代码](example/src/main/java/cn/hz/ddbm/pc/example/PayFsm.java)
 
 ## 2 混沌验证
+我们可以在业务逻辑没没有实现的情况下，执行流程。验证
+
+* 1，流程设计是否合理
+* 2，整体执行成功率是多少
+* 3，可以通过什么机制优化？
+* 4，异常情况下，成功率会如何下降？应该如何优化？
+
+```java
+
+    @Test
+    public void chaos() throws Exception {
+        String event = Coasts.EVENT_DEFAULT; 
+        List<ChaosRule> rules = new ArrayList<ChaosRule>() {{
+            //注入业务逻辑异常，概率20%
+//            add(new ChaosRule(ChaosTarget.ACTION, "true", "action异常", 0.1, new ArrayList<Class<? extends Throwable>>() {{
+//                add(RuntimeException.class);
+//                add(Exception.class);
+//            }}));
+            //注入锁错误
+//            add(new ChaosRule(ChaosTarget.LOCK, "true", "锁异常", 0.1, new ArrayList<Class<? extends Throwable>>() {{
+//                add(RuntimeException.class);
+//                add(Exception.class);
+//            }}));
+        }};
+        try {
+            //执行1000次，执行报表
+            chaosService.execute("test", new ChaosPcService.MockPayLoad(PayState.init), event, 1000, 10, rules, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+```
+
+理想情况下，1000笔交易retry = 1的有（716+79）/1000可以完成。其他卡在执行次数限制上
+```shell
+2024-08-20 12:39:45.311  INFO 3770 --- [           main] flow                                     : 混沌测试报告：\n
+2024-08-20 12:39:45.311  INFO 3770 --- [           main] flow                                     : FlowContext,sended_failover:RUNNABLE,70
+2024-08-20 12:39:45.311  INFO 3770 --- [           main] flow                                     : FlowContext,payed_failover:RUNNABLE,125
+2024-08-20 12:39:45.311  INFO 3770 --- [           main] flow                                     : FlowContext,init:RUNNABLE,2
+2024-08-20 12:39:45.311  INFO 3770 --- [           main] flow                                     : FlowContext,sended:RUNNABLE,8
+2024-08-20 12:39:45.311  INFO 3770 --- [           main] flow                                     : FlowContext,fail:FINISH,79
+2024-08-20 12:39:45.311  INFO 3770 --- [           main] flow                                     : FlowContext,su:FINISH,716
+
+```
+ retry = 2 的情况下 ，有（850+111）/1000可以完成
+```shell
+2024-08-20 12:40:44.221  INFO 3795 --- [           main] flow                                     : 混沌测试报告：\n
+2024-08-20 12:40:44.221  INFO 3795 --- [           main] flow                                     : FlowContext,sended_failover:RUNNABLE,7
+2024-08-20 12:40:44.221  INFO 3795 --- [           main] flow                                     : FlowContext,payed_failover:RUNNABLE,30
+2024-08-20 12:40:44.221  INFO 3795 --- [           main] flow                                     : FlowContext,sended:RUNNABLE,2
+2024-08-20 12:40:44.221  INFO 3795 --- [           main] flow                                     : FlowContext,su:FINISH,850
+2024-08-20 12:40:44.221  INFO 3795 --- [           main] flow                                     : FlowContext,fail:FINISH,111
+```
+混沌情况下&retry =2
+
+```java
+           add(new ChaosRule(ChaosTarget.ACTION, "true", "action异常", 0.1, new ArrayList<Class<? extends Throwable>>() {{
+               add(RuntimeException.class);
+                add(Exception.class);
+            }}));
+```
+```shell
+2024-08-20 12:43:43.953  INFO 3824 --- [           main] flow                                     : 混沌测试报告：\n
+2024-08-20 12:43:43.953  INFO 3824 --- [           main] flow                                     : FlowContext,sended_failover:RUNNABLE,3
+2024-08-20 12:43:43.954  INFO 3824 --- [           main] flow                                     : FlowContext,payed_failover:RUNNABLE,35
+2024-08-20 12:43:43.954  INFO 3824 --- [           main] flow                                     : FlowContext,sended:RUNNABLE,2
+2024-08-20 12:43:43.954  INFO 3824 --- [           main] flow                                     : FlowContext,fail:FINISH,118
+2024-08-20 12:43:43.954  INFO 3824 --- [           main] flow                                     : FlowContext,su:FINISH,840
+
+```
+
 
 ## 3 逻辑实现
+
+参见 [业务逻辑实现](example/src/main/java/cn/hz/ddbm/pc/example/actions)
 
 
 
