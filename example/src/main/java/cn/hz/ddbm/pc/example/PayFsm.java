@@ -125,8 +125,13 @@ public class PayFsm implements FSM<PayState>, InitializingBean {
         return profile;
     }
 
+    @Override
+    public Map<PayState, String> cron() {
+        return new HashMap<>();
+    }
 
-    public String flowId() {
+
+    public String fsmId() {
         return "test";
     }
 

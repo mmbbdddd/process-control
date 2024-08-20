@@ -18,27 +18,83 @@ import java.util.Map;
 import java.util.Set;
 
 public interface FSM<S extends Enum<S>> {
-    String flowId();
+    /**
+     * 状态机ID
+     * @return
+     */
+    String fsmId();
 
+    /**
+     * 状态机说明
+     * @return
+     */
     String describe();
 
+    /**
+     * 定义插件，在每个节点执行前后执行。
+     * 常用的插件有日志插件，监控埋点插件……
+     * @return
+     */
     List<Plugin> plugins();
 
+    /**
+     * 参见profile
+     * @return
+     */
     SessionManager.Type session();
 
+    /**
+     *  参见profile
+     * @return
+     */
     StatusManager.Type status();
 
+    /**
+     * 定义流程编排的各节点
+     * Map<节点，节点类型/>
+     * @return
+     */
     Map<S, FlowStatus> nodes();
 
+    /**
+     * 定义混沌模式下，每个节点可能的状态值。
+     * Table<节点，事件,Set<Pair<目标节点,发生概率>>
+     * @param table
+     * @return
+     */
     Table<S, String, Set<Pair<S, Double>>> maybeResults(Table<S, String, Set<Pair<S, Double>>> table);
 
+    /**
+     * 流程变迁设置，包含三种类型
+     *  事务业务：saga
+     *  非事务业务：to
+     *  查询业务：router
+     *
+     * @param transitions
+     */
     void transitions(Transitions<S> transitions);
 
+    /**
+     * 参见profile
+     * @return
+     */
     Map<S, Profile.StepAttrs> stateAttrs();
-
+    /**
+     * 参见profile
+     */
     Map<String, Profile.ActionAttrs> actionAttrs();
 
+    /**
+     * 流程的配置，例如状态管理，会话管理，缺省重试次数，超时事件，节点属性，atcion属性等
+     * @return
+     */
     Profile<S> profile();
+
+    /**
+     * 节点>cron表达式
+     * @return
+     */
+    Map<S,String> cron();
 
 
     default Fsm<S> build() throws Exception {
@@ -50,7 +106,7 @@ public interface FSM<S extends Enum<S>> {
         profile.setStates(stepAttrsMap);
         Table<S, String, Set<Pair<S, Double>>> maybeResults = new RowKeyTable<>();
         profile.setMaybeResults(maybeResults(maybeResults));
-        Fsm<S> fsm = Fsm.of(flowId(), describe(), nodes(), profile);
+        Fsm<S> fsm = Fsm.of(fsmId(), describe(), nodes(), profile);
         fsm.setPlugins(plugins());
         Transitions<S> transitions = new Transitions<>();
         transitions(transitions);
