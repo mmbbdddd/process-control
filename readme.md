@@ -25,14 +25,14 @@
     @Override
     public void transitions(Transitions<PayState> t) {
 //        payAction:执行本地扣款
-        t.saga(PayState.init, Coasts.EVENT_DEFAULT, Sets.newSet(PayState.init), PayState.payed_failover, "payAction", "payRouter")
+        t.saga(PayState.init, Coasts.EVENT_DEFAULT, Sets.newSet(PayState.init), PayState.payed_failover, "payAction")
                 //本地扣款容错payQueryAction 扣款结果查询
-                .router(PayState.payed_failover, Coasts.EVENT_DEFAULT, "payQueryAction", "payRouter")
+                .router(PayState.payed_failover, Coasts.EVENT_DEFAULT, "payQueryAction")
                 //发送异常，不明确是否发送
-                .saga(PayState.payed, Coasts.EVENT_DEFAULT, Sets.newSet(PayState.payed), PayState.sended_failover, "sendAction", "sendRouter")
-                .router(PayState.sended_failover, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter")
+                .saga(PayState.payed, Coasts.EVENT_DEFAULT, Sets.newSet(PayState.payed), PayState.sended_failover, "sendAction")
+                .router(PayState.sended_failover, Coasts.EVENT_DEFAULT, "sendQueryAction")
                 //sendAction，执行远程发生&sendQueryAction。
-                .router(PayState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction", "sendRouter");
+                .router(PayState.sended, Coasts.EVENT_DEFAULT, "sendQueryAction");
     }
 
 ```
@@ -142,3 +142,5 @@
 ![img_2.png](img_2.png)
 ![img_3.png](img_3.png)
 ![img_4.png](img_4.png)
+
+# 性能比较（事务消息/流程编排）

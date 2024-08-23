@@ -2,6 +2,7 @@ package cn.hz.ddbm.pc.profile.chaos;
 
 import cn.hutool.core.util.ReflectUtil;
 import cn.hz.ddbm.pc.core.utils.ExpressionEngineUtils;
+import jdk.nashorn.internal.objects.annotations.Getter;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Objects;
  * 混沌规则表
  */
 public class ChaosRule {
+
     ChaosTarget                      target;
     /**
      * 触发条件，el表达式。
@@ -69,5 +71,9 @@ public class ChaosRule {
 
     public boolean probabilityIsTrue() {
         return Math.random() < probability;
+    }
+
+    public ChaosTarget getTarget() {
+        return target;
     }
 }

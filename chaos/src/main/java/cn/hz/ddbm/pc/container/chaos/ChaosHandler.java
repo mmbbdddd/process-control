@@ -13,16 +13,42 @@ import cn.hz.ddbm.pc.profile.chaos.ChaosTarget;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 混沌发生器。具体发生规则参见ChaosRule
  */
 public class ChaosHandler {
 
-    ChaosPcService chaosPcService;
+    List<ChaosRule> beanRules;
+    List<ChaosRule> actionRules;
 
     public ChaosHandler(ChaosPcService chaosPcService) {
-        this.chaosPcService = chaosPcService;
+        List<ChaosRule> chaosRules = chaosPcService.chaosRules();
+        this.beanRules   = chaosRules.stream()
+                                     .filter(r -> r.equals(ChaosTarget.LOCK) || r.equals(ChaosTarget.SESSION) || r.equals(ChaosTarget.STATUS))
+                                     .collect(Collectors.toList());
+        this.actionRules = chaosRules.stream()
+                                     .filter(r -> r.equals(ChaosTarget.ACTION))
+                                     .collect(Collectors.toList());
+    }
+
+    public void action(FsmContext ctx) {
+        Profile profile = ctx.getProfile();
+        if (ctx.getIsChaos()) {
+            BaseProcessor actionBase = ctx.getExecutor();
+            Enum          nextNode   = null;
+            if (actionBase.getFsmRecord().getType().equals(Fsm.TransitionType.TO)) {
+                nextNode = actionBase.getFsmRecord().getTo();
+            } else {
+                Enum                    from        = actionBase.getFsmRecord().getFrom();
+                String                  event       = actionBase.getFsmRecord().getEvent();
+                Set<Pair<Enum, Double>> statusRadio = (Set<Pair<Enum, Double>>) profile.getMaybeResults().get(from, event);
+                String                  key         = String.format("%s_%s", from.name(), event);
+                nextNode = RandomUitl.selectByWeight(key, statusRadio);
+            }
+            ctx.setNextNode(nextNode);
+        }
     }
 
     /**
@@ -34,35 +60,16 @@ public class ChaosHandler {
      * @throws Throwable
      */
     public <S extends Enum<S>> void handle(Object proxy, Method method, Object[] args) throws Throwable {
-        List<ChaosRule> rules      = chaosPcService.chaosRules();
-        ChaosTarget     targetType = getTargetType(proxy);
+        ChaosTarget targetType = getTargetType(proxy);
 
-        if (null != rules) {
-            for (ChaosRule rule : rules) {
+        if (null != beanRules) {
+            for (ChaosRule rule : beanRules) {
                 if (rule.match(targetType, proxy, method, args) && rule.probabilityIsTrue()) {
                     rule.raiseException();
                 }
             }
         }
 
-        if (proxy instanceof Action) {
-            FsmContext<S, ?> ctx     = (FsmContext<S, ?>) args[0];
-            Profile<S>       profile = ctx.getProfile();
-            if (ctx.getIsChaos()) {
-                BaseProcessor<?, S> actionBase = ctx.getExecutor();
-                S                   nextNode   = null;
-                if (actionBase.getFsmRecord().getType().equals(Fsm.TransitionType.TO)) {
-                    nextNode = actionBase.getFsmRecord().getTo();
-                } else {
-                    S                    from        = actionBase.getFsmRecord().getFrom();
-                    String               event       = actionBase.getFsmRecord().getEvent();
-                    Set<Pair<S, Double>> statusRadio = profile.getMaybeResults().get(from, event);
-                    String               key         = String.format("%s_%s", from.name(), event);
-                    nextNode = RandomUitl.selectByWeight(key, statusRadio);
-                }
-                ctx.setNextNode(nextNode);
-            }
-        }
     }
 
     private ChaosTarget getTargetType(Object proxy) {
