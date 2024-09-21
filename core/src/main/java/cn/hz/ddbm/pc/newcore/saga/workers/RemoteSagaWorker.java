@@ -51,6 +51,7 @@ public class RemoteSagaWorker extends SagaWorker {
                 break;
             case rollback_su:
                 ctx.state.index--;
+                ctx.state.offset = rollback;
                 break;
             case rollback_fail:
                 ctx.state.setFlowStatus(FlowStatus.MANUAL);

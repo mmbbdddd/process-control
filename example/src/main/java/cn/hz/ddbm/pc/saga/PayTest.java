@@ -4,6 +4,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.newcore.chaos.ChaosConfig;
 import cn.hz.ddbm.pc.newcore.chaos.ChaosService;
 import cn.hz.ddbm.pc.newcore.config.ChaosConfiguration;
+import cn.hz.ddbm.pc.newcore.factory.BeanSagaFlowFactory;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 import cn.hz.ddbm.pc.plugin.PerformancePlugin;
@@ -39,7 +40,9 @@ public class PayTest {
 
     @Test
     public void chaos() throws Exception {
-
+        account = new AtomicInteger(10000);
+        freezed = new AtomicInteger(0);
+        bank    = new AtomicInteger(0);
         try {
             //执行100此，查看流程中断概率
             chaosService.chaos("test", true, 3, 1, 4,
@@ -79,6 +82,13 @@ public class PayTest {
     }
 
     public static class CC {
+
+
+        @Bean
+        BeanSagaFlowFactory sagaFlowFactory() {
+            return new BeanSagaFlowFactory();
+        }
+
         @Bean
         SagaFreezeAction sagaFreezeAction() {
             return new SagaFreezeAction();
