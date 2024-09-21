@@ -45,7 +45,12 @@ public interface BaseFlow<S extends State> {
             return FlowHelper.chaosFlowAttrs();
         } else {
             FlowAttrs flowAttrs = FlowHelper.getFlowAttrsByContainer(this);
-            flowAttrs = null == flowAttrs ? FlowHelper.getFlowAttrsByJvm(this) : FlowHelper.defaultFlowAttrs();
+            if (null == flowAttrs) {
+                flowAttrs = FlowHelper.getFlowAttrsByJvm(this);
+            }
+            if (null == flowAttrs) {
+                flowAttrs = FlowHelper.defaultFlowAttrs();
+            }
             return flowAttrs;
         }
     }
@@ -61,7 +66,12 @@ public interface BaseFlow<S extends State> {
             return FlowHelper.chaosStateAttrs();
         } else {
             StateAttrs stateAttrs = FlowHelper.getStateAttrsByContainer(this, state);
-            stateAttrs = null == stateAttrs ? FlowHelper.getStateAttrsByJvm(this, state) : FlowHelper.defaultStateAttrs();
+            if (stateAttrs == null) {
+                stateAttrs = FlowHelper.getStateAttrsByJvm(this, state);
+            }
+            if (stateAttrs == null) {
+                stateAttrs = FlowHelper.defaultStateAttrs();
+            }
             return stateAttrs;
         }
     }
