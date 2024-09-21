@@ -14,24 +14,33 @@
 # 快速使用
 
 ## 引入pom
-
+        <dependency>
+            <groupId>cn.hz.ddbm.pc</groupId>
+            <artifactId>framework</artifactId>
+            <version>${pc.version}</version>
+        </dependency>
 ## 编排业务
-1. saga-pipeline风格 
-2. fsm-自由流程编排风格
+
+
 ## 运行
-1. 混沌模式运行
-2. 正常模式运行
+
+
+
 # 详细手册
 
 [什么情况下使用Saga模式](doc/saga模式.md)
 
 [什么情况下使用Fsm模式](doc/fsm模式.md)
 
+[混沌验证](doc/混沌验证.md)
+
 [状态管理](doc/状态管理.md)
 
 [会话管理](doc/fsm模式.md)
 
 [Saga事务](doc/Saga事务.md)
+
+
 
 [重试机制](doc/重试机制.md)
 
