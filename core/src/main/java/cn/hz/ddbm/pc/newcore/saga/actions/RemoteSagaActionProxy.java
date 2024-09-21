@@ -18,7 +18,7 @@ public class RemoteSagaActionProxy {
         action.doRemoteSaga(ctx);
     }
 
-    public SagaWorker.Offset remoteSagaQuery(FlowContext<SagaState> ctx) {
+    public RemoteSagaAction.QueryResult remoteSagaQuery(FlowContext<SagaState> ctx) {
         return action.remoteSagaQuery(ctx);
     }
 
@@ -26,7 +26,7 @@ public class RemoteSagaActionProxy {
         action.doRemoteSagaRollback(ctx);
     }
 
-    public SagaWorker.Offset remoteSagaRollbackQuery(FlowContext<SagaState> ctx) {
+    public RemoteSagaAction.QueryResult remoteSagaRollbackQuery(FlowContext<SagaState> ctx) {
         return action.remoteSagaRollbackQuery(ctx);
     }
 }

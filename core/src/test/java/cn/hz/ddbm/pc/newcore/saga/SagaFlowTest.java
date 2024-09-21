@@ -89,7 +89,7 @@ public class SagaFlowTest {
 
         @Override
         public Boolean doLocalSagaRollback(FlowContext<SagaState> ctx) {
-
+return null;
         }
 
         @Override

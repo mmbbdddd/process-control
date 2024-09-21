@@ -14,7 +14,7 @@ public class SagaSendAction implements RemoteSagaAction {
     }
 
     @Override
-    public SagaWorker.Offset remoteSagaQuery(FlowContext<SagaState> ctx) {
+    public QueryResult remoteSagaQuery(FlowContext<SagaState> ctx) {
         Boolean result = Math.random() > 0.5;
 
 
@@ -27,7 +27,7 @@ public class SagaSendAction implements RemoteSagaAction {
     }
 
     @Override
-    public SagaWorker.Offset remoteSagaRollbackQuery(FlowContext<SagaState> ctx) {
+    public QueryResult remoteSagaRollbackQuery(FlowContext<SagaState> ctx) {
         Boolean result = Math.random() > 0.5;
 
         return null;

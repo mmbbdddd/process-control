@@ -9,9 +9,13 @@ import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 public interface RemoteSagaAction extends SagaAction {
     void doRemoteSaga(FlowContext<SagaState> ctx);
 
-    SagaWorker.Offset remoteSagaQuery(FlowContext<SagaState> ctx);
+    QueryResult remoteSagaQuery(FlowContext<SagaState> ctx);
 
     void doRemoteSagaRollback(FlowContext<SagaState> ctx);
 
-    SagaWorker.Offset remoteSagaRollbackQuery(FlowContext<SagaState> ctx);
+    QueryResult remoteSagaRollbackQuery(FlowContext<SagaState> ctx);
+
+    public enum QueryResult {
+        none, exception, su, fail
+    }
 }

@@ -16,7 +16,7 @@ public class RemoteChaosAction implements RemoteFsmAction, RemoteSagaAction {
     }
 
     @Override
-    public SagaWorker.Offset remoteSagaQuery(FlowContext<SagaState> ctx) {
+    public QueryResult remoteSagaQuery(FlowContext<SagaState> ctx) {
         return null;
     }
 
@@ -26,7 +26,7 @@ public class RemoteChaosAction implements RemoteFsmAction, RemoteSagaAction {
     }
 
     @Override
-    public SagaWorker.Offset remoteSagaRollbackQuery(FlowContext<SagaState> ctx) {
+    public QueryResult remoteSagaRollbackQuery(FlowContext<SagaState> ctx) {
         return null;
     }
 

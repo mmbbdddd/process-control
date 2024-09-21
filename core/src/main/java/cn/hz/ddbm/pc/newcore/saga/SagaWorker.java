@@ -35,7 +35,9 @@ public abstract class SagaWorker {
 
 
     public enum Offset {
-        task, task_failover, task_su, task_fail, rollback, rollback_failover, rollback_su, rollback_fail;
+        task, task_query, rollback, rollback_query;
     }
+
+
 
 }
