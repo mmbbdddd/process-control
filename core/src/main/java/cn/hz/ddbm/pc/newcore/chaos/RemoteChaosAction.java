@@ -17,7 +17,7 @@ public class RemoteChaosAction implements RemoteFsmAction, RemoteSagaAction {
 
     @Override
     public QueryResult remoteSagaQuery(FlowContext<SagaState> ctx) {
-        return null;
+        return ChaosHandler.sagaRemoteResult();
     }
 
     @Override
@@ -27,7 +27,7 @@ public class RemoteChaosAction implements RemoteFsmAction, RemoteSagaAction {
 
     @Override
     public QueryResult remoteSagaRollbackQuery(FlowContext<SagaState> ctx) {
-        return null;
+        return ChaosHandler.sagaRemoteResult();
     }
 
 

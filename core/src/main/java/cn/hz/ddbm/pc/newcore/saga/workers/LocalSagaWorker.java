@@ -7,9 +7,10 @@ import cn.hz.ddbm.pc.newcore.saga.SagaAction;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 import cn.hz.ddbm.pc.newcore.saga.actions.LocalSagaActionProxy;
+import cn.hz.ddbm.pc.newcore.saga.actions.RemoteSagaAction;
 
-import static cn.hz.ddbm.pc.newcore.saga.SagaWorker.Offset.rollback;
-import static cn.hz.ddbm.pc.newcore.saga.SagaWorker.Offset.task;
+import static cn.hz.ddbm.pc.newcore.saga.SagaWorker.Offset.*;
+import static cn.hz.ddbm.pc.newcore.saga.SagaWorker.Offset.rollback_query;
 
 public class LocalSagaWorker extends SagaWorker {
     LocalSagaActionProxy action;
@@ -31,38 +32,50 @@ public class LocalSagaWorker extends SagaWorker {
     public void execute(FlowContext<SagaState> ctx) {
         switch (ctx.state.offset) {
             case task: {
-                try {
-                    Boolean result = action.doLocalSaga(ctx);
-                    if (result) {
-                        ctx.state.index++;
-                        ctx.state.offset = task;
-                    } else {
-                        ctx.state.offset = rollback;
-                    }
-                } catch (Exception e) {
-                    //keep state is task
-                    throw e;
-                }
+                SagaAction.QueryResult result = action.doLocalSaga(ctx);
+                onQueryResult(ctx, result);
+                //todo 异常是否继续?
+                execute(ctx);
                 break;
             }
             case rollback:
-                try {
-                    Boolean result = action.doLocalSagaRollback(ctx);
-                    if (result) {
-                        ctx.state.index--;
-                        ctx.state.offset = rollback;
-                    } else {
-                        ctx.state.setFlowStatus(FlowStatus.MANUAL);
-                    }
-                } catch (Exception e) {
-                    //keep state rollback until retry time > ? then set state manual
-                    //todo 当执行次数超限的时候，回滚
-                    ctx.state.setFlowStatus(FlowStatus.MANUAL);
-                    throw e;
-                }
+                SagaAction.QueryResult result = action.doLocalSagaRollback(ctx);
+                onQueryResult(ctx, result);
+                //todo 异常是否继续?
+                execute(ctx);
                 break;
         }
 
+    }
+
+    private void onQueryResult(FlowContext<SagaState> ctx, SagaAction.QueryResult result) {
+        if (ctx.state.offset == task || ctx.state.offset == task_query) {
+            switch (result) {
+                case exception:
+                    ctx.state.offset = task_query;
+                    break;
+                case su:
+                    ctx.state.index++;
+                    ctx.state.offset = task;
+                    break;
+                case fail:
+                    ctx.state.offset = rollback;
+                    break;
+            }
+        } else if (ctx.state.offset == rollback || ctx.state.offset == rollback_query) {
+            switch (result) {
+                case exception:
+                    ctx.state.offset = rollback_query;
+                    break;
+                case su:
+                    ctx.state.index--;
+                    ctx.state.offset = rollback;
+                    break;
+                case fail:
+                    ctx.state.flowStatus = FlowStatus.MANUAL;
+                    break;
+            }
+        }
     }
 
 

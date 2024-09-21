@@ -1,7 +1,14 @@
 package cn.hz.ddbm.pc.newcore.chaos;
 
+import cn.hutool.core.lang.Pair;
+import cn.hz.ddbm.pc.newcore.saga.SagaAction;
+import cn.hz.ddbm.pc.newcore.saga.actions.RemoteSagaAction;
 import cn.hz.ddbm.pc.newcore.utils.RandomUitl;
 import lombok.Setter;
+
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 混沌发生器
@@ -33,8 +40,22 @@ public class ChaosHandler {
     }
 
 
-    public Boolean sagaRouter() {
-        return RandomUitl.selectByWeight("sagaFailoverResult", getChaosConfig().sagaFailoverResult());
+    public static SagaAction.QueryResult sagaRemoteResult() {
+        Set<Pair<RemoteSagaAction.QueryResult, Double>> results = new HashSet<>();
+        results.add(Pair.of(SagaAction.QueryResult.none, 0.1));
+        results.add(Pair.of(SagaAction.QueryResult.exception, 0.1));
+        results.add(Pair.of(SagaAction.QueryResult.su, 0.7));
+        results.add(Pair.of(SagaAction.QueryResult.fail, 0.1));
+        return RandomUitl.selectByWeight(SagaAction.QueryResult.class.getSimpleName(), results);
+    }
+
+
+    public static SagaAction.QueryResult sagaLocalResult() {
+        Set<Pair<RemoteSagaAction.QueryResult, Double>> results = new HashSet<>();
+        results.add(Pair.of(SagaAction.QueryResult.exception, 0.1));
+        results.add(Pair.of(SagaAction.QueryResult.su, 0.8));
+        results.add(Pair.of(SagaAction.QueryResult.fail, 0.1));
+        return RandomUitl.selectByWeight(SagaAction.QueryResult.class.getSimpleName(), results);
     }
 
 

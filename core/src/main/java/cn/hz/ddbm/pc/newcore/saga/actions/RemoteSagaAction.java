@@ -15,7 +15,4 @@ public interface RemoteSagaAction extends SagaAction {
 
     QueryResult remoteSagaRollbackQuery(FlowContext<SagaState> ctx);
 
-    public enum QueryResult {
-        none, exception, su, fail
-    }
 }

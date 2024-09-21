@@ -3,6 +3,7 @@ package cn.hz.ddbm.pc.newcore.chaos;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
+import cn.hz.ddbm.pc.newcore.saga.SagaAction;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.actions.LocalSagaAction;
 
@@ -14,12 +15,12 @@ public class LocalChaosAction implements LocalFsmAction, LocalSagaAction {
     }
 
     @Override
-    public Boolean doLocalSagaRollback(FlowContext<SagaState> ctx) {
-return null;
+    public QueryResult doLocalSagaRollback(FlowContext<SagaState> ctx) {
+        return null;
     }
 
     @Override
-    public Boolean doLocalSaga(FlowContext<SagaState> ctx) {
+    public SagaAction.QueryResult doLocalSaga(FlowContext<SagaState> ctx) {
         return null;
     }
 }

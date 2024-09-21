@@ -88,12 +88,12 @@ public class SagaFlowTest {
 
 
         @Override
-        public Boolean doLocalSagaRollback(FlowContext<SagaState> ctx) {
+        public QueryResult doLocalSagaRollback(FlowContext<SagaState> ctx) {
 return null;
         }
 
         @Override
-        public Boolean doLocalSaga(FlowContext<SagaState> ctx) {
+        public QueryResult doLocalSaga(FlowContext<SagaState> ctx) {
             return null;
         }
     }
@@ -102,12 +102,12 @@ return null;
 
 
         @Override
-        public Boolean doLocalSagaRollback(FlowContext<SagaState> ctx) {
+        public QueryResult doLocalSagaRollback(FlowContext<SagaState> ctx) {
             return null;
         }
 
         @Override
-        public Boolean doLocalSaga(FlowContext<SagaState> ctx) {
+        public QueryResult doLocalSaga(FlowContext<SagaState> ctx) {
             return null;
         }
     }
@@ -116,12 +116,12 @@ return null;
 
 
         @Override
-        public Boolean doLocalSagaRollback(FlowContext<SagaState> ctx) {
+        public QueryResult doLocalSagaRollback(FlowContext<SagaState> ctx) {
             return null;
         }
 
         @Override
-        public Boolean doLocalSaga(FlowContext<SagaState> ctx) {
+        public QueryResult doLocalSaga(FlowContext<SagaState> ctx) {
             return null;
         }
     }
