@@ -1,6 +1,6 @@
 //package cn.hz.ddbm.pc.factory.buider.ssm2;
 //
-///**
+/// **
 // * 订单状态流转事件
 // */
 //public enum OrderStatusOperateEventEnum {

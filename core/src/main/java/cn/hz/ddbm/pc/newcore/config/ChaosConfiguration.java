@@ -5,8 +5,6 @@ import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.chaos.ChaosHandler;
 import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
 import cn.hz.ddbm.pc.newcore.chaos.RemoteChaosAction;
-import cn.hz.ddbm.pc.newcore.factory.BeanFsmFlowFactory;
-import cn.hz.ddbm.pc.newcore.factory.BeanSagaFlowFactory;
 import cn.hz.ddbm.pc.newcore.infra.InfraUtils;
 import cn.hz.ddbm.pc.newcore.infra.StatisticsSupport;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmLocker;
@@ -27,6 +25,7 @@ public class ChaosConfiguration {
     ProcessorService processorService() {
         return new ProcessorService();
     }
+
     @Bean
     RemoteChaosAction remoteChaosAction() {
         return new RemoteChaosAction();
@@ -38,12 +37,10 @@ public class ChaosConfiguration {
     }
 
 
-
     @Bean
     ExecutorService actionExecutorService() {
         return new ScheduledThreadPoolExecutor(10);
     }
-
 
 
     @Bean

@@ -8,7 +8,7 @@ public class ChaosRule {
 
 
     public ChaosRule(Object value) {
-        this.value  = value;
+        this.value = value;
     }
 
 

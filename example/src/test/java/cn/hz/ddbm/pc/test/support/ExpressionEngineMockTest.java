@@ -4,9 +4,6 @@ package cn.hz.ddbm.pc.test.support;
 import org.junit.Test;
 import org.mvel2.MVEL;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ExpressionEngineMockTest {
 
     @Test

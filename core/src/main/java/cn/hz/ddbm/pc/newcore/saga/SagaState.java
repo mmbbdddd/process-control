@@ -1,43 +1,42 @@
-    package cn.hz.ddbm.pc.newcore.saga;
+package cn.hz.ddbm.pc.newcore.saga;
 
-    import cn.hz.ddbm.pc.newcore.FlowStatus;
-    import cn.hz.ddbm.pc.newcore.State;
-    import lombok.Data;
+import cn.hz.ddbm.pc.newcore.FlowStatus;
+import cn.hz.ddbm.pc.newcore.State;
+import lombok.Data;
 
-    import java.io.Serializable;
-    import java.util.Objects;
+import java.util.Objects;
 
-    @Data
-    public class SagaState implements State {
-        public FlowStatus        flowStatus;
-        public Integer           index;
-        public SagaWorker.Offset offset;
+@Data
+public class SagaState implements State {
+    public FlowStatus        flowStatus;
+    public Integer           index;
+    public SagaWorker.Offset offset;
 
-        public SagaState(Integer index, SagaWorker.Offset offset) {
-            this(FlowStatus.RUNNABLE, index, offset);
-        }
-
-        public SagaState(FlowStatus flowStatus, Integer index, SagaWorker.Offset offset) {
-            this.flowStatus = flowStatus;
-            this.index      = index;
-            this.offset     = offset;
-        }
-
-        @Override
-        public String code() {
-            return index + "";
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            SagaState sagaState = (SagaState) o;
-            return Objects.equals(index, sagaState.index);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hashCode(index);
-        }
+    public SagaState(Integer index, SagaWorker.Offset offset) {
+        this(FlowStatus.RUNNABLE, index, offset);
     }
+
+    public SagaState(FlowStatus flowStatus, Integer index, SagaWorker.Offset offset) {
+        this.flowStatus = flowStatus;
+        this.index      = index;
+        this.offset     = offset;
+    }
+
+    @Override
+    public String code() {
+        return index + "";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SagaState sagaState = (SagaState) o;
+        return Objects.equals(index, sagaState.index);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(index);
+    }
+}

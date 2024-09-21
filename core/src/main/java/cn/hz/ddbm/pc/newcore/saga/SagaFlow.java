@@ -2,7 +2,9 @@ package cn.hz.ddbm.pc.newcore.saga;
 
 
 import cn.hutool.core.lang.Assert;
-import cn.hz.ddbm.pc.newcore.*;
+import cn.hz.ddbm.pc.newcore.BaseFlow;
+import cn.hz.ddbm.pc.newcore.FlowContext;
+import cn.hz.ddbm.pc.newcore.FlowStatus;
 import cn.hz.ddbm.pc.newcore.saga.workers.FailWorker;
 import cn.hz.ddbm.pc.newcore.saga.workers.SuWorker;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +22,11 @@ public class SagaFlow implements BaseFlow<SagaState> {
     SuWorker         suWorker;
     String           name;
 
-    public static SagaFlow of(String name,Class<? extends SagaAction>... actions) {
+    public static SagaFlow of(String name, Class<? extends SagaAction>... actions) {
         return of(name, Stream.of(actions).collect(Collectors.toList()));
     }
-    public static SagaFlow of(String name,List<Class<? extends SagaAction>>   actions) {
+
+    public static SagaFlow of(String name, List<Class<? extends SagaAction>> actions) {
         List<SagaWorker> workers = new ArrayList<>();
 
         workers.add(SagaWorker.failWorker());
@@ -31,7 +34,7 @@ public class SagaFlow implements BaseFlow<SagaState> {
             workers.add(SagaWorker.of(i, actions.get(i)));
         }
         workers.add(SagaWorker.suWorker(actions.size()));
-        return new SagaFlow(name,workers);
+        return new SagaFlow(name, workers);
     }
 
     private SagaFlow(String name, List<SagaWorker> workers) {
@@ -40,14 +43,16 @@ public class SagaFlow implements BaseFlow<SagaState> {
         this.failWorker = (FailWorker) workers.get(0);
         this.suWorker   = (SuWorker) workers.get(workers.size() - 1);
     }
+
     @Override
     public void validate() {
-        Assert.notNull(this.name,"name is null");
-        Assert.notNull(this.failWorker,"failWorker is null");
-        Assert.notNull(this.suWorker,"suWorker is null");
-        Assert.notNull(this.pipelines,"pipelines is null");
-        Assert.isTrue(!this.pipelines.isEmpty(),"pipelines is null");
+        Assert.notNull(this.name, "name is null");
+        Assert.notNull(this.failWorker, "failWorker is null");
+        Assert.notNull(this.suWorker, "suWorker is null");
+        Assert.notNull(this.pipelines, "pipelines is null");
+        Assert.isTrue(!this.pipelines.isEmpty(), "pipelines is null");
     }
+
     @Override
     public String name() {
         return name;
@@ -89,8 +94,6 @@ public class SagaFlow implements BaseFlow<SagaState> {
     public boolean isRunnable(FlowContext<SagaState> ctx) {
         return !isFail(ctx.state.index) && !isSu(ctx.state.index) && ctx.state.flowStatus.equals(FlowStatus.RUNNABLE);
     }
-
-
 
 
     private SagaWorker getWorker(FlowContext<SagaState> ctx) {

@@ -1,7 +1,6 @@
 package cn.hz.ddbm.pc.newcore.chaos;
 
 import cn.hutool.core.lang.Pair;
-import cn.hz.ddbm.pc.newcore.chaos.ChaosRule;
 
 import java.util.HashSet;
 import java.util.Set;

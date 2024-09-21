@@ -12,7 +12,9 @@ import cn.hz.ddbm.pc.newcore.fsm.Router;
 import cn.hz.ddbm.pc.newcore.fsm.routers.ToRouter;
 import com.google.common.collect.Lists;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class IdCardFlow implements FSM<IdCard> {

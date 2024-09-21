@@ -1,6 +1,5 @@
 package cn.hz.ddbm.pc.newcore.factory;
 
-import cn.hz.ddbm.pc.newcore.log.Logs;
 import cn.hz.ddbm.pc.newcore.saga.SagaFlow;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

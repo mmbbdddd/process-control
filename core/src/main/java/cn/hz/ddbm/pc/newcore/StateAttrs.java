@@ -1,9 +1,6 @@
 package cn.hz.ddbm.pc.newcore;
 
 import cn.hz.ddbm.pc.newcore.config.Coast;
-import lombok.Data;
-
-import java.util.Map;
 
 
 public class StateAttrs {
@@ -33,7 +30,6 @@ public class StateAttrs {
             return Coast.DEFAULT_RETRY_TIMES;
         }
     }
-
 
 
 }

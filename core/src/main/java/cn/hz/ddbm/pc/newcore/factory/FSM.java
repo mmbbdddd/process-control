@@ -9,7 +9,6 @@ import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
 import cn.hz.ddbm.pc.newcore.fsm.Router;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmAction;
-import lombok.Data;
 
 import java.util.List;
 

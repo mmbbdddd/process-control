@@ -21,5 +21,4 @@ public interface SessionManager extends ValueObject<Coast.SessionType> {
     Map<String, Object> get(String flowName, Serializable flowId) throws SessionException;
 
 
-
 }

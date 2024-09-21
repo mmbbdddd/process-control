@@ -12,7 +12,7 @@ public class InterruptedException extends Exception {
 
 
     public InterruptedException(Throwable e) {
-        super(e.getMessage(),e);
-        this.raw  =e;
+        super(e.getMessage(), e);
+        this.raw = e;
     }
 }

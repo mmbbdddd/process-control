@@ -1,8 +1,7 @@
 package cn.hz.ddbm.pc.saga;
 
 public enum PayState {
-    fail, freeze, send, pay,su
-
+    fail, freeze, send, pay, su
 
 
 }

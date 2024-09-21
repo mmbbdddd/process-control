@@ -4,7 +4,6 @@ package cn.hz.ddbm.pc.newcore.fsm.workers;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
 import cn.hz.ddbm.pc.newcore.config.ErrorCode;
-import cn.hz.ddbm.pc.newcore.exception.ActionException;
 import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
 import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
@@ -12,19 +11,19 @@ import cn.hz.ddbm.pc.newcore.fsm.Router;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmActionProxy;
 
-public class FsmLocalWorker  extends FsmWorker  {
-    LocalFsmActionProxy  action;
+public class FsmLocalWorker extends FsmWorker {
+    LocalFsmActionProxy action;
 
-    public FsmLocalWorker(FsmFlow  fsm, Enum from, Class<? extends LocalFsmAction> action, Router  router) {
+    public FsmLocalWorker(FsmFlow fsm, Enum from, Class<? extends LocalFsmAction> action, Router router) {
         super(fsm, from, router);
-        this.action = new LocalFsmActionProxy (action);
+        this.action = new LocalFsmActionProxy(action);
     }
 
     @Override
-    public void execute(FlowContext<FsmState > ctx) throws Exception {
+    public void execute(FlowContext<FsmState> ctx) throws Exception {
         ctx.setAction(action);
         //如果任务可执行
-        Offset  offset       = ctx.state.offset;
+        Offset offset = ctx.state.offset;
         switch (offset) {
             case task:
                 Object result = action.doLocalFsm(ctx);

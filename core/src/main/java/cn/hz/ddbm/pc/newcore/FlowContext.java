@@ -6,7 +6,6 @@ import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.infra.model.Statistics;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;

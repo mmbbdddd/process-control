@@ -1,6 +1,5 @@
 package cn.hz.ddbm.pc.saga;
 
-import cn.hutool.core.lang.Pair;
 import cn.hz.ddbm.pc.newcore.Plugin;
 import cn.hz.ddbm.pc.newcore.factory.SAGA;
 import cn.hz.ddbm.pc.newcore.saga.SagaAction;

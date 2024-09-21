@@ -23,9 +23,9 @@ public class LocalSagaWorker extends SagaWorker {
     public void execute(FlowContext<SagaState> ctx) {
         switch (ctx.state.offset) {
             case task:
-                    action.doLocalSaga(ctx);
-                    ctx.state.index++;
-                    ctx.state.offset = task;
+                action.doLocalSaga(ctx);
+                ctx.state.index++;
+                ctx.state.offset = task;
                 break;
             case rollback:
                 try {

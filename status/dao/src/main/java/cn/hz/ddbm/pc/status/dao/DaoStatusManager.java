@@ -1,6 +1,5 @@
 package cn.hz.ddbm.pc.status.dao;
 
-import cn.hz.ddbm.pc.newcore.State;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.IdempotentException;
 import cn.hz.ddbm.pc.newcore.exception.StatusException;
@@ -15,8 +14,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DaoStatusManager implements StatusManager, InitializingBean, ApplicationContextAware {
-    private Map<String, PayloadDao > flowDaoMap;
-    private ApplicationContext         ctx;
+    private Map<String, PayloadDao> flowDaoMap;
+    private ApplicationContext      ctx;
 //
 //    @Override
 //    public Type code() {
@@ -70,7 +69,7 @@ public class DaoStatusManager implements StatusManager, InitializingBean, Applic
     }
 
     @Override
-    public void unidempotent(String key)   {
+    public void unidempotent(String key) {
 
     }
 }

@@ -7,7 +7,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Data
 public class Statistics {
     AtomicInteger executeTimes;
-    public Statistics(){
-        this.executeTimes   = new AtomicInteger(0);
+
+    public Statistics() {
+        this.executeTimes = new AtomicInteger(0);
     }
 }

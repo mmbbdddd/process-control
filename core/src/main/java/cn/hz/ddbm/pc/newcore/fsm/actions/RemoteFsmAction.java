@@ -10,7 +10,7 @@ import cn.hz.ddbm.pc.newcore.fsm.FsmState;
  *
  * @param <S> 主状态
  */
-public interface RemoteFsmAction  extends FsmAction {
+public interface RemoteFsmAction extends FsmAction {
 
     /**
      * 执行业务逻辑
@@ -18,7 +18,7 @@ public interface RemoteFsmAction  extends FsmAction {
      * @param ctx
      * @throws Exception
      */
-    void remoteFsm(FlowContext<FsmState > ctx) throws Exception;
+    void remoteFsm(FlowContext<FsmState> ctx) throws Exception;
 
     /**
      * 执行结果查询
@@ -27,7 +27,7 @@ public interface RemoteFsmAction  extends FsmAction {
      * @return
      * @throws Exception
      */
-    Object remoteFsmQuery(FlowContext<FsmState > ctx) throws Exception;
+    Object remoteFsmQuery(FlowContext<FsmState> ctx) throws Exception;
 
 
 }

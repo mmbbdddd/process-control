@@ -1,9 +1,7 @@
 package cn.hz.ddbm.pc.saga;
 
-import cn.hutool.core.lang.Pair;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.newcore.chaos.ChaosConfig;
-import cn.hz.ddbm.pc.newcore.chaos.ChaosRule;
 import cn.hz.ddbm.pc.newcore.chaos.ChaosService;
 import cn.hz.ddbm.pc.newcore.config.ChaosConfiguration;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
@@ -13,7 +11,6 @@ import cn.hz.ddbm.pc.saga.actions.SagaEndAction;
 import cn.hz.ddbm.pc.saga.actions.SagaFreezeAction;
 import cn.hz.ddbm.pc.saga.actions.SagaPayAction;
 import cn.hz.ddbm.pc.saga.actions.SagaSendAction;
-import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +20,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @ComponentScan("cn.hz.ddbm.pc.actions")
@@ -48,7 +44,7 @@ public class PayTest {
             //执行100此，查看流程中断概率
             chaosService.chaos("test", true, 3, 1, 4,
                     new ChaosService.MockPayLoad(1, new SagaState(0, SagaWorker.Offset.task)),
-            chaosConfig );
+                    chaosConfig);
         } catch (Exception e) {
             e.printStackTrace();
         }

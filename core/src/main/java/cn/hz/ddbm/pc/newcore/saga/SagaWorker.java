@@ -8,8 +8,6 @@ import cn.hz.ddbm.pc.newcore.saga.workers.LocalSagaWorker;
 import cn.hz.ddbm.pc.newcore.saga.workers.RemoteSagaWorker;
 import cn.hz.ddbm.pc.newcore.saga.workers.SuWorker;
 
-import static cn.hz.ddbm.pc.newcore.log.Logs.flow;
-
 public abstract class SagaWorker {
     public Integer index;
 
@@ -33,7 +31,7 @@ public abstract class SagaWorker {
         return new FailWorker();
     }
 
-    public abstract void execute(FlowContext<SagaState> ctx)  ;
+    public abstract void execute(FlowContext<SagaState> ctx);
 
 
     public enum Offset {

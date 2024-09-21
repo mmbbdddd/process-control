@@ -2,7 +2,6 @@ package cn.hz.ddbm.pc.newcore.factory;
 
 import cn.hz.ddbm.pc.newcore.BaseFlow;
 import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
-import cn.hz.ddbm.pc.newcore.log.Logs;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -22,7 +21,7 @@ public class BeanFsmFlowFactory implements ApplicationContextAware, FlowFactory<
     public Map<String, FsmFlow> getFlows() {
         List<FsmFlow> flows = ctx.getBeansOfType(FSM.class).entrySet().stream().map(t -> {
             try {
-                FsmFlow flow =  t.getValue().build();
+                FsmFlow flow = t.getValue().build();
                 flow.validate();
                 return flow;
             } catch (Exception e) {

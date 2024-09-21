@@ -13,7 +13,7 @@ public class SuWorker extends SagaWorker {
     }
 
     @Override
-    public void execute(FlowContext<SagaState> ctx)   {
-     }
+    public void execute(FlowContext<SagaState> ctx) {
+    }
 
 }

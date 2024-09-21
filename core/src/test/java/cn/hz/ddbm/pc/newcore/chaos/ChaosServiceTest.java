@@ -7,7 +7,6 @@ import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
 import cn.hz.ddbm.pc.newcore.exception.InterruptedException;
 import cn.hz.ddbm.pc.newcore.exception.PauseException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
-import cn.hz.ddbm.pc.newcore.fsm.FsmFlowTest;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -30,7 +29,7 @@ public class ChaosServiceTest {
     @Test
     public void saga() {
         try {
-            chaosService.chaos(null, true, 1, 1, 3000, null,chaosConfig);
+            chaosService.chaos(null, true, 1, 1, 3000, null, chaosConfig);
         } catch (PauseException e) {
             throw new RuntimeException(e);
         } catch (SessionException e) {

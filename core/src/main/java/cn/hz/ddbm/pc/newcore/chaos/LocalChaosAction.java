@@ -9,7 +9,7 @@ import cn.hz.ddbm.pc.newcore.saga.actions.LocalSagaAction;
 public class LocalChaosAction implements LocalFsmAction, LocalSagaAction {
 
     @Override
-    public   Object doLocalFsm(FlowContext<FsmState > ctx) throws Exception {
+    public Object doLocalFsm(FlowContext<FsmState> ctx) throws Exception {
         return null;
     }
 

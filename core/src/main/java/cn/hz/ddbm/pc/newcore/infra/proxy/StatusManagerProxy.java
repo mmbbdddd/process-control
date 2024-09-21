@@ -1,6 +1,5 @@
 package cn.hz.ddbm.pc.newcore.infra.proxy;
 
-import cn.hz.ddbm.pc.newcore.State;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.IdempotentException;
 import cn.hz.ddbm.pc.newcore.exception.StatusException;
@@ -33,12 +32,11 @@ public class StatusManagerProxy implements StatusManager {
     @Override
     public <T> T getStatus(String flow, Serializable flowId, Class<T> type) throws StatusException {
         try {
-            return statusManager.getStatus(flow, flowId,type);
+            return statusManager.getStatus(flow, flowId, type);
         } catch (Exception e) {
             throw new StatusException(e);
         }
     }
-
 
 
     @Override

@@ -1,13 +1,12 @@
 package cn.hz.ddbm.pc.newcore.fsm.actions;
 
 
-import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
-import cn.hz.ddbm.pc.newcore.exception.ActionException;
 import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 
 /**
+ *
  */
 public class LocalFsmActionProxy {
     Class<? extends LocalFsmAction> actionClass;
@@ -19,7 +18,7 @@ public class LocalFsmActionProxy {
     }
 
 
-    public <S extends Enum<S>> Object doLocalFsm(FlowContext<FsmState > ctx) throws Exception {
+    public <S extends Enum<S>> Object doLocalFsm(FlowContext<FsmState> ctx) throws Exception {
         try {
             //开始事务
             Object result = action.doLocalFsm(ctx);

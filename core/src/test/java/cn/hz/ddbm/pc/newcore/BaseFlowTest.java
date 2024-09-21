@@ -6,8 +6,6 @@ import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class BaseFlowTest {
     SagaFlow f = SagaFlow.of("saga");
 

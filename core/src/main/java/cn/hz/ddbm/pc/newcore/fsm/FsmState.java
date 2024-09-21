@@ -4,7 +4,6 @@ import cn.hz.ddbm.pc.newcore.FlowStatus;
 import cn.hz.ddbm.pc.newcore.State;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 @Data

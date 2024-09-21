@@ -13,16 +13,16 @@ import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmActionProxy;
 
 import static cn.hz.ddbm.pc.newcore.fsm.FsmWorker.Offset.failover;
 
-public class FsmRemoteWorker  extends FsmWorker  {
-    RemoteFsmActionProxy  action;
+public class FsmRemoteWorker extends FsmWorker {
+    RemoteFsmActionProxy action;
 
-    public FsmRemoteWorker(FsmFlow  fsm, Enum from, Class<? extends RemoteFsmAction> action, Router  router) {
+    public FsmRemoteWorker(FsmFlow fsm, Enum from, Class<? extends RemoteFsmAction> action, Router router) {
         super(fsm, from, router);
         this.action = new RemoteFsmActionProxy(action);
     }
 
     @Override
-    public void execute(FlowContext<FsmState > ctx) {
+    public void execute(FlowContext<FsmState> ctx) {
         ctx.setAction(action);
         //如果任务可执行
         Offset offset = ctx.state.offset;

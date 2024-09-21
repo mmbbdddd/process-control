@@ -3,6 +3,7 @@
 **流程编排：积木化组装复杂、长流程业务**
 
 您将获得如下好处
+
 1. 业务能力组件化
 2. 低耦合、变更友好
 3. 随需而变、灵活组装
@@ -14,17 +15,16 @@
 # 快速使用
 
 ## 引入pom
+
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>framework</artifactId>
             <version>${pc.version}</version>
         </dependency>
+
 ## 编排业务
 
-
 ## 运行
-
-
 
 # 详细手册
 

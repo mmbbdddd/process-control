@@ -12,7 +12,7 @@ public class FailWorker extends SagaWorker {
     }
 
     @Override
-    public void execute(FlowContext<SagaState> ctx)   {
-     }
+    public void execute(FlowContext<SagaState> ctx) {
+    }
 
 }

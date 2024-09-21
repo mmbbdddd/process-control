@@ -8,6 +8,7 @@ import cn.hz.ddbm.pc.newcore.saga.SagaState;
 
 public class LocalSagaActionProxy {
     LocalSagaAction action;
+
     public LocalSagaActionProxy(Class<? extends SagaAction> actionType) {
         this.action = (LocalSagaAction) SpringUtil.getBean(actionType);
     }
