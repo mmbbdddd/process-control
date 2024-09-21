@@ -1,8 +1,10 @@
 package cn.hz.ddbm.pc.newcore.factory;
 
 
+import cn.hz.ddbm.pc.common.lang.Tetrad;
 import cn.hz.ddbm.pc.newcore.Plugin;
 import cn.hz.ddbm.pc.newcore.config.Coast;
+import cn.hz.ddbm.pc.newcore.fsm.FsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
 import cn.hz.ddbm.pc.newcore.fsm.Router;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
@@ -72,8 +74,7 @@ public interface FSM<S extends Enum<S>> {
      *
      * @param
      */
-    void transitions(FsmFlow flow);
-
+    List<Tetrad<S, String, Class<? extends FsmAction>, Router<S>>> transitions();
 
 
     Class<S> type();
@@ -85,70 +86,15 @@ public interface FSM<S extends Enum<S>> {
         S       fail = failState();
         FsmFlow flow = new FsmFlow(flowId(), init, su, fail);
 
-        transitions(null);
-//        flow.saga()
-
-
+        List<Tetrad<S, String, Class<? extends FsmAction>, Router<S>>> events = transitions();
+        events.forEach(t -> {
+            if (LocalFsmAction.class.isAssignableFrom(t.getThree())) {
+                flow.local(t.getOne(), t.getTwo(), (Class<? extends LocalFsmAction>) t.getThree(), t.getFour());
+            } else {
+                flow.remote(t.getOne(), t.getTwo(), (Class<? extends RemoteFsmAction>) t.getThree(), t.getFour());
+            }
+        });
         return flow;
-    }
-
-
-    class Transitions<S extends Enum<S>> {
-        FsmFlow  flow;
-        State<S> state;
-
-        public Transitions(FsmFlow flow) {
-            this.flow = flow;
-        }
-
-        public State<S> state(S payState) {
-            this.state = new State<>(payState, this);
-            return state;
-        }
-    }
-
-    class State<S extends Enum<S>> {
-        Transitions<S> transitions;
-        S              from;
-
-        public State(S from, Transitions<S> transitions) {
-            this.from        = from;
-            this.transitions = transitions;
-        }
-
-        public State<S> local(String event, Class<? extends LocalFsmAction> action, Router<S> router) {
-            transitions.flow.local(from, event, action, router);
-            return this;
-        }
-
-        public State<S> remote(String event, Class<? extends RemoteFsmAction> action, Router<S> router) {
-            transitions.flow.remote(from, event, action, router);
-            return this;
-        }
-
-        public Transitions<S> endState() {
-            return transitions;
-        }
-    }
-
-
-    @Data
-    class Transition<S> {
-        Boolean saga;
-        S       from;
-        S       to;
-        S       failover;
-        String  action;
-        String  event;
-
-        public Transition(Boolean saga, S from, S to, S failover, String action, String event) {
-            this.saga     = saga;
-            this.from     = from;
-            this.to       = to;
-            this.failover = failover;
-            this.action   = action;
-            this.event    = event;
-        }
     }
 
 }

@@ -1,7 +1,7 @@
 package cn.hz.ddbm.pc.fsm;
 
 public enum IdCard {
-    MaterialCollection("收集材料中"),
+    Init("收集材料中"),
     RuleChecked("规则检查"),
     Accepted("已受理"),
     Su("通过"),

@@ -8,7 +8,6 @@ import cn.hz.ddbm.pc.newcore.chaos.ChaosConfig;
 import cn.hz.ddbm.pc.newcore.chaos.ChaosService;
 import cn.hz.ddbm.pc.newcore.config.ChaosConfiguration;
 import cn.hz.ddbm.pc.newcore.factory.BeanFsmFlowFactory;
-import cn.hz.ddbm.pc.newcore.factory.BeanSagaFlowFactory;
 import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
 import org.junit.Test;
@@ -36,7 +35,7 @@ public class IdCardTest {
         try {
             //执行100此，查看流程中断概率
             chaosService.chaos("idcard", false, 3, 1, 4,
-                    new ChaosService.MockPayLoad(1, new FsmState(IdCard.MaterialCollection, FsmWorker.Offset.task)),
+                    new ChaosService.MockPayLoad(1, new FsmState(IdCard.Init, FsmWorker.Offset.task)),
                     chaosConfig);
         } catch (Exception e) {
             e.printStackTrace();
