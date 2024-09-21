@@ -1,4 +1,4 @@
-package cn.hz.ddbm.pc.idcardapply;
+package cn.hz.ddbm.pc.fsm;
 
 import cn.hz.ddbm.pc.newcore.Plugin;
 import cn.hz.ddbm.pc.newcore.config.Coast;

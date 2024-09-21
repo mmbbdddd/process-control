@@ -37,15 +37,7 @@ public class ChaosConfiguration {
         return new LocalChaosAction();
     }
 
-    @Bean
-    BeanFsmFlowFactory fsmFlowFactory() {
-        return new BeanFsmFlowFactory();
-    }
 
-    @Bean
-    BeanSagaFlowFactory sagaFlowFactory() {
-        return new BeanSagaFlowFactory();
-    }
 
     @Bean
     ExecutorService actionExecutorService() {

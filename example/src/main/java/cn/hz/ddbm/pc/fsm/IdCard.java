@@ -1,4 +1,4 @@
-package cn.hz.ddbm.pc.idcardapply;
+package cn.hz.ddbm.pc.fsm;
 
 public enum IdCard {
     MaterialCollection("收集材料中"),

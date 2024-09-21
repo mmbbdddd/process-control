@@ -7,6 +7,7 @@ import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.ActionException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
+import cn.hz.ddbm.pc.newcore.factory.FlowFactory;
 import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.infra.*;
@@ -19,6 +20,7 @@ import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.actions.LocalSagaAction;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 
+import javax.annotation.PostConstruct;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +29,13 @@ public class ProcessorService {
     Map<String, BaseFlow> flows;
     PluginService         pluginService;
 
-    public ProcessorService() {
-        this.flows         = new HashMap<>();
+    @PostConstruct
+    public void init() {
         this.pluginService = new PluginService();
+        this.flows = new HashMap<>();
+        SpringUtil.getBeansOfType(FlowFactory.class).forEach((k, b) -> {
+            this.flows.putAll(b.getFlows());
+        });
     }
 
 
