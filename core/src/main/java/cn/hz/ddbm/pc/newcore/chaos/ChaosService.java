@@ -3,16 +3,21 @@ package cn.hz.ddbm.pc.newcore.chaos;
 import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.BaseFlow;
+import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.State;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
 import cn.hz.ddbm.pc.newcore.exception.InterruptedException;
 import cn.hz.ddbm.pc.newcore.exception.PauseException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
+import cn.hz.ddbm.pc.newcore.fsm.FsmState;
+import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
 import cn.hz.ddbm.pc.newcore.log.Logs;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
+import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 import cn.hz.ddbm.pc.newcore.utils.ExceptionUtils;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
@@ -43,12 +48,11 @@ public class ChaosService {
         CountDownLatch cdl  = new CountDownLatch(times);
         BaseFlow       flow = processorService.getFlow(flowName);
         for (int i = 0; i < times; i++) {
-//            MockSagaPayload mockPayLoad = new MockSagaPayload(i, (SagaFlow) flow);
-//            mockPayLoad.setId(i);
+            MockSagaPayload mockPayLoad = new MockSagaPayload(i);
             threadPool.submit(() -> {
                 Object result = null;
                 try {
-                    FlowContext<SagaState> ctx = processorService.getSagaContext(flowName, null);
+                    FlowContext<SagaState> ctx = processorService.getSagaContext(flowName, mockPayLoad);
                     while (isContinue(ctx)) {
                         Logs.debug.info("uuid：{}", ctx.getUuid());
                         processorService.execute(ctx);
@@ -60,8 +64,7 @@ public class ChaosService {
                 } finally {
                     cdl.countDown();
 //                    统计执行结果
-//                    statistics(mockPayLoad.getId(), new Object[]{flowName, mockPayLoad}, result);
-                    statistics(null, new Object[]{flowName, null}, result);
+                    statistics(mockPayLoad.getId(), new Object[]{flowName, mockPayLoad}, result);
                 }
             });
         }
@@ -82,13 +85,11 @@ public class ChaosService {
         statisticsLines = Collections.synchronizedList(new ArrayList<>(times));
         CountDownLatch cdl = new CountDownLatch(times);
         for (int i = 0; i < times; i++) {
-//            MockFsmPayload mockPayLoad = new MockFsmPayload(i, initStatus);
-//            MockFsmPayload mockPayLoad = new MockFsmPayload(i, initStatus);
-//            mockPayLoad.setId(i);
+            MockFsmPayload mockPayLoad = new MockFsmPayload(i, initStatus);
             threadPool.submit(() -> {
                 Object result = null;
                 try {
-                    FlowContext ctx = processorService.getFsmContext(flowName, null);
+                    FlowContext ctx = processorService.getFsmContext(flowName, mockPayLoad);
                     while (isContinue(ctx)) {
                         processorService.execute(ctx);
                     }
@@ -99,8 +100,7 @@ public class ChaosService {
                 } finally {
                     cdl.countDown();
 //                    统计执行结果
-//                    statistics(mockPayLoad.getId(), new Object[]{flowName, mockPayLoad}, result);
-                    statistics(null, new Object[]{flowName, null}, result);
+                    statistics(mockPayLoad.getId(), new Object[]{flowName, mockPayLoad}, result);
                 }
             });
         }
@@ -150,63 +150,57 @@ public class ChaosService {
 
 }
 
-//@Data
-//class MockFsmPayload<S extends Enum<S>> implements FsmPayload<S> {
-//    Serializable    id;
-//    FlowStatus      status;
-//    S               fsmState;
-//    FsmState.Offset offset;
-//
-//    public MockFsmPayload(Serializable id, S fsmState) {
-//        this.id       = id;
-//        this.status   = FlowStatus.RUNNABLE;
-//        this.fsmState = fsmState;
-//        this.offset   = FsmState.Offset.task;
-//    }
-//
-//    @Override
-//    public FsmState<S> getState() {
-//        return new FsmState<>(fsmState, offset);
-//    }
-//
-//    @Override
-//    public void setState(FsmState<S> state) {
-//        this.fsmState = state.getState();
-//        this.offset   = state.getOffset();
-//        this.status   = state.getStatus();
-//    }
-//}
+@Data
+class MockFsmPayload<S extends Enum<S>> implements Payload<FsmState> {
+    Integer  id;
+    FsmState state;
 
-//@Data
-//class MockSagaPayload<S extends Enum<S>> implements SagaPayload<S> {
-//
-//    Integer          id;
-//    Integer          step;
-//    SagaState.Offset offset;
-//    FlowStatus       status;
-//    SagaFlow<S>      flow;
-//
-//    public MockSagaPayload(Integer id, SagaFlow<S> flow) {
-//        this.id     = id;
-//        this.step   = 1;
-//        this.offset = SagaState.Offset.task;
-//        this.flow   = flow;
-//    }
-//
-//    @Override
-//    public SagaState<S> getState() {
-//        return new SagaState<>(step, SagaState.Offset.task, status);
-//    }
-//
-//    @Override
-//    public void setState(SagaState<S> state) {
-//        this.step   = state.getIndex();
-//        this.offset = state.getOffset();
-//        this.status = state.getStatus();
-//    }
-//
-//
-//}
+    public MockFsmPayload(Integer id, S init) {
+        this.id    = id;
+        this.state = new FsmState(init, FsmWorker.Offset.task);
+    }
+
+    @Override
+    public String getId() {
+        return id + "";
+    }
+
+    @Override
+    public FsmState getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(FsmState state) {
+        this.state = state;
+    }
+}
+
+@Data
+class MockSagaPayload implements Payload<SagaState> {
+    Integer   id;
+    SagaState state;
+
+    public MockSagaPayload(Integer id) {
+        this.id    = id;
+        this.state = new SagaState(0, SagaWorker.Offset.task);
+    }
+
+    @Override
+    public String getId() {
+        return id + "";
+    }
+
+    @Override
+    public SagaState getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(SagaState state) {
+        this.state = state;
+    }
+}
 
 class StatisticsLine {
     Serializable     index;
