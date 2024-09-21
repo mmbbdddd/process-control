@@ -23,114 +23,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProcessorService {
-    Map<String, BaseFlow>                        flows;
-    Map<Coast.SessionType, SessionManager>       sessionManagerMap;
-    Map<Coast.StatusType, StatusManager>         statusManagerMap;
-    Map<Coast.LockType, Locker>                  lockerMap;
-    Map<Coast.ScheduleType, ScheduleManger>      scheduleMangerMap;
-    Map<Coast.StatisticsType, StatisticsSupport> statisticsSupportMap;
-    PluginService                                pluginService;
+    Map<String, BaseFlow> flows;
+    PluginService         pluginService;
 
     public ProcessorService() {
-        this.flows                = new HashMap<>();
-        this.sessionManagerMap    = new HashMap<>();
-        this.statusManagerMap     = new HashMap<>();
-        this.lockerMap            = new HashMap<>();
-        this.scheduleMangerMap    = new HashMap<>();
-        this.statisticsSupportMap = new HashMap<>();
-
+        this.flows         = new HashMap<>();
         this.pluginService = new PluginService();
-
-        this.statisticsSupportMap.put(Coast.StatisticsType.jvm, new JvmStatisticsSupport());
-        this.sessionManagerMap.put(Coast.SessionType.jvm, new JvmSessionManager());
-        this.statusManagerMap.put(Coast.StatusType.jvm, new JvmStatusManager());
-//        this.scheduleMangerMap.put(Coast.ScheduleType.timer, new TimerScheduleManager());
-        this.lockerMap.put(Coast.LockType.jvm, new JvmLocker());
-    }
-
-    /**
-     * 连续执行
-     *
-     * @param ctx
-     * @throws ActionException
-     */
-    public void execute(FlowContext ctx) throws ActionException {
-        BaseFlow flow = ctx.getFlow();
-        while (flow.isRunnable(ctx)) {
-            try {
-                flow.execute(ctx);
-            } catch (RuntimeException e) {
-                //运行时异常中断
-                flushState(ctx);
-                flushSession(ctx);
-                throw e;
-            } catch (Exception e) {
-                flushState(ctx);
-                flushSession(ctx);
-//                其他尝试重试
-                addRetryTask(ctx);
-            }
-        }
-    }
-
-    private void flushState(FlowContext ctx) {
-        //todo
-
-    }
-
-    private void flushSession(FlowContext ctx) {
-        //todo
-    }
-
-    private void addRetryTask(FlowContext ctx) {
-        //todo
     }
 
 
-    public void initParent() {
-        SpringUtil.getBeansOfType(SessionManager.class).forEach((key, bean) -> {
-            this.sessionManagerMap.put(bean.code(), new SessionManagerProxy(bean));
-        });
-        SpringUtil.getBeansOfType(StatusManager.class).forEach((key, bean) -> {
-            this.statusManagerMap.put(bean.code(), new StatusManagerProxy(bean));
-        });
-        SpringUtil.getBeansOfType(Locker.class).forEach((key, bean) -> {
-            this.lockerMap.put(bean.code(), new LockProxy(bean));
-        });
-        SpringUtil.getBeansOfType(ScheduleManger.class).forEach((key, bean) -> {
-            this.scheduleMangerMap.put(bean.code(), new ScheduleMangerProxy(bean));
-        });
-        SpringUtil.getBeansOfType(StatisticsSupport.class).forEach((key, bean) -> {
-            this.statisticsSupportMap.put(bean.code(), new StatisticsSupportProxy(bean));
-        });
+    public BaseFlow getFlow(String flowName) {
+        return flows.get(flowName);
     }
 
-
-    public <F> F getFlow(String flowName) {
-        return (F) flows.get(flowName);
+    public FlowContext<SagaState> getSagaContext(String flowName, Object o) {
+        return null;
     }
 
-
-    public Map<String, Object> getSession(String flowName, Serializable id) throws SessionException {
-        BaseFlow flow = getFlow(flowName);
-        return sessionManagerMap.get(flow.flowAttrs().getSession()).get(flowName, id);
-    }
-
-
-    public void metricsNode(FlowContext ctx) {
-        String            flowName = ctx.getFlow().name();
-        Serializable      id       = ctx.getId();
-        State             state    = ctx.getState();
-        StatisticsSupport ss       = statisticsSupportMap.get(ctx.getFlow().flowAttrs().getStatistics());
-        ss.increment(flowName, id, state, Coast.STATISTICS.EXECUTE_TIMES);
-    }
-
-    public Long getExecuteTimes(FlowContext ctx) {
-        String            flowName = ctx.getFlow().name();
-        Serializable      id       = ctx.getId();
-        State             state    = ctx.getState();
-        StatisticsSupport ss       = statisticsSupportMap.get(ctx.getFlow().flowAttrs().getStatistics());
-        return ss.get(flowName, id, state, Coast.STATISTICS.EXECUTE_TIMES);
+    public FlowContext<SagaState> getFsmContext(String flowName, Object o) {
+        return null;
     }
 
     public static <T> T getAction(Class<T> action) {
@@ -146,13 +57,64 @@ public class ProcessorService {
         }
     }
 
-    public FlowContext<SagaState> getSagaContext(String flowName, Object o) {
+    /**
+     * 连续执行
+     *
+     * @param ctx
+     * @throws ActionException
+     */
+    public void execute(FlowContext ctx) throws ActionException {
+        BaseFlow flow = ctx.getFlow();
+        while (flow.isRunnable(ctx)) {
+            try {
+                flow.execute(ctx);
+            } catch (RuntimeException e) {                //运行时异常中断
+                flushState(ctx);
+                flushSession(ctx);
+                throw e;
+            } catch (Exception e) {                       //其他尝试重试
+                flushState(ctx);
+                flushSession(ctx);
+                addRetryTask(ctx);
+            }
+        }
+    }
+
+    private void flushState(FlowContext ctx) {
+        //todo
+    }
+
+    private void flushSession(FlowContext ctx) {
+        //todo
+    }
+
+    private void addRetryTask(FlowContext ctx) {
+        //todo
+    }
+
+
+    public void metricsNode(FlowContext ctx) {
+        String            flowName = ctx.getFlow().name();
+        Serializable      id       = ctx.getId();
+        State             state    = ctx.getState();
+        StatisticsSupport ss       = getStatisticsSupport(ctx.getFlow());
+        ss.increment(flowName, id, state, Coast.STATISTICS.EXECUTE_TIMES);
+    }
+
+
+    public Long getExecuteTimes(FlowContext ctx) {
+        String            flowName = ctx.getFlow().name();
+        Serializable      id       = ctx.getId();
+        State             state    = ctx.getState();
+        StatisticsSupport ss       = getStatisticsSupport(ctx.getFlow());
+        return ss.get(flowName, id, state, Coast.STATISTICS.EXECUTE_TIMES);
+    }
+
+    private StatisticsSupport getStatisticsSupport(BaseFlow flow) {
         return null;
     }
 
-    public FlowContext<SagaState> getFsmContext(String flowName, Object o) {
-        return null;
-    }
+
 }
 
 
