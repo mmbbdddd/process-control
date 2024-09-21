@@ -4,6 +4,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
+import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmStatisticsSupport;
 import cn.hz.ddbm.pc.newcore.saga.actions.LocalSagaAction;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
@@ -27,14 +28,26 @@ public class SagaFlowTest {
     @Test
     public void runSaga() {
         EnvUtils.setChaosMode(true);
-        SagaFlow p = SagaFlow.of("test",SagaFlowTest.FreezedAction.class, SagaFlowTest.PayAction.class, SagaFlowTest.CommitAction.class);
+        SagaFlow p = SagaFlow.of("test", SagaFlowTest.FreezedAction.class, SagaFlowTest.PayAction.class, SagaFlowTest.CommitAction.class);
 
-        FlowContext<SagaState> ctx = new FlowContext<SagaState>();
-        ctx.flow         = p;
-        ctx.state        = new SagaState();
-        ctx.state.index  = 0;
-        ctx.state.offset = SagaWorker.Offset.task;
-        ctx.state.setFlowStatus(FlowStatus.RUNNABLE);
+        FlowContext<SagaState> ctx = new FlowContext<SagaState>(p, new Payload<SagaState>() {
+            SagaState state = new SagaState(0, SagaWorker.Offset.task);
+
+            @Override
+            public String getId() {
+                return "1";
+            }
+
+            @Override
+            public SagaState getState() {
+                return state;
+            }
+
+            @Override
+            public void setState(SagaState state) {
+                this.state = state;
+            }
+        });
         p.execute(ctx);
 
     }

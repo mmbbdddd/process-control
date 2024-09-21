@@ -5,6 +5,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
+import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
 import cn.hz.ddbm.pc.newcore.config.PcProperties;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
@@ -41,13 +42,25 @@ public class FsmFlowTest {
         p.local(IdCard.lost_date, "push", PrepareAction.class, new ToRouter<>(IdCard.init));
 
 
-        FlowContext<FsmState> ctx = new FlowContext<FsmState>();
-        ctx.flow = p;
+        FlowContext<FsmState> ctx = new FlowContext<>(p, new Payload<FsmState>() {
+            FsmState state = new FsmState(IdCard.init, FsmWorker.Offset.task);
 
-        ctx.state = new FsmState();
-        ctx.state.setFlowStatus(FlowStatus.RUNNABLE);
-        ctx.state.setState(IdCard.init);
-        ctx.state.setOffset(FsmWorker.Offset.task);
+
+            @Override
+            public String getId() {
+                return "1";
+            }
+
+            @Override
+            public FsmState getState() {
+                return state;
+            }
+
+            @Override
+            public void setState(FsmState state) {
+                this.state = state;
+            }
+        });
         ctx.setEvent("push");
         p.execute(ctx);
     }
@@ -68,6 +81,7 @@ public class FsmFlowTest {
         PcProperties properties() {
             return new PcProperties();
         }
+
         @Bean
         LocalChaosAction localChaosAction() {
             return new LocalChaosAction();
