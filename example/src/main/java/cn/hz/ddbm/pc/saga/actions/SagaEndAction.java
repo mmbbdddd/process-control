@@ -1,21 +1,18 @@
 package cn.hz.ddbm.pc.saga.actions;
 
 import cn.hz.ddbm.pc.newcore.FlowContext;
-import cn.hz.ddbm.pc.newcore.saga.action.LocalSagaAction;
+import cn.hz.ddbm.pc.newcore.saga.SagaState;
+import cn.hz.ddbm.pc.newcore.saga.actions.LocalSagaAction;
 
 public class SagaEndAction implements LocalSagaAction {
-    @Override
-    public String code() {
-        return "sagaEndAction";
-    }
 
     @Override
-    public void localSaga(FlowContext ctx) throws Exception {
+    public void doLocalSagaRollback(FlowContext<SagaState> ctx) {
 
     }
 
     @Override
-    public void localSagaRollback(FlowContext ctx) throws Exception {
+    public void doLocalSaga(FlowContext<SagaState> ctx) {
 
     }
 }

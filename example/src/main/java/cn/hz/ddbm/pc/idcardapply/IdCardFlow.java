@@ -1,15 +1,14 @@
 package cn.hz.ddbm.pc.idcardapply;
 
-import cn.hz.ddbm.pc.factory.fsm.FSM;
 import cn.hz.ddbm.pc.newcore.Plugin;
 import cn.hz.ddbm.pc.newcore.config.Coast;
+import cn.hz.ddbm.pc.newcore.factory.FSM;
 import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
-import cn.hz.ddbm.pc.newcore.fsm.router.ToRouter;
 
 import java.util.*;
 
 
-public class IdCardFlow implements FSM<IdCardFSM> {
+public class IdCardFlow implements FSM<IdCard> {
 
     @Override
     public String flowId() {
@@ -22,18 +21,18 @@ public class IdCardFlow implements FSM<IdCardFSM> {
     }
 
     @Override
-    public IdCardFSM initState() {
-        return IdCardFSM.MaterialCollection;
+    public IdCard initState() {
+        return IdCard.MaterialCollection;
     }
 
     @Override
-    public IdCardFSM suState() {
-        return IdCardFSM.Su;
+    public IdCard suState() {
+        return IdCard.Su;
     }
 
     @Override
-    public IdCardFSM failState() {
-        return IdCardFSM.Fail;
+    public IdCard failState() {
+        return IdCard.Fail;
     }
 
 
@@ -83,13 +82,9 @@ public class IdCardFlow implements FSM<IdCardFSM> {
         ;
     }
 
-    @Override
-    public Profile profile() {
-        return Profile.chaosOf();
-    }
 
     @Override
-    public Class<IdCardFSM> type() {
-        return IdCardFSM.class;
+    public Class<IdCard> type() {
+        return IdCard.class;
     }
 }

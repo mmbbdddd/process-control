@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 public class SagaFlow implements BaseFlow<SagaState> {
@@ -19,13 +21,16 @@ public class SagaFlow implements BaseFlow<SagaState> {
     String           name;
 
     public static SagaFlow of(String name,Class<? extends SagaAction>... actions) {
+        return of(name, Stream.of(actions).collect(Collectors.toList()));
+    }
+    public static SagaFlow of(String name,List<Class<? extends SagaAction>>   actions) {
         List<SagaWorker> workers = new ArrayList<>();
 
         workers.add(SagaWorker.failWorker());
-        for (int i = 0; i < actions.length; i++) {
-            workers.add(SagaWorker.of(i, actions[i]));
+        for (int i = 0; i < actions.size(); i++) {
+            workers.add(SagaWorker.of(i, actions.get(i)));
         }
-        workers.add(SagaWorker.suWorker(actions.length));
+        workers.add(SagaWorker.suWorker(actions.size()));
         return new SagaFlow(name,workers);
     }
 

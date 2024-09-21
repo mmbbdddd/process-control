@@ -1,8 +1,9 @@
 package cn.hz.ddbm.pc.newcore.chaos;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
-import cn.hz.ddbm.pc.newcore.BaseFlow;
 import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.State;
 import cn.hz.ddbm.pc.newcore.config.Coast;
@@ -39,22 +40,19 @@ public class ChaosService {
     @Autowired
     ChaosHandler chaosHandler;
 
-
-    public void saga(String flowName, Boolean mock, Integer retry, Integer times, Integer timeout, ChaosConfig chaosConfig) throws PauseException, SessionException, FlowEndException, InterruptedException {
+    public void chaos(String flowName, Boolean mock, Integer retry, Integer times, Integer timeout, MockPayLoad payload, ChaosConfig chaosConfig) throws PauseException, SessionException, FlowEndException, InterruptedException {
         EnvUtils.setChaosMode(mock);
         chaosHandler.setChaosConfig(chaosConfig);
-        Coast.DEFAULT_RETRYTIME = retry;
-        statisticsLines         = Collections.synchronizedList(new ArrayList<>(times));
-        CountDownLatch cdl  = new CountDownLatch(times);
-        BaseFlow       flow = processorService.getFlow(flowName);
+        statisticsLines = Collections.synchronizedList(new ArrayList<>(times));
+        CountDownLatch cdl = new CountDownLatch(times);
         for (int i = 0; i < times; i++) {
-            MockSagaPayload mockPayLoad = new MockSagaPayload(i);
+            MockPayLoad payloadNum$ = ObjectUtil.clone(payload);
+            payloadNum$.id = i + "";
             threadPool.submit(() -> {
                 Object result = null;
                 try {
-                    FlowContext<SagaState> ctx = processorService.getContext(flowName, mockPayLoad, "push", true);
-                    while (isContinue(ctx)) {
-                        Logs.debug.info("uuid：{}", ctx.getUuid());
+                    FlowContext<SagaState> ctx = processorService.getContext(flowName, payloadNum$, "push", true);
+                    while (ctx.getFlow().isRunnable(ctx)) {
                         processorService.execute(ctx);
                     }
                     result = ctx;
@@ -64,7 +62,7 @@ public class ChaosService {
                 } finally {
                     cdl.countDown();
 //                    统计执行结果
-                    statistics(mockPayLoad.getId(), new Object[]{flowName, mockPayLoad}, result);
+                    statistics(payloadNum$.getId(), new Object[]{flowName, payloadNum$}, result);
                 }
             });
         }
@@ -77,61 +75,78 @@ public class ChaosService {
         printStatisticsReport();
     }
 
+//    public void saga(String flowName, Boolean mock, Integer retry, Integer times, Integer timeout, Payload payload, ChaosConfig chaosConfig) throws PauseException, SessionException, FlowEndException, InterruptedException {
+//        EnvUtils.setChaosMode(mock);
+//        chaosHandler.setChaosConfig(chaosConfig);
+//        Coast.DEFAULT_RETRYTIME = retry;
+//        statisticsLines         = Collections.synchronizedList(new ArrayList<>(times));
+//        CountDownLatch cdl = new CountDownLatch(times);
+//        for (int i = 0; i < times; i++) {
+//            Payload mockPayLoad = ObjectUtil.clone(payload);
+//            ReflectUtil.setFieldValue(mockPayLoad, "id", i);
+//            threadPool.submit(() -> {
+//                Object result = null;
+//                try {
+//                    FlowContext<SagaState> ctx = processorService.getContext(flowName, mockPayLoad, "push", true);
+//                    while (ctx.getFlow().isRunnable(ctx)) {
+//                        processorService.execute(ctx);
+//                    }
+//                    result = ctx;
+//                } catch (Throwable t) {
+//                    Logs.error.error("", ExceptionUtils.unwrap(t));
+//                    result = t;
+//                } finally {
+//                    cdl.countDown();
+////                    统计执行结果
+//                    statistics(mockPayLoad.getId(), new Object[]{flowName, mockPayLoad}, result);
+//                }
+//            });
+//        }
+//        try {
+//            cdl.await(timeout, TimeUnit.SECONDS);
+//        } catch (java.lang.InterruptedException e) {
+//            Logs.error.error("", e);
+//            throw new RuntimeException(e);
+//        }
+//        printStatisticsReport();
+//    }
 
-    public void fsm(String flowName, Boolean mock, Enum initStatus, Integer retry, Integer times, Integer timeout, ChaosConfig chaosConfig) throws PauseException, SessionException, FlowEndException, InterruptedException {
-        EnvUtils.setChaosMode(mock);
-        Coast.DEFAULT_RETRYTIME = retry;
-        chaosHandler.setChaosConfig(chaosConfig);
-        statisticsLines = Collections.synchronizedList(new ArrayList<>(times));
-        CountDownLatch cdl = new CountDownLatch(times);
-        for (int i = 0; i < times; i++) {
-            MockFsmPayload mockPayLoad = new MockFsmPayload(i, initStatus);
-            threadPool.submit(() -> {
-                Object result = null;
-                try {
-                    FlowContext ctx = processorService.getContext(flowName, mockPayLoad, "push", true);
-                    while (isContinue(ctx)) {
-                        processorService.execute(ctx);
-                    }
-                    result = ctx;
-                } catch (Throwable t) {
-                    Logs.error.error("", t);
-                    result = t;
-                } finally {
-                    cdl.countDown();
-//                    统计执行结果
-                    statistics(mockPayLoad.getId(), new Object[]{flowName, mockPayLoad}, result);
-                }
-            });
-        }
-        try {
-            cdl.await(timeout, TimeUnit.SECONDS);
-        } catch (java.lang.InterruptedException e) {
-            Logs.error.error("", e);
-            throw new RuntimeException(e);
-        }
-        printStatisticsReport();
-    }
 
-    public boolean isContinue(FlowContext ctx) {
+//    public void fsm(String flowName, Boolean mock, Enum initStatus, Integer retry, Integer times, Integer timeout, ChaosConfig chaosConfig) throws PauseException, SessionException, FlowEndException, InterruptedException {
+//        EnvUtils.setChaosMode(mock);
+//        Coast.DEFAULT_RETRYTIME = retry;
+//        chaosHandler.setChaosConfig(chaosConfig);
+//        statisticsLines = Collections.synchronizedList(new ArrayList<>(times));
+//        CountDownLatch cdl = new CountDownLatch(times);
+//        for (int i = 0; i < times; i++) {
+//            MockFsmPayload mockPayLoad = new MockFsmPayload(i, initStatus);
+//            threadPool.submit(() -> {
+//                Object result = null;
+//                try {
+//                    FlowContext ctx = processorService.getContext(flowName, mockPayLoad, "push", true);
+//                    while (ctx.getFlow().isRunnable(ctx)) {
+//                        processorService.execute(ctx);
+//                    }
+//                    result = ctx;
+//                } catch (Throwable t) {
+//                    Logs.error.error("", t);
+//                    result = t;
+//                } finally {
+//                    cdl.countDown();
+////                    统计执行结果
+//                    statistics(mockPayLoad.getId(), new Object[]{flowName, mockPayLoad}, result);
+//                }
+//            });
+//        }
+//        try {
+//            cdl.await(timeout, TimeUnit.SECONDS);
+//        } catch (java.lang.InterruptedException e) {
+//            Logs.error.error("", e);
+//            throw new RuntimeException(e);
+//        }
+//        printStatisticsReport();
+//    }
 
-        BaseFlow flow     = ctx.getFlow();
-        String   flowName = flow.name();
-        State    state    = ctx.getState();
-        if (!flow.isRunnable(ctx)) {
-            Logs.flow.debug("流程不可运行：{},{},{} ", flowName, ctx.getId(), state);
-            return false;
-        }
-
-        Long    executeCount = processorService.getExecuteTimes(ctx);
-        Integer nodeRetry    = ctx.getFlow().stateAttrs(ctx.getState()).getRetry();
-
-        if (executeCount > nodeRetry) {
-            Logs.flow.warn("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), state, executeCount, nodeRetry);
-            return false;
-        }
-        return true;
-    }
 
     private void printStatisticsReport() {
         Map<String, List<StatisticsLine>> groups = statisticsLines.stream()
@@ -148,59 +163,19 @@ public class ChaosService {
         statisticsLines.add(new StatisticsLine(i, requestInfo, result));
     }
 
+    @Data
+    public static class MockPayLoad<S extends State> implements Payload<S> {
+        String id;
+        S      state;
+
+        public MockPayLoad(Integer id, S state) {
+            this.id    = id + "";
+            this.state = state;
+        }
+    }
+
 }
 
-@Data
-class MockFsmPayload<S extends Enum<S>> implements Payload<FsmState> {
-    Integer  id;
-    FsmState state;
-
-    public MockFsmPayload(Integer id, S init) {
-        this.id    = id;
-        this.state = new FsmState(init, FsmWorker.Offset.task);
-    }
-
-    @Override
-    public String getId() {
-        return id + "";
-    }
-
-    @Override
-    public FsmState getState() {
-        return state;
-    }
-
-    @Override
-    public void setState(FsmState state) {
-        this.state = state;
-    }
-}
-
-@Data
-class MockSagaPayload implements Payload<SagaState> {
-    Integer   id;
-    SagaState state;
-
-    public MockSagaPayload(Integer id) {
-        this.id    = id;
-        this.state = new SagaState(0, SagaWorker.Offset.task);
-    }
-
-    @Override
-    public String getId() {
-        return id + "";
-    }
-
-    @Override
-    public SagaState getState() {
-        return state;
-    }
-
-    @Override
-    public void setState(SagaState state) {
-        this.state = state;
-    }
-}
 
 class StatisticsLine {
     Serializable     index;

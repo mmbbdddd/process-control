@@ -1,17 +1,14 @@
 package cn.hz.ddbm.pc.idcardapply;
 
-import cn.hz.ddbm.pc.chaos.ChaosService;
-import cn.hz.ddbm.pc.chaos.config.ChaosConfiguration;
-import cn.hz.ddbm.pc.chaos.support.ChaosConfig;
+
 import cn.hz.ddbm.pc.idcardapply.actions.MaterialCollectionAction;
 import cn.hz.ddbm.pc.idcardapply.actions.RuleCheckedAction;
 import cn.hz.ddbm.pc.idcardapply.actions.SendBizAction;
-import cn.hz.ddbm.pc.plugin.PerformancePlugin;
-import cn.hz.ddbm.pc.saga.PayTest;
-import cn.hz.ddbm.pc.saga.actions.SagaEndAction;
-import cn.hz.ddbm.pc.saga.actions.SagaFreezeAction;
-import cn.hz.ddbm.pc.saga.actions.SagaPayAction;
-import cn.hz.ddbm.pc.saga.actions.SagaSendAction;
+import cn.hz.ddbm.pc.newcore.chaos.ChaosConfig;
+import cn.hz.ddbm.pc.newcore.chaos.ChaosService;
+import cn.hz.ddbm.pc.newcore.config.ChaosConfiguration;
+import cn.hz.ddbm.pc.newcore.fsm.FsmState;
+import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +32,9 @@ public class IdCardTest {
 
         try {
             //执行100此，查看流程中断概率
-            chaosService.fsm("idcard",  false,IdCardFSM.MaterialCollection,3, 1, 4, chaosConfig );
+            chaosService.chaos("idcard", false, 3, 1, 4,
+                    new ChaosService.MockPayLoad(1, new FsmState(IdCard.MaterialCollection, FsmWorker.Offset.task)),
+                    chaosConfig);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,20 +42,22 @@ public class IdCardTest {
 
     public static class CC {
         @Bean
-        MaterialCollectionAction materialCollectionAction(){
+        MaterialCollectionAction materialCollectionAction() {
             return new MaterialCollectionAction();
         }
+
         @Bean
-        RuleCheckedAction ruleCheckedAction(){
+        RuleCheckedAction ruleCheckedAction() {
             return new RuleCheckedAction();
         }
+
         @Bean
-        SendBizAction sendBizAction(){
+        SendBizAction sendBizAction() {
             return new SendBizAction();
         }
 
         @Bean
-        IdCardFlow idCard(){
+        IdCardFlow idCard() {
             return new IdCardFlow();
         }
 

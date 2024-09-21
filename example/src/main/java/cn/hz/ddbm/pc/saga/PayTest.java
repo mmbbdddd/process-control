@@ -2,10 +2,12 @@ package cn.hz.ddbm.pc.saga;
 
 import cn.hutool.core.lang.Pair;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hz.ddbm.pc.chaos.ChaosService;
-import cn.hz.ddbm.pc.chaos.config.ChaosConfiguration;
-import cn.hz.ddbm.pc.chaos.support.ChaosConfig;
+import cn.hz.ddbm.pc.newcore.chaos.ChaosConfig;
 import cn.hz.ddbm.pc.newcore.chaos.ChaosRule;
+import cn.hz.ddbm.pc.newcore.chaos.ChaosService;
+import cn.hz.ddbm.pc.newcore.config.ChaosConfiguration;
+import cn.hz.ddbm.pc.newcore.saga.SagaState;
+import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 import cn.hz.ddbm.pc.plugin.PerformancePlugin;
 import cn.hz.ddbm.pc.saga.actions.SagaEndAction;
 import cn.hz.ddbm.pc.saga.actions.SagaFreezeAction;
@@ -44,7 +46,9 @@ public class PayTest {
 
         try {
             //执行100此，查看流程中断概率
-            chaosService.saga("test",  true,3, 1, 4, chaosConfig );
+            chaosService.chaos("test", true, 3, 1, 4,
+                    new ChaosService.MockPayLoad(1, new SagaState(0, SagaWorker.Offset.task)),
+            chaosConfig );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,7 +69,9 @@ public class PayTest {
 
         try {
             //执行1000次，查看流程中断概率
-            chaosService.saga("test", false,1, 1, 10, ChaosConfig.goodOf());
+            chaosService.chaos("test", false, 1, 1, 10,
+                    null,
+                    ChaosConfig.goodOf());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,21 +84,25 @@ public class PayTest {
 
     public static class CC {
         @Bean
-        SagaFreezeAction sagaFreezeAction(){
+        SagaFreezeAction sagaFreezeAction() {
             return new SagaFreezeAction();
         }
+
         @Bean
-        SagaEndAction sagaEndAction(){
+        SagaEndAction sagaEndAction() {
             return new SagaEndAction();
         }
+
         @Bean
-        SagaPayAction sagaPayAction(){
+        SagaPayAction sagaPayAction() {
             return new SagaPayAction();
         }
+
         @Bean
-        SagaSendAction sagaSendAction(){
+        SagaSendAction sagaSendAction() {
             return new SagaSendAction();
         }
+
         @Bean
         ChaosService chaosService() {
             return new ChaosService();

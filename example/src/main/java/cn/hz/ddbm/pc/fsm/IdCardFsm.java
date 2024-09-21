@@ -1,61 +1,64 @@
-//package cn.hz.ddbm.pc.fsm;
-//
-//import cn.hutool.core.map.multi.RowKeyTable;
-//import cn.hz.ddbm.pc.factory.fsm.FSM;
-//import cn.hz.ddbm.pc.newcore.Plugin;
-//import cn.hz.ddbm.pc.newcore.Profile;
-//import cn.hz.ddbm.pc.newcore.config.Coast;
-//import cn.hz.ddbm.pc.newcore.fsm.Router;
-//import cn.hz.ddbm.pc.newcore.fsm.action.LocalFsmAction;
-//import cn.hz.ddbm.pc.newcore.fsm.router.ToRouter;
-//import cn.hz.ddbm.pc.newcore.plugins.FsmDigestPlugin;
-//import com.google.common.collect.Sets;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Set;
-//
-//
-//public class IdCardFsm implements FSM<IdCardState> {
-//
-//    @Override
-//    public String flowId() {
-//        return "test";
-//    }
-//
-//    @Override
-//    public String describe() {
-//        return "fsm";
-//    }
-//
-//    @Override
-//    public IdCardState init() {
-//        return IdCardState.init;
-//    }
-//
-//    @Override
-//    public Set<IdCardState> ends() {
-//        return Sets.newHashSet(IdCardState.su, IdCardState.fail);
-//    }
-//
-//    @Override
-//    public List<Plugin> plugins() {
-//        return new ArrayList<Plugin>() {{
+package cn.hz.ddbm.pc.fsm;
+
+import cn.hz.ddbm.pc.newcore.Plugin;
+import cn.hz.ddbm.pc.newcore.config.Coast;
+import cn.hz.ddbm.pc.newcore.factory.FSM;
+import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class IdCardFsm implements FSM<IdCardState> {
+
+    @Override
+    public String flowId() {
+        return "test";
+    }
+
+    @Override
+    public String describe() {
+        return "fsm";
+    }
+
+    @Override
+    public IdCardState initState() {
+        return IdCardState.init;
+    }
+
+    @Override
+    public IdCardState suState() {
+        return IdCardState.su;
+    }
+
+    @Override
+    public IdCardState failState() {
+        return IdCardState.fail;
+    }
+
+    @Override
+    public List<Plugin> plugins() {
+        return new ArrayList<Plugin>() {{
 //            add(new FsmDigestPlugin());
-//        }};
-//    }
-//
-//    @Override
-//    public Coast.SessionType session() {
-//        return null;
-//    }
-//
-//    @Override
-//    public Coast.StatusType status() {
-//        return null;
-//    }
-//
-//
+        }};
+    }
+
+    @Override
+    public Coast.SessionType session() {
+        return null;
+    }
+
+    @Override
+    public Coast.StatusType status() {
+        return null;
+    }
+
+    @Override
+    public void transitions(FsmFlow flow) {
+
+    }
+
+
 //    @Override
 //    public void transitions(Transitions<IdCardState> transitions) {
 //        transitions.state(IdCardState.init)
@@ -80,14 +83,10 @@
 //                .endState()
 //        ;
 //    }
-//
-//    @Override
-//    public Profile profile() {
-//        return Profile.chaosOf();
-//    }
-//
-//    @Override
-//    public Class<IdCardState> type() {
-//        return IdCardState.class;
-//    }
-//}
+
+
+    @Override
+    public Class<IdCardState> type() {
+        return IdCardState.class;
+    }
+}

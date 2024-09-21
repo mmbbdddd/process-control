@@ -4,24 +4,20 @@ import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
 import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
-import cn.hz.ddbm.pc.newcore.fsm.action.RemoteFsmAction;
+import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmAction;
 import cn.hz.ddbm.pc.saga.PayState;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PayCommitAction implements RemoteFsmAction<PayState> {
-    @Override
-    public String code() {
-        return "commitPayAction";
-    }
+public class PayCommitAction implements RemoteFsmAction {
 
     @Override
-    public void remoteFsm(FlowContext<FsmFlow<PayState>, FsmState<PayState>, FsmWorker<PayState>> ctx) throws Exception {
+    public void remoteFsm(FlowContext<FsmState> ctx) throws Exception {
 
     }
 
     @Override
-    public Object remoteFsmQuery(FlowContext<FsmFlow<PayState>, FsmState<PayState>, FsmWorker<PayState>> ctx) throws Exception {
+    public Object remoteFsmQuery(FlowContext<FsmState> ctx) throws Exception {
         return null;
     }
 }

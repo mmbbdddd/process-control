@@ -1,6 +1,6 @@
 package cn.hz.ddbm.pc.idcardapply;
 
-public enum IdCardFSM {
+public enum IdCard {
     MaterialCollection("收集材料中"),
     RuleChecked("规则检查"),
     Accepted("已受理"),
@@ -11,7 +11,7 @@ public enum IdCardFSM {
 
     String descr;
 
-    IdCardFSM(String descr) {
+    IdCard(String descr) {
         this.descr = descr;
     }
 }

@@ -2,10 +2,14 @@ package cn.hz.ddbm.pc.fsm;
 
 import cn.hutool.core.lang.Pair;
 import cn.hutool.extra.spring.SpringUtil;
-import cn.hz.ddbm.pc.chaos.ChaosService;
-import cn.hz.ddbm.pc.chaos.config.ChaosConfiguration;
-import cn.hz.ddbm.pc.chaos.support.ChaosConfig;
+import cn.hz.ddbm.pc.newcore.chaos.ChaosConfig;
 import cn.hz.ddbm.pc.newcore.chaos.ChaosRule;
+import cn.hz.ddbm.pc.newcore.chaos.ChaosService;
+import cn.hz.ddbm.pc.newcore.config.ChaosConfiguration;
+import cn.hz.ddbm.pc.newcore.fsm.FsmState;
+import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
+import cn.hz.ddbm.pc.newcore.saga.SagaState;
+import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 import cn.hz.ddbm.pc.plugin.PerformancePlugin;
 import com.google.common.collect.Sets;
 import org.junit.Test;
@@ -42,12 +46,13 @@ public class IdCardTest {
 
         try {
             //执行100此，查看流程中断概率
-            chaosService.fsm("test",true, IdCardState.init, 1, 1, 20, ChaosConfig.goodOf());
+            chaosService.chaos("test", true, 1, 1, 20,
+                    new ChaosService.MockPayLoad<>(0, new SagaState(0, SagaWorker.Offset.task)),
+                    ChaosConfig.goodOf());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
 
     //模拟支付账号
@@ -65,7 +70,9 @@ public class IdCardTest {
 
         try {
             //执行10000次，查看流程中断概率
-            chaosService.fsm("test",true, IdCardState.init, 2, 1, 1000, ChaosConfig.goodOf());
+            chaosService.chaos("test", true,  2, 1, 1000,
+                    new ChaosService.MockPayLoad<>(1, new FsmState(IdCardState.init, FsmWorker.Offset.task)),
+                    ChaosConfig.goodOf());
         } catch (Exception e) {
             e.printStackTrace();
         }

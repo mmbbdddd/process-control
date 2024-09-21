@@ -8,7 +8,6 @@ public class Coast {
     public static final String  PLUGIN_EXECUTOR_SERVICE = "pluginExecutorService";
     public static final String  ACTION_EXECUTOR_SERVICE = "actionExecutorService";
     public static final String  CHAOS_WEIGHTS           = "chaos_weight";
-    public static       Integer DEFAULT_RETRYTIME       = 1;
 
     public final static String EVENT_DEFAULT = "push";
 
