@@ -31,6 +31,10 @@ public class Coast {
     public static class FSM {
     }
 
+    public enum RetryType {
+        timer,
+    }
+
     public enum LockType {
         jvm,
         zk,

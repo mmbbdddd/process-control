@@ -7,6 +7,7 @@ import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.ActionException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
+import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.infra.*;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmLocker;
@@ -36,11 +37,11 @@ public class ProcessorService {
         return flows.get(flowName);
     }
 
-    public FlowContext<SagaState> getSagaContext(String flowName, Object o) {
-        return null;
+    public FlowContext<SagaState> getContext(String flowName, Payload payload, String event, Boolean fluent) {
+        return new FlowContext<>(getFlow(flowName), payload, event, getSession(flowName, payload.getId()), fluent);
     }
 
-    public FlowContext<SagaState> getFsmContext(String flowName, Object o) {
+    public Map<String, Object> getSession(String flow, String id) {
         return null;
     }
 
@@ -110,8 +111,36 @@ public class ProcessorService {
         return ss.get(flowName, id, state, Coast.STATISTICS.EXECUTE_TIMES);
     }
 
+
+    private StatusManager getStatusManager(BaseFlow flow) {
+        return new StatusManagerProxy(getByCode(flow.flowAttrs().getStatus(), StatusManager.class));
+    }
+
+
+    private SessionManager getSessionManager(BaseFlow flow) {
+        return new SessionManagerProxy(getByCode(flow.flowAttrs().getSession(), SessionManager.class));
+    }
+
+    private RetryService getRetryService(BaseFlow flow) {
+        return new RetryServiceProxy(getByCode(flow.flowAttrs().getRetry(), RetryService.class));
+    }
+
+    private Locker getLocker(BaseFlow flow) {
+        return new LockProxy(getByCode(flow.flowAttrs().getLock(), Locker.class));
+    }
+
     private StatisticsSupport getStatisticsSupport(BaseFlow flow) {
-        return null;
+        return new StatisticsSupportProxy(getByCode(flow.flowAttrs().getStatistics(), StatisticsSupport.class));
+    }
+
+    private <T extends ValueObject> T getByCode(Enum code, Class<T> type) {
+        return SpringUtil.getBeansOfType(type)
+                         .entrySet()
+                         .stream()
+                         .filter(e -> e.getValue().code().equals(code))
+                         .findFirst()
+                         .get()
+                         .getValue();
     }
 
 

@@ -13,7 +13,7 @@ import java.util.Map;
  * @Date 2024/8/7 21:29
  * @Version 1.0.0
  **/
-public interface SessionManager {
+public interface SessionManager extends ValueObject<Coast.SessionType> {
     Coast.SessionType code();
 
     void set(String flowName, Serializable flowId, Map<String, Object> session) throws SessionException;

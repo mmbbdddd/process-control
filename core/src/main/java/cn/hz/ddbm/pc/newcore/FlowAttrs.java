@@ -13,6 +13,7 @@ public class FlowAttrs {
     Integer                 statusTimeout;
     Integer                 lockTimeout;
     Coast.StatusType        status;
+    Coast.RetryType         retry;
     Coast.SessionType       session;
     Coast.LockType          lock;
     Coast.StatisticsType    statistics;

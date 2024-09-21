@@ -52,7 +52,7 @@ public class ChaosService {
             threadPool.submit(() -> {
                 Object result = null;
                 try {
-                    FlowContext<SagaState> ctx = processorService.getSagaContext(flowName, mockPayLoad);
+                    FlowContext<SagaState> ctx = processorService.getContext(flowName, mockPayLoad, "push", true);
                     while (isContinue(ctx)) {
                         Logs.debug.info("uuid：{}", ctx.getUuid());
                         processorService.execute(ctx);
@@ -89,7 +89,7 @@ public class ChaosService {
             threadPool.submit(() -> {
                 Object result = null;
                 try {
-                    FlowContext ctx = processorService.getFsmContext(flowName, mockPayLoad);
+                    FlowContext ctx = processorService.getContext(flowName, mockPayLoad, "push", true);
                     while (isContinue(ctx)) {
                         processorService.execute(ctx);
                     }

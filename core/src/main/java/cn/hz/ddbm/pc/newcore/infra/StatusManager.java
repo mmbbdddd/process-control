@@ -15,7 +15,7 @@ import java.io.Serializable;
  **/
 
 
-public interface StatusManager {
+public interface StatusManager extends ValueObject<Coast.StatusType> {
     Coast.StatusType code();
 
     <T> void setStatus(String flow, Serializable flowId, T status, Integer timeout) throws StatusException;
