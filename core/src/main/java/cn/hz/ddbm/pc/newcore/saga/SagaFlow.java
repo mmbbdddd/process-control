@@ -40,7 +40,14 @@ public class SagaFlow implements BaseFlow<SagaState> {
         this.failWorker = (FailWorker) workers.get(0);
         this.suWorker   = (SuWorker) workers.get(workers.size() - 1);
     }
-
+    @Override
+    public void validate() {
+        Assert.notNull(this.name,"name is null");
+        Assert.notNull(this.failWorker,"failWorker is null");
+        Assert.notNull(this.suWorker,"suWorker is null");
+        Assert.notNull(this.pipelines,"pipelines is null");
+        Assert.isTrue(!this.pipelines.isEmpty(),"pipelines is null");
+    }
     @Override
     public String name() {
         return name;
@@ -82,6 +89,8 @@ public class SagaFlow implements BaseFlow<SagaState> {
     public boolean isRunnable(FlowContext<SagaState> ctx) {
         return !isFail(ctx.state.index) && !isSu(ctx.state.index) && ctx.state.flowStatus.equals(FlowStatus.RUNNABLE);
     }
+
+
 
 
     private SagaWorker getWorker(FlowContext<SagaState> ctx) {

@@ -29,6 +29,14 @@ public class FsmFlow implements BaseFlow<FsmState> {
         this.eventTables = new RowKeyTable<>();
     }
 
+    @Override
+    public void validate() {
+        Assert.notNull(this.name, "name is null");
+        Assert.notNull(this.init, "init is null");
+        Assert.notNull(this.su, "su is null");
+        Assert.notNull(this.fail, "fail is null");
+        Assert.isTrue(!this.eventTables.isEmpty(), "eventTables is null");
+    }
 
     @Override
     public String name() {
@@ -64,6 +72,7 @@ public class FsmFlow implements BaseFlow<FsmState> {
     public boolean isRunnable(FlowContext<FsmState> ctx) {
         return !isFail(ctx.state.state) && !isSu(ctx.state.state) && ctx.state.flowStatus.equals(FlowStatus.RUNNABLE);
     }
+
 
     private boolean isSu(Enum state) {
         return Objects.equals(su, state);

@@ -14,16 +14,17 @@ import java.util.stream.Collectors;
  * 定义的流程的定义方式
  * 有xml，json，buider等方式。
  */
-public class BeanSagaFlowFactory implements SagaFlowFactory, ApplicationContextAware {
+public class BeanSagaFlowFactory implements ApplicationContextAware, FlowFactory<SagaFlow> {
     private ApplicationContext ctx;
 
     @Override
     public Map<String, SagaFlow> getFlows() {
         List<SagaFlow> flows = ctx.getBeansOfType(SAGA.class).entrySet().stream().map(t -> {
             try {
-                return t.getValue().build();
+                SagaFlow flow = t.getValue().build();
+                flow.validate();
+                return flow;
             } catch (Exception e) {
-                Logs.error.error("", e);
                 throw new RuntimeException(e);
             }
         }).collect(Collectors.toList());

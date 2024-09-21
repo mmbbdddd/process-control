@@ -33,6 +33,8 @@ public interface BaseFlow<S extends State> {
      */
     boolean isRunnable(FlowContext<S> ctx);
 
+    void validate();
+
     /**
      * 获取流程属性定义
      *

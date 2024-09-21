@@ -15,16 +15,17 @@ import java.util.stream.Collectors;
  * 定义的流程的定义方式
  * 有xml，json，buider等方式。
  */
-public class BeanFsmFlowFactory implements FsmFlowFactory, ApplicationContextAware {
+public class BeanFsmFlowFactory implements ApplicationContextAware, FlowFactory<FsmFlow> {
     private ApplicationContext ctx;
 
     @Override
     public Map<String, FsmFlow> getFlows() {
         List<FsmFlow> flows = ctx.getBeansOfType(FSM.class).entrySet().stream().map(t -> {
             try {
-                return t.getValue().build();
+                FsmFlow flow =  t.getValue().build();
+                flow.validate();
+                return flow;
             } catch (Exception e) {
-                Logs.error.error("", e);
                 throw new RuntimeException(e);
             }
         }).collect(Collectors.toList());
