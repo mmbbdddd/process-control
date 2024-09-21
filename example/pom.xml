@@ -25,17 +25,7 @@
             <artifactId>core</artifactId>
             <version>${pc.version}</version>
         </dependency>
-        <dependency>
-            <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>framework</artifactId>
-            <version>${pc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>factory-dsl</artifactId>
-            <version>${pc.version}</version>
-            <scope>compile</scope>
-        </dependency>
+
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>configuration-spring</artifactId>

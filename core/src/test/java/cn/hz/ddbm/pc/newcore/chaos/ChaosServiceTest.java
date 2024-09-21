@@ -30,7 +30,7 @@ public class ChaosServiceTest {
     @Test
     public void saga() {
         try {
-            chaosService.saga(null, true, 1, 1, 3000, chaosConfig);
+            chaosService.chaos(null, true, 1, 1, 3000, null,chaosConfig);
         } catch (PauseException e) {
             throw new RuntimeException(e);
         } catch (SessionException e) {

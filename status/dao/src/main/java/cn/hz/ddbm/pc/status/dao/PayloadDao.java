@@ -2,12 +2,12 @@ package cn.hz.ddbm.pc.status.dao;
 
 
 import cn.hz.ddbm.pc.newcore.Payload;
-import cn.hz.ddbm.pc.newcore.fsm.FsmPayload;
+import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 
-public interface PayloadDao<T extends Payload> {
+public interface PayloadDao  {
     String flowName();
 
-    void save(FsmPayload data);
+    void save(Payload data);
 
-    FsmPayload get(String flow);
+    Payload get(String flow);
 }
