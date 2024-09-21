@@ -31,8 +31,6 @@ public class LocalFsmActionProxy {
         } catch (Exception e) {
             //回滚事务。
             throw e;
-        } finally {
-            SpringUtil.getBean(ProcessorService.class).metricsNode(ctx);
         }
     }
 }

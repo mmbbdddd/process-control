@@ -44,6 +44,7 @@ public class FsmRemoteWorker  extends FsmWorker  {
                 execute(ctx);
                 break;
         }
+        ctx.metricsState();
     }
 
 }

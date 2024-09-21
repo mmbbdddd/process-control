@@ -106,7 +106,7 @@ public class FsmFlowTest {
     static class PrepareAction implements LocalFsmAction {
         @Override
         public Object doLocalFsm(FlowContext<FsmState> ctx) throws Exception {
-            Long    executeTimes = SpringUtil.getBean(ProcessorService.class).getExecuteTimes(ctx);
+            Integer executeTimes = ctx.getExecuteTimes();
             Integer retryTimes   = ctx.getFlow().stateAttrs(ctx.state).getRetry();
             if (executeTimes > retryTimes) {
                 throw new RuntimeException("2");

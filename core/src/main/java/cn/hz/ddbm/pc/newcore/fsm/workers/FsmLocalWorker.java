@@ -45,6 +45,7 @@ public class FsmLocalWorker  extends FsmWorker  {
             case failover:
                 break;
         }
+        ctx.metricsState();
     }
 
 }

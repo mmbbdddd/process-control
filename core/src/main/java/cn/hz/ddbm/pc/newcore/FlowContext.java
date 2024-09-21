@@ -3,10 +3,13 @@ package cn.hz.ddbm.pc.newcore;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.UUID;
 import cn.hz.ddbm.pc.newcore.config.Coast;
+import cn.hz.ddbm.pc.newcore.infra.model.Statistics;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Data
 public class FlowContext<S extends State> {
@@ -38,4 +41,17 @@ public class FlowContext<S extends State> {
         this.session = null == session ? new HashMap<>() : session;
         this.fluent  = null == fluent || fluent;
     }
+
+    public Integer getExecuteTimes() {
+        String statisticsKey = String.format("STATISTICS:%s:%s:%s:%s", flow.flowAttrs().namespace, flow.name(), id, state.code());
+        return ((Statistics) getSession().computeIfAbsent(statisticsKey,
+                (Function<String, Statistics>) s -> new Statistics())).getExecuteTimes().get();
+    }
+
+    public void metricsState() {
+        String statisticsKey = String.format("STATISTICS:%s:%s:%s:%s", flow.flowAttrs().namespace, flow.name(), id, state.code());
+        ((Statistics) getSession().computeIfAbsent(statisticsKey,
+                (Function<String, Statistics>) s -> new Statistics())).getExecuteTimes().incrementAndGet();
+    }
 }
+

@@ -74,8 +74,6 @@ public class ProcessorService {
         BaseFlow flow = ctx.getFlow();
         while (flow.isRunnable(ctx)) {
             try {
-                Long executeTimes = getExecuteTimes(ctx);
-                Integer retryTimes = ctx.flow.stateAttrs(ctx.getState()).getRetry();
                 flow.execute(ctx);
             } catch (RuntimeException e) {                //运行时异常中断
                 flushState(ctx);
@@ -102,22 +100,7 @@ public class ProcessorService {
     }
 
 
-    public void metricsNode(FlowContext ctx) {
-        String            flowName = ctx.getFlow().name();
-        Serializable      id       = ctx.getId();
-        State             state    = ctx.getState();
-        StatisticsSupport ss       = getStatisticsSupport(ctx.getFlow());
-        ss.increment(flowName, id, state, Coast.STATISTICS.EXECUTE_TIMES);
-    }
 
-
-    public Long getExecuteTimes(FlowContext ctx) {
-        String            flowName = ctx.getFlow().name();
-        Serializable      id       = ctx.getId();
-        State             state    = ctx.getState();
-        StatisticsSupport ss       = getStatisticsSupport(ctx.getFlow());
-        return ss.get(flowName, id, state, Coast.STATISTICS.EXECUTE_TIMES);
-    }
 
 
     private StatusManager getStatusManager(BaseFlow flow) {
