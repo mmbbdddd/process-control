@@ -6,7 +6,7 @@ import cn.hz.ddbm.pc.newcore.saga.SagaAction;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 
 public interface LocalSagaAction extends SagaAction {
-    void doLocalSagaRollback(FlowContext<SagaState> ctx);
+    Boolean doLocalSagaRollback(FlowContext<SagaState> ctx);
 
-    void doLocalSaga(FlowContext<SagaState> ctx);
+    Boolean doLocalSaga(FlowContext<SagaState> ctx);
 }

@@ -13,11 +13,11 @@ public class LocalSagaActionProxy {
         this.action = (LocalSagaAction) SpringUtil.getBean(actionType);
     }
 
-    public void doLocalSaga(FlowContext<SagaState> ctx) {
-        this.action.doLocalSaga(ctx);
+    public Boolean  doLocalSaga(FlowContext<SagaState> ctx) {
+        return this.action.doLocalSaga(ctx);
     }
 
-    public void doLocalSagaRollback(FlowContext<SagaState> ctx) {
-        this.action.doLocalSagaRollback(ctx);
+    public Boolean doLocalSagaRollback(FlowContext<SagaState> ctx) {
+        return this.action.doLocalSagaRollback(ctx);
     }
 }

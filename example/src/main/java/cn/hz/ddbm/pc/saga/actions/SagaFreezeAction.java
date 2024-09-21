@@ -9,14 +9,16 @@ public class SagaFreezeAction implements LocalSagaAction {
 
 
     @Override
-    public void doLocalSagaRollback(FlowContext<SagaState> ctx) {
+    public Boolean doLocalSagaRollback(FlowContext<SagaState> ctx) {
         PayTest.account.incrementAndGet();
         PayTest.freezed.decrementAndGet();
+        return null;
     }
 
     @Override
-    public void doLocalSaga(FlowContext<SagaState> ctx) {
+    public Boolean doLocalSaga(FlowContext<SagaState> ctx) {
         PayTest.account.decrementAndGet();
         PayTest.freezed.incrementAndGet();
+        return null;
     }
 }

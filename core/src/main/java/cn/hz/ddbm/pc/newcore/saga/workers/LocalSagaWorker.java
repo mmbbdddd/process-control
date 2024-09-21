@@ -19,22 +19,46 @@ public class LocalSagaWorker extends SagaWorker {
         this.action = new LocalSagaActionProxy(actionType);
     }
 
+    /**
+     * task.on(push.su)=>index++/task
+     * task.on(push.fail)==>rollback;
+     * task.on(push.exception)==>keep it;
+     * task.on(push.exception && retrytime >? )==>manual;
+     *
+     * @param ctx
+     */
     @Override
     public void execute(FlowContext<SagaState> ctx) {
         switch (ctx.state.offset) {
-            case task:
-                action.doLocalSaga(ctx);
-                ctx.state.index++;
-                ctx.state.offset = task;
+            case task: {
+                try {
+                    Boolean result = action.doLocalSaga(ctx);
+                    if (result) {
+                        ctx.state.index++;
+                        ctx.state.offset = task;
+                    } else {
+                        ctx.state.offset = rollback;
+                    }
+                } catch (Exception e) {
+                    //keep state is task
+                    throw e;
+                }
                 break;
+            }
             case rollback:
                 try {
-                    action.doLocalSagaRollback(ctx);
-                    ctx.state.index--;
-                    ctx.state.offset = rollback;
+                    Boolean result = action.doLocalSagaRollback(ctx);
+                    if (result) {
+                        ctx.state.index--;
+                        ctx.state.offset = rollback;
+                    } else {
+                        ctx.state.setFlowStatus(FlowStatus.MANUAL);
+                    }
                 } catch (Exception e) {
+                    //keep state rollback until retry time > ? then set state manual
                     //todo 当执行次数超限的时候，回滚
                     ctx.state.setFlowStatus(FlowStatus.MANUAL);
+                    throw e;
                 }
                 break;
         }
