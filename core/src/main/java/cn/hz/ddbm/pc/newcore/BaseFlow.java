@@ -40,10 +40,10 @@ public interface BaseFlow<S extends State> {
      */
     default FlowAttrs flowAttrs() {
         if (EnvUtils.isChaos()) {
-            return chaosFlowAttrs();
+            return FlowHelper.chaosFlowAttrs();
         } else {
-            FlowAttrs flowAttrs = getFlowAttrsByContainer();
-            flowAttrs = null == flowAttrs ? getFlowAttrsByJvm() : defaultFlowAttrs();
+            FlowAttrs flowAttrs = FlowHelper.getFlowAttrsByContainer(this);
+            flowAttrs = null == flowAttrs ? FlowHelper.getFlowAttrsByJvm(this) : FlowHelper.defaultFlowAttrs();
             return flowAttrs;
         }
     }
@@ -56,41 +56,44 @@ public interface BaseFlow<S extends State> {
      */
     default StateAttrs stateAttrs(S state) {
         if (EnvUtils.isChaos()) {
-            return chaosStateAttrs();
+            return FlowHelper.chaosStateAttrs();
         } else {
-            StateAttrs stateAttrs = getStateAttrsByContainer(state);
-            stateAttrs = null == stateAttrs ? getStateAttrsByJvm(state) : defaultStateAttrs();
+            StateAttrs stateAttrs = FlowHelper.getStateAttrsByContainer(this, state);
+            stateAttrs = null == stateAttrs ? FlowHelper.getStateAttrsByJvm(this, state) : FlowHelper.defaultStateAttrs();
             return stateAttrs;
         }
     }
+}
 
-    default FlowAttrs getFlowAttrsByContainer() {
+abstract class FlowHelper {
+
+    static FlowAttrs getFlowAttrsByContainer(BaseFlow flow) {
         PcProperties properties = SpringUtil.getBean(PcProperties.class);
         if (null == properties) return null;
         Map<String, FlowAttrs> flowAttrs = properties.getFlowAttrs();
         if (null == flowAttrs) return null;
-        return flowAttrs.get(name());
+        return flowAttrs.get(flow.name());
     }
 
-    default FlowAttrs getFlowAttrsByJvm() {
+    static FlowAttrs getFlowAttrsByJvm(BaseFlow flow) {
         Map<String, FlowAttrs> flowAttrs = JvmProperties.flowAttrs;
         if (null == flowAttrs) return null;
-        return flowAttrs.get(name());
+        return flowAttrs.get(flow.name());
     }
 
-    default StateAttrs getStateAttrsByContainer(S state) {
-        FlowAttrs flowAttr = getFlowAttrsByContainer();
+    static <S extends State> StateAttrs getStateAttrsByContainer(BaseFlow flow, S state) {
+        FlowAttrs flowAttr = getFlowAttrsByContainer(flow);
         if (null == flowAttr || flowAttr.getStateAttrs() == null) return null;
         return flowAttr.getStateAttrs().get(state.code());
     }
 
-    default StateAttrs getStateAttrsByJvm(S state) {
-        FlowAttrs flowAttr = getFlowAttrsByJvm();
+    static <S extends State> StateAttrs getStateAttrsByJvm(BaseFlow flow, S state) {
+        FlowAttrs flowAttr = getFlowAttrsByJvm(flow);
         if (null == flowAttr || flowAttr.getStateAttrs() == null) return null;
         return flowAttr.getStateAttrs().get(state.code());
     }
 
-    default FlowAttrs defaultFlowAttrs() {
+    static FlowAttrs defaultFlowAttrs() {
         FlowAttrs f = new FlowAttrs();
         f.namespace     = "app";
         f.maxLoop       = 3;
@@ -105,7 +108,7 @@ public interface BaseFlow<S extends State> {
         return f;
     }
 
-    default FlowAttrs chaosFlowAttrs() {
+    static FlowAttrs chaosFlowAttrs() {
         FlowAttrs f = new FlowAttrs();
         f.namespace     = "app";
         f.maxLoop       = 3;
@@ -121,17 +124,16 @@ public interface BaseFlow<S extends State> {
     }
 
 
-    default StateAttrs defaultStateAttrs() {
+    static StateAttrs defaultStateAttrs() {
         StateAttrs s = new StateAttrs();
         s.retry = 0;
         return s;
     }
 
 
-    default StateAttrs chaosStateAttrs() {
+    static StateAttrs chaosStateAttrs() {
         StateAttrs s = new StateAttrs();
         s.retry = 10;
         return s;
     }
-
 }
