@@ -3,6 +3,7 @@ package cn.hz.ddbm.pc.newcore.saga.workers;
 
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
+import cn.hz.ddbm.pc.newcore.fsm.LimtedRetryException;
 import cn.hz.ddbm.pc.newcore.saga.SagaAction;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
@@ -32,14 +33,26 @@ public class LocalSagaWorker extends SagaWorker {
     public void execute(FlowContext<SagaState> ctx) {
         switch (ctx.state.offset) {
             case task: {
+                Integer executeTimes = ctx.getExecuteTimes();
+                Integer retryTimes   = ctx.getFlow().stateAttrs(ctx.getState()).getRetry();
+                if (executeTimes > retryTimes) {
+                    throw new LimtedRetryException();
+                }
                 SagaAction.QueryResult result = action.doLocalSaga(ctx);
+                ctx.metricsState();
                 onQueryResult(ctx, result);
                 //todo 异常是否继续?
                 execute(ctx);
                 break;
             }
             case rollback:
+                Integer executeTimes = ctx.getExecuteTimes();
+                Integer retryTimes = ctx.getFlow().stateAttrs(ctx.getState()).getRetry();
+                if (executeTimes > retryTimes) {
+                    throw new LimtedRetryException();
+                }
                 SagaAction.QueryResult result = action.doLocalSagaRollback(ctx);
+                ctx.metricsState();
                 onQueryResult(ctx, result);
                 //todo 异常是否继续?
                 execute(ctx);
@@ -49,10 +62,10 @@ public class LocalSagaWorker extends SagaWorker {
     }
 
     private void onQueryResult(FlowContext<SagaState> ctx, SagaAction.QueryResult result) {
-        if (ctx.state.offset == task || ctx.state.offset == task_query) {
+        if (ctx.state.offset == task_query) {
             switch (result) {
                 case exception:
-                    ctx.state.offset = task_query;
+//                    ctx.state.offset = task_query;
                     break;
                 case su:
                     ctx.state.index++;
@@ -62,10 +75,10 @@ public class LocalSagaWorker extends SagaWorker {
                     ctx.state.offset = rollback;
                     break;
             }
-        } else if (ctx.state.offset == rollback || ctx.state.offset == rollback_query) {
+        } else if (ctx.state.offset == rollback_query) {
             switch (result) {
                 case exception:
-                    ctx.state.offset = rollback_query;
+//                    ctx.state.offset = rollback_query;
                     break;
                 case su:
                     ctx.state.index--;
