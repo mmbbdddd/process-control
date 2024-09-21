@@ -11,6 +11,7 @@ import cn.hz.ddbm.pc.newcore.infra.impl.JvmLocker;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmSessionManager;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmStatisticsSupport;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmStatusManager;
+import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
@@ -23,6 +24,7 @@ public class ChaosConfiguration {
 
     @Bean
     ProcessorService processorService() {
+        EnvUtils.setChaosMode(true);
         return new ProcessorService();
     }
 

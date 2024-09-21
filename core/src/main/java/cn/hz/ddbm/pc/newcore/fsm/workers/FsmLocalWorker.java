@@ -27,6 +27,7 @@ public class FsmLocalWorker extends FsmWorker {
         switch (offset) {
             case task:
                 Object result = action.doLocalFsm(ctx);
+                ctx.metricsState();
                 Enum state = router.router(ctx, result);
                 if (null == state) {
                     //如果结果为空，路由无结果，1，暂停，2报错
@@ -43,7 +44,7 @@ public class FsmLocalWorker extends FsmWorker {
                 break;
             case failover:
                 break;
-        } 
+        }
     }
 
 }

@@ -36,7 +36,6 @@ public class ChaosService {
     ChaosHandler chaosHandler;
 
     public void chaos(String flowName, Boolean mock, Integer retry, Integer times, Integer timeout, MockPayLoad payload, ChaosConfig chaosConfig) throws PauseException, SessionException, FlowEndException, InterruptedException {
-        EnvUtils.setChaosMode(mock);
         chaosHandler.setChaosConfig(chaosConfig);
         statisticsLines = Collections.synchronizedList(new ArrayList<>(times));
         CountDownLatch cdl = new CountDownLatch(times);

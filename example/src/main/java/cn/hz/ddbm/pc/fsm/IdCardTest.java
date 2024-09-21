@@ -10,6 +10,7 @@ import cn.hz.ddbm.pc.newcore.config.ChaosConfiguration;
 import cn.hz.ddbm.pc.newcore.factory.BeanFsmFlowFactory;
 import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
+import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,6 @@ public class IdCardTest {
 
     @Test
     public void chaos() throws Exception {
-
         try {
             //执行100此，查看流程中断概率
             chaosService.chaos("idcard", true, 3, 100, 4,

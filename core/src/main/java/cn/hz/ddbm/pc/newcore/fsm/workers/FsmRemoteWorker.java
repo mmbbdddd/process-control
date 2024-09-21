@@ -44,7 +44,6 @@ public class FsmRemoteWorker extends FsmWorker {
                     ctx.state.state  = state;
                     ctx.state.offset = Offset.task;
                 }
-                execute(ctx);
                 break;
         }
     }
