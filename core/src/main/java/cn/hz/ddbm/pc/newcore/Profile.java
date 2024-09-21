@@ -20,8 +20,7 @@ public class Profile {
     Coast.LockType        lock;
     Coast.StatisticsType  statistics;
     Coast.ScheduleType    schedule;
-    List<Plugin>          plugins;
-    Map<State, StateAttr> stateAttr;
+    List<Plugin>           plugins;
     @Getter
     Set<Class<? extends Exception>> retryExceptions;
 
@@ -37,7 +36,6 @@ public class Profile {
                 .statistics(Coast.StatisticsType.redis)
                 .schedule(Coast.ScheduleType.timer)
                 .plugins(new ArrayList<>())
-                .stateAttr(new HashMap<>())
                 .retryExceptions(new HashSet<Class<? extends Exception>>() {{
                     add(IdempotentException.class);
                 }})
@@ -55,16 +53,13 @@ public class Profile {
                 .statistics(Coast.StatisticsType.jvm)
                 .schedule(Coast.ScheduleType.timer)
                 .plugins(new ArrayList<>())
-                .stateAttr(new HashMap<>())
                 .retryExceptions(new HashSet<Class<? extends Exception>>() {{
                     add(IdempotentException.class);
                 }})
                 .build();
     }
 
-    public StateAttr getStateAttrs(State state) {
-        return stateAttr.getOrDefault(state, StateAttr.defaultOf());
-    }
+
 
     public String getNamespace() {
         return namespace == null ? "app" : namespace;
@@ -106,9 +101,6 @@ public class Profile {
         return plugins == null ? new ArrayList<>() : plugins;
     }
 
-    public Map<State, StateAttr> getStateAttr() {
-        return stateAttr == null ? new HashMap<>() : stateAttr;
-    }
 
 
     public boolean isRetryableException(Throwable e) {

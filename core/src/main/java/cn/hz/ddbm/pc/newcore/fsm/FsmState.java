@@ -14,7 +14,7 @@ public class FsmState implements State {
 
     @Override
     public Serializable code() {
-        return null;
+        return state;
     }
 
 

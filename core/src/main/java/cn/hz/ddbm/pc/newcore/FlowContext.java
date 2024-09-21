@@ -16,7 +16,5 @@ public class FlowContext<S extends State> {
     public String              errorMessage;
     public Map<String, Object> session = new HashMap<>();
 
-    public Profile getProfile() {
-        return flow.getProfile();
-    }
+
 }

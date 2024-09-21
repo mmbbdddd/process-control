@@ -3,21 +3,16 @@ package cn.hz.ddbm.pc.newcore.chaos;
 import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.BaseFlow;
-import cn.hz.ddbm.pc.newcore.FlowStatus;
 import cn.hz.ddbm.pc.newcore.State;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
 import cn.hz.ddbm.pc.newcore.exception.InterruptedException;
 import cn.hz.ddbm.pc.newcore.exception.PauseException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
-import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.log.Logs;
-import cn.hz.ddbm.pc.newcore.saga.SagaFlow;
-import cn.hz.ddbm.pc.newcore.saga.SagaProcessor;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 import cn.hz.ddbm.pc.newcore.utils.ExceptionUtils;
-import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
@@ -46,7 +41,7 @@ public class ChaosService {
         Coast.DEFAULT_RETRYTIME = retry;
         statisticsLines         = Collections.synchronizedList(new ArrayList<>(times));
         CountDownLatch cdl  = new CountDownLatch(times);
-        BaseFlow       flow = (SagaFlow) processorService.getFlow(flowName);
+        BaseFlow       flow = processorService.getFlow(flowName);
         for (int i = 0; i < times; i++) {
 //            MockSagaPayload mockPayLoad = new MockSagaPayload(i, (SagaFlow) flow);
 //            mockPayLoad.setId(i);
@@ -55,7 +50,7 @@ public class ChaosService {
                 try {
                     FlowContext<SagaState> ctx = processorService.getSagaContext(flowName, null);
                     while (isContinue(ctx)) {
-                        Logs.debug.info("uuid：{}",ctx.getUuid());
+                        Logs.debug.info("uuid：{}", ctx.getUuid());
                         processorService.execute(ctx);
                     }
                     result = ctx;
@@ -121,15 +116,15 @@ public class ChaosService {
     public boolean isContinue(FlowContext ctx) {
 
         BaseFlow flow     = ctx.getFlow();
-        String   flowName = flow.getName();
-        State     state    = ctx.getState();
-        if (!flow.keepRun(ctx)) {
+        String   flowName = flow.name();
+        State    state    = ctx.getState();
+        if (!flow.isRunnable(ctx)) {
             Logs.flow.debug("流程不可运行：{},{},{} ", flowName, ctx.getId(), state);
             return false;
         }
 
-        Long executeCount = processorService.getExecuteTimes(ctx);
-        Integer nodeRetry = ctx.getFlow() .getRetry(ctx.getState());
+        Long    executeCount = processorService.getExecuteTimes(ctx);
+        Integer nodeRetry    = ctx.getFlow().stateAttrs(ctx.getState()).getRetry();
 
         if (executeCount > nodeRetry) {
             Logs.flow.warn("流程已限流：{},{},{},{}>{}", flowName, ctx.getId(), state, executeCount, nodeRetry);
@@ -140,7 +135,7 @@ public class ChaosService {
 
     private void printStatisticsReport() {
         Map<String, List<StatisticsLine>> groups = statisticsLines.stream()
-                .collect(Collectors.groupingBy(t -> t.result.value));
+                                                                  .collect(Collectors.groupingBy(t -> t.result.value));
         Logs.flow.info("混沌测试报告：\\n");
         groups.forEach((key, list) -> {
             Logs.flow.info("{},\t{}", key, list.size());
@@ -238,14 +233,14 @@ class StatisticsResult {
     public StatisticsResult(Throwable t) {
         this.isResult = false;
         this.value    = t.getClass()
-                .getSimpleName() + ":" + t.getMessage();
+                         .getSimpleName() + ":" + t.getMessage();
     }
 
-    public StatisticsResult(FlowContext  ctx) {
+    public StatisticsResult(FlowContext ctx) {
         this.isResult = true;
         this.value    = ctx.getState()
-                .code()
-                .toString();
+                           .code()
+                           .toString();
     }
 
     @Override

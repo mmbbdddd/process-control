@@ -27,7 +27,7 @@ public class SagaFlowTest {
     @Test
     public void runSaga() {
         EnvUtils.setChaosMode(true);
-        SagaFlow p = SagaFlow.of(SagaFlowTest.FreezedAction.class, SagaFlowTest.PayAction.class, SagaFlowTest.CommitAction.class);
+        SagaFlow p = SagaFlow.of("test",SagaFlowTest.FreezedAction.class, SagaFlowTest.PayAction.class, SagaFlowTest.CommitAction.class);
 
         FlowContext<SagaState> ctx = new FlowContext<SagaState>();
         ctx.flow         = p;

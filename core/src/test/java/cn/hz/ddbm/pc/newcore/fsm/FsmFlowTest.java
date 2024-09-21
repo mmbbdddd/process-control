@@ -7,9 +7,11 @@ import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
 import cn.hz.ddbm.pc.newcore.Profile;
 import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
+import cn.hz.ddbm.pc.newcore.config.PcProperties;
 import cn.hz.ddbm.pc.newcore.exception.ActionException;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.routers.ToRouter;
+import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 import org.codehaus.groovy.transform.sc.transformers.RangeExpressionTransformer;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +30,8 @@ public class FsmFlowTest {
 
     @Test
     public void runFsm() throws Exception {
-//        EnvUtils.setRunModeChaos();
-        FsmFlow  p = new FsmFlow(IdCard.init, IdCard.su, IdCard.fail);
+        EnvUtils.setChaosMode(true);
+        FsmFlow p = new FsmFlow("test", IdCard.init, IdCard.su, IdCard.fail);
         p.local(IdCard.init, "push", PrepareAction.class, new ToRouter<>(IdCard.presend));
         p.local(IdCard.presend, "push", PrepareAction.class, new ToRouter<>(IdCard.auditing));
         p.local(IdCard.auditing, "push", PrepareAction.class, new Router(new RowKeyTable<String, IdCard, Double>() {{
@@ -41,7 +43,6 @@ public class FsmFlowTest {
         p.local(IdCard.no_such_order, "push", PrepareAction.class, new ToRouter<>(IdCard.presend));
         p.local(IdCard.lost_date, "push", PrepareAction.class, new ToRouter<>(IdCard.init));
 
-        p.profile(Profile.chaosOf());
 
         FlowContext<FsmState> ctx = new FlowContext<FsmState>();
         ctx.flow = p;
@@ -67,6 +68,10 @@ public class FsmFlowTest {
 
     static class FF {
         @Bean
+        PcProperties properties() {
+            return new PcProperties();
+        }
+        @Bean
         LocalChaosAction localChaosAction() {
             return new LocalChaosAction();
         }
@@ -89,17 +94,17 @@ public class FsmFlowTest {
 
     static class PrepareAction implements LocalFsmAction {
         @Override
-        public Object doLocalFsm(FlowContext<FsmState > ctx) throws Exception {
+        public Object doLocalFsm(FlowContext<FsmState> ctx) throws Exception {
             Long    executeTimes = SpringUtil.getBean(ProcessorService.class).getExecuteTimes(ctx);
-            Integer retryTimes   = ctx.getFlow().getRetry(ctx.state);
+            Integer retryTimes   = ctx.getFlow().stateAttrs(ctx.state).getRetry();
             if (executeTimes > retryTimes) {
                 throw new RuntimeException("2");
             }
             Double r = Math.random();
-            if(r<0.1){
+            if (r < 0.1) {
                 throw new Exception("1");
             }
-            if(r<0.3){
+            if (r < 0.3) {
                 throw new RuntimeException("1");
             }
             return null;

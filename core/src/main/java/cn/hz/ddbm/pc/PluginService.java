@@ -18,45 +18,45 @@ public class PluginService {
     }
 
     public void pre(FlowContext ctx) {
-        Set<Plugin> plugins = new HashSet<>(ctx.getProfile().getPlugins());
+        Set<Plugin> plugins = new HashSet<>(ctx.getFlow().flowAttrs().getPlugins());
         plugins.forEach((plugin) -> {
             try {
                 plugin.preAction(ctx);
             } catch (Exception e) {
-                Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
+                Logs.error.error("{},{}", ctx.getFlow().name(), ctx.getId(), e);
             }
         });
     }
 
     public void post(State lastNode, FlowContext ctx) {
-        Set<Plugin> plugins = new HashSet<>(ctx.getProfile().getPlugins());
+        Set<Plugin> plugins = new HashSet<>(ctx.getFlow().flowAttrs().getPlugins());
         plugins.forEach((plugin) -> {
             try {
                 plugin.postAction(lastNode, ctx);
             } catch (Exception e) {
-                Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
+                Logs.error.error("{},{}", ctx.getFlow().name(), ctx.getId(), e);
             }
         });
     }
 
     public void error(State preNode, Exception e, FlowContext ctx) {
-        Set<Plugin> plugins = new HashSet<>(ctx.getProfile().getPlugins());
+        Set<Plugin> plugins = new HashSet<>(ctx.getFlow().flowAttrs().getPlugins());
         plugins.forEach((plugin) -> {
             try {
                 plugin.errorAction(preNode, e, ctx);
             } catch (Exception e2) {
-                Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e2);
+                Logs.error.error("{},{}", ctx.getFlow().name(), ctx.getId(), e2);
             }
         });
     }
 
     public void _finally(State preNode,FlowContext ctx) {
-        Set<Plugin> plugins = new HashSet<>(ctx.getProfile().getPlugins());
+        Set<Plugin> plugins = new HashSet<>(ctx.getFlow().flowAttrs().getPlugins());
         plugins.forEach((plugin) -> {
             try {
                 plugin.finallyAction(preNode,ctx);
             } catch (Exception e) {
-                Logs.error.error("{},{}", ctx.getFlow().getName(), ctx.getId(), e);
+                Logs.error.error("{},{}", ctx.getFlow().name(), ctx.getId(), e);
             }
         });
     }

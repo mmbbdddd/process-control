@@ -6,8 +6,8 @@ import cn.hz.ddbm.pc.newcore.Profile;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
 import cn.hz.ddbm.pc.newcore.fsm.Router;
-import cn.hz.ddbm.pc.newcore.fsm.action.LocalFsmAction;
-import cn.hz.ddbm.pc.newcore.fsm.action.RemoteFsmAction;
+import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
+import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmAction;
 import lombok.Data;
 
 import java.util.EnumSet;
@@ -32,12 +32,17 @@ public interface FSM<S extends Enum<S>> {
     /**
      * @return
      */
-    S init();
+    S initState();
 
     /**
      * @return
      */
-    Set<S> ends();
+    S suState();
+
+    /**
+     * @return
+     */
+    S failState();
 
     /**
      * 定义插件，在每个节点执行前后执行。
@@ -70,7 +75,7 @@ public interface FSM<S extends Enum<S>> {
      *
      * @param
      */
-    void transitions(Transitions<S> transitions);
+    void transitions(FsmFlow flow);
 
     /**
      * 流程的配置，例如状态管理，会话管理，缺省重试次数，超时事件，节点属性，atcion属性等
@@ -83,13 +88,13 @@ public interface FSM<S extends Enum<S>> {
     Class<S> type();
 
 
-    default FsmFlow<S> build() throws Exception {
-        S          init  = init();
-        Set<S>     ends  = ends();
-        Set<S>     tasks = getTaskNodes();
-        FsmFlow<S> flow  = new FsmFlow<>(flowId(), init, ends, tasks);
+    default FsmFlow build() throws Exception {
+        S       init = initState();
+        S       su   = suState();
+        S       fail = failState();
+        FsmFlow flow = new FsmFlow(flowId(), init, su, fail);
 
-        transitions(new Transitions<>(flow));
+        transitions(null);
 //        flow.saga()
 
         Profile profile = profile();
@@ -100,19 +105,11 @@ public interface FSM<S extends Enum<S>> {
     }
 
 
-    default Set<S> getTaskNodes() {
-        Set<S> all = EnumSet.allOf(type());
-        all.removeAll(ends());
-        all.remove(init());
-        return all;
-    }
-
-
     class Transitions<S extends Enum<S>> {
-        FsmFlow<S> flow;
-        State<S>   state;
+        FsmFlow  flow;
+        State<S> state;
 
-        public Transitions(FsmFlow<S> flow) {
+        public Transitions(FsmFlow flow) {
             this.flow = flow;
         }
 

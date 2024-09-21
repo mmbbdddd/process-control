@@ -7,6 +7,7 @@ import cn.hz.ddbm.pc.idcardapply.actions.SendBizAction;
 import cn.hz.ddbm.pc.newcore.Plugin;
 import cn.hz.ddbm.pc.newcore.Profile;
 import cn.hz.ddbm.pc.newcore.config.Coast;
+import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
 import cn.hz.ddbm.pc.newcore.fsm.Router;
 import cn.hz.ddbm.pc.newcore.fsm.router.ToRouter;
 import com.google.common.collect.Sets;
@@ -27,14 +28,20 @@ public class IdCardFlow implements FSM<IdCardFSM> {
     }
 
     @Override
-    public IdCardFSM init() {
+    public IdCardFSM initState() {
         return IdCardFSM.MaterialCollection;
     }
 
     @Override
-    public Set<IdCardFSM> ends() {
-        return Sets.newHashSet(IdCardFSM.Pass, IdCardFSM.Reject);
+    public IdCardFSM suState() {
+        return IdCardFSM.Su;
     }
+
+    @Override
+    public IdCardFSM failState() {
+        return IdCardFSM.Fail;
+    }
+
 
     @Override
     public List<Plugin> plugins() {
@@ -52,32 +59,33 @@ public class IdCardFlow implements FSM<IdCardFSM> {
     }
 
     @Override
-    public void transitions(Transitions<IdCardFSM> transitions) {
-        transitions
-                .state(IdCardFSM.MaterialCollection)
-                .local(Coast.EVENT_DEFAULT, MaterialCollectionAction.class, new ToRouter<>(IdCardFSM.RuleChecked))
-                .endState()
-                .state(IdCardFSM.RuleChecked)
-                .local(Coast.EVENT_DEFAULT, RuleCheckedAction.class, new Router<>(new HashMap<String, IdCardFSM>() {{
-                    put("true", IdCardFSM.Accepted);
-                    put("false", IdCardFSM.MaterialCollection);
-                }}))
-                .endState()
-                .state(IdCardFSM.Accepted)
-                .remote(Coast.EVENT_DEFAULT, SendBizAction.class, new Router<>(
-                        new HashMap<String, IdCardFSM>() {{
-                            put("true", IdCardFSM.RuleSyncing);
-                            put("false", IdCardFSM.Accepted);
-                            put("false", IdCardFSM.MaterialCollection);
-                        }}))
-                .endState()
-                .state(IdCardFSM.RuleSyncing)
-                .remote(Coast.EVENT_DEFAULT, SendBizAction.class, new Router<>(
-                        new HashMap<String, IdCardFSM>() {{
-                            put("true", IdCardFSM.RuleChecked);
-                            put("false", IdCardFSM.RuleSyncing);
-                        }}))
-                .endState()
+    public void transitions(FsmFlow flow) {
+//        flow.local()
+//        transitions
+//                .state(IdCardFSM.MaterialCollection)
+//                .local(Coast.EVENT_DEFAULT, MaterialCollectionAction.class, new ToRouter<>(IdCardFSM.RuleChecked))
+//                .endState()
+//                .state(IdCardFSM.RuleChecked)
+//                .local(Coast.EVENT_DEFAULT, RuleCheckedAction.class, new Router<>(new HashMap<String, IdCardFSM>() {{
+//                    put("true", IdCardFSM.Accepted);
+//                    put("false", IdCardFSM.MaterialCollection);
+//                }}))
+//                .endState()
+//                .state(IdCardFSM.Accepted)
+//                .remote(Coast.EVENT_DEFAULT, SendBizAction.class, new Router<>(
+//                        new HashMap<String, IdCardFSM>() {{
+//                            put("true", IdCardFSM.RuleSyncing);
+//                            put("false", IdCardFSM.Accepted);
+//                            put("false", IdCardFSM.MaterialCollection);
+//                        }}))
+//                .endState()
+//                .state(IdCardFSM.RuleSyncing)
+//                .remote(Coast.EVENT_DEFAULT, SendBizAction.class, new Router<>(
+//                        new HashMap<String, IdCardFSM>() {{
+//                            put("true", IdCardFSM.RuleChecked);
+//                            put("false", IdCardFSM.RuleSyncing);
+//                        }}))
+//                .endState()
         ;
     }
 

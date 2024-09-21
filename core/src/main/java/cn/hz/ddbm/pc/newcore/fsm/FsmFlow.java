@@ -14,19 +14,26 @@ import cn.hz.ddbm.pc.newcore.log.Logs;
 
 import java.util.Objects;
 
-public class FsmFlow extends BaseFlow<FsmState> {
+public class FsmFlow implements BaseFlow<FsmState> {
     Table<Enum, String, FsmWorker> eventTables;
+    String                         name;
     Enum                           init;
     Enum                           su;
     Enum                           fail;
 
-    public FsmFlow(Enum init, Enum su, Enum fail) {
+    public FsmFlow(String flowName, Enum init, Enum su, Enum fail) {
+        this.name        = flowName;
         this.init        = init;
         this.su          = su;
         this.fail        = fail;
         this.eventTables = new RowKeyTable<>();
     }
 
+
+    @Override
+    public String name() {
+        return name;
+    }
 
     public void execute(FlowContext<FsmState> ctx) throws Exception {
         Assert.notNull(ctx, "ctx is null");
@@ -43,7 +50,7 @@ public class FsmFlow extends BaseFlow<FsmState> {
             ctx.state.flowStatus = (FlowStatus.SU);
             return;
         }
-        FsmWorker  worker = getWorker(ctx.state.state, ctx.event);
+        FsmWorker worker = getWorker(ctx.state.state, ctx.event);
         if (!ctx.state.flowStatus.equals(FlowStatus.RUNNABLE)) {
             return;
         }
@@ -54,7 +61,7 @@ public class FsmFlow extends BaseFlow<FsmState> {
     }
 
     @Override
-    public boolean keepRun(FlowContext<FsmState > ctx) {
+    public boolean isRunnable(FlowContext<FsmState> ctx) {
         return !isFail(ctx.state.state) && !isSu(ctx.state.state) && ctx.state.flowStatus.equals(FlowStatus.RUNNABLE);
     }
 
@@ -66,18 +73,18 @@ public class FsmFlow extends BaseFlow<FsmState> {
         return Objects.equals(fail, state);
     }
 
-    private FsmWorker  getWorker(Enum state, String event) {
+    private FsmWorker getWorker(Enum state, String event) {
         return eventTables.get(state, event);
     }
 
-    public FsmFlow  local(Enum from, String event, Class<? extends LocalFsmAction> action, Router  router) {
-        FsmWorker  sagaFsmWorker = FsmWorker.local(this, from, action, router);
+    public FsmFlow local(Enum from, String event, Class<? extends LocalFsmAction> action, Router router) {
+        FsmWorker sagaFsmWorker = FsmWorker.local(this, from, action, router);
         this.eventTables.put(from, event, sagaFsmWorker);
         return this;
     }
 
-    public FsmFlow  remote(Enum from, String event, Class<? extends RemoteFsmAction> action, Router  router) {
-        FsmWorker  sagaFsmWorker = FsmWorker.remote(this, from, action, router);
+    public FsmFlow remote(Enum from, String event, Class<? extends RemoteFsmAction> action, Router router) {
+        FsmWorker sagaFsmWorker = FsmWorker.remote(this, from, action, router);
         this.eventTables.put(from, event, sagaFsmWorker);
         return this;
     }

@@ -7,7 +7,6 @@ import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.ActionException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
-import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.infra.*;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmLocker;
@@ -19,7 +18,6 @@ import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.actions.LocalSagaAction;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 
-import javax.swing.text.LayoutQueue;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +56,7 @@ public class ProcessorService {
      */
     public void execute(FlowContext ctx) throws ActionException {
         BaseFlow flow = ctx.getFlow();
-        while (flow.keepRun(ctx)) {
+        while (flow.isRunnable(ctx)) {
             try {
                 flow.execute(ctx);
             } catch (RuntimeException e) {
@@ -114,25 +112,24 @@ public class ProcessorService {
 
 
     public Map<String, Object> getSession(String flowName, Serializable id) throws SessionException {
-        BaseFlow flow    = getFlow(flowName);
-        Profile  profile = flow.getProfile();
-        return sessionManagerMap.get(profile.getSession()).get(flowName, id);
+        BaseFlow flow = getFlow(flowName);
+        return sessionManagerMap.get(flow.flowAttrs().getSession()).get(flowName, id);
     }
 
 
     public void metricsNode(FlowContext ctx) {
-        String            flowName = ctx.getFlow().getName();
+        String            flowName = ctx.getFlow().name();
         Serializable      id       = ctx.getId();
         State             state    = ctx.getState();
-        StatisticsSupport ss       = statisticsSupportMap.get(ctx.getProfile().getStatistics());
+        StatisticsSupport ss       = statisticsSupportMap.get(ctx.getFlow().flowAttrs().getStatistics());
         ss.increment(flowName, id, state, Coast.STATISTICS.EXECUTE_TIMES);
     }
 
     public Long getExecuteTimes(FlowContext ctx) {
-        String            flowName = ctx.getFlow().getName();
+        String            flowName = ctx.getFlow().name();
         Serializable      id       = ctx.getId();
         State             state    = ctx.getState();
-        StatisticsSupport ss       = statisticsSupportMap.get(ctx.getProfile().getStatistics());
+        StatisticsSupport ss       = statisticsSupportMap.get(ctx.getFlow().flowAttrs().getStatistics());
         return ss.get(flowName, id, state, Coast.STATISTICS.EXECUTE_TIMES);
     }
 
@@ -152,6 +149,7 @@ public class ProcessorService {
     public FlowContext<SagaState> getSagaContext(String flowName, Object o) {
         return null;
     }
+
     public FlowContext<SagaState> getFsmContext(String flowName, Object o) {
         return null;
     }
