@@ -30,7 +30,7 @@ public class BeanFsmFlowFactory implements FsmFlowFactory, ApplicationContextAwa
             }
         }).collect(Collectors.toList());
         return flows.stream().collect(Collectors.toMap(
-                BaseFlow::getName,
+                BaseFlow::name,
                 t -> t
         ));
     }

@@ -7,5 +7,5 @@ import java.util.Objects;
 
 public interface  State {
 
-    Serializable code();
+    String code();
 }

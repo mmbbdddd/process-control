@@ -13,8 +13,8 @@ public class FsmState implements State {
     public FsmWorker.Offset offset;
 
     @Override
-    public Serializable code() {
-        return state;
+    public String code() {
+        return state.name();
     }
 
 

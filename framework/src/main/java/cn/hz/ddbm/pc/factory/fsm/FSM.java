@@ -74,12 +74,6 @@ public interface FSM<S extends Enum<S>> {
      */
     void transitions(FsmFlow flow);
 
-    /**
-     * 流程的配置，例如状态管理，会话管理，缺省重试次数，超时事件，节点属性，atcion属性等
-     *
-     * @return
-     */
-    Profile profile();
 
 
     Class<S> type();
@@ -94,10 +88,7 @@ public interface FSM<S extends Enum<S>> {
         transitions(null);
 //        flow.saga()
 
-        Profile profile = profile();
-        flow.profile(profile);
 
-        profile.setPlugins(plugins());
         return flow;
     }
 

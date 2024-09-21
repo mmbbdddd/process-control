@@ -2,6 +2,7 @@ package cn.hz.ddbm.pc.newcore;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.newcore.config.Coast;
+import cn.hz.ddbm.pc.newcore.config.JvmProperties;
 import cn.hz.ddbm.pc.newcore.config.PcProperties;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public interface BaseFlow<S extends State> {
-
     /**
      * 流程名
      *
@@ -40,18 +40,11 @@ public interface BaseFlow<S extends State> {
      */
     default FlowAttrs flowAttrs() {
         if (EnvUtils.isChaos()) {
-            return defaultChaosFlowAttrs();
+            return chaosFlowAttrs();
         } else {
-            PcProperties properties = SpringUtil.getBean(PcProperties.class);
-            if (null != properties) {
-                Map<String, FlowAttrs> map = properties.getFlowAttr();
-                if (map != null && map.containsKey(name())) {
-                    return map.get(name());
-                }
-                return defaultFlowAttrs();
-            } else {
-                return defaultFlowAttrs();
-            }
+            FlowAttrs flowAttrs = getFlowAttrsByContainer();
+            flowAttrs = null == flowAttrs ? getFlowAttrsByJvm() : defaultFlowAttrs();
+            return flowAttrs;
         }
     }
 
@@ -63,22 +56,38 @@ public interface BaseFlow<S extends State> {
      */
     default StateAttrs stateAttrs(S state) {
         if (EnvUtils.isChaos()) {
-            return defaultChaosStateAttrs();
+            return chaosStateAttrs();
         } else {
-            PcProperties properties = SpringUtil.getBean(PcProperties.class);
-            if (null != properties) {
-                Map<String, FlowAttrs> map = properties.getFlowAttr();
-                if (map != null
-                        && map.containsKey(name())
-                        && map.get(name()).getStateAttrs() != null
-                        && map.get(name()).getStateAttrs().containsKey(state.code().toString())) {
-                    return map.get(name()).getStateAttrs().get(state.code().toString());
-                }
-                return defaultStateAttrs();
-            } else {
-                return defaultStateAttrs();
-            }
+            StateAttrs stateAttrs = getStateAttrsByContainer(state);
+            stateAttrs = null == stateAttrs ? getStateAttrsByJvm(state) : defaultStateAttrs();
+            return stateAttrs;
         }
+    }
+
+    default FlowAttrs getFlowAttrsByContainer() {
+        PcProperties properties = SpringUtil.getBean(PcProperties.class);
+        if (null == properties) return null;
+        Map<String, FlowAttrs> flowAttrs = properties.getFlowAttrs();
+        if (null == flowAttrs) return null;
+        return flowAttrs.get(name());
+    }
+
+    default FlowAttrs getFlowAttrsByJvm() {
+        Map<String, FlowAttrs> flowAttrs = JvmProperties.flowAttrs;
+        if (null == flowAttrs) return null;
+        return flowAttrs.get(name());
+    }
+
+    default StateAttrs getStateAttrsByContainer(S state) {
+        FlowAttrs flowAttr = getFlowAttrsByContainer();
+        if (null == flowAttr || flowAttr.getStateAttrs() == null) return null;
+        return flowAttr.getStateAttrs().get(state.code());
+    }
+
+    default StateAttrs getStateAttrsByJvm(S state) {
+        FlowAttrs flowAttr = getFlowAttrsByJvm();
+        if (null == flowAttr || flowAttr.getStateAttrs() == null) return null;
+        return flowAttr.getStateAttrs().get(state.code());
     }
 
     default FlowAttrs defaultFlowAttrs() {
@@ -96,7 +105,7 @@ public interface BaseFlow<S extends State> {
         return f;
     }
 
-    default FlowAttrs defaultChaosFlowAttrs() {
+    default FlowAttrs chaosFlowAttrs() {
         FlowAttrs f = new FlowAttrs();
         f.namespace     = "app";
         f.maxLoop       = 3;
@@ -119,7 +128,7 @@ public interface BaseFlow<S extends State> {
     }
 
 
-    default StateAttrs defaultChaosStateAttrs() {
+    default StateAttrs chaosStateAttrs() {
         StateAttrs s = new StateAttrs();
         s.retry = 10;
         return s;

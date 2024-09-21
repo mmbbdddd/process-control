@@ -13,7 +13,7 @@ public class SagaState implements State {
     public SagaWorker.Offset offset;
 
     @Override
-    public Serializable code() {
-        return index;
+    public String code() {
+        return index+"";
     }
 }
