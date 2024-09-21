@@ -4,6 +4,7 @@ package cn.hz.ddbm.pc.newcore.saga.workers;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
 import cn.hz.ddbm.pc.newcore.fsm.LimtedRetryException;
+import cn.hz.ddbm.pc.newcore.log.Logs;
 import cn.hz.ddbm.pc.newcore.saga.SagaAction;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
@@ -42,7 +43,6 @@ public class LocalSagaWorker extends SagaWorker {
                 ctx.metricsState();
                 onQueryResult(ctx, result);
                 //todo 异常是否继续?
-                execute(ctx);
                 break;
             }
             case rollback:
@@ -54,18 +54,16 @@ public class LocalSagaWorker extends SagaWorker {
                 SagaAction.QueryResult result = action.doLocalSagaRollback(ctx);
                 ctx.metricsState();
                 onQueryResult(ctx, result);
-                //todo 异常是否继续?
-                execute(ctx);
                 break;
         }
 
     }
 
     private void onQueryResult(FlowContext<SagaState> ctx, SagaAction.QueryResult result) {
-        if (ctx.state.offset == task_query) {
+        if (ctx.state.offset == task) {
             switch (result) {
                 case exception:
-//                    ctx.state.offset = task_query;
+                    ctx.state.offset = task;
                     break;
                 case su:
                     ctx.state.index++;
@@ -75,10 +73,10 @@ public class LocalSagaWorker extends SagaWorker {
                     ctx.state.offset = rollback;
                     break;
             }
-        } else if (ctx.state.offset == rollback_query) {
+        } else if (ctx.state.offset == rollback) {
             switch (result) {
                 case exception:
-//                    ctx.state.offset = rollback_query;
+                    ctx.state.offset = rollback;
                     break;
                 case su:
                     ctx.state.index--;

@@ -30,8 +30,6 @@ public class RemoteSagaWorker extends SagaWorker {
             case task_query:
 //                查询任务后递归执行状态机
                 onQueryResult(ctx, action.remoteSagaQuery(ctx));
-                //todo 异常是否继续.
-                execute(ctx);
                 break;
             case rollback:
 //                任务执行之前状态先设置为rollback_failover
@@ -40,8 +38,6 @@ public class RemoteSagaWorker extends SagaWorker {
                 break;
             case rollback_query:
                 onQueryResult(ctx, action.remoteSagaRollbackQuery(ctx));
-                //todo 异常是否继续
-                execute(ctx);
                 break;
         }
     }

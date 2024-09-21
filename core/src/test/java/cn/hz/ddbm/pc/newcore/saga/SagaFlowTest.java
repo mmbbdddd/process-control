@@ -4,6 +4,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.Payload;
+import cn.hz.ddbm.pc.newcore.config.ChaosConfiguration;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmStatisticsSupport;
 import cn.hz.ddbm.pc.newcore.saga.actions.LocalSagaAction;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
@@ -19,6 +20,7 @@ public class SagaFlowTest {
 
     @Before
     public void setup() {
+        ctx.register(ChaosConfiguration.class);
         ctx.register(SagaFlowTest.CC.class);
         ctx.refresh();
         procesor = ctx.getBean(ProcessorService.class);
@@ -52,15 +54,6 @@ public class SagaFlowTest {
     }
 
     static class CC {
-        @Bean
-        JvmStatisticsSupport jvmStatisticsSupport() {
-            return new JvmStatisticsSupport();
-        }
-
-        @Bean
-        ProcessorService procesorService() {
-            return new ProcessorService();
-        }
 
         @Bean
         SpringUtil springUtil() {
