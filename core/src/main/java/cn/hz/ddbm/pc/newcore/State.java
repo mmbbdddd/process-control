@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Objects;
 
-public interface  State {
+public interface  State extends Serializable {
 
     String code();
 }

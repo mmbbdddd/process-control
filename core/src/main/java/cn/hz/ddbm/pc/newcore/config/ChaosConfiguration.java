@@ -1,6 +1,7 @@
 package cn.hz.ddbm.pc.newcore.config;
 
 import cn.hutool.extra.spring.SpringUtil;
+import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.chaos.ChaosHandler;
 import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
 import cn.hz.ddbm.pc.newcore.chaos.RemoteChaosAction;
@@ -22,6 +23,10 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 @EnableAspectJAutoProxy
 public class ChaosConfiguration {
 
+    @Bean
+    ProcessorService processorService() {
+        return new ProcessorService();
+    }
     @Bean
     RemoteChaosAction remoteChaosAction() {
         return new RemoteChaosAction();

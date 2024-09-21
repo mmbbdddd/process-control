@@ -164,7 +164,7 @@ public class ChaosService {
     }
 
     @Data
-    public static class MockPayLoad<S extends State> implements Payload<S> {
+    public static class MockPayLoad<S extends State> implements Payload<S> ,Serializable{
         String id;
         S      state;
 
