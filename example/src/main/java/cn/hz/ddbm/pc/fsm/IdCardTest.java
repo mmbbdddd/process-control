@@ -34,7 +34,7 @@ public class IdCardTest {
 
         try {
             //执行100此，查看流程中断概率
-            chaosService.chaos("idcard", true, 3, 1, 4,
+            chaosService.chaos("idcard", true, 3, 100, 4,
                     new ChaosService.MockPayLoad(1, new FsmState(IdCard.Init, FsmWorker.Offset.task)),
                     chaosConfig);
         } catch (Exception e) {

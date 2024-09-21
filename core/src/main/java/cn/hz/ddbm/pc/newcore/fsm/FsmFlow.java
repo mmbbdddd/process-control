@@ -64,6 +64,7 @@ public class FsmFlow implements BaseFlow<FsmState> {
         Integer executeTimes = ctx.getExecuteTimes();
         Integer retryTimes   = ctx.flow.stateAttrs(ctx.getState()).getRetry();
         if (executeTimes > retryTimes) {
+            ctx.state.flowStatus = FlowStatus.INTERRUPTED;
             throw new LimtedRetryException();
         }
         worker.execute(ctx);

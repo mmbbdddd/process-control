@@ -72,7 +72,8 @@ public class IdCardFlow implements FSM<IdCard> {
                         new HashMap<String, IdCard>() {{
                             put("true", IdCard.RuleSyncing);
                             put("false", IdCard.Accepted);
-                            put("false", IdCard.Init);
+                            put("false", IdCard.Su);
+                            put("false", IdCard.Fail);
                         }})),
                 Tetrad.of(IdCard.RuleSyncing, "push", SendBizAction.class, new Router<>(
                         new HashMap<String, IdCard>() {{
