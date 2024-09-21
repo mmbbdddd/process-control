@@ -63,14 +63,14 @@ public interface BaseFlow<S extends State> {
      */
     default StateAttrs stateAttrs(S state) {
         if (EnvUtils.isChaos()) {
-            return FlowHelper.chaosStateAttrs();
+            return StateAttrs.ChaosOf();
         } else {
             StateAttrs stateAttrs = FlowHelper.getStateAttrsByContainer(this, state);
             if (stateAttrs == null) {
                 stateAttrs = FlowHelper.getStateAttrsByJvm(this, state);
             }
             if (stateAttrs == null) {
-                stateAttrs = FlowHelper.defaultStateAttrs();
+                stateAttrs = StateAttrs.defaultOf();
             }
             return stateAttrs;
         }
@@ -136,16 +136,4 @@ abstract class FlowHelper {
     }
 
 
-    static StateAttrs defaultStateAttrs() {
-        StateAttrs s = new StateAttrs();
-        s.retry = 0;
-        return s;
-    }
-
-
-    static StateAttrs chaosStateAttrs() {
-        StateAttrs s = new StateAttrs();
-        s.retry = 10;
-        return s;
-    }
 }

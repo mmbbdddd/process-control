@@ -4,7 +4,8 @@ import java.util.Objects;
 
 public enum FlowStatus {
     RUNNABLE,
-    PAUSE,
+    INTERRUPTED,
+    PAUSED,
     MANUAL,
     SU,
     FAIL,

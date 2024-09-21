@@ -9,7 +9,8 @@ public class Coast {
     public static final String  ACTION_EXECUTOR_SERVICE = "actionExecutorService";
     public static final String  CHAOS_WEIGHTS           = "chaos_weight";
 
-    public final static String EVENT_DEFAULT = "push";
+    public final static String EVENT_DEFAULT        = "push";
+    public static final Integer DEFAULT_RETRY_TIMES = 0;
 
     public static class STATISTICS {
         public final static String EXECUTE_TIMES = "execute_times";

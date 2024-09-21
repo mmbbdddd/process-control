@@ -74,6 +74,8 @@ public class ProcessorService {
         BaseFlow flow = ctx.getFlow();
         while (flow.isRunnable(ctx)) {
             try {
+                Long executeTimes = getExecuteTimes(ctx);
+                Integer retryTimes = ctx.flow.stateAttrs(ctx.getState()).getRetry();
                 flow.execute(ctx);
             } catch (RuntimeException e) {                //运行时异常中断
                 flushState(ctx);
