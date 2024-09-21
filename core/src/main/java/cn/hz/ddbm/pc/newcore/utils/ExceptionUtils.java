@@ -2,7 +2,6 @@ package cn.hz.ddbm.pc.newcore.utils;
 
 
 import cn.hutool.core.util.ReflectUtil;
-import cn.hz.ddbm.pc.newcore.Profile;
 import cn.hz.ddbm.pc.newcore.exception.InterruptedException;
 import cn.hz.ddbm.pc.newcore.exception.*;
 
@@ -52,7 +51,7 @@ public class ExceptionUtils {
         return e instanceof FlowEndException;
     }
 
-    public static void wrap(Throwable e, Profile profile) throws FlowEndException, InterruptedException, PauseException, RetryableException {
+    public static void wrap(Throwable e) throws FlowEndException, InterruptedException, PauseException, RetryableException {
 //        throws IdempotentException, ActionException, LockException, FlowEndException, NoSuchRecordException
         ///////停止执行
         if (e instanceof FlowEndException) {
@@ -65,11 +64,6 @@ public class ExceptionUtils {
         }
         if (e instanceof RuntimeException) {
             throw (RuntimeException) e;
-        }
-        if (!profile.isRetryableException(e)) {
-            throw new RetryableException(e);
-        } else {
-            throw new InterruptedException(e);
         }
     }
 }

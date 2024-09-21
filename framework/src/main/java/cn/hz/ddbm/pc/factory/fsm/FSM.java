@@ -2,7 +2,6 @@ package cn.hz.ddbm.pc.factory.fsm;
 
 
 import cn.hz.ddbm.pc.newcore.Plugin;
-import cn.hz.ddbm.pc.newcore.Profile;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
 import cn.hz.ddbm.pc.newcore.fsm.Router;
@@ -10,9 +9,7 @@ import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmAction;
 import lombok.Data;
 
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
 
 public interface FSM<S extends Enum<S>> {
     /**

@@ -1,16 +1,10 @@
 package cn.hz.ddbm.pc.idcardapply;
 
 import cn.hz.ddbm.pc.factory.fsm.FSM;
-import cn.hz.ddbm.pc.idcardapply.actions.MaterialCollectionAction;
-import cn.hz.ddbm.pc.idcardapply.actions.RuleCheckedAction;
-import cn.hz.ddbm.pc.idcardapply.actions.SendBizAction;
 import cn.hz.ddbm.pc.newcore.Plugin;
-import cn.hz.ddbm.pc.newcore.Profile;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
-import cn.hz.ddbm.pc.newcore.fsm.Router;
 import cn.hz.ddbm.pc.newcore.fsm.router.ToRouter;
-import com.google.common.collect.Sets;
 
 import java.util.*;
 
