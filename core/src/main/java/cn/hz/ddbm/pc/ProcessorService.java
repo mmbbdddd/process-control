@@ -7,7 +7,6 @@ import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
 import cn.hz.ddbm.pc.newcore.config.Coast;
-import cn.hz.ddbm.pc.newcore.exception.ActionException;
 import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
 import cn.hz.ddbm.pc.newcore.exception.FlowStatusException;
 import cn.hz.ddbm.pc.newcore.factory.FlowFactory;
@@ -65,9 +64,8 @@ public class ProcessorService {
      * 连续执行
      *
      * @param ctx
-     * @throws ActionException
      */
-    public void execute(FlowContext ctx) throws ActionException {
+    public void execute(FlowContext ctx)   {
         BaseFlow flow = ctx.getFlow();
         while (true) {
             try {

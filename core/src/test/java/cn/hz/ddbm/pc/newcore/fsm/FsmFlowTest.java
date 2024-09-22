@@ -67,7 +67,7 @@ public class FsmFlowTest {
         try {
             p.execute(ctx);
         } catch (FlowEndException e) {
-        } catch (FlowStatusException e) { 
+        } catch (FlowStatusException e) {
         }
     }
 
