@@ -8,17 +8,21 @@ import cn.hz.ddbm.pc.newcore.saga.SagaAction;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 
 public class LocalSagaActionProxy {
-    LocalSagaAction action;
+    Class<? extends SagaAction> actionType;
 
     public LocalSagaActionProxy(Class<? extends SagaAction> actionType) {
-        this.action = (LocalSagaAction) ProcessorService.getAction(actionType);
+        this.actionType = actionType;
     }
 
     public SagaAction.QueryResult  doLocalSaga(FlowContext<SagaState> ctx) {
-        return this.action.doLocalSaga(ctx);
+        return getAction().doLocalSaga(ctx);
     }
 
     public SagaAction.QueryResult doLocalSagaRollback(FlowContext<SagaState> ctx) {
-        return this.action.doLocalSagaRollback(ctx);
+        return getAction().doLocalSagaRollback(ctx);
+    }
+
+    LocalSagaAction getAction(){
+        return (LocalSagaAction) ProcessorService.getAction(actionType);
     }
 }

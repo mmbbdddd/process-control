@@ -7,12 +7,12 @@ import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmAction;
 public class SendBizAction implements RemoteFsmAction {
 
     @Override
-    public void remoteFsm(FlowContext<FsmState> ctx) throws Exception {
+    public void remoteFsm(FlowContext<FsmState> ctx)   {
 
     }
 
     @Override
-    public Object remoteFsmQuery(FlowContext<FsmState> ctx) throws Exception {
+    public Object remoteFsmQuery(FlowContext<FsmState> ctx)   {
         return null;
     }
 }

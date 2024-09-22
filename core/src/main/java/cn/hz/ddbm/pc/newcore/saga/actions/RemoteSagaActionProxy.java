@@ -9,25 +9,29 @@ import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 
 public class RemoteSagaActionProxy {
-    RemoteSagaAction action;
+    private final Class<? extends SagaAction> actionType;
 
     public RemoteSagaActionProxy(Class<? extends SagaAction> actionType) {
-        this.action = (RemoteSagaAction) ProcessorService.getAction(actionType);
+        this.actionType = actionType;
     }
 
     public void doRemoteSaga(FlowContext<SagaState> ctx) {
-        action.doRemoteSaga(ctx);
+        getAction().doRemoteSaga(ctx);
     }
 
     public RemoteSagaAction.QueryResult remoteSagaQuery(FlowContext<SagaState> ctx) {
-        return action.remoteSagaQuery(ctx);
+        return getAction().remoteSagaQuery(ctx);
     }
 
     public void doRemoteSagaRollback(FlowContext<SagaState> ctx) {
-        action.doRemoteSagaRollback(ctx);
+        getAction().doRemoteSagaRollback(ctx);
     }
 
     public RemoteSagaAction.QueryResult remoteSagaRollbackQuery(FlowContext<SagaState> ctx) {
-        return action.remoteSagaRollbackQuery(ctx);
+        return getAction().remoteSagaRollbackQuery(ctx);
+    }
+
+    RemoteSagaAction getAction() {
+        return (RemoteSagaAction) ProcessorService.getAction(actionType);
     }
 }

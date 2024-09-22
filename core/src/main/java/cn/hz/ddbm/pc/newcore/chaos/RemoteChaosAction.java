@@ -32,12 +32,12 @@ public class RemoteChaosAction implements RemoteFsmAction, RemoteSagaAction {
 
 
     @Override
-    public void remoteFsm(FlowContext<FsmState> ctx) throws Exception {
+    public void remoteFsm(FlowContext<FsmState> ctx)   {
 
     }
 
     @Override
-    public Object remoteFsmQuery(FlowContext<FsmState> ctx) throws Exception {
+    public Object remoteFsmQuery(FlowContext<FsmState> ctx)   {
         return null;
     }
 }

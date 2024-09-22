@@ -3,7 +3,7 @@ package cn.hz.ddbm.pc.newcore.utils;
 import java.util.Objects;
 
 public class EnvUtils {
-    private static final String RUN_MODE = "run_mode";
+    private static final String RUN_MODE = "pc.run_mode";
 
 
     public static Boolean isChaos() {

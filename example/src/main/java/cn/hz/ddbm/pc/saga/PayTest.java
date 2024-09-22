@@ -24,8 +24,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @ComponentScan("cn.hz.ddbm.pc.actions")
-@SpringBootTest
-@Import({PayTest.CC.class, ChaosConfiguration.class})
+@SpringBootTest(properties = "chaos.properties")
+@Import({ ChaosConfiguration.class,PayTest.CC.class})
 @RunWith(SpringRunner.class)
 public class PayTest {
     @Autowired
@@ -80,39 +80,37 @@ public class PayTest {
     }
 
     public static class CC {
-
-
+        @Bean
+        PerformancePlugin performancePlugin() {
+            return new PerformancePlugin();
+        }
         @Bean
         BeanSagaFlowFactory sagaFlowFactory() {
             return new BeanSagaFlowFactory();
         }
 
-        @Bean
-        SagaFreezeAction sagaFreezeAction() {
-            return new SagaFreezeAction();
-        }
+//        @Bean
+//        SagaFreezeAction sagaFreezeAction() {
+//            return new SagaFreezeAction();
+//        }
+//
+//        @Bean
+//        SagaEndAction sagaEndAction() {
+//            return new SagaEndAction();
+//        }
+//
+//        @Bean
+//        SagaPayAction sagaPayAction() {
+//            return new SagaPayAction();
+//        }
+//
+//        @Bean
+//        SagaSendAction sagaSendAction() {
+//            return new SagaSendAction();
+//        }
 
-        @Bean
-        SagaEndAction sagaEndAction() {
-            return new SagaEndAction();
-        }
-
-        @Bean
-        SagaPayAction sagaPayAction() {
-            return new SagaPayAction();
-        }
-
-        @Bean
-        SagaSendAction sagaSendAction() {
-            return new SagaSendAction();
-        }
 
 
-
-        @Bean
-        PerformancePlugin performancePlugin() {
-            return new PerformancePlugin();
-        }
     }
 
 

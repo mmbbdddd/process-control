@@ -18,7 +18,7 @@ public interface RemoteFsmAction extends FsmAction {
      * @param ctx
      * @throws Exception
      */
-    void remoteFsm(FlowContext<FsmState> ctx) throws Exception;
+    void remoteFsm(FlowContext<FsmState> ctx)  ;
 
     /**
      * 执行结果查询
@@ -27,7 +27,7 @@ public interface RemoteFsmAction extends FsmAction {
      * @return
      * @throws Exception
      */
-    Object remoteFsmQuery(FlowContext<FsmState> ctx) throws Exception;
+    Object remoteFsmQuery(FlowContext<FsmState> ctx)  ;
 
 
 }

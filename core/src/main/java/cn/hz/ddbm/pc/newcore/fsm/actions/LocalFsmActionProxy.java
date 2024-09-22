@@ -4,32 +4,26 @@ package cn.hz.ddbm.pc.newcore.fsm.actions;
 import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.fsm.FsmState;
+import cn.hz.ddbm.pc.newcore.saga.actions.RemoteSagaAction;
 
 /**
  *
  */
 public class LocalFsmActionProxy {
-    Class<? extends LocalFsmAction> actionClass;
-    LocalFsmAction                  action;
+    Class<? extends LocalFsmAction> actionType;
 
-    public LocalFsmActionProxy(Class<? extends LocalFsmAction> actionClass) {
-        this.actionClass = actionClass;
-        this.action      = ProcessorService.getAction(actionClass);
+    public LocalFsmActionProxy(Class<? extends LocalFsmAction> actionType) {
+        this.actionType = actionType;
     }
 
 
     public <S extends Enum<S>> Object doLocalFsm(FlowContext<FsmState> ctx) throws Exception {
-        try {
-            //开始事务
-            Object result = action.doLocalFsm(ctx);
-            //提交事务
-            return result;
-        } catch (RuntimeException e) {
-            //回滚事务。
-            throw e;
-        } catch (Exception e) {
-            //回滚事务。
-            throw e;
-        }
+        //提交事务
+        return getAction().doLocalFsm(ctx);
     }
+
+    LocalFsmAction getAction() {
+        return (LocalFsmAction) ProcessorService.getAction(actionType);
+    }
+
 }
