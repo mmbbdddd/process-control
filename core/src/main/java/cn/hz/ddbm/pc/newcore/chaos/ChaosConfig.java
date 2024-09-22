@@ -5,15 +5,25 @@ import cn.hutool.core.lang.Pair;
 import java.util.HashSet;
 import java.util.Set;
 
-public interface ChaosConfig {
+public abstract class ChaosConfig {
+    Boolean mockAction;
+    Integer retryTimes;
+    Integer executeCount;
+    Integer timeout;
 
+    public ChaosConfig(Boolean mockAction, Integer retryTimes, Integer executeTimes, Integer timeout) {
+        this.mockAction   = mockAction;
+        this.retryTimes   = retryTimes;
+        this.executeCount = executeTimes;
+        this.timeout      = timeout;
+    }
 
-    Set<Pair<ChaosRule, Double>> infraChaosRule();
+    abstract Set<Pair<ChaosRule, Double>> infraChaosRule();
 
-    Set<Pair<Boolean, Double>> sagaFailoverResult();
+    abstract Set<Pair<Boolean, Double>> sagaFailoverResult();
 
-    static ChaosConfig badOf() {
-        return new ChaosConfig() {
+    public static ChaosConfig badOf() {
+        return new ChaosConfig(false,1,1,3000) {
             @Override
             public Set<Pair<ChaosRule, Double>> infraChaosRule() {
                 Set<Pair<ChaosRule, Double>> s = new HashSet<>();
@@ -33,8 +43,8 @@ public interface ChaosConfig {
         };
     }
 
-    static ChaosConfig goodOf() {
-        return new ChaosConfig() {
+    public static ChaosConfig goodOf() {
+        return new ChaosConfig(false,1,1,3000) {
             @Override
             public Set<Pair<ChaosRule, Double>> infraChaosRule() {
                 Set<Pair<ChaosRule, Double>> s = new HashSet<>();
@@ -51,8 +61,8 @@ public interface ChaosConfig {
         };
     }
 
-    static ChaosConfig defaultOf() {
-        return new ChaosConfig() {
+    public static ChaosConfig defaultOf() {
+        return new ChaosConfig(false,1,1,3000) {
             @Override
             public Set<Pair<ChaosRule, Double>> infraChaosRule() {
                 Set<Pair<ChaosRule, Double>> s = new HashSet<>();

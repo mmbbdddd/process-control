@@ -11,8 +11,6 @@ import cn.hz.ddbm.pc.newcore.exception.PauseException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
 import cn.hz.ddbm.pc.newcore.log.Logs;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
-import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
-import cn.hz.ddbm.pc.newcore.utils.ExceptionUtils;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,11 +33,11 @@ public class ChaosService {
     @Autowired
     ChaosHandler chaosHandler;
 
-    public void chaos(String flowName, Boolean mock, Integer retry, Integer times, Integer timeout, MockPayLoad payload, ChaosConfig chaosConfig) throws PauseException, SessionException, FlowEndException, InterruptedException {
-        chaosHandler.setChaosConfig(chaosConfig);
-        statisticsLines = Collections.synchronizedList(new ArrayList<>(times));
-        CountDownLatch cdl = new CountDownLatch(times);
-        for (int i = 0; i < times; i++) {
+    public void chaos(String flowName, MockPayLoad payload, ChaosConfig cc) throws PauseException, SessionException, FlowEndException, InterruptedException {
+        chaosHandler.setChaosConfig(cc);
+        statisticsLines = Collections.synchronizedList(new ArrayList<>(cc.executeCount));
+        CountDownLatch cdl = new CountDownLatch(cc.executeCount);
+        for (int i = 0; i < cc.executeCount; i++) {
             MockPayLoad payloadNum$ = ObjectUtil.clone(payload);
             payloadNum$.id = i + "";
             threadPool.submit(() -> {
@@ -61,7 +59,7 @@ public class ChaosService {
             });
         }
         try {
-            cdl.await(timeout, TimeUnit.SECONDS);
+            cdl.await(cc.timeout, TimeUnit.SECONDS);
         } catch (java.lang.InterruptedException e) {
             Logs.error.error("", e);
             throw new RuntimeException(e);
