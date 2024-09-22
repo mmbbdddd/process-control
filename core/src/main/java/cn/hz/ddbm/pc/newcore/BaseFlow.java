@@ -80,11 +80,15 @@ public interface BaseFlow<S extends State> {
 abstract class FlowHelper {
 
     static FlowAttrs getFlowAttrsByContainer(BaseFlow flow) {
-        PcProperties properties = SpringUtil.getBean(PcProperties.class);
-        if (null == properties) return null;
-        Map<String, FlowAttrs> flowAttrs = properties.getFlowAttrs();
-        if (null == flowAttrs) return null;
-        return flowAttrs.get(flow.name());
+        try {
+            PcProperties properties = SpringUtil.getBean(PcProperties.class);
+            if (null == properties) return null;
+            Map<String, FlowAttrs> flowAttrs = properties.getFlowAttrs();
+            if (null == flowAttrs) return null;
+            return flowAttrs.get(flow.name());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     static FlowAttrs getFlowAttrsByJvm(BaseFlow flow) {

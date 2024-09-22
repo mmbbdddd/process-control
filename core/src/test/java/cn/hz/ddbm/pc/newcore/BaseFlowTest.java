@@ -3,6 +3,7 @@ package cn.hz.ddbm.pc.newcore;
 import cn.hz.ddbm.pc.newcore.saga.SagaFlow;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
+import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
@@ -39,56 +40,23 @@ class BaseFlowTest {
                 this.s = state;
             }
         });
-        Assert.assertTrue(f.isRunnable(ctx) == true);
+        Assert.assertTrue(f.isRunnable(ctx) == false);
     }
 
     @Test
     void flowAttrs() {
-        Assert.assertTrue(f.name().equals("saga"));
+        Assert.assertTrue(f.flowAttrs().equals(FlowAttrs.defaultOf()));
+        EnvUtils.setChaosMode(true);
+        Assert.assertTrue(f.flowAttrs().equals(FlowAttrs.chaosOf()));
+        EnvUtils.setChaosMode(false);
     }
 
     @Test
     void stateAttrs() {
-        Assert.assertTrue(f.name().equals("saga"));
-    }
-
-    @Test
-    void getFlowAttrsByContainer() {
-        Assert.assertTrue(f.name().equals("saga"));
-    }
-
-    @Test
-    void getFlowAttrsByJvm() {
-        Assert.assertTrue(f.name().equals("saga"));
-    }
-
-    @Test
-    void getStateAttrsByContainer() {
-        Assert.assertTrue(f.name().equals("saga"));
-    }
-
-    @Test
-    void getStateAttrsByJvm() {
-        Assert.assertTrue(f.name().equals("saga"));
-    }
-
-    @Test
-    void defaultFlowAttrs() {
-        Assert.assertTrue(f.name().equals("saga"));
-    }
-
-    @Test
-    void chaosFlowAttrs() {
-        Assert.assertTrue(f.name().equals("saga"));
-    }
-
-    @Test
-    void defaultStateAttrs() {
-        Assert.assertTrue(f.name().equals("saga"));
-    }
-
-    @Test
-    void chaosStateAttrs() {
-        Assert.assertTrue(f.name().equals("saga"));
+        SagaState state = new SagaState(0, SagaWorker.Offset.task);
+        Assert.assertTrue(f.stateAttrs(state).equals(StateAttrs.defaultOf()));
+        EnvUtils.setChaosMode(true);
+        Assert.assertTrue(f.stateAttrs(state).equals(StateAttrs.ChaosOf()));
+        EnvUtils.setChaosMode(false);
     }
 }
