@@ -15,6 +15,8 @@ public class EnvUtils {
     public static void setChaosMode(Boolean isChaosMode) {
         if (isChaosMode) {
             System.setProperty(RUN_MODE, CHAOS_MODE);
+        }else{
+            System.setProperty(RUN_MODE, "");
         }
     }
 

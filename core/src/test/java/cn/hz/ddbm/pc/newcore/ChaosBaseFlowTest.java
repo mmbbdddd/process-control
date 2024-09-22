@@ -4,11 +4,10 @@ import cn.hz.ddbm.pc.newcore.saga.SagaFlow;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class BaseFlowTest {
+class ChaosBaseFlowTest {
     SagaFlow f = SagaFlow.of("saga");
 
     @Test
@@ -46,15 +45,15 @@ class BaseFlowTest {
 
     @Test
     void flowAttrs() {
-        EnvUtils.setChaosMode(false);
-        Assertions.assertTrue(f.flowAttrs().equals(FlowAttrs.defaultOf()));
+        EnvUtils.setChaosMode(true);
+        Assertions.assertTrue(f.flowAttrs().equals(FlowAttrs.chaosOf()));
     }
 
     @Test
     void stateAttrs() {
-        EnvUtils.setChaosMode(false);
+        EnvUtils.setChaosMode(true);
         SagaState state = new SagaState(0, SagaWorker.Offset.task);
-        //junit是多线程执行测试的。 会导致这里错误，单个执行没问题。
-        Assertions.assertTrue(f.stateAttrs(state).equals(StateAttrs.defaultOf()));
+        EnvUtils.setChaosMode(true);
+        Assertions.assertTrue(f.stateAttrs(state).equals(StateAttrs.ChaosOf()));
     }
 }
