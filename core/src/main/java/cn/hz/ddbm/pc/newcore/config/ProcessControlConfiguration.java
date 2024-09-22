@@ -16,6 +16,10 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 @EnableAspectJAutoProxy
 public class ProcessControlConfiguration {
+    @Bean
+    SpringUtil springUtil() {
+        return new SpringUtil();
+    }
 
     @Bean
     ProcessorService processorService() {
@@ -24,7 +28,7 @@ public class ProcessControlConfiguration {
 
 
     @Bean
-    ExecutorService pluginExecutorService() {
+    ScheduledThreadPoolExecutor pluginExecutorService() {
         return new ScheduledThreadPoolExecutor(10);
     }
 
@@ -39,21 +43,13 @@ public class ProcessControlConfiguration {
         return new JvmSessionManager();
     }
 
-
     @Bean
-    JvmLockManager jvmLocker() {
+    JvmLockManager jvmLockManager() {
         return new JvmLockManager();
     }
 
-
-
     @Bean
-    SpringUtil springUtil() {
-        return new SpringUtil();
-    }
-
-    @Bean
-    StatisticsManager statisticsSupport() {
+    SimpleStatisticsManager simpleStatisticsManager() {
         return new SimpleStatisticsManager();
     }
 }

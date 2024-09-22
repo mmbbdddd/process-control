@@ -28,8 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Import({PayTest.CC.class, ChaosConfiguration.class})
 @RunWith(SpringRunner.class)
 public class PayTest {
-
-
     @Autowired
     ChaosService chaosService;
     ChaosConfig chaosConfig = ChaosConfig.goodOf();
@@ -109,10 +107,6 @@ public class PayTest {
             return new SagaSendAction();
         }
 
-        @Bean
-        ChaosService chaosService() {
-            return new ChaosService();
-        }
 
 
         @Bean

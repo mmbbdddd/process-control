@@ -15,11 +15,11 @@ import javax.annotation.Resource;
  * 5，事件溯源
  */
 @Aspect
-public class AopAspect {
+public class ChaosAopAspect {
     @Resource
     ChaosHandler chaosHandler;
 
-    @Around("execution(* cn.hz.ddbm.pc.newcore.infra.Locker.*(..))")
+    @Around("execution(* cn.hz.ddbm.pc.newcore.infra.LockManager.*(..))")
     public Object locker(ProceedingJoinPoint pjp) throws Throwable {
         chaosHandler.infraChaos();
         return pjp.proceed();
