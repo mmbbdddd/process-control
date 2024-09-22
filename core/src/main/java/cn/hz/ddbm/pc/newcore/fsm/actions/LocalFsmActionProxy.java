@@ -19,7 +19,7 @@ public class LocalFsmActionProxy {
     }
 
 
-    public <S extends Enum<S>> Object doLocalFsm(FlowContext<FsmState> ctx) throws Exception {
+    public <S extends Enum<S>> Object doLocalFsm(FlowContext<FsmState> ctx)   {
         //提交事务
         return getAction().doLocalFsm(ctx);
     }

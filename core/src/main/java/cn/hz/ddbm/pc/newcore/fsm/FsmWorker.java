@@ -29,7 +29,7 @@ public abstract class FsmWorker {
         return new FsmRemoteWorker(fsm, from, action, router);
     }
 
-    public abstract void execute(FlowContext<FsmState> ctx) throws Exception;
+    public abstract void execute(FlowContext<FsmState> ctx)  ;
 
     public enum Offset {
         task, failover

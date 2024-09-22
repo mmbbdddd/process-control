@@ -5,6 +5,8 @@ import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.newcore.BaseFlow;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
+import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
+import cn.hz.ddbm.pc.newcore.exception.FlowStatusException;
 import cn.hz.ddbm.pc.newcore.saga.workers.FailWorker;
 import cn.hz.ddbm.pc.newcore.saga.workers.SuWorker;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +60,7 @@ public class SagaFlow implements BaseFlow<SagaState> {
         return name;
     }
 
-    public void execute(FlowContext<SagaState> ctx) {
+    public void execute(FlowContext<SagaState> ctx) throws FlowEndException, FlowStatusException {
         Assert.notNull(ctx, "ctx is null");
         Assert.notNull(ctx.state.index, "ctx.index is null");
         Assert.notNull(ctx.state.offset, "ctx.offset is null");
@@ -66,14 +68,14 @@ public class SagaFlow implements BaseFlow<SagaState> {
         SagaWorker worker = getWorker(ctx);
         if (isFail(ctx.state.index)) {
             ctx.state.setFlowStatus(FlowStatus.FAIL);
-            return;
+            throw new FlowEndException();
         }
         if (isSu(ctx.state.index)) {
             ctx.state.setFlowStatus(FlowStatus.SU);
-            return;
+            throw new FlowEndException();
         }
         if (!ctx.state.getFlowStatus().equals(FlowStatus.RUNNABLE)) {
-            return;
+            throw new FlowStatusException();
         }
         worker.execute(ctx);
 

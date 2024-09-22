@@ -7,9 +7,11 @@ import cn.hutool.core.map.multi.Table;
 import cn.hz.ddbm.pc.newcore.BaseFlow;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
+import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
+import cn.hz.ddbm.pc.newcore.exception.FlowStatusException;
+import cn.hz.ddbm.pc.newcore.exception.LimtedRetryException;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmAction;
-import cn.hz.ddbm.pc.newcore.log.Logs;
 
 import java.util.Objects;
 
@@ -42,7 +44,7 @@ public class FsmFlow implements BaseFlow<FsmState> {
         return name;
     }
 
-    public void execute(FlowContext<FsmState> ctx) throws Exception {
+    public void execute(FlowContext<FsmState> ctx) throws FlowEndException, FlowStatusException {
         Assert.notNull(ctx, "ctx is null");
         Assert.notNull(ctx.state, "ctx.state is null");
         Assert.notNull(ctx.state.flowStatus, "ctx.flowstatus is null");
@@ -50,15 +52,15 @@ public class FsmFlow implements BaseFlow<FsmState> {
         Assert.notNull(ctx.state.offset, "ctx.offset is null");
         if (isFail(ctx.state.state)) {
             ctx.state.flowStatus = (FlowStatus.FAIL);
-            return;
+            throw new FlowEndException();
         }
         if (isSu(ctx.state.state)) {
             ctx.state.flowStatus = (FlowStatus.SU);
-            return;
+            throw new FlowEndException();
         }
         FsmWorker worker = getWorker(ctx.state.state, ctx.event);
         if (!ctx.state.flowStatus.equals(FlowStatus.RUNNABLE)) {
-            return;
+            throw new FlowStatusException();
         }
         Integer executeTimes = ctx.getExecuteTimes();
         Integer retryTimes   = ctx.flow.stateAttrs(ctx.getState()).getRetry();

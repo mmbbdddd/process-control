@@ -8,6 +8,8 @@ import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.ActionException;
+import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
+import cn.hz.ddbm.pc.newcore.exception.FlowStatusException;
 import cn.hz.ddbm.pc.newcore.factory.FlowFactory;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.infra.*;
@@ -67,7 +69,7 @@ public class ProcessorService {
      */
     public void execute(FlowContext ctx) throws ActionException {
         BaseFlow flow = ctx.getFlow();
-        while (flow.isRunnable(ctx)) {
+        while (true) {
             try {
                 flow.execute(ctx);
             } catch (RuntimeException e) {                //运行时异常中断
@@ -77,7 +79,11 @@ public class ProcessorService {
             } catch (Exception e) {                       //其他尝试重试
                 flushState(ctx);
                 flushSession(ctx);
-                addRetryTask(ctx);
+                if (e instanceof FlowStatusException || e instanceof FlowEndException) {
+
+                } else {
+                    addRetryTask(ctx);
+                }
             }
         }
     }

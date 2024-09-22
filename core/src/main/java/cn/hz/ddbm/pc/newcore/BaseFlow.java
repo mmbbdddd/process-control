@@ -4,6 +4,8 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.config.JvmProperties;
 import cn.hz.ddbm.pc.newcore.config.PcProperties;
+import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
+import cn.hz.ddbm.pc.newcore.exception.FlowStatusException;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public interface BaseFlow<S extends State> {
      * @param ctx
      * @throws Exception
      */
-    void execute(FlowContext<S> ctx) throws Exception;
+    void execute(FlowContext<S> ctx) throws FlowEndException, FlowStatusException;
 
     /**
      * 未结束，可运行

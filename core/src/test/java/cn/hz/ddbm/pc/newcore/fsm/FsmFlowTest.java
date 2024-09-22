@@ -105,16 +105,16 @@ public class FsmFlowTest {
 
     static class PrepareAction implements LocalFsmAction {
         @Override
-        public Object doLocalFsm(FlowContext<FsmState> ctx) throws Exception {
+        public Object doLocalFsm(FlowContext<FsmState> ctx)   {
             Integer executeTimes = ctx.getExecuteTimes();
             Integer retryTimes   = ctx.getFlow().stateAttrs(ctx.state).getRetry();
             if (executeTimes > retryTimes) {
                 throw new RuntimeException("2");
             }
             Double r = Math.random();
-            if (r < 0.1) {
-                throw new Exception("1");
-            }
+//            if (r < 0.1) {
+//                throw new Exception("1");
+//            }
             if (r < 0.3) {
                 throw new RuntimeException("1");
             }

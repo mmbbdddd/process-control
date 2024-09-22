@@ -19,6 +19,6 @@ public interface LocalFsmAction extends FsmAction {
      * @param ctx
      * @throws Exception
      */
-    Object doLocalFsm(FlowContext<FsmState> ctx) throws Exception;
+    Object doLocalFsm(FlowContext<FsmState> ctx)  ;
 
 }
