@@ -53,7 +53,9 @@ class BaseFlowTest {
 
     @Test
     void stateAttrs() {
+        EnvUtils.setChaosMode(false);
         SagaState state = new SagaState(0, SagaWorker.Offset.task);
+        //junit是多线程执行测试的。 会导致这里错误，单个执行没问题。
         Assert.assertTrue(f.stateAttrs(state).equals(StateAttrs.defaultOf()));
         EnvUtils.setChaosMode(true);
         Assert.assertTrue(f.stateAttrs(state).equals(StateAttrs.ChaosOf()));
