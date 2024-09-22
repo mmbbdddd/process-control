@@ -113,7 +113,7 @@ public class ProcessorService {
     }
 
     private LockManager getLocker(BaseFlow flow) {
-        return new LockProxy(getByCode(flow.flowAttrs().getLock(), LockManager.class));
+        return new LockManagerProxy(getByCode(flow.flowAttrs().getLock(), LockManager.class));
     }
 
     private StatisticsManager getStatisticsSupport(BaseFlow flow) {

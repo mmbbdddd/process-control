@@ -4,10 +4,10 @@ import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.LockException;
 import cn.hz.ddbm.pc.newcore.infra.LockManager;
 
-public class LockProxy implements LockManager {
+public class LockManagerProxy implements LockManager {
     LockManager locker;
 
-    public LockProxy(LockManager t) {
+    public LockManagerProxy(LockManager t) {
         this.locker = t;
     }
 
