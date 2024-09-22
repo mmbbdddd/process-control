@@ -28,25 +28,9 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>framework</artifactId>
-            <version>${pc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>chaos</artifactId>
-            <version>${pc.version}</version>
-        </dependency>
 
 
-        <dependency>
-            <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>factory-dsl</artifactId>
-            <version>${pc.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
+         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
             <artifactId>session-redis</artifactId>
             <version>${pc.version}</version>

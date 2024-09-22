@@ -25,6 +25,11 @@
             <artifactId>core</artifactId>
             <version>${pc.version}</version>
         </dependency>
+        <dependency>
+            <groupId>cn.hz.ddbm.pc</groupId>
+            <artifactId>plugin-performance</artifactId>
+            <version>${pc.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>cn.hz.ddbm.pc</groupId>
@@ -70,15 +75,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>plugin-performance</artifactId>
-            <version>${pc.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>cn.hz.ddbm.pc</groupId>
-            <artifactId>chaos</artifactId>
-            <version>${pc.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
     </dependencies>
