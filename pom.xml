@@ -13,7 +13,6 @@
         <module>plugin</module>
         <module>session</module>
         <module>status</module>
-        <module>configuration</module>
         <module>locker</module>
         <module>statistics</module>
         <module>example</module>
