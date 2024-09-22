@@ -42,7 +42,7 @@ public class FsmRemoteWorker extends FsmWorker {
                     ctx.errorMessage     = ErrorCode.ROUTER_RESULT_EMPTY;
                 } else if(state.equals(ctx.getState().state)) {
                     ctx.state.flowStatus = FlowStatus.MANUAL;
-                    ctx.errorMessage = "";
+                    ctx.errorMessage = "节点执行后状态不变";
                 } else {
                     ctx.state.state  = state;
                     ctx.state.offset = Offset.task;
