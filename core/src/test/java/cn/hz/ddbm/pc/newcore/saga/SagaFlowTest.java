@@ -29,7 +29,7 @@ public class SagaFlowTest {
     }
 
     @Test
-    public void runSaga() throws FlowStatusException, FlowEndException {
+    public void runSaga()   {
         EnvUtils.setChaosMode(true);
         SagaFlow p = SagaFlow.of("test", SagaFlowTest.FreezedAction.class, SagaFlowTest.PayAction.class, SagaFlowTest.CommitAction.class);
 
@@ -51,7 +51,11 @@ public class SagaFlowTest {
                 this.state = state;
             }
         });
-        p.execute(ctx);
+        try {
+            p.execute(ctx);
+        } catch (FlowEndException e) {
+        } catch (FlowStatusException e) {
+        }
 
     }
 

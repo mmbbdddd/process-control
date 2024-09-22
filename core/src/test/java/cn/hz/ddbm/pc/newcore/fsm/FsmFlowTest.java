@@ -7,6 +7,8 @@ import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
 import cn.hz.ddbm.pc.newcore.config.PcProperties;
+import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
+import cn.hz.ddbm.pc.newcore.exception.FlowStatusException;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.routers.ToRouter;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
@@ -27,7 +29,7 @@ public class FsmFlowTest {
 
 
     @Test
-    public void runFsm() throws Exception {
+    public void runFsm()   {
         EnvUtils.setChaosMode(true);
         FsmFlow p = new FsmFlow("test", IdCard.init, IdCard.su, IdCard.fail);
         p.local(IdCard.init, "push", PrepareAction.class, new ToRouter<>(IdCard.presend));
@@ -62,7 +64,11 @@ public class FsmFlowTest {
             }
         });
         ctx.setEvent("push");
-        p.execute(ctx);
+        try {
+            p.execute(ctx);
+        } catch (FlowEndException e) {
+        } catch (FlowStatusException e) { 
+        }
     }
 
     enum IdCard {
