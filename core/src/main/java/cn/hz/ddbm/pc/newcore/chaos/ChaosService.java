@@ -5,14 +5,10 @@ import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.State;
-import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
-import cn.hz.ddbm.pc.newcore.exception.InterruptedException;
-import cn.hz.ddbm.pc.newcore.exception.PauseException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
 import cn.hz.ddbm.pc.newcore.log.Logs;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
 import java.io.Serializable;
@@ -31,7 +27,7 @@ public class ChaosService {
     @Resource
     protected ProcessorService processorService;
 
-    public void chaos(String flowName, MockPayLoad payload, ChaosConfig cc) throws PauseException, SessionException, FlowEndException, InterruptedException {
+    public void chaos(String flowName, MockPayLoad payload, ChaosConfig cc) throws   SessionException,   InterruptedException {
         ChaosAopAspect.chaosConfig = cc;
         statisticsLines = Collections.synchronizedList(new ArrayList<>(cc.executeCount));
         CountDownLatch cdl = new CountDownLatch(cc.executeCount);

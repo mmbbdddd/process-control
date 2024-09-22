@@ -3,14 +3,10 @@ package cn.hz.ddbm.pc.newcore.chaos;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.ProcessorService;
-import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
-import cn.hz.ddbm.pc.newcore.exception.InterruptedException;
-import cn.hz.ddbm.pc.newcore.exception.PauseException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
 import cn.hz.ddbm.pc.newcore.factory.BeanSagaFlowFactory;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -37,13 +33,9 @@ public class ChaosServiceTest {
                     "test",
                     new ChaosService.MockPayLoad(  new SagaState(1, SagaWorker.Offset.task)),
                     chaosConfig);
-        } catch (PauseException e) {
+        }  catch (SessionException e) {
             throw new RuntimeException(e);
-        } catch (SessionException e) {
-            throw new RuntimeException(e);
-        } catch (FlowEndException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        }   catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
