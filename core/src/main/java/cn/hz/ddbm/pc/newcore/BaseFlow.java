@@ -114,7 +114,7 @@ abstract class FlowHelper {
         f.status        = Coast.StatusType.redis;
         f.session       = Coast.SessionType.redis;
         f.lock          = Coast.LockType.redis;
-        f.statistics    = Coast.StatisticsType.redis;
+        f.statistics    = Coast.StatisticsType.simple;
         f.schedule      = Coast.ScheduleType.timer;
         f.plugins       = new ArrayList<>();
         return f;

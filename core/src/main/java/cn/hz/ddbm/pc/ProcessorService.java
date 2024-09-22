@@ -104,8 +104,8 @@ public class ProcessorService {
         return new SessionManagerProxy(getByCode(flow.flowAttrs().getSession(), SessionManager.class));
     }
 
-    private RetryService getRetryService(BaseFlow flow) {
-        return new RetryServiceProxy(getByCode(flow.flowAttrs().getRetry(), RetryService.class));
+    private RetryManager getRetryService(BaseFlow flow) {
+        return new RetryManagerProxy(getByCode(flow.flowAttrs().getRetry(), RetryManager.class));
     }
 
     private LockManager getLocker(BaseFlow flow) {

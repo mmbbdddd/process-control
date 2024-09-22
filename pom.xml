@@ -16,7 +16,7 @@
         <module>configuration</module>
         <module>locker</module>
         <module>statistics</module>
-        <module>example</module> 
+        <module>example</module>
         <module>build-all</module>
     </modules>
 
