@@ -73,10 +73,6 @@ public class ChaosServiceTest {
             return new ChaosService();
         }
 
-        @Bean
-        ChaosHandler chaosHandler() {
-            return new ChaosHandler();
-        }
     }
 
 

@@ -16,11 +16,11 @@ public class LocalChaosAction implements LocalFsmAction, LocalSagaAction {
 
     @Override
     public QueryResult doLocalSagaRollback(FlowContext<SagaState> ctx) {
-        return ChaosHandler.sagaLocalResult();
+        return ChaosConfig.sagaLocalResult();
     }
 
     @Override
     public SagaAction.QueryResult doLocalSaga(FlowContext<SagaState> ctx) {
-        return ChaosHandler.sagaLocalResult();
+        return ChaosConfig.sagaLocalResult();
     }
 }

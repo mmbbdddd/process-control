@@ -16,24 +16,24 @@ import javax.annotation.Resource;
  */
 @Aspect
 public class ChaosAopAspect {
-    @Resource
-    ChaosHandler chaosHandler;
+
+    static ChaosConfig chaosConfig;
 
     @Around("execution(* cn.hz.ddbm.pc.newcore.infra.LockManager.*(..))")
     public Object locker(ProceedingJoinPoint pjp) throws Throwable {
-        chaosHandler.infraChaos();
+        chaosConfig.infraChaos();
         return pjp.proceed();
     }
 
     @Around("execution(* cn.hz.ddbm.pc.newcore.infra.SessionManager.*(..))")
     public Object session(ProceedingJoinPoint pjp) throws Throwable {
-        chaosHandler.infraChaos();
+        chaosConfig.infraChaos();
         return pjp.proceed();
     }
 
     @Around("execution(* cn.hz.ddbm.pc.newcore.infra.StatusManager.*(..))")
     public Object status(ProceedingJoinPoint pjp) throws Throwable {
-        chaosHandler.infraChaos();
+        chaosConfig.infraChaos();
         return pjp.proceed();
     }
 }

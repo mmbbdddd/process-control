@@ -30,11 +30,9 @@ public class ChaosService {
 
     @Resource
     protected ProcessorService processorService;
-    @Autowired
-    ChaosHandler chaosHandler;
 
     public void chaos(String flowName, MockPayLoad payload, ChaosConfig cc) throws PauseException, SessionException, FlowEndException, InterruptedException {
-        chaosHandler.setChaosConfig(cc);
+        ChaosAopAspect.chaosConfig = cc;
         statisticsLines = Collections.synchronizedList(new ArrayList<>(cc.executeCount));
         CountDownLatch cdl = new CountDownLatch(cc.executeCount);
         for (int i = 0; i < cc.executeCount; i++) {

@@ -24,10 +24,6 @@ public class ChaosConfiguration {
         return new ChaosAopAspect();
     }
 
-    @Bean
-    ChaosHandler chaosHandler() {
-        return new ChaosHandler();
-    }
 
     @Bean
     RemoteChaosAction remoteChaosAction() {
