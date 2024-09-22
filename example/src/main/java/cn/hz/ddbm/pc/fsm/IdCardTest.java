@@ -71,11 +71,7 @@ public class IdCardTest {
         IdCardFlow idCard() {
             return new IdCardFlow();
         }
-
-        @Bean
-        ChaosService chaosService() {
-            return new ChaosService();
-        }
+ 
 
     }
 }
