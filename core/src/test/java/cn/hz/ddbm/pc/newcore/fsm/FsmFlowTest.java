@@ -10,15 +10,16 @@ import cn.hz.ddbm.pc.newcore.config.PcProperties;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.routers.ToRouter;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 
 public class FsmFlowTest {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
 
-    @Before
+    @BeforeEach
     public void setup() {
         ctx.register(FF.class);
         ctx.refresh();

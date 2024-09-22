@@ -7,8 +7,9 @@ import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.config.ChaosConfiguration;
 import cn.hz.ddbm.pc.newcore.saga.actions.LocalSagaAction;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 
@@ -17,7 +18,7 @@ public class SagaFlowTest {
     AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
     ProcessorService                   procesor;
 
-    @Before
+    @BeforeEach
     public void setup() {
         ctx.register(ChaosConfiguration.class);
         ctx.register(SagaFlowTest.CC.class);

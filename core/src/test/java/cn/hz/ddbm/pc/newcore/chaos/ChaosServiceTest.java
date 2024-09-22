@@ -7,8 +7,9 @@ import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
 import cn.hz.ddbm.pc.newcore.exception.InterruptedException;
 import cn.hz.ddbm.pc.newcore.exception.PauseException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 
@@ -18,7 +19,7 @@ public class ChaosServiceTest {
     ChaosService                       chaosService;
     ChaosConfig                        chaosConfig = ChaosConfig.goodOf();
 
-    @Before
+    @BeforeEach
     public void setup() {
         ctx.register(SS.class);
         ctx.refresh();
