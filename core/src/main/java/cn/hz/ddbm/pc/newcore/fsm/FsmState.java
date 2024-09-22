@@ -1,5 +1,6 @@
 package cn.hz.ddbm.pc.newcore.fsm;
 
+import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
 import cn.hz.ddbm.pc.newcore.State;
 import lombok.Data;
@@ -17,6 +18,9 @@ public class FsmState implements State {
     }
 
     public FsmState(FlowStatus flowStatus, Enum state, FsmWorker.Offset offset) {
+        Assert.notNull(flowStatus,"status is null");
+        Assert.notNull(state,"state is null");
+        Assert.notNull(offset,"offset is null");
         this.flowStatus = flowStatus;
         this.state      = state;
         this.offset     = offset;

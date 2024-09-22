@@ -1,10 +1,13 @@
 package cn.hz.ddbm.pc.newcore.chaos;
 
 
+import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
 import cn.hz.ddbm.pc.newcore.factory.BeanSagaFlowFactory;
+import cn.hz.ddbm.pc.newcore.fsm.FsmState;
+import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +45,18 @@ public class ChaosServiceTest {
 
     @Test
     public void fsm() {
+        try {
+            chaosService.chaos(
+                    "test",
+                    new ChaosService.MockPayLoad(  new FsmState(_fsm.init, FsmWorker.Offset.task)),
+                    chaosConfig);
+        }  catch (SessionException e) {
+            throw new RuntimeException(e);
+        }   catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     static class SS {
         @Bean
@@ -73,4 +87,7 @@ public class ChaosServiceTest {
     }
 
 
+    enum _fsm{
+        init;
+    }
 }

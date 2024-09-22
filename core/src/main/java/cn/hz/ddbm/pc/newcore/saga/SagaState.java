@@ -1,5 +1,6 @@
 package cn.hz.ddbm.pc.newcore.saga;
 
+import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
 import cn.hz.ddbm.pc.newcore.State;
 import lombok.Data;
@@ -17,6 +18,9 @@ public class SagaState implements State {
     }
 
     public SagaState(FlowStatus flowStatus, Integer index, SagaWorker.Offset offset) {
+        Assert.notNull(flowStatus, "status is null");
+        Assert.notNull(index, "index is null");
+        Assert.notNull(offset, "offset is null");
         this.flowStatus = flowStatus;
         this.index      = index;
         this.offset     = offset;
