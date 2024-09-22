@@ -3,13 +3,13 @@ package cn.hz.ddbm.pc.statistics;
 import cn.hutool.core.lang.Assert;
 import cn.hz.ddbm.pc.newcore.State;
 import cn.hz.ddbm.pc.newcore.config.Coast;
-import cn.hz.ddbm.pc.newcore.infra.StatisticsSupport;
+import cn.hz.ddbm.pc.newcore.infra.StatisticsManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.Serializable;
 
-public class RedisStatistics implements StatisticsSupport {
+public class RedisStatistics implements StatisticsManager {
 
     Integer cacheSize;
     Integer hours;

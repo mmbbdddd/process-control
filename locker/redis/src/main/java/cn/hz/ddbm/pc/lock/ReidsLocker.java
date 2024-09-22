@@ -2,11 +2,11 @@ package cn.hz.ddbm.pc.lock;
 
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.LockException;
-import cn.hz.ddbm.pc.newcore.infra.Locker;
+import cn.hz.ddbm.pc.newcore.infra.LockManager;
 import org.redisson.Redisson;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ReidsLocker implements Locker {
+public class ReidsLocker implements LockManager {
     @Autowired
     Redisson redisson;
 

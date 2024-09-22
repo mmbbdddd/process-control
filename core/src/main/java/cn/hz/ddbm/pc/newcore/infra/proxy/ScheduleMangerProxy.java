@@ -3,7 +3,6 @@ package cn.hz.ddbm.pc.newcore.infra.proxy;
 import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.State;
 import cn.hz.ddbm.pc.newcore.config.Coast;
-import cn.hz.ddbm.pc.newcore.infra.ScheduleManger;
 
 import java.util.concurrent.TimeUnit;
 

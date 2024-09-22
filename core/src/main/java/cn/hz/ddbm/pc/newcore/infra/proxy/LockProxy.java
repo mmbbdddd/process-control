@@ -2,12 +2,12 @@ package cn.hz.ddbm.pc.newcore.infra.proxy;
 
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.LockException;
-import cn.hz.ddbm.pc.newcore.infra.Locker;
+import cn.hz.ddbm.pc.newcore.infra.LockManager;
 
-public class LockProxy implements Locker {
-    Locker locker;
+public class LockProxy implements LockManager {
+    LockManager locker;
 
-    public LockProxy(Locker t) {
+    public LockProxy(LockManager t) {
         this.locker = t;
     }
 

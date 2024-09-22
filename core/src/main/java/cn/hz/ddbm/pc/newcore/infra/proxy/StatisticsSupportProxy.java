@@ -2,14 +2,14 @@ package cn.hz.ddbm.pc.newcore.infra.proxy;
 
 import cn.hz.ddbm.pc.newcore.State;
 import cn.hz.ddbm.pc.newcore.config.Coast;
-import cn.hz.ddbm.pc.newcore.infra.StatisticsSupport;
+import cn.hz.ddbm.pc.newcore.infra.StatisticsManager;
 
 import java.io.Serializable;
 
-public class StatisticsSupportProxy implements StatisticsSupport {
-    StatisticsSupport statisticsSupport;
+public class StatisticsSupportProxy implements StatisticsManager {
+    StatisticsManager statisticsSupport;
 
-    public StatisticsSupportProxy(StatisticsSupport bean) {
+    public StatisticsSupportProxy(StatisticsManager bean) {
         this.statisticsSupport = bean;
     }
 

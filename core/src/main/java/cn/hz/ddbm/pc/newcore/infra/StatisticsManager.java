@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  **/
 
 
-public interface StatisticsSupport extends ValueObject<Coast.StatisticsType> {
+public interface StatisticsManager extends ValueObject<Coast.StatisticsType> {
     Coast.StatisticsType code();
 
     void increment(String flowName, Serializable flowId, State state, String variableName);

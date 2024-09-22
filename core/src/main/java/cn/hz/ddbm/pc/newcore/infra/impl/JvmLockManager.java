@@ -2,14 +2,14 @@ package cn.hz.ddbm.pc.newcore.infra.impl;
 
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.exception.LockException;
-import cn.hz.ddbm.pc.newcore.infra.Locker;
+import cn.hz.ddbm.pc.newcore.infra.LockManager;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class JvmLocker implements Locker {
+public class JvmLockManager implements LockManager {
     ConcurrentMap<String, ReentrantLock> lockMap = new ConcurrentHashMap<>();
 
     @Override

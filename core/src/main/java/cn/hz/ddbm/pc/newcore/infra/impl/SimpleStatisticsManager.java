@@ -2,26 +2,26 @@ package cn.hz.ddbm.pc.newcore.infra.impl;
 
 import cn.hz.ddbm.pc.newcore.State;
 import cn.hz.ddbm.pc.newcore.config.Coast;
-import cn.hz.ddbm.pc.newcore.infra.StatisticsSupport;
+import cn.hz.ddbm.pc.newcore.infra.StatisticsManager;
 
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class JvmStatisticsSupport implements StatisticsSupport {
+public class SimpleStatisticsManager implements StatisticsManager {
 
 
     ConcurrentMap<String, AtomicLong> cache;
 
-    public JvmStatisticsSupport() {
+    public SimpleStatisticsManager() {
         cache = new ConcurrentHashMap<>();
     }
 
 
     @Override
     public Coast.StatisticsType code() {
-        return Coast.StatisticsType.jvm;
+        return Coast.StatisticsType.simple;
     }
 
     @Override

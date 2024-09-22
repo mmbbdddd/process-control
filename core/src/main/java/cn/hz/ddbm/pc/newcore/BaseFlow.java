@@ -129,7 +129,7 @@ abstract class FlowHelper {
         f.status        = Coast.StatusType.jvm;
         f.session       = Coast.SessionType.jvm;
         f.lock          = Coast.LockType.jvm;
-        f.statistics    = Coast.StatisticsType.jvm;
+        f.statistics    = Coast.StatisticsType.simple;
         f.schedule      = Coast.ScheduleType.timer;
         f.plugins       = new ArrayList<>();
         return f;

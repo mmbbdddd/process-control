@@ -3,11 +3,11 @@ package cn.hz.ddbm.pc.statistics;
 
 import cn.hz.ddbm.pc.newcore.State;
 import cn.hz.ddbm.pc.newcore.config.Coast;
-import cn.hz.ddbm.pc.newcore.infra.StatisticsSupport;
+import cn.hz.ddbm.pc.newcore.infra.StatisticsManager;
 
 import java.io.Serializable;
 
-public class MicrometerStatistics implements StatisticsSupport {
+public class MicrometerStatistics implements StatisticsManager {
     @Override
     public Coast.StatisticsType code() {
         return null;

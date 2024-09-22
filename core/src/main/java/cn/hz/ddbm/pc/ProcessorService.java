@@ -108,12 +108,12 @@ public class ProcessorService {
         return new RetryServiceProxy(getByCode(flow.flowAttrs().getRetry(), RetryService.class));
     }
 
-    private Locker getLocker(BaseFlow flow) {
-        return new LockProxy(getByCode(flow.flowAttrs().getLock(), Locker.class));
+    private LockManager getLocker(BaseFlow flow) {
+        return new LockProxy(getByCode(flow.flowAttrs().getLock(), LockManager.class));
     }
 
-    private StatisticsSupport getStatisticsSupport(BaseFlow flow) {
-        return new StatisticsSupportProxy(getByCode(flow.flowAttrs().getStatistics(), StatisticsSupport.class));
+    private StatisticsManager getStatisticsSupport(BaseFlow flow) {
+        return new StatisticsSupportProxy(getByCode(flow.flowAttrs().getStatistics(), StatisticsManager.class));
     }
 
     private <T extends ValueObject> T getByCode(Enum code, Class<T> type) {

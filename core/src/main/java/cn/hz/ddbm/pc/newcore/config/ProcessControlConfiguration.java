@@ -2,15 +2,11 @@ package cn.hz.ddbm.pc.newcore.config;
 
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.ProcessorService;
-import cn.hz.ddbm.pc.newcore.chaos.ChaosHandler;
-import cn.hz.ddbm.pc.newcore.chaos.LocalChaosAction;
-import cn.hz.ddbm.pc.newcore.chaos.RemoteChaosAction;
 import cn.hz.ddbm.pc.newcore.infra.StatisticsManager;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmLockManager;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmSessionManager;
 import cn.hz.ddbm.pc.newcore.infra.impl.SimpleStatisticsManager;
 import cn.hz.ddbm.pc.newcore.infra.impl.JvmStatusManager;
-import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
@@ -19,27 +15,16 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 @EnableAspectJAutoProxy
-public class ChaosConfiguration {
+public class ProcessControlConfiguration {
 
     @Bean
     ProcessorService processorService() {
-        EnvUtils.setChaosMode(true);
         return new ProcessorService();
     }
 
-    @Bean
-    RemoteChaosAction remoteChaosAction() {
-        return new RemoteChaosAction();
-    }
 
     @Bean
-    LocalChaosAction localChaosAction() {
-        return new LocalChaosAction();
-    }
-
-
-    @Bean
-    ExecutorService actionExecutorService() {
+    ExecutorService pluginExecutorService() {
         return new ScheduledThreadPoolExecutor(10);
     }
 
@@ -54,16 +39,13 @@ public class ChaosConfiguration {
         return new JvmSessionManager();
     }
 
-    @Bean
-    ChaosHandler chaosHandler() {
-        return new ChaosHandler();
-    }
-
 
     @Bean
     JvmLockManager jvmLocker() {
         return new JvmLockManager();
     }
+
+
 
     @Bean
     SpringUtil springUtil() {
