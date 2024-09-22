@@ -5,6 +5,8 @@ import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.Payload;
 import cn.hz.ddbm.pc.newcore.config.ChaosConfiguration;
+import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
+import cn.hz.ddbm.pc.newcore.exception.FlowStatusException;
 import cn.hz.ddbm.pc.newcore.saga.actions.LocalSagaAction;
 import cn.hz.ddbm.pc.newcore.utils.EnvUtils;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,7 +29,7 @@ public class SagaFlowTest {
     }
 
     @Test
-    public void runSaga() {
+    public void runSaga() throws FlowStatusException, FlowEndException {
         EnvUtils.setChaosMode(true);
         SagaFlow p = SagaFlow.of("test", SagaFlowTest.FreezedAction.class, SagaFlowTest.PayAction.class, SagaFlowTest.CommitAction.class);
 
