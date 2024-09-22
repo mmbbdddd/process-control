@@ -2,8 +2,11 @@ package cn.hz.ddbm.pc.newcore.factory;
 
 
 import cn.hz.ddbm.pc.common.lang.Tetrad;
+import cn.hz.ddbm.pc.newcore.FlowAttrs;
 import cn.hz.ddbm.pc.newcore.Plugin;
+import cn.hz.ddbm.pc.newcore.StateAttrs;
 import cn.hz.ddbm.pc.newcore.config.Coast;
+import cn.hz.ddbm.pc.newcore.config.JvmProperties;
 import cn.hz.ddbm.pc.newcore.fsm.FsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
 import cn.hz.ddbm.pc.newcore.fsm.Router;
@@ -11,6 +14,7 @@ import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmAction;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FSM<S extends Enum<S>> {
     /**
@@ -42,6 +46,10 @@ public interface FSM<S extends Enum<S>> {
      */
     S failState();
 
+    FlowAttrs flowAttrs();
+
+    Map<String, StateAttrs> stateAttrs();
+
     /**
      * 定义插件，在每个节点执行前后执行。
      * 常用的插件有日志插件，监控埋点插件……
@@ -49,21 +57,6 @@ public interface FSM<S extends Enum<S>> {
      * @return
      */
     List<Plugin> plugins();
-
-    /**
-     * 参见profile
-     *
-     * @return
-     */
-    Coast.SessionType session();
-
-    /**
-     * 参见profile
-     *
-     * @return
-     */
-    Coast.StatusType status();
-
 
     /**
      * 流程变迁设置，包含三种类型
@@ -74,9 +67,6 @@ public interface FSM<S extends Enum<S>> {
      * @param
      */
     List<Tetrad<S, String, Class<? extends FsmAction>, Router<S>>> transitions();
-
-
-    Class<S> type();
 
 
     default FsmFlow build() throws Exception {
@@ -93,6 +83,10 @@ public interface FSM<S extends Enum<S>> {
                 flow.remote(t.getOne(), t.getTwo(), (Class<? extends RemoteFsmAction>) t.getThree(), t.getFour());
             }
         });
+        JvmProperties.flowAttrs.put(flowId(),flowAttrs());
+        JvmProperties.flowAttrs.get(flowId()).setStateAttrs(stateAttrs());
+        JvmProperties.flowAttrs.get(flowId()).setPlugins(plugins());
+
         return flow;
     }
 

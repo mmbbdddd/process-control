@@ -24,7 +24,7 @@ public class FsmRemoteWorker extends FsmWorker {
 
     @Override
     public void execute(FlowContext<FsmState> ctx) {
-        ctx.setAction(action);
+
         //如果任务可执行
         Offset offset = ctx.state.offset;
         switch (offset) {

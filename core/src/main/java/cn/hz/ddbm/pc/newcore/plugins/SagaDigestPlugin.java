@@ -1,21 +1,39 @@
-//package cn.hz.ddbm.pc.newcore.plugins;
-//
-//import cn.hz.ddbm.pc.common.lang.Triple;
-//import cn.hz.ddbm.pc.newcore.FlowContext;
-//import cn.hz.ddbm.pc.newcore.FlowStatus;
-//import cn.hz.ddbm.pc.newcore.Plugin;
-//import cn.hz.ddbm.pc.newcore.State;
-//import cn.hz.ddbm.pc.newcore.log.Logs;
-//import cn.hz.ddbm.pc.newcore.saga.SagaState;
-//
-//import java.io.Serializable;
-//
-//public class SagaDigestPlugin<S extends Enum<S>> extends Plugin<SagaState<S>> {
-//    @Override
-//    public String code() {
-//        return "digest";
-//    }
-//
+package cn.hz.ddbm.pc.newcore.plugins;
+
+import cn.hz.ddbm.pc.newcore.FlowContext;
+import cn.hz.ddbm.pc.newcore.Plugin;
+import cn.hz.ddbm.pc.newcore.log.Logs;
+import cn.hz.ddbm.pc.newcore.saga.SagaState;
+
+public class SagaDigestPlugin extends Plugin<SagaState> {
+    @Override
+    public String code() {
+        return "digest";
+    }
+
+    @Override
+    public void preAction(FlowContext<SagaState> ctx) {
+
+    }
+
+    @Override
+    public void postAction(SagaState preState, FlowContext<SagaState> ctx) {
+        String    flow   = ctx.getFlow().name();
+        String    id     = ctx.getId();
+        SagaState target = ctx.getState();
+        Logs.digest.info(" {},{},{}==>{}", flow, id, preState, target);
+    }
+
+    @Override
+    public void errorAction(SagaState preState, Exception e, FlowContext<SagaState> ctx) {
+
+    }
+
+    @Override
+    public void finallyAction(SagaState preNode, FlowContext<SagaState> ctx) {
+
+    }
+
 //
 //    @Override
 //    public void preAction(FlowContext<?, SagaState<S>, ?> ctx) {
@@ -46,6 +64,6 @@
 ////        log.info("{},{},{},{}", ctx.getFlow().getName(), ctx.getId(),  ctx.getAction().code(), ctx.getActionResult());
 ////        log.info("{},{},{},{}", ctx.getFlow().getName(), ctx.getId(),  ctx.getStatus(), ctx.getState());
 //    }
-//
-//
-//}
+
+
+}

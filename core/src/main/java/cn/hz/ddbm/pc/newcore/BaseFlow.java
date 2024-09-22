@@ -42,14 +42,14 @@ public interface BaseFlow<S extends State> {
      */
     default FlowAttrs flowAttrs() {
         if (EnvUtils.isChaos()) {
-            return FlowHelper.chaosFlowAttrs();
+            return FlowAttrs.chaosOf();
         } else {
             FlowAttrs flowAttrs = FlowHelper.getFlowAttrsByContainer(this);
             if (null == flowAttrs) {
                 flowAttrs = FlowHelper.getFlowAttrsByJvm(this);
             }
             if (null == flowAttrs) {
-                flowAttrs = FlowHelper.defaultFlowAttrs();
+                flowAttrs = FlowAttrs.defaultOf();
             }
             return flowAttrs;
         }
@@ -104,36 +104,5 @@ abstract class FlowHelper {
         if (null == flowAttr || flowAttr.getStateAttrs() == null) return null;
         return flowAttr.getStateAttrs().get(state.code());
     }
-
-    static FlowAttrs defaultFlowAttrs() {
-        FlowAttrs f = new FlowAttrs();
-        f.namespace     = "app";
-        f.maxLoop       = 3;
-        f.statusTimeout = 3000;
-        f.lockTimeout   = 3000;
-        f.status        = Coast.StatusType.redis;
-        f.session       = Coast.SessionType.redis;
-        f.lock          = Coast.LockType.redis;
-        f.statistics    = Coast.StatisticsType.simple;
-        f.schedule      = Coast.ScheduleType.timer;
-        f.plugins       = new ArrayList<>();
-        return f;
-    }
-
-    static FlowAttrs chaosFlowAttrs() {
-        FlowAttrs f = new FlowAttrs();
-        f.namespace     = "app";
-        f.maxLoop       = 3;
-        f.statusTimeout = 3000;
-        f.lockTimeout   = 3000;
-        f.status        = Coast.StatusType.jvm;
-        f.session       = Coast.SessionType.jvm;
-        f.lock          = Coast.LockType.jvm;
-        f.statistics    = Coast.StatisticsType.simple;
-        f.schedule      = Coast.ScheduleType.timer;
-        f.plugins       = new ArrayList<>();
-        return f;
-    }
-
 
 }

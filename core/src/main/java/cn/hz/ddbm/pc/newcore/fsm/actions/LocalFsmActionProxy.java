@@ -1,10 +1,12 @@
 package cn.hz.ddbm.pc.newcore.fsm.actions;
 
 
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.saga.actions.RemoteSagaAction;
+import org.springframework.context.ApplicationContext;
 
 /**
  *
@@ -23,7 +25,10 @@ public class LocalFsmActionProxy {
     }
 
     LocalFsmAction getAction() {
-        return (LocalFsmAction) ProcessorService.getAction(actionType);
+        return ProcessorService.getAction(actionType);
     }
 
+    public String actioname() {
+        return null;
+    }
 }

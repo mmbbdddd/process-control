@@ -71,7 +71,7 @@ public class IdCardTest {
         IdCardFlow idCard() {
             return new IdCardFlow();
         }
- 
+
 
     }
 }

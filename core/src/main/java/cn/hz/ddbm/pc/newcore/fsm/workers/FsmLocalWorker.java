@@ -21,7 +21,7 @@ public class FsmLocalWorker extends FsmWorker {
 
     @Override
     public void execute(FlowContext<FsmState> ctx) throws Exception {
-        ctx.setAction(action);
+        ctx.setAction(action.actioname());
         //如果任务可执行
         Object result = action.doLocalFsm(ctx);
         ctx.metricsState();

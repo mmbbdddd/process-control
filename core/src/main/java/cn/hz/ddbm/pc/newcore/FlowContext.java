@@ -20,9 +20,8 @@ public class FlowContext<S extends State> {
     public String              event;
     public Map<String, Object> session;
     public Boolean             fluent;
-
-    public Object action;
-    public String errorMessage;
+    public String              action;
+    public String              errorMessage;
 
     public FlowContext(BaseFlow<S> flow, Payload<S> payload) {
         this(flow, payload, null, null, null);

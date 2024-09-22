@@ -4,17 +4,21 @@ import cn.hz.ddbm.pc.common.lang.Tetrad;
 import cn.hz.ddbm.pc.fsm.actions.MaterialCollectionAction;
 import cn.hz.ddbm.pc.fsm.actions.RuleCheckedAction;
 import cn.hz.ddbm.pc.fsm.actions.SendBizAction;
+import cn.hz.ddbm.pc.newcore.FlowAttrs;
 import cn.hz.ddbm.pc.newcore.Plugin;
+import cn.hz.ddbm.pc.newcore.StateAttrs;
 import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.factory.FSM;
 import cn.hz.ddbm.pc.newcore.fsm.FsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.Router;
 import cn.hz.ddbm.pc.newcore.fsm.routers.ToRouter;
+import cn.hz.ddbm.pc.newcore.plugins.FsmDigestPlugin;
 import com.google.common.collect.Lists;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class IdCardFlow implements FSM<IdCard> {
@@ -44,21 +48,29 @@ public class IdCardFlow implements FSM<IdCard> {
         return IdCard.Fail;
     }
 
+    @Override
+    public FlowAttrs flowAttrs() {
+        return FlowAttrs.chaosOf();
+    }
+
+    @Override
+    public Map<String, StateAttrs> stateAttrs() {
+        return new HashMap<String, StateAttrs>() {{
+            put(IdCard.Init.name(), StateAttrs.ChaosOf());
+            put(IdCard.RuleChecked.name(), StateAttrs.ChaosOf());
+            put(IdCard.Accepted.name(), StateAttrs.ChaosOf());
+            put(IdCard.RuleSyncing.name(), StateAttrs.ChaosOf());
+        }};
+    }
+
 
     @Override
     public List<Plugin> plugins() {
-        return Collections.emptyList();
+        return Lists.newArrayList(
+                new FsmDigestPlugin()
+        );
     }
 
-    @Override
-    public Coast.SessionType session() {
-        return Coast.SessionType.jvm;
-    }
-
-    @Override
-    public Coast.StatusType status() {
-        return Coast.StatusType.jvm;
-    }
 
     @Override
     public List<Tetrad<IdCard, String, Class<? extends FsmAction>, Router<IdCard>>> transitions() {
@@ -84,9 +96,4 @@ public class IdCardFlow implements FSM<IdCard> {
         );
     }
 
-
-    @Override
-    public Class<IdCard> type() {
-        return IdCard.class;
-    }
 }

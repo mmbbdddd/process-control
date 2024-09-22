@@ -23,7 +23,8 @@ public class RemoteFsmActionProxy {
     public Object remoteFsmQuery(FlowContext<FsmState> ctx) {
         return getAction().remoteFsmQuery(ctx);
     }
+
     RemoteFsmAction getAction() {
-        return (RemoteFsmAction) ProcessorService.getAction(actionType);
+        return ProcessorService.getAction(actionType);
     }
 }
