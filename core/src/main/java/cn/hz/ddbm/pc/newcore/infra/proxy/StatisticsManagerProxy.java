@@ -6,10 +6,10 @@ import cn.hz.ddbm.pc.newcore.infra.StatisticsManager;
 
 import java.io.Serializable;
 
-public class StatisticsSupportProxy implements StatisticsManager {
+public class StatisticsManagerProxy implements StatisticsManager {
     StatisticsManager statisticsSupport;
 
-    public StatisticsSupportProxy(StatisticsManager bean) {
+    public StatisticsManagerProxy(StatisticsManager bean) {
         this.statisticsSupport = bean;
     }
 

@@ -53,12 +53,12 @@ public class DaoStatusManager implements StatusManager, InitializingBean, Applic
     }
 
     @Override
-    public <T> void setStatus(String flow, Serializable flowId, T status, Integer timeout) throws StatusException {
+    public <T> void setStatus(String key, T status, Integer timeout) throws StatusException {
 
     }
 
     @Override
-    public <T> T getStatus(String flow, Serializable flowId, Class<T> type) throws StatusException {
+    public <T> T getStatus(String key, Class<T> type) throws StatusException {
         return null;
     }
 

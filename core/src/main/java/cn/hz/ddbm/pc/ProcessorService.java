@@ -88,7 +88,8 @@ public class ProcessorService {
     }
 
     private void flushState(FlowContext ctx) {
-        //todo
+        ctx.payload.setState(ctx.getState());
+        getStatusManager(ctx.getFlow()).setStatus(ctx);
     }
 
     private void flushSession(FlowContext ctx) {
@@ -100,25 +101,25 @@ public class ProcessorService {
     }
 
 
-    private StatusManager getStatusManager(BaseFlow flow) {
+    private StatusManagerProxy getStatusManager(BaseFlow flow) {
         return new StatusManagerProxy(getByCode(flow.flowAttrs().getStatus(), StatusManager.class));
     }
 
 
-    private SessionManager getSessionManager(BaseFlow flow) {
+    private SessionManagerProxy getSessionManager(BaseFlow flow) {
         return new SessionManagerProxy(getByCode(flow.flowAttrs().getSession(), SessionManager.class));
     }
 
-    private RetryManager getRetryService(BaseFlow flow) {
+    private RetryManagerProxy getRetryService(BaseFlow flow) {
         return new RetryManagerProxy(getByCode(flow.flowAttrs().getRetry(), RetryManager.class));
     }
 
-    private LockManager getLocker(BaseFlow flow) {
+    private LockManagerProxy getLocker(BaseFlow flow) {
         return new LockManagerProxy(getByCode(flow.flowAttrs().getLock(), LockManager.class));
     }
 
-    private StatisticsManager getStatisticsSupport(BaseFlow flow) {
-        return new StatisticsSupportProxy(getByCode(flow.flowAttrs().getStatistics(), StatisticsManager.class));
+    private StatisticsManagerProxy getStatisticsSupport(BaseFlow flow) {
+        return new StatisticsManagerProxy(getByCode(flow.flowAttrs().getStatistics(), StatisticsManager.class));
     }
 
     private <T extends ValueObject> T getByCode(Enum code, Class<T> type) {

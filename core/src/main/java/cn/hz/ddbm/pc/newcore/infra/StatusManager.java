@@ -18,9 +18,9 @@ import java.io.Serializable;
 public interface StatusManager extends ValueObject<Coast.StatusType> {
     Coast.StatusType code();
 
-    <T> void setStatus(String flow, Serializable flowId, T status, Integer timeout) throws StatusException;
+    <T> void setStatus(String key, T status, Integer timeout) throws StatusException;
 
-    <T> T getStatus(String flow, Serializable flowId, Class<T> type) throws StatusException;
+    <T> T getStatus(String key, Class<T> type) throws StatusException;
 
     void idempotent(String key) throws IdempotentException;
 

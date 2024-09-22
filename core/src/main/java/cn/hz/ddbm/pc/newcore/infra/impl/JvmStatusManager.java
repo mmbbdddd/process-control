@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentMap;
 public class JvmStatusManager implements StatusManager {
     ConcurrentMap<String, String>  statusMap;
     ConcurrentMap<String, Boolean> idempotentRecords;
-    String                         keyTemplate = "%s:%s";
 
     public JvmStatusManager() {
         this.statusMap         = new ConcurrentHashMap<>();
@@ -27,14 +26,14 @@ public class JvmStatusManager implements StatusManager {
     }
 
     @Override
-    public <T> void setStatus(String flow, Serializable flowId, T status, Integer timeout) throws StatusException {
+    public <T> void setStatus(String key, T status, Integer timeout) throws StatusException {
 
     }
 
     @Override
-    public <T> T getStatus(String flow, Serializable flowId, Class<T> type) throws StatusException {
+    public <T> T getStatus(String key, Class<T> type) throws StatusException {
         try {
-            String status = statusMap.get(String.format(keyTemplate, flow, flowId));
+            String status = statusMap.get(key);
             if (StrUtil.isEmpty(status)) {
                 return null;
             }
