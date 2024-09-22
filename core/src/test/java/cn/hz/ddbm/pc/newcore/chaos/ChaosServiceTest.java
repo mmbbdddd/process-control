@@ -7,6 +7,7 @@ import cn.hz.ddbm.pc.newcore.exception.FlowEndException;
 import cn.hz.ddbm.pc.newcore.exception.InterruptedException;
 import cn.hz.ddbm.pc.newcore.exception.PauseException;
 import cn.hz.ddbm.pc.newcore.exception.SessionException;
+import cn.hz.ddbm.pc.newcore.factory.BeanSagaFlowFactory;
 import cn.hz.ddbm.pc.newcore.saga.SagaState;
 import cn.hz.ddbm.pc.newcore.saga.SagaWorker;
 import org.junit.jupiter.api.BeforeAll;
@@ -57,11 +58,15 @@ public class ChaosServiceTest {
             return new LocalChaosAction();
         }
 
+
         @Bean
         SpringUtil springUtil() {
             return new SpringUtil();
         }
-
+        @Bean
+        BeanSagaFlowFactory sagaFlowFactory() {
+            return new BeanSagaFlowFactory();
+        }
 
         @Bean
         ProcessorService procesorService() {
