@@ -86,7 +86,7 @@ public class ChaosService {
         String id;
         S      state;
 
-        public MockPayLoad(Integer id, S state) {
+        public MockPayLoad(S state) {
             this.id    = id + "";
             this.state = state;
         }

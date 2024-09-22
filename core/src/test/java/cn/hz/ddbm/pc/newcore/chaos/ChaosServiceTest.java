@@ -34,7 +34,7 @@ public class ChaosServiceTest {
         try {
             chaosService.chaos(
                     "test",
-                    new ChaosService.MockPayLoad(1, new SagaState(1, SagaWorker.Offset.task)),
+                    new ChaosService.MockPayLoad(  new SagaState(1, SagaWorker.Offset.task)),
                     chaosConfig);
         } catch (PauseException e) {
             throw new RuntimeException(e);
