@@ -69,10 +69,6 @@ public class FsmFlow implements BaseFlow<FsmState> {
             throw new LimtedRetryException();
         }
         worker.execute(ctx);
-
-        if (ctx.getFluent()) {
-            execute(ctx);
-        }
     }
 
     @Override

@@ -78,10 +78,6 @@ public class SagaFlow implements BaseFlow<SagaState> {
             throw new FlowStatusException();
         }
         worker.execute(ctx);
-
-        if (ctx.getFluent()) {
-            execute(ctx);
-        }
     }
 
     private boolean isSu(Integer index) {

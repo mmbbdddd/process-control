@@ -65,23 +65,24 @@ public class ProcessorService {
      *
      * @param ctx
      */
-    public void execute(FlowContext ctx)   {
+    public void execute(FlowContext ctx) {
         BaseFlow flow = ctx.getFlow();
-        while (true) {
-            try {
+        try {
+            flow.execute(ctx);
+            while (ctx.fluent) {
                 flow.execute(ctx);
-            } catch (RuntimeException e) {                //运行时异常中断
-                flushState(ctx);
-                flushSession(ctx);
-                throw e;
-            } catch (Exception e) {                       //其他尝试重试
-                flushState(ctx);
-                flushSession(ctx);
-                if (e instanceof FlowStatusException || e instanceof FlowEndException) {
+            }
+        } catch (RuntimeException e) {                //运行时异常中断
+            flushState(ctx);
+            flushSession(ctx);
+            throw e;
+        } catch (Exception e) {                       //其他尝试重试
+            flushState(ctx);
+            flushSession(ctx);
+            if (e instanceof FlowStatusException || e instanceof FlowEndException) {
 
-                } else {
-                    addRetryTask(ctx);
-                }
+            } else {
+                addRetryTask(ctx);
             }
         }
     }
