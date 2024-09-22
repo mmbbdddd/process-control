@@ -24,7 +24,7 @@ class ExpressionEngineUtilsTest {
     }
 
     @Test
-    void testEval() { 
+    void testEval() {
     }
 
     @Test

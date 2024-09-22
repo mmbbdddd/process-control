@@ -7,19 +7,19 @@ import cn.hz.ddbm.pc.newcore.infra.SessionManager;
 import java.io.Serializable;
 import java.util.Map;
 
-public class SessionManagerProxy implements SessionManager {
+public class SessionManagerProxy   {
     SessionManager sessionManager;
 
     public SessionManagerProxy(SessionManager t) {
         this.sessionManager = t;
     }
 
-    @Override
+
     public Coast.SessionType code() {
         return sessionManager.code();
     }
 
-    @Override
+
     public void set(String flowName, Serializable flowId, Map<String, Object> session) throws SessionException {
         try {
 //            SpringUtil.getBean(ChaosHandler.class).session();
@@ -30,8 +30,7 @@ public class SessionManagerProxy implements SessionManager {
             throw new SessionException(e);
         }
     }
-
-    @Override
+ 
     public Map<String, Object> get(String flowName, Serializable flowId) throws SessionException {
         try {
 //            SpringUtil.getBean(ChaosHandler.class).session();
