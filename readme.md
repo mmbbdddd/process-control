@@ -62,9 +62,10 @@
 
 # 详细手册
 
-[什么情况下使用Saga模式](doc/saga模式.md)
-
 [什么情况下使用Fsm模式](doc/fsm模式.md)
+
+
+[什么情况下使用Saga模式](doc/saga模式.md)
 
 [混沌验证](doc/混沌验证.md)
 
