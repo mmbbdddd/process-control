@@ -62,18 +62,13 @@
 
 # 详细手册
 
-[fsm模式](doc/fsm模式.md)
-
-
-[saga模式](doc/saga模式.md)
+[流程编排](doc/saga模式.md) 
 
 [混沌验证](doc/混沌验证.md)
 
 [状态管理](doc/状态管理.md)
 
-[会话管理](doc/fsm模式.md)
-
-[Saga事务](doc/Saga事务.md)
+[会话管理](doc/会话管理.md) 
 
 [重试机制](doc/重试机制.md)
 
