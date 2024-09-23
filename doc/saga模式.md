@@ -20,7 +20,8 @@
 
 1，seata没有做防空补偿和悬挂事务，processctrl支持防空补偿和悬挂事务
 
-2，
+2，seata的业务逻辑是基于pipeline模式的（即processorctrl中的saga模式），而不是任意流程形状。
+
  
 # 最佳实践
 
@@ -38,7 +39,7 @@
 
 参考资料
 
- https://github.com/Azure-Samples/saga-orchestration-serverless
+https://github.com/Azure-Samples/saga-orchestration-serverless
 
 https://it.sohu.com/a/788243516_121389665
 
