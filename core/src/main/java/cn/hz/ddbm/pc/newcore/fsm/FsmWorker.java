@@ -32,6 +32,6 @@ public abstract class FsmWorker {
     public abstract void execute(FlowContext<FsmState> ctx)  ;
 
     public enum Offset {
-        task, failover
+        task, task_query
     }
 }

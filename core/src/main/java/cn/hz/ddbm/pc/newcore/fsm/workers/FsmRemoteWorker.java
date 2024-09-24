@@ -11,7 +11,7 @@ import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
 import cn.hz.ddbm.pc.newcore.fsm.Router;
 import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmAction;
 
-import static cn.hz.ddbm.pc.newcore.fsm.FsmWorker.Offset.failover;
+import static cn.hz.ddbm.pc.newcore.fsm.FsmWorker.Offset.task_query;
 
 public class FsmRemoteWorker extends FsmWorker {
     Class<? extends RemoteFsmAction> actionType;
@@ -28,11 +28,11 @@ public class FsmRemoteWorker extends FsmWorker {
         Offset offset = ctx.state.offset;
         switch (offset) {
             case task:
-                ctx.state.offset = failover;
+                ctx.state.offset = task_query;
                 getAction().remoteFsm(ctx);
                 ctx.metricsState();
                 break;
-            case failover:
+            case task_query:
                 Object result = getAction().remoteFsmQuery(ctx);
                 ctx.metricsState();
                 Enum state = router.router(ctx,result);
