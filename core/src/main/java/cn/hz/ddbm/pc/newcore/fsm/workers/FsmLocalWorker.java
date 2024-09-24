@@ -1,6 +1,7 @@
 package cn.hz.ddbm.pc.newcore.fsm.workers;
 
 
+import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
 import cn.hz.ddbm.pc.newcore.config.ErrorCode;
@@ -9,21 +10,19 @@ import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
 import cn.hz.ddbm.pc.newcore.fsm.Router;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
-import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmActionProxy;
 
 public class FsmLocalWorker extends FsmWorker {
-    LocalFsmActionProxy action;
+    Class<? extends LocalFsmAction> actionType;
 
-    public FsmLocalWorker(FsmFlow fsm, Enum from, Class<? extends LocalFsmAction> action, Router router) {
+    public FsmLocalWorker(FsmFlow fsm, Enum from, Class<? extends LocalFsmAction> actionType, Router router) {
         super(fsm, from, router);
-        this.action = new LocalFsmActionProxy(action);
+        this.actionType = actionType;
     }
 
     @Override
     public void execute(FlowContext<FsmState> ctx)   {
-        ctx.setAction(action.actioname());
         //如果任务可执行
-        Object result = action.doLocalFsm(ctx);
+        Object result = getAction().doLocalFsm(ctx);
         ctx.metricsState();
         Enum state = router.router(ctx, result);
         if (null == state) {
@@ -38,6 +37,10 @@ public class FsmLocalWorker extends FsmWorker {
             ctx.state.state  = state;
             ctx.state.offset = Offset.task;
         }
+    }
+
+    LocalFsmAction getAction() {
+        return ProcessorService.getAction(actionType);
     }
 
 }

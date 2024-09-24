@@ -1,6 +1,7 @@
 package cn.hz.ddbm.pc.newcore.fsm.workers;
 
 
+import cn.hz.ddbm.pc.ProcessorService;
 import cn.hz.ddbm.pc.newcore.FlowContext;
 import cn.hz.ddbm.pc.newcore.FlowStatus;
 import cn.hz.ddbm.pc.newcore.config.ErrorCode;
@@ -9,17 +10,15 @@ import cn.hz.ddbm.pc.newcore.fsm.FsmState;
 import cn.hz.ddbm.pc.newcore.fsm.FsmWorker;
 import cn.hz.ddbm.pc.newcore.fsm.Router;
 import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmAction;
-import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmActionProxy;
-import cn.hz.ddbm.pc.newcore.log.Logs;
 
 import static cn.hz.ddbm.pc.newcore.fsm.FsmWorker.Offset.failover;
 
 public class FsmRemoteWorker extends FsmWorker {
-    RemoteFsmActionProxy action;
+    Class<? extends RemoteFsmAction> actionType;
 
-    public FsmRemoteWorker(FsmFlow fsm, Enum from, Class<? extends RemoteFsmAction> action, Router router) {
+    public FsmRemoteWorker(FsmFlow fsm, Enum from, Class<? extends RemoteFsmAction> actionType, Router router) {
         super(fsm, from, router);
-        this.action = new RemoteFsmActionProxy(action);
+        this.actionType = actionType;
     }
 
     @Override
@@ -30,11 +29,11 @@ public class FsmRemoteWorker extends FsmWorker {
         switch (offset) {
             case task:
                 ctx.state.offset = failover;
-                action.doRemoteFsm(ctx);
+                getAction().remoteFsm(ctx);
                 ctx.metricsState();
                 break;
             case failover:
-                Object result = action.remoteFsmQuery(ctx);
+                Object result = getAction().remoteFsmQuery(ctx);
                 ctx.metricsState();
                 Enum state = router.router(ctx,result);
                 if (null == state) {
@@ -50,5 +49,7 @@ public class FsmRemoteWorker extends FsmWorker {
                 break;
         }
     }
-
+    RemoteFsmAction getAction() {
+        return ProcessorService.getAction(actionType);
+    }
 }
