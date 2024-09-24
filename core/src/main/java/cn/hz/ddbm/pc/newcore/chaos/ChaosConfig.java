@@ -8,7 +8,7 @@ import cn.hz.ddbm.pc.newcore.utils.RandomUitl;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class ChaosConfig {
+public   class ChaosConfig {
     Boolean mockAction;
     Integer retryTimes;
     Integer executeCount;
@@ -21,7 +21,9 @@ public abstract class ChaosConfig {
         this.timeout      = timeout;
     }
 
-    abstract Set<Pair<ChaosRule, Double>> infraChaosRule();
+    public  Set<Pair<ChaosRule, Double>> infraChaosRule(){
+        return new HashSet<>();
+    }
 
     public void infraChaos() throws Exception {
         ChaosRule rule = RandomUitl.selectByWeight("infraChaosRule", infraChaosRule());

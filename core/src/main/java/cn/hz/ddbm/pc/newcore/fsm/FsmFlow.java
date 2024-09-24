@@ -12,6 +12,7 @@ import cn.hz.ddbm.pc.newcore.exception.FlowStatusException;
 import cn.hz.ddbm.pc.newcore.exception.LimtedRetryException;
 import cn.hz.ddbm.pc.newcore.fsm.actions.LocalFsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.actions.RemoteFsmAction;
+import cn.hz.ddbm.pc.newcore.log.Logs;
 
 import java.util.Objects;
 
@@ -50,6 +51,7 @@ public class FsmFlow implements BaseFlow<FsmState> {
         Assert.notNull(ctx.state.flowStatus, "ctx.flowstatus is null");
         Assert.notNull(ctx.state.state, "ctx.state is null");
         Assert.notNull(ctx.state.offset, "ctx.offset is null");
+        Logs.flow.info("{}",ctx.state.state);
         if (isFail(ctx.state.state)) {
             ctx.state.flowStatus = (FlowStatus.FAIL);
             throw new FlowEndException();

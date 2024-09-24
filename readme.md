@@ -47,16 +47,24 @@
                 )
         );
     }
+## 单元测试
+
+    @Test
+    public void chaos() throws Exception {
+        try {
+            //执行100此，查看流程中断概率
+            chaosService.chaos("idcard",
+                    new ChaosService.MockPayLoad(new FsmState(IdCard.Init, FsmWorker.Offset.task)),
+                        //执行100次
+                    new ChaosConfig(true, 1, 100, 1000));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 ## 运行
 
-        2024-09-22 02:05:25.087  INFO 12944 --- [pool-1-thread-1] flow                                     : Init
-        2024-09-22 02:05:25.096  INFO 12944 --- [pool-1-thread-1] flow                                     : RuleChecked
-        2024-09-22 02:05:25.097  INFO 12944 --- [pool-1-thread-1] flow                                     : Accepted
-        2024-09-22 02:05:25.098  INFO 12944 --- [pool-1-thread-1] flow                                     : Accepted
-        2024-09-22 02:05:25.098  INFO 12944 --- [pool-1-thread-1] flow                                     : Fail
-        2024-09-22 02:05:25.098  INFO 12944 --- [           main] flow                                     : 混沌测试报告：\n
-        2024-09-22 02:05:25.099  INFO 12944 --- [           main] flow                                     : Fail,	1
+![img.png](img.png)      
 
 ## 
 

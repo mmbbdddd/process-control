@@ -19,10 +19,10 @@ public class ChaosConfiguration {
         return new ChaosService();
     }
 
-    @Bean
-    ChaosAopAspect chaosAopAspect() {
-        return new ChaosAopAspect();
-    }
+//    @Bean
+//    ChaosAopAspect chaosAopAspect() {
+//        return new ChaosAopAspect();
+//    }
 
 
     @Bean
