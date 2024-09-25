@@ -29,19 +29,19 @@ public class FsmFlowTest {
 
 
     @Test
-    public void runFsm()   {
+    public void runFsm() {
         EnvUtils.setChaosMode(true);
         FsmFlow p = new FsmFlow("test", IdCard.init, IdCard.su, IdCard.fail);
-        p.local(IdCard.init, "push", PrepareAction.class, new ToRouter<>(IdCard.presend));
-        p.local(IdCard.presend, "push", PrepareAction.class, new ToRouter<>(IdCard.auditing));
-        p.local(IdCard.auditing, "push", PrepareAction.class, new Router(new RowKeyTable<String, IdCard, Double>() {{
+        p.local(IdCard.init, PrepareAction.class, new ToRouter<>(IdCard.presend));
+        p.local(IdCard.presend, PrepareAction.class, new ToRouter<>(IdCard.auditing));
+        p.local(IdCard.auditing, PrepareAction.class, new Router(new RowKeyTable<String, IdCard, Double>() {{
             put("result.code == '0000'", IdCard.su, 1.0);
             put("result.code == '0001'", IdCard.fail, 0.1);
             put("result.code == '0002'", IdCard.no_such_order, 0.1);
             put("result.code == '0003'", IdCard.lost_date, 0.1);
         }}));
-        p.local(IdCard.no_such_order, "push", PrepareAction.class, new ToRouter<>(IdCard.presend));
-        p.local(IdCard.lost_date, "push", PrepareAction.class, new ToRouter<>(IdCard.init));
+        p.local(IdCard.no_such_order, PrepareAction.class, new ToRouter<>(IdCard.presend));
+        p.local(IdCard.lost_date, PrepareAction.class, new ToRouter<>(IdCard.init));
 
 
         FlowContext<FsmState> ctx = new FlowContext<>(p, new Payload<FsmState>() {
@@ -63,7 +63,6 @@ public class FsmFlowTest {
                 this.state = state;
             }
         });
-        ctx.setEvent("push");
         try {
             p.execute(ctx);
         } catch (FlowEndException e) {
@@ -111,7 +110,7 @@ public class FsmFlowTest {
 
     static class PrepareAction implements LocalFsmAction {
         @Override
-        public Object doLocalFsm(FlowContext<FsmState> ctx)   {
+        public Object doLocalFsm(FlowContext<FsmState> ctx) {
             Integer executeTimes = ctx.getExecuteTimes();
             Integer retryTimes   = ctx.getFlow().stateAttrs(ctx.state).getRetry();
             if (executeTimes > retryTimes) {

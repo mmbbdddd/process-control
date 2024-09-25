@@ -17,7 +17,6 @@ public class FlowContext<S extends State> {
     public String              uuid;
     public S                   state;
     public Payload<S>          payload;
-    public String              event;
     public Map<String, Object> session;
     public Boolean             fluent;
     public String              action;
@@ -35,7 +34,6 @@ public class FlowContext<S extends State> {
         this.id      = payload.getId();
         this.uuid    = UUID.randomUUID().toString(true);
         this.state   = payload.getState();
-        this.event   = null == event ? Coast.EVENT_DEFAULT : event;
         this.session = null == session ? new HashMap<>() : session;
         this.fluent  = null == fluent || fluent;
     }

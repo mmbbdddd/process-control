@@ -1,11 +1,10 @@
 package cn.hz.ddbm.pc.newcore.factory;
 
 
-import cn.hz.ddbm.pc.common.lang.Tetrad;
+import cn.hz.ddbm.pc.common.lang.Triple;
 import cn.hz.ddbm.pc.newcore.FlowAttrs;
 import cn.hz.ddbm.pc.newcore.Plugin;
 import cn.hz.ddbm.pc.newcore.StateAttrs;
-import cn.hz.ddbm.pc.newcore.config.Coast;
 import cn.hz.ddbm.pc.newcore.config.JvmProperties;
 import cn.hz.ddbm.pc.newcore.fsm.FsmAction;
 import cn.hz.ddbm.pc.newcore.fsm.FsmFlow;
@@ -66,7 +65,7 @@ public interface FSM<S extends Enum<S>> {
      *
      * @param
      */
-    List<Tetrad<S, String, Class<? extends FsmAction>, Router<S>>> transitions();
+    List<Triple<S, Class<? extends FsmAction>, Router<S>>> transitions();
 
 
     default FsmFlow build() throws Exception {
@@ -75,15 +74,15 @@ public interface FSM<S extends Enum<S>> {
         S       fail = failState();
         FsmFlow flow = new FsmFlow(flowId(), init, su, fail);
 
-        List<Tetrad<S, String, Class<? extends FsmAction>, Router<S>>> events = transitions();
+        List<Triple<S, Class<? extends FsmAction>, Router<S>>> events = transitions();
         events.forEach(t -> {
-            if (LocalFsmAction.class.isAssignableFrom(t.getThree())) {
-                flow.local(t.getOne(), t.getTwo(), (Class<? extends LocalFsmAction>) t.getThree(), t.getFour());
+            if (LocalFsmAction.class.isAssignableFrom(t.getMiddle())) {
+                flow.local(t.getLeft(), (Class<? extends LocalFsmAction>) t.getMiddle(), t.getRight());
             } else {
-                flow.remote(t.getOne(), t.getTwo(), (Class<? extends RemoteFsmAction>) t.getThree(), t.getFour());
+                flow.remote(t.getLeft(), (Class<? extends RemoteFsmAction>) t.getMiddle(), t.getRight());
             }
         });
-        JvmProperties.flowAttrs.put(flowId(),flowAttrs());
+        JvmProperties.flowAttrs.put(flowId(), flowAttrs());
         JvmProperties.flowAttrs.get(flowId()).setStateAttrs(stateAttrs());
         JvmProperties.flowAttrs.get(flowId()).setPlugins(plugins());
 
