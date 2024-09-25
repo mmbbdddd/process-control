@@ -19,7 +19,6 @@ public class ChaosServiceTest {
 
     AnnotationConfigApplicationContext ctx         = new AnnotationConfigApplicationContext();
     ChaosService                       chaosService;
-    ChaosConfig                        chaosConfig = ChaosConfig.goodOf();
 
     @BeforeEach
     public void setup() {
@@ -35,7 +34,7 @@ public class ChaosServiceTest {
             chaosService.chaos(
                     "test",
                     new ChaosService.MockPayLoad(  new SagaState(1, SagaWorker.Offset.task)),
-                    chaosConfig);
+                    ChaosConfig.goodOf(true,1,10,3000));
         }  catch (SessionException e) {
             throw new RuntimeException(e);
         }   catch (InterruptedException e) {
@@ -49,7 +48,7 @@ public class ChaosServiceTest {
             chaosService.chaos(
                     "test",
                     new ChaosService.MockPayLoad(  new FsmState(_fsm.init, FsmWorker.Offset.task)),
-                    chaosConfig);
+                    ChaosConfig.goodOf(true,1,10,3000));
         }  catch (SessionException e) {
             throw new RuntimeException(e);
         }   catch (InterruptedException e) {

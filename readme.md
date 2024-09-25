@@ -24,35 +24,36 @@
 
 ## 编排业务
 
-    @Override
+     @Override
     public List<Tetrad<IdCard, String, Class<? extends FsmAction>, Router<IdCard>>> transitions() {
         return Lists.newArrayList(
                 Tetrad.of(IdCard.Init, "push", MaterialCollectionAction.class, new ToRouter<>(IdCard.RuleChecked)),
-                Tetrad.of(IdCard.RuleChecked, "push", RuleCheckedAction.class, new Router<>(new HashMap<String, IdCard>() {{
-                    put("true", IdCard.Accepted);
-                    put("false", IdCard.Init);
+                Tetrad.of(IdCard.RuleChecked, "push", RuleCheckedAction.class, new Router<>(new RowKeyTable<String, IdCard,Double>() {{
+                    put("result.code==0000", IdCard.Accepted,0.9);
+                    put("result.code==0008", IdCard.Init,0.1);
                 }})),
                 Tetrad.of(IdCard.Accepted, "push", SendBizAction.class, new Router<>(
-                        new HashMap<String, IdCard>() {{
-                            put("true", IdCard.RuleSyncing);
-                            put("false", IdCard.Accepted);
-                            put("false", IdCard.Su);
-                            put("false", IdCard.Fail);
+                        new RowKeyTable<String, IdCard,Double>() {{
+                            put("result.code==0002", IdCard.RuleSyncing,0.1);
+                            put("result.code==0003", IdCard.Accepted,0.1);
+                            put("result.code==0000", IdCard.Su,0.7);
+                            put("result.code==00001", IdCard.Fail,0.1);
                         }})),
                 Tetrad.of(IdCard.RuleSyncing, "push", SendBizAction.class, new Router<>(
-                        new HashMap<String, IdCard>() {{
-                            put("true", IdCard.RuleChecked);
-                            put("false", IdCard.RuleSyncing);
+                        new RowKeyTable<String, IdCard,Double>() {{
+                            put("result.code==0000", IdCard.RuleChecked,0.9);
+                            put("result.code==0009", IdCard.RuleSyncing,0.1);
                         }})
                 )
         );
     }
+
 ## 单元测试
 
     @Test
     public void chaos() throws Exception {
         try {
-            //执行100此，查看流程中断概率
+            //执行100次，看结果分布概率
             chaosService.chaos("idcard",
                     new ChaosService.MockPayLoad(new FsmState(IdCard.Init, FsmWorker.Offset.task)),
                         //执行100次
@@ -64,7 +65,7 @@
 
 ## 运行
 
-![img.png](img.png)      
+   ![img.png](img.png)
 
 ## 
  
