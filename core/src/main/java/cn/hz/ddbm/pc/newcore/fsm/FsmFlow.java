@@ -53,7 +53,7 @@ public class FsmFlow implements BaseFlow<FsmState> {
         Assert.notNull(ctx.state.flowStatus, "ctx.flowstatus is null");
         Assert.notNull(ctx.state.state, "ctx.state is null");
         Assert.notNull(ctx.state.offset, "ctx.offset is null");
-        Logs.flow.info("{}", ctx.state.state);
+        Logs.flow.info("{},{}",ctx.id, ctx.state.state);
         if (isFail(ctx.state.state)) {
             ctx.state.flowStatus = (FlowStatus.FAIL);
             throw new FlowEndException();

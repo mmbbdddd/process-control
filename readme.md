@@ -57,7 +57,7 @@
 
     1，遵从了流程和逻辑分离的设计理念，可以在Action没有进行开发完成的情况下，验证整体业务流程。在整体设计和验证完毕后，各action接口明确，并行开发。
     2，相比传统的消息驱动的流程，整体流程架构可视，局部逻辑组件化程度更好，可编排、变更透明，更安全
-    3，相比seata等json dsl的编排风格。JavaDsl基于静态代码检查、健壮性更好。
+    3，相比seata等json dsl的编排风格。JavaDsl基于静态代码检查、健壮性更好。 
 
 ## 单元测试
 
@@ -75,82 +75,64 @@
     }
 
 ## 运行
-    
-    2024-09-25 09:04:23.943  INFO 3508 --- [           main] cn.hz.ddbm.pc.fsm.IdCardTest             : No active profile set, falling back to 1 default profile: "default"
-    2024-09-25 09:04:24.436  INFO 3508 --- [           main] cn.hz.ddbm.pc.fsm.IdCardTest             : Started IdCardTest in 0.68 seconds (JVM running for 1.173)
-    2024-09-25 09:04:24.761  INFO 3508 --- [pool-2-thread-4] flow                                     : Init
-    2024-09-25 09:04:24.761  INFO 3508 --- [pool-2-thread-9] flow                                     : Init
-    2024-09-25 09:04:24.761  INFO 3508 --- [pool-2-thread-3] flow                                     : Init
-    2024-09-25 09:04:24.761  INFO 3508 --- [ool-2-thread-10] flow                                     : Init
-    2024-09-25 09:04:24.761  INFO 3508 --- [pool-2-thread-1] flow                                     : Init
-    2024-09-25 09:04:24.761  INFO 3508 --- [pool-2-thread-8] flow                                     : Init
-    2024-09-25 09:04:24.761  INFO 3508 --- [pool-2-thread-6] flow                                     : Init
-    2024-09-25 09:04:24.761  INFO 3508 --- [pool-2-thread-2] flow                                     : Init
-    2024-09-25 09:04:24.761  INFO 3508 --- [pool-2-thread-7] flow                                     : Init
-    2024-09-25 09:04:24.761  INFO 3508 --- [pool-2-thread-5] flow                                     : Init
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-6] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-8] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-3] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-9] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-1] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-7] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-9] flow                                     : Accepted
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-5] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-3] flow                                     : Init
-    2024-09-25 09:04:24.773  INFO 3508 --- [ool-2-thread-10] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-7] flow                                     : Accepted
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-3] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-5] flow                                     : Accepted
-    2024-09-25 09:04:24.773  INFO 3508 --- [ool-2-thread-10] flow                                     : Accepted
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-8] flow                                     : Accepted
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-3] flow                                     : Init
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-4] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [ool-2-thread-10] flow                                     : Accepted
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-7] flow                                     : Accepted
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-8] flow                                     : Accepted
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-4] flow                                     : Accepted
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-2] flow                                     : RuleChecked
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-3] flow                                     : RuleChecked
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-4] flow                                     : Accepted
-    2024-09-25 09:04:24.773  INFO 3508 --- [pool-2-thread-9] flow                                     : Accepted
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-7] flow                                     : RuleSyncing
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-7] flow                                     : RuleSyncing
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-5] flow                                     : Accepted
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-9] flow                                     : Su
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-6] flow                                     : Accepted
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-5] flow                                     : Su
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-6] flow                                     : Accepted
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-4] flow                                     : Su
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-1] flow                                     : Accepted
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-8] flow                                     : Su
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-1] flow                                     : Accepted
-    2024-09-25 09:04:24.774  INFO 3508 --- [ool-2-thread-10] flow                                     : Su
-    2024-09-25 09:04:24.775  INFO 3508 --- [pool-2-thread-2] flow                                     : Init
-    2024-09-25 09:04:24.775  INFO 3508 --- [pool-2-thread-1] flow                                     : Su
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-6] flow                                     : Fail
-    2024-09-25 09:04:24.774  INFO 3508 --- [pool-2-thread-3] flow                                     : Accepted
-    2024-09-25 09:04:24.775  INFO 3508 --- [pool-2-thread-3] flow                                     : Accepted
-    2024-09-25 09:04:24.775  INFO 3508 --- [pool-2-thread-3] flow                                     : RuleSyncing
-    2024-09-25 09:04:24.775  INFO 3508 --- [pool-2-thread-3] flow                                     : RuleSyncing
-    2024-09-25 09:04:24.775  INFO 3508 --- [pool-2-thread-3] flow                                     : RuleChecked
-    2024-09-25 09:04:24.775  INFO 3508 --- [pool-2-thread-3] flow                                     : Accepted
-    2024-09-25 09:04:24.776  INFO 3508 --- [pool-2-thread-2] flow                                     : RuleChecked
-    2024-09-25 09:04:24.776  INFO 3508 --- [pool-2-thread-2] flow                                     : Init
-    2024-09-25 09:04:24.776  INFO 3508 --- [pool-2-thread-2] flow                                     : RuleChecked
-    2024-09-25 09:04:24.776  INFO 3508 --- [pool-2-thread-2] flow                                     : Accepted
-    2024-09-25 09:04:24.776  INFO 3508 --- [pool-2-thread-7] flow                                     : RuleChecked
-    2024-09-25 09:04:24.776  INFO 3508 --- [pool-2-thread-2] flow                                     : Accepted
-    2024-09-25 09:04:24.776  INFO 3508 --- [pool-2-thread-7] flow                                     : Accepted
-    2024-09-25 09:04:24.776  INFO 3508 --- [pool-2-thread-7] flow                                     : Accepted
-    2024-09-25 09:04:24.776  INFO 3508 --- [pool-2-thread-2] flow                                     : Su
-    2024-09-25 09:04:24.777  INFO 3508 --- [pool-2-thread-7] flow                                     : Su
-    2024-09-25 09:04:24.776  INFO 3508 --- [pool-2-thread-3] flow                                     : Accepted
-    2024-09-25 09:04:24.777  INFO 3508 --- [pool-2-thread-3] flow                                     : Su
-    2024-09-25 09:04:24.778  INFO 3508 --- [           main] flow                                     : 混沌测试报告：\n
-    2024-09-25 09:04:24.779  INFO 3508 --- [           main] flow                                     : Su,	9
-    2024-09-25 09:04:24.779  INFO 3508 --- [           main] flow                                     : Fail,	1
+
+    2024-09-26 09:16:23.077  INFO 37364 --- [pool-2-thread-2] flow                                     : 1,Init
+    2024-09-26 09:16:23.077  INFO 37364 --- [pool-2-thread-3] flow                                     : 2,Init
+    2024-09-26 09:16:23.077  INFO 37364 --- [pool-2-thread-9] flow                                     : 8,Init
+    2024-09-26 09:16:23.077  INFO 37364 --- [pool-2-thread-1] flow                                     : 0,Init
+    2024-09-26 09:16:23.077  INFO 37364 --- [pool-2-thread-7] flow                                     : 6,Init
+    2024-09-26 09:16:23.077  INFO 37364 --- [pool-2-thread-5] flow                                     : 4,Init
+    2024-09-26 09:16:23.077  INFO 37364 --- [pool-2-thread-6] flow                                     : 5,Init
+    2024-09-26 09:16:23.077  INFO 37364 --- [pool-2-thread-8] flow                                     : 7,Init
+    2024-09-26 09:16:23.077  INFO 37364 --- [ool-2-thread-10] flow                                     : 9,Init
+    2024-09-26 09:16:23.077  INFO 37364 --- [pool-2-thread-4] flow                                     : 3,Init
+    2024-09-26 09:16:23.088  INFO 37364 --- [pool-2-thread-8] flow                                     : 7,RuleChecked
+    2024-09-26 09:16:23.088  INFO 37364 --- [pool-2-thread-1] flow                                     : 0,RuleChecked
+    2024-09-26 09:16:23.088  INFO 37364 --- [pool-2-thread-2] flow                                     : 1,RuleChecked
+    2024-09-26 09:16:23.088  INFO 37364 --- [pool-2-thread-9] flow                                     : 8,RuleChecked
+    2024-09-26 09:16:23.088  INFO 37364 --- [ool-2-thread-10] flow                                     : 9,RuleChecked
+    2024-09-26 09:16:23.088  INFO 37364 --- [pool-2-thread-3] flow                                     : 2,RuleChecked
+    2024-09-26 09:16:23.088  INFO 37364 --- [pool-2-thread-7] flow                                     : 6,RuleChecked
+    2024-09-26 09:16:23.088  INFO 37364 --- [pool-2-thread-8] flow                                     : 7,Accepted
+    2024-09-26 09:16:23.088  INFO 37364 --- [pool-2-thread-4] flow                                     : 3,RuleChecked
+    2024-09-26 09:16:23.088  INFO 37364 --- [pool-2-thread-5] flow                                     : 4,RuleChecked
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-3] flow                                     : 2,Accepted
+    2024-09-26 09:16:23.088  INFO 37364 --- [pool-2-thread-6] flow                                     : 5,RuleChecked
+    2024-09-26 09:16:23.090  INFO 37364 --- [ool-2-thread-10] flow                                     : 9,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-9] flow                                     : 8,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-5] flow                                     : 4,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-2] flow                                     : 1,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-7] flow                                     : 6,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-4] flow                                     : 3,Init
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-6] flow                                     : 5,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-1] flow                                     : 0,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-9] flow                                     : 8,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-8] flow                                     : 7,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-3] flow                                     : 2,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-2] flow                                     : 1,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-5] flow                                     : 4,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-7] flow                                     : 6,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-6] flow                                     : 5,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-9] flow                                     : 8,Su
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-8] flow                                     : 7,Su
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-3] flow                                     : 2,Su
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-2] flow                                     : 1,Su
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-5] flow                                     : 4,Fail
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-7] flow                                     : 6,Fail
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-4] flow                                     : 3,RuleChecked
+    2024-09-26 09:16:23.090  INFO 37364 --- [ool-2-thread-10] flow                                     : 9,Accepted
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-6] flow                                     : 5,Fail
+    2024-09-26 09:16:23.090  INFO 37364 --- [ool-2-thread-10] flow                                     : 9,Su
+    2024-09-26 09:16:23.090  INFO 37364 --- [pool-2-thread-4] flow                                     : 3,Accepted
+    2024-09-26 09:16:23.091  INFO 37364 --- [pool-2-thread-1] flow                                     : 0,Accepted
+    2024-09-26 09:16:23.091  INFO 37364 --- [pool-2-thread-4] flow                                     : 3,Accepted
+    2024-09-26 09:16:23.091  INFO 37364 --- [pool-2-thread-1] flow                                     : 0,Su
+    2024-09-26 09:16:23.091  INFO 37364 --- [pool-2-thread-4] flow                                     : 3,Su
+    2024-09-26 09:16:23.092  INFO 37364 --- [           main] flow                                     : 混沌测试报告：\n
+    2024-09-26 09:16:23.092  INFO 37364 --- [           main] flow                                     : Su,	7
+    2024-09-26 09:16:23.092  INFO 37364 --- [           main] flow                                     : Fail,	3
 
 查看某个的执行结果
 
-![img_1.png](img_1.png)
+![img.png](img.png)
  
