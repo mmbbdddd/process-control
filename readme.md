@@ -23,6 +23,9 @@
         </dependency>
 
 ## 编排业务
+    
+    这是一个小例子，旨在演示一个比较复杂的流程，用流程编排是如何实现的。
+![img.png](doc%2Fimg.png)
 
      @Override
     public List<Tetrad<IdCard, String, Class<? extends FsmAction>, Router<IdCard>>> transitions() {
