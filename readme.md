@@ -34,7 +34,7 @@
                 Triple.of(IdCard.Init, MaterialCollectionAction.class, new ToRouter<>(IdCard.RuleChecked)),
                 //检测客户资料
                 Triple.of(IdCard.RuleChecked, RuleCheckedAction.class, new Router<>(new RowKeyTable<String, IdCard, Double>() {{
-                    put("result.code==0000", IdCard.Accepted, 0.9);
+                    put("result.code==0000", IdCard.Accepted, 0.9);//0.9是mock环境下发生的概率。在生产环境可以没有这个参数。
                     put("result.code==0008", IdCard.Init, 0.1);
                 }})),
                 //身份证办理
