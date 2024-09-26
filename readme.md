@@ -30,7 +30,7 @@
      @Override
     public List<Triple<IdCard,   Class<? extends FsmAction>, Router<IdCard>>> transitions() {
         return Lists.newArrayList(
-                //手机客户材料
+                //收集客户材料
                 Triple.of(IdCard.Init, MaterialCollectionAction.class, new ToRouter<>(IdCard.RuleChecked)),
                 //检测客户资料
                 Triple.of(IdCard.RuleChecked, RuleCheckedAction.class, new Router<>(new RowKeyTable<String, IdCard, Double>() {{
