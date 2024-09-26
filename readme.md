@@ -28,24 +28,28 @@
 ![img.png](doc%2Fimg.png)
 
      @Override
-    public List<Tetrad<IdCard, String, Class<? extends FsmAction>, Router<IdCard>>> transitions() {
+    public List<Triple<IdCard,   Class<? extends FsmAction>, Router<IdCard>>> transitions() {
         return Lists.newArrayList(
-                Tetrad.of(IdCard.Init, "push", MaterialCollectionAction.class, new ToRouter<>(IdCard.RuleChecked)),
-                Tetrad.of(IdCard.RuleChecked, "push", RuleCheckedAction.class, new Router<>(new RowKeyTable<String, IdCard,Double>() {{
-                    put("result.code==0000", IdCard.Accepted,0.9);
-                    put("result.code==0008", IdCard.Init,0.1);
+                //手机客户材料
+                Triple.of(IdCard.Init, MaterialCollectionAction.class, new ToRouter<>(IdCard.RuleChecked)),
+                //检测客户资料
+                Triple.of(IdCard.RuleChecked, RuleCheckedAction.class, new Router<>(new RowKeyTable<String, IdCard, Double>() {{
+                    put("result.code==0000", IdCard.Accepted, 0.9);
+                    put("result.code==0008", IdCard.Init, 0.1);
                 }})),
-                Tetrad.of(IdCard.Accepted, "push", SendBizAction.class, new Router<>(
-                        new RowKeyTable<String, IdCard,Double>() {{
-                            put("result.code==0002", IdCard.RuleSyncing,0.1);
-                            put("result.code==0003", IdCard.Accepted,0.1);
-                            put("result.code==0000", IdCard.Su,0.7);
-                            put("result.code==00001", IdCard.Fail,0.1);
+                //身份证办理
+                Triple.of(IdCard.Accepted, SubmitProcessAction.class, new Router<>(
+                        new RowKeyTable<String, IdCard, Double>() {{
+                            put("result.code==0002", IdCard.RuleSyncing, 0.1);
+                            put("result.code==0003", IdCard.Accepted, 0.1);
+                            put("result.code==0000", IdCard.Su, 0.7);
+                            put("result.code==00001", IdCard.Fail, 0.1);
                         }})),
-                Tetrad.of(IdCard.RuleSyncing, "push", SendBizAction.class, new Router<>(
-                        new RowKeyTable<String, IdCard,Double>() {{
-                            put("result.code==0000", IdCard.RuleChecked,0.9);
-                            put("result.code==0009", IdCard.RuleSyncing,0.1);
+                //规则更新后继续办理
+                Triple.of(IdCard.RuleSyncing, SubmitProcessAction.class, new Router<>(
+                        new RowKeyTable<String, IdCard, Double>() {{
+                            put("result.code==0000", IdCard.RuleChecked, 0.9);
+                            put("result.code==0009", IdCard.RuleSyncing, 0.1);
                         }})
                 )
         );
